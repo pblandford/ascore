@@ -1,0 +1,338 @@
+<resources>
+    <string name="app_name">A-SCORE</string>
+    <string name="app_id">325610991060</string>
+    <string name="save">Save score</string>
+    <string name="print">Print score</string>
+    <string name="set_template">Set as template</string>
+    <string name="export_to_fs">Save to external file system</string>
+    <string name="share">Share</string>
+    <string name="send_to">Send to</string>
+    <string name="export_mxml">Export to Music XML</string>
+    <string name="export_midi">Export to MIDI</string>
+    <string name="export_save">Export Save File</string>
+    <string name="export">Export</string>
+    <string name="export_import">Export / Import</string>
+    <string name="mxml">Music Xml</string>
+    <string name="midi">Midi</string>
+    <string name="mp3">MP3</string>
+    <string name="wav">WAV</string>
+    <string name="jpg">JPG</string>
+    <string name="pdf">PDF</string>
+    <string name="save_file">Save file</string>
+    <string name="file">File</string>
+    <string name="files_in_storage">Private</string>
+    <string name="files_in_external_storage">External</string>
+    <string name="recent_files">Recent</string>
+    <string name="the_following_files">The following files were found on your device: </string>
+    <string name="recent_files_help">Files automatically saved as you work. They are not guaranteed to be kept,
+    so be sure to save anything you want to keep to private storage.</string>
+    <string name="load_local">Private storage</string>
+    <string name="load_local_help">Files you have saved to private storage via the Save dialog.Files saved here are visible only to this app. They will be
+    deleted if the app is uninstalled.</string>
+    <string name="load_app_external">External storage</string>
+    <string name="load_external">External file system</string>
+    <string name="all_parts_help">Creates a separate file for each individual part in the score, and exports them as a ZIP file.</string>
+    <string name="load_app_external_help">Files you have saved to external storage via the Save dialog.
+    These are in a folder visible on your device\'s filesystem (/Android/data/com.philblandford.ascore/files).
+       Other apps can access them if permission is granted. They will be deleted if the app is uninstalled.
+    </string>
+    <string name="save_local_help">Files saved here are visible only to this app. They will be
+    deleted if the app is uninstalled.</string>
+    <string name="save_external_help">Files are saved to a folder visible on your device\'s filesystem (/Android/data/com.philblandford.ascore/files).
+       Other apps can access them if permission is granted. They will be deleted if the app is uninstalled.</string>
+    <string name="save_export_help">This uses the Android File Picker to export the file to anywhere on the device you have permissions to access.
+    Once exported, they are external to the app - they will not appear in the list of saved files, and will remain after the app is uninstalled.</string>
+    <string name="save_share_help">This allows the file to be shared with other apps on the device, such as GMail or Dropbox.</string>
+    <string name="saved">File saved as \'%1$s\'</string>
+    <string name="next">Next</string>
+    <string name="submit">Submit</string>
+    <string name="composer">Composer</string>
+    <string name="lyricist">Lyricist</string>
+    <string name="subtitle">Subtitle</string>
+    <string name="title">Title</string>
+    <string name="product_name">Product</string>
+    <string name="product_version">Version</string>
+    <string name="product_version_id">Version ID</string>
+    <string name="product_build">Build</string>
+    <string name="ok">OK</string>
+    <string name="cancel">Cancel</string>
+    <string name="nothanks">No Thanks</string>
+    <string name="new_score">New score</string>
+    <string name="full_score">Full score</string>
+    <string name="new_score_template">New score from Template</string>
+    <string name="quick_score">Quick score</string>
+    <string name="load">Load</string>
+    <string name="importFile">Import</string>
+    <string name="file_from_storage">Reading file from storage</string>
+    <string name="extracting">Extracting file</string>
+    <string name="unknown_extension">Unknown extension %1$s</string>
+    <string name="file_not_found">Could not find file %1$s</string>
+    <string name="reading_xml">Reading XML</string>
+    <string name="delete">Delete</string>
+    <string name="play">Play</string>
+    <string name="keyboard">Keyboard</string>
+    <string name="help">Help</string>
+    <string name="manual">Manual</string>
+    <string name="hidden">Hidden</string>
+    <string name="community">Community</string>
+    <string name="file_delete_confirm">Really delete %1$s?</string>
+    <string name="soundfont_delete_confirm">Really delete soundfont %1$s?</string>
+    <string name="dialog_yes">Yes</string>
+    <string name="dialog_no">No</string>
+    <string name="export_pdf">Export to PDF</string>
+    <string name="export_mp3">Export to MP3</string>
+    <string name="export_wav">Export to WAV</string>
+    <string name="edit_score">Edit score</string>
+    <string name="export_jpg">Export to JPG</string>
+    <string name="export_all_parts">Export All Parts</string>
+    <string name="about">About</string>
+    <string name="settings">Settings</string>
+    <string name="settings_audio">Audio Settings</string>
+    <string name="settings_layout">Layout Settings</string>
+    <string name="page_margins">Page Margins</string>
+    <string name="settings_playing">Playback Settings</string>
+    <string name="mixer">Mixer</string>
+    <string name="purchase">Purchase Full Version</string>
+    <string name="purchase_failed">Purchase Failed %1$s</string>
+    <string name="purchase_complete">Purchase Complete!</string>
+    <string name="sign_in_failed">Sign in failed</string>
+    <string name="filename">File name</string>
+    <string name="general_error">Could not complete operation: %1$s. The developer has been notified</string>
+    <string name="url_crash_reporter">http://82.38.92.222/cgi-bin/crash_report_ascore.py</string>
+    <string name="option_transpose">Display transposing instruments at concert pitch</string>
+    <string name="option_part_piece">Display part name at start of the piece</string>
+    <string name="option_part_stave">Display part name at start of the stave</string>
+    <string name="option_multi_bar">Display multi-bar rests</string>
+    <string name="option_fixed_bars">Fixed bars per line</string>
+    <string name="option_hide_staves">Hide empty staves</string>
+    <string name="option_shuffle_rhythm">Shuffle Rhythm</string>
+    <string name="option_harmony">Play Chord Symbols</string>
+    <string name="restore_defaults">Restore defaults</string>
+    <string name="quick_score_text">Your previous score can be accessed from File->Load->Recent</string>
+    <string name="category">Category</string>
+    <string name="instrument">Instrument</string>
+    <string name="instrument_init">Loading sounds</string>
+    <string name="instruments">Instruments</string>
+    <string name="edit_instrument">Editing instrument at part %1$s</string>
+    <string name="manage_instruments">Manage Instruments</string>
+    <string name="stave_label">Stave Label:</string>
+    <string name="stave_label_short">Short Stave Label:</string>
+    <string name="label">Label</string>
+    <string name="abbreviation">Abbreviation</string>
+    <string name="load_failed">Load Failed %1$s</string>
+    <string name="permission_denied">Permission to read storage denied</string>
+    <string name="import_failed">Import Failed %1$s</string>
+    <string name="imported_font">Imported font %1$s</string>
+    <string name="imported_score">Imported score %1$s</string>
+    <string name="imported_soundfont">Imported soundfont %1$s</string>
+    <string name="export_failed">Export Failed %1$s</string>
+    <string name="memory_error">Not enough memory to complete this operation</string>
+    <string name="single_stave_instrument">Violin</string>
+    <string name="double_stave_instrument">Acoustic Grand Piano</string>
+    <string name="untitled">untitled</string>
+    <string name="exit">Exit</string>
+    <string name="note_spacing">Note Spacing</string>
+    <string name="stave_spacing">Stave Spacing</string>
+    <string name="note_size">Note Size</string>
+    <string name="note">Note</string>
+    <string name="progress_default_title">Working</string>
+    <string name="exporting">Exporting…</string>
+    <string name="exporting_as">Exporting as %1$s</string>
+    <string name="importing">Importing…</string>
+    <string name="importing_file">Importing %1$s...</string>
+    <string name="importing_soundfont">Importing Soundfont…</string>
+    <string name="loading_autosave">Loading autosaved file…</string>
+    <string name="loading_score">Loading Score…</string>
+    <string name="dividing_parts">Dividing parts</string>
+    <string name="creating_representation">Creating part for %1$s</string>
+    <string name="creating_pdf">Creating PDF Image for %1$s</string>
+    <string name="creating_zip">Creating Zip File</string>
+    <string name="creating_score">Creating Score \"%1$s\"</string>
+    <string name="converting_file">Converting File</string>
+    <string name="title_activity_input">InputActivity</string>
+    <string name="title_activity_main">MainActivity</string>
+    <string name="assign_instrument">Assign to group</string>
+    <string name="clear_assignments">Clear all assignments</string>
+    <string name="select_file">Select file</string>
+
+    <string name="default_bpm">120</string>
+    <string name="key">Key</string>
+    <string name="time">Time</string>
+    <string name="upbeatbar">Upbeat Bar</string>
+    <string name="tempo">Tempo</string>
+    <string name="notes">Notes</string>
+
+    <string name="title_section1">Section 1</string>
+    <string name="title_section2">Section 2</string>
+    <string name="title_section3">Section 3</string>
+
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
+
+    <string name="action_example">Example action</string>
+
+    <string name="action_settings">Settings</string>
+    <string name="action_input">Input</string>
+    <string name="action_insert">Insert items</string>
+    <string name="action_layout">Layout</string>
+    <string name="action_transform">Transform</string>
+    <string name="action_playback">Playback</string>
+    <string name="action_instrument">Instrument</string>
+
+    <string name="pref_audio">Audio Output</string>
+    <string name="pref_android_midi">Android Native MIDI</string>
+    <string name="pref_fluid_midi">FluidSynth Soundfonts</string>
+
+    <string name="copy">Copy</string>
+    <string name="paste">Paste</string>
+    <string name="cut">Cut</string>
+    <string name="copied">Copied</string>
+
+    <string name="drawer_open">Open</string>
+    <string name="drawer_close">Close</string>
+
+    <string name="editing">Editing \'%1$s\'</string>
+    <string name="clef">Clef</string>
+    <string name="key_signature">Key Signature</string>
+    <string name="time_signature">Time Signature</string>
+    <string name="bars">Bars</string>
+    <string name="num_bars">Bars</string>
+    <string name="text">Text</string>
+    <string name="lyrics">Lyrics</string>
+    <string name="harmony">Harmonies</string>
+    <string name="slur">Slur</string>
+    <string name="tie">Tie</string>
+    <string name="tuplet">Tuplet</string>
+    <string name="ornament">Ornament</string>
+    <string name="tremolo">Tremolo</string>
+    <string name="pause">Pause</string>
+    <string name="glissando">Glissando</string>
+    <string name="barline">Bar Line</string>
+    <string name="fingering">Fingering</string>
+    <string name="navigation">Navigation</string>
+    <string name="volta">Volta Brackets</string>
+    <string name="repeat_bar">Repeat Bar</string>
+    <string name="articulation">Articulation</string>
+    <string name="bowing">Bowing</string>
+    <string name="dynamic">Dynamic</string>
+    <string name="wedge">Wedge</string>
+    <string name="page_size">Page Size</string>
+    <string name="system_gap">System Gaps</string>
+    <string name="system_break">Score Break</string>
+    <string name="segment_width">Segment Width</string>
+    <string name="meta_data">Meta-Data</string>
+    <string name="transpose">Transpose</string>
+    <string name="transpose_to">Transpose to</string>
+    <string name="transpose_by">Transpose by</string>
+    <string name="transposition">Transposition</string>
+
+    <string name="progress">Progress</string>
+    <string name="progress_creating_file">Creating file</string>
+    <string name="progress_creating_file_for">Creating file for %1$s</string>
+    <string name="progress_creating_part_for">Creating part for %1$s</string>
+    <string name="progress_all_parts">all parts</string>
+
+    <string name="empty"/>
+    <string name="group_staves">Group staves</string>
+    <string name="stave_gap">Stave Gaps</string>
+    <string name="octave">Octave</string>
+    <string name="pedal">Pedal</string>
+    <string name="margins">Margins</string>
+    <string name="left_margin">Left</string>
+    <string name="right_margin">Right</string>
+    <string name="top_margin">Top</string>
+    <string name="bottom_margin">Bottom</string>
+    <string name="no_bar_numbers">No Bar Numbering</string>
+    <string name="bars_system">Every System</string>
+    <string name="bars_every_x">At intervals of:</string>
+    <string name="bar_numbering">Bar Numbering </string>
+
+    <string name="common_chord">Common:</string>
+    <string name="cached_chord">Recent:</string>
+    <string name="color_scheme">Color Scheme</string>
+
+    <string name="font_system_text">System Text</string>
+    <string name="font_expression_text">Expression Text</string>
+    <string name="font_title_text">Title Text</string>
+    <string name="font_subtitle_text">Subtitle Text</string>
+    <string name="font_composer_text">Composer Text</string>
+    <string name="font_lyricist_text">Lyricist Text</string>
+    <string name="font_lyric_text">Lyric Text</string>
+    <string name="font_harmony_text">Harmony Text</string>
+
+    <string name="print_tip">This feature is new and experimental, and may not work with all configurations.
+
+        If you have trouble printing, try installing a different Print Service,
+        such as Cloud Print or Mopria - you can do this from the \'Add Printer\' option in the print dialog
+    </string>
+
+    <string name="donate">Donate</string>
+    <string name="rate_text">
+        Please rate me!
+    \n\nSupporting A-Score development is easy! If you are enjoying the app, please give it a nice rating in the Play
+        Store - a high rating helps me get more downloads, and enables me to carry on working on this app.
+
+        Thank you!
+
+    </string>
+    <string name="rate_cancel">Maybe later..</string>
+    <string name="rate_me">Rate in Play Store</string>
+
+    <string name="billing_error">"Billing is not available: %1$s  - pro features will not be enabled"</string>
+
+    <string name="welcome_message">Welcome to A-Score!\n\n
+    Feel free to look around and try out all the features. To save or export your work, you will need to purchase a subscription of
+        just %1$s per month, with the first month completely free! \n\n
+        You can cancel the subscription any time, so the trial period is risk-free\n\n
+        Alternately you can purchase the app outright, and use it indefinitely, for a one-off payment of %2$s.\n\n
+        Thank you for your support.
+    </string>
+
+    <string name="use_demo">Carry on with demo</string>
+    <string name="get_subscription">Purchase Subscription</string>
+    <string name="get_purchase">Make full purchase</string>
+    <string name="no_access">This feature is available to subscribers or purchasers only</string>
+
+    <string name="existing_user_message">A-Score is now moving to a subscription model to access certain features.\n\n
+    I would like existing users to be able to continue to use it for free, however this is technically difficult to manage.\n\n
+        As an existing user you will be able to continue to use the app free of charge on any device you have already installed it on, but any
+    new installation will require a subscription of %1$s per month (first month is free)\n\n
+        If you re-install it, please email the developer and it may be possible to provide you with a promotional code (though these are limited in number).
+    </string>
+
+    <string name="file_access_warning">Note: From Android 11 (scheduled for August 2020), apps will no longer have unlimited access to a device\'s file system,
+    so many of these directories will become unavailable.</string>
+
+    <string name="desc_keyboard">Piano Keyboard</string>
+    <string name="desc_note_down">Smaller Duration</string>
+    <string name="desc_note">Note</string>
+    <string name="desc_note_up">Larger Duration</string>
+    <string name="desc_dot">Dotted Note</string>
+    <string name="desc_accidental">Accidental</string>
+    <string name="desc_marker_left">Move marker Left</string>
+    <string name="desc_marker_right">Move marker Left</string>
+    <string name="desc_rest">Insert rest</string>
+
+    <string name="set_to">Note set to %1$s</string>
+    <string name="set_to_currently">Note currently set to %1$s</string>
+
+    <string name="sixty_fourth_note">64th Note</string>
+    <string name="thirty_second_note">32nd Note</string>
+    <string name="sixteenth_note">16th Note</string>
+    <string name="eighth_note">8th Note</string>
+    <string name="quarter_note">Quarter note</string>
+    <string name="half_note">Half note</string>
+    <string name="whole_note">Whole note</string>
+    <string name="breve">Breve</string>
+    <string name="longa">Longa</string>
+    <string name="unknown">Unknown</string>
+
+    <string name="credits">Credits</string>
+    <string name="synth">Synthesizer</string>
+    <string name="synth_val">Fluidsynth</string>
+    <string name="default_soundfont">Main Soundfont</string>
+    <string name="soundfont_val">Chaos Bank</string>
+
+    <string name="create_score_meta_data">Choose a title etc. for this score (optional)</string>
+    <string name="create_score_key_signature">Choose a key signature</string>
+</resources>
