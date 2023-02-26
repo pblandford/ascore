@@ -6,6 +6,8 @@ import TextFontManager
 import com.philblandford.kscore.api.*
 import com.philblandford.kscore.engine.types.ArticulationType
 import com.philblandford.kscore.log.KSLogger
+import com.philblandford.kscore.saveload.Loader
+import com.philblandford.kscore.saveload.Saver
 import com.philblandford.kscoreandroid.drawingcompose.ComposeDrawableGetter
 import com.philblandford.kscoreandroid.resource.AndroidResourceManager
 import com.philblandford.kscoreandroid.sound.AndroidSoundManagerFluid
@@ -18,15 +20,29 @@ import org.koin.core.module.Module
 import org.koin.dsl.binds
 import org.koin.dsl.module
 import org.philblandford.ascore2.features.clipboard.usecases.*
+import org.philblandford.ascore2.features.crosscutting.usecases.GetError
+import org.philblandford.ascore2.features.crosscutting.usecases.GetErrorImpl
+import org.philblandford.ascore2.features.crosscutting.usecases.SetError
 import org.philblandford.ascore2.features.drawing.*
 import org.philblandford.ascore2.features.file.AutoSave
 import org.philblandford.ascore2.features.gesture.HandleLongPress
 import org.philblandford.ascore2.features.gesture.HandleLongPressImpl
 import org.philblandford.ascore2.features.gesture.HandleTap
 import org.philblandford.ascore2.features.gesture.HandleTapImpl
+import org.philblandford.ascore2.features.harmony.GetHarmoniesForKey
+import org.philblandford.ascore2.features.harmony.GetHarmoniesForKeyImpl
 import org.philblandford.ascore2.features.ui.repository.UiStateRepository
 import org.philblandford.ascore2.features.input.usecases.*
+import org.philblandford.ascore2.features.insert.*
 import org.philblandford.ascore2.features.instruments.*
+import org.philblandford.ascore2.features.load.usecases.GetSavedScores
+import org.philblandford.ascore2.features.load.usecases.GetSavedScoresImpl
+import org.philblandford.ascore2.features.load.usecases.LoadScore
+import org.philblandford.ascore2.features.load.usecases.LoadScoreImpl
+import org.philblandford.ascore2.features.save.GetTitle
+import org.philblandford.ascore2.features.save.GetTitleImpl
+import org.philblandford.ascore2.features.save.SaveScore
+import org.philblandford.ascore2.features.save.SaveScoreImpl
 import org.philblandford.ui.base.log.AndroidLogger
 import org.philblandford.ascore2.features.score.CreateDefaultScore
 import org.philblandford.ascore2.features.score.CreateDefaultScoreImpl
@@ -49,9 +65,13 @@ import org.philblandford.ui.insert.row.viewmodel.RowInsertViewModel
 import org.philblandford.ui.insert.items.tuplet.viewmodel.TupletInsertViewModel
 import org.philblandford.ui.insert.choose.viewmodel.InsertChooseViewModel
 import org.philblandford.ui.insert.common.viewmodel.DefaultInsertViewModel
-import org.philblandford.ui.insert.model.InsertModel
+import org.philblandford.ui.insert.items.harmony.viewmodel.HarmonyInsertViewModel
+import org.philblandford.ui.insert.items.lyric.viewmodel.LyricInsertViewModel
+import org.philblandford.ui.insert.items.ornament.viewmodel.OrnamentInsertViewModel
+import org.philblandford.ui.load.viewmodels.LoadViewModel
 import org.philblandford.ui.main.inputpage.viewmodel.MainPageViewModel
 import org.philblandford.ui.main.panel.viewmodels.TabsViewModel
+import org.philblandford.ui.save.viewmodel.SaveViewModel
 
 object Dependencies {
 
@@ -70,7 +90,18 @@ object Dependencies {
   }
 
   private val saveModule = module {
+    single { Saver() }
+    single<GetTitle> { GetTitleImpl(get()) }
+    single<SaveScore> { SaveScoreImpl(get(), get(), get()) }
     single { AutoSave(get(), get()) }
+    viewModel { SaveViewModel(get(), get()) }
+  }
+
+  private val loadModule = module {
+    single { Loader() }
+    single<LoadScore> { LoadScoreImpl(get(), get(), get()) }
+    single<GetSavedScores> { GetSavedScoresImpl(get()) }
+    viewModel { LoadViewModel(get(), get()) }
   }
 
   private val startupModule = module {
@@ -84,8 +115,9 @@ object Dependencies {
   private val createModule = module {
     single<CreateScore> { CreateScoreImpl(get()) }
     single<CreateDefaultScore> { CreateDefaultScoreImpl(get()) }
-    viewModel { CreateViewModel() }
+    viewModel { CreateViewModel(get(), get()) }
   }
+
 
   private val utilityModule = module {
     single { UiStateRepository() }
@@ -97,6 +129,7 @@ object Dependencies {
     single<ZoomIn> { ZoomInImpl(get()) }
     single<ZoomOut> { ZoomOutImpl(get()) }
     single<ClearSelection> { ClearSelectionImpl(get(), get()) }
+    single<MoveSelection> { MoveSelectionImpl(get())}
     viewModel {
       UtilityViewModel(
         get(),
@@ -134,27 +167,38 @@ object Dependencies {
   }
 
   private val insertModule = module {
-    single<UpdateInsertItem> { UpdateInsertItemImpl(get()) }
+    single<UpdateInsertParams> { UpdateInsertParamsImpl(get()) }
+    single<UpdateInsertEvent> { UpdateInsertEventImpl(get()) }
     single<GetInsertItem> { GetInsertItemImpl(get()) }
     single<SelectInsertItem> { SelectInsertItemImpl(get()) }
     single<InsertItemMenu> { InsertItemMenuMenuImpl(get()) }
+    single<InsertEventAtLocation> { InsertEventAtLocationImpl(get()) }
+    single<InsertEventAtMarker> { InsertEventAtMarkerImpl(get()) }
+    single<LocationIsInScore> { LocationIsInScoreImpl(get()) }
+    single<SetMarker> { SetMarkerImpl(get()) }
+    single<InsertEvent> { InsertEventImpl(get()) }
+    single<GetHarmoniesForKey> { GetHarmoniesForKeyImpl(get()) }
     viewModel { InsertChooseViewModel(get()) }
-    viewModel { DefaultInsertViewModel(get(), get(), get()) }
-    viewModel { RowInsertViewModel<ArticulationType>(get(), get(), get()) }
-    viewModel { TupletInsertViewModel(get(), get(), get()) }
+    viewModel { parameters -> DefaultInsertViewModel() }
+    viewModel { parameters -> LyricInsertViewModel(parameters.get(), get()) }
+    viewModel { parameters -> HarmonyInsertViewModel(parameters.get(), get(), get()) }
+    viewModel { OrnamentInsertViewModel() }
+    viewModel { parameters -> RowInsertViewModel<ArticulationType>(parameters.get(), parameters.get()) }
+    viewModel { TupletInsertViewModel() }
 
   }
 
   private val screenModule = module {
+    single { GetErrorImpl() }.binds(arrayOf(SetError::class, GetError::class))
     single<ScoreChanged> { ScoreChangedImpl(get()) }
     single<GetUIState> { GetUIStateImpl(get()) }
     single { RedrawImpl() }.binds(arrayOf(Redraw::class, ListenForRedraw::class))
     single<DrawPage> { DrawPageImpl(get()) }
     single<GetScoreLayout> { GetScoreLayoutImpl(get()) }
-    single<HandleTap> { HandleTapImpl(get(), get()) }
+    single<HandleTap> { HandleTapImpl(get(), get(), get(), get(), get(), get()) }
     single<HandleLongPress> { HandleLongPressImpl(get(), get()) }
     viewModel { ScreenViewModel(get(), get(), get(), get(), get(), get()) }
-    viewModel { MainPageViewModel(get()) }
+    viewModel { MainPageViewModel(get(), get()) }
   }
 
   private val soundModule = module {
@@ -176,12 +220,14 @@ object Dependencies {
     single<Copy> { CopyImpl(get(), get()) }
     single<Cut> { CutImpl(get(), get()) }
     single<Paste> { PasteImpl(get(), get()) }
-    viewModel { ClipboardViewModel(get(), get(), get()) }
+    single<SetEndSelection> { SetEndSelectionImpl(get()) }
+    viewModel { ClipboardViewModel(get(), get(), get(), get()) }
   }
 
   private val modules = listOf(
     scoreModule,
     saveModule,
+    loadModule,
     startupModule,
     createModule,
     utilityModule,

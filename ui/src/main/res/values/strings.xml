@@ -113,6 +113,7 @@
     <string name="instrument">Instrument</string>
     <string name="instrument_init">Loading sounds</string>
     <string name="instruments">Instruments</string>
+    <string name="selected_instruments">Selected:</string>
     <string name="edit_instrument">Editing instrument at part %1$s</string>
     <string name="manage_instruments">Manage Instruments</string>
     <string name="stave_label">Stave Label:</string>
@@ -335,4 +336,16 @@
 
     <string name="create_score_meta_data">Choose a title etc. for this score (optional)</string>
     <string name="create_score_key_signature">Choose a key signature</string>
+    <string name="create_score_time_signature">Choose a time signature</string>
+    <string name="create_score_common_time">Common</string>
+    <string name="create_score_cut_common_time">Cut common</string>
+    <string name="create_score_custom_time">Custom</string>
+    <string name="create_score_instruments">Select some instruments for your score</string>
+
+    <string name="save_score_title">Save your score internally</string>
+    <string name="save_score_name">Name</string>
+    <string name="save_score_save">Save</string>
+
+    <string name="load_score_title">Load score</string>
+    <string name="load_score_no_files">No saved scores</string>
 </resources>

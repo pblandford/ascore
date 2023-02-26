@@ -1,6 +1,7 @@
 package org.philblandford.ui.insert.viewmodel
 
-import com.philblandford.kscore.engine.types.EventType
+import com.philblandford.kscore.engine.duration.crotchet
+import com.philblandford.kscore.engine.types.*
 import org.philblandford.ui.R
 import org.philblandford.ascore2.features.ui.model.DeleteBehaviour
 import org.philblandford.ascore2.features.ui.model.InsertItem
@@ -11,6 +12,10 @@ internal val insertItems = listOf(
   InsertItem(
     R.drawable.tuplet_3, R.string.tuplet, "insert_tuplet", LayoutID.TUPLET,
     EventType.TUPLET,
+    paramMapOf(
+      EventParam.NUMERATOR to 3,
+      EventParam.HIDDEN to false
+    ),
     rangeCapable = true
   ),
   InsertItem(R.drawable.tie, R.string.tie, "insert_tie", LayoutID.TIE, EventType.TIE),
@@ -28,6 +33,11 @@ internal val insertItems = listOf(
     "insert_ornament",
     LayoutID.ORNAMENT,
     EventType.ORNAMENT,
+    paramMapOf(
+      EventParam.TYPE to OrnamentType.TRILL,
+      EventParam.ACCIDENTAL_ABOVE to null,
+      EventParam.ACCIDENTAL_BELOW to null
+    ),
     rangeCapable = true
   ),
   InsertItem(R.drawable.treble_clef, R.string.clef, "insert_clef", LayoutID.CLEF, EventType.CLEF),
@@ -38,13 +48,23 @@ internal val insertItems = listOf(
     LayoutID.KEY,
     EventType.KEY_SIGNATURE
   ),
-  InsertItem(R.drawable.tempo, R.string.tempo, "insert_tempo", LayoutID.TEMPO, EventType.TEMPO),
+  InsertItem(R.drawable.tempo, R.string.tempo, "insert_tempo", LayoutID.TEMPO, EventType.TEMPO,
+    paramMapOf(
+      EventParam.BPM to 120,
+      EventParam.DURATION to crotchet(),
+      EventParam.HIDDEN to false)),
   InsertItem(
     R.drawable.common,
     R.string.time_signature,
     "insert_time",
     LayoutID.TIME,
-    EventType.TIME_SIGNATURE
+    EventType.TIME_SIGNATURE,
+    paramMapOf(
+      EventParam.TYPE to TimeSignatureType.CUSTOM,
+      EventParam.NUMERATOR to 4,
+      EventParam.DENOMINATOR to 4,
+      EventParam.HIDDEN to false
+    )
   ),
   InsertItem(R.drawable.key_c, R.string.bars, "insert_bars", LayoutID.BAR, EventType.BAR),
   InsertItem(
@@ -53,6 +73,10 @@ internal val insertItems = listOf(
     "insert_lyrics",
     LayoutID.LYRIC,
     EventType.LYRIC,
+    paramMapOf(
+      EventParam.NUMBER to 1,
+      EventParam.AFTER to true
+    ),
     tapInsertBehaviour = TapInsertBehaviour.SET_MARKER,
     deleteBehaviour = DeleteBehaviour.DELETE_AT_MARKER
   ),
@@ -65,7 +89,11 @@ internal val insertItems = listOf(
     tapInsertBehaviour = TapInsertBehaviour.SET_MARKER,
     deleteBehaviour = DeleteBehaviour.DELETE_AT_MARKER
   ),
-  InsertItem(R.drawable.text, R.string.text, "insert_text", LayoutID.TEXT, EventType.TEMPO_TEXT),
+  InsertItem(R.drawable.text, R.string.text, "insert_text", LayoutID.TEXT, EventType.TEMPO_TEXT,
+    paramMapOf(
+      EventParam.TEXT to "",
+      EventParam.IS_UP to true
+    )),
   InsertItem(
     R.drawable.forte,
     R.string.dynamic,

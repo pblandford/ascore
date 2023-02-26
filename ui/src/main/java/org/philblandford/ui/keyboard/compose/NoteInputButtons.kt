@@ -52,7 +52,7 @@ fun NoteInputButtonsColumn(
     Modifier
       .fillMaxWidth()
       .testTag("NoteInputButtons")
-      .background(MaterialTheme.colors.background)
+      .background(MaterialTheme.colors.primary)
   ) {
     if (showMore.value) {
       MoreRow(model.noteInputDescriptor, iface)
@@ -68,7 +68,7 @@ fun NoteInputButtonsColumn(
       Modifier
         .height(block(0.1))
         .fillMaxWidth()
-        .background(MaterialTheme.colors.onBackground))
+        .background(MaterialTheme.colors.onPrimary))
     Gap(0.1f)
   }
 }

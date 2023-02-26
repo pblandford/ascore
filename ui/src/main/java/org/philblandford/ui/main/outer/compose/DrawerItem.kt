@@ -15,41 +15,52 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
-import com.philblandford.ascore.android.ui.style.veryLightGray
-import com.philblandford.kscore.log.ksLogt
 import org.philblandford.ui.common.block
 import org.philblandford.ui.main.outer.model.DrawerItem
 import org.philblandford.ui.main.outer.model.DrawerItemGroup
+import org.philblandford.ui.main.outer.model.drawerItems
+import org.philblandford.ui.theme.AscoreTheme
+import org.philblandford.ui.util.SquareButton
+import org.philblandford.ui.R
 
 
 @Composable
-fun DrawItems(
+fun DrawerItems(
   groups: List<DrawerItemGroup>,
-  selected: (DrawerItem) -> Unit
+  selected: (DrawerItem) -> Unit,
+  close:()->Unit
 ) {
-  Column(
-    Modifier
-      .testTag("SettingsDrawer")
-      .fillMaxWidth()
-      .verticalScroll(rememberScrollState())
-  ) {
-    groups.map { group ->
-      val opened = remember { mutableStateOf(false) }
-      TextItem(group.nameId, Color.Transparent, "Category ${stringResource(group.nameId)}") {
-        opened.value = !opened.value
-      }
-      if (opened.value) {
-        group.items.map { setting ->
+  Column(Modifier.fillMaxSize().background(MaterialTheme.colors.primary)) {
+    SquareButton(R.drawable.cross, Modifier.offset(10.dp, 10.dp),
+    size = block(0.75f)) {
+      close()
+    }
+    Column(
+      Modifier
+        .width(200.dp)
+        .testTag("SettingsDrawer")
+        .offset(50.dp, 50.dp)
+        .verticalScroll(rememberScrollState())
+    ) {
+      groups.map { group ->
+        val opened = remember { mutableStateOf(false) }
+        TextItem(group.nameId, Color.Transparent, "Category ${stringResource(group.nameId)}") {
+          opened.value = !opened.value
+        }
+        if (opened.value) {
+          group.items.map { setting ->
 
-          val background = MaterialTheme.colors.primaryVariant
-          TextItem(
-            setting.nameId, background, "SubOption ${stringResource(setting.nameId)}",
-            10.dp
-          ) {
-            selected(setting)
-            opened.value = false
+            val background = MaterialTheme.colors.primaryVariant
+            TextItem(
+              setting.nameId, background, "SubOption ${stringResource(setting.nameId)}",
+              10.dp
+            ) {
+              selected(setting)
+              opened.value = false
+            }
           }
         }
       }
@@ -82,5 +93,19 @@ private fun TextItem(
         .align(Alignment.CenterStart),
       color = MaterialTheme.colors.onPrimary
     )
+  }
+}
+
+@Composable
+@Preview
+private fun Preview() {
+  AscoreTheme() {
+    Box(
+      Modifier
+        .width(200.dp)
+        .fillMaxHeight()
+        .background(MaterialTheme.colors.primary)) {
+      DrawerItems(drawerItems, {}) {}
+    }
   }
 }

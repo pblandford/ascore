@@ -28,8 +28,7 @@ internal fun CreateKeySignature(
 ) {
 
   CreateFrame(R.string.create_score_key_signature, next, cancel) {
-
-    KeySelector(model.newScoreDescriptor.keySignature, {})
+    KeySelector(model.newScoreDescriptor.keySignature, iface::setKeySignature)
   }
 }
 
@@ -38,7 +37,7 @@ internal fun CreateKeySignature(
 private fun Preview() {
   PopupTheme {
     Box(Modifier.fillMaxSize()) {
-      CreateKeySignature(CreateModel(NewScoreDescriptor()), {}, {}, stubCreateIface)
+      CreateKeySignature(CreateModel(NewScoreDescriptor(), listOf()), {}, {}, StubCreateInterface())
     }
   }
 }

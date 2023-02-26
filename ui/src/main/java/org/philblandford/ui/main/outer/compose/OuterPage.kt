@@ -17,25 +17,20 @@ fun OuterPage() {
 
   val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
   val scope = rememberCoroutineScope()
-  val popupLayout = remember{ mutableStateOf<LayoutID?>(null) }
-
-  LaunchedEffect(drawerState) {
-    if (drawerState.isClosed) drawerState.open() else drawerState.close()
-  }
+  val popupLayout = remember { mutableStateOf<LayoutID?>(null) }
 
   ModalDrawer(drawerState = drawerState,
     drawerShape = MaterialTheme.shapes.small,
     drawerContent = {
-      DrawItems(
-        drawerItems
-      ) { drawerItem ->
-        popupLayout.value = drawerItem.layoutID
-        scope.launch {
-          drawerState.close()
-        }
-      }
+      DrawerItems(
+        drawerItems, { drawerItem ->
+          popupLayout.value = drawerItem.layoutID
+          scope.launch {
+            drawerState.close()
+          }
+        }) { scope.launch { drawerState.close() } }
     }) {
-    MainPageView()
+    MainPageView { scope.launch { drawerState.open() } }
     popupLayout.value?.let { popup ->
       SettingsPopup(popup) {
         popupLayout.value = null

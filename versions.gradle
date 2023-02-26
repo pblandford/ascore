@@ -1,11 +1,12 @@
 
+
 buildscript {
     ext {
-        kscore_version = '1.0.2.6'
+        kscore_version = '1.0.2.8'
         kscore_android_version = '1.1.10b'
 
         koin_version = '3.1.6'
-        compose_version = '1.1.1'
+        compose_version = '1.3.0-rc01'
         timber_version = '5.0.1'
         maths_version = '3.6.1'
         io_version = '2.11.0'

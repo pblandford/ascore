@@ -4,7 +4,7 @@ import com.philblandford.kscore.engine.types.ParamMap
 import org.philblandford.ascore2.features.ui.model.UIState
 import org.philblandford.ascore2.features.ui.repository.UiStateRepository
 
-class UpdateInsertItemImpl(private val uiStateRepository: UiStateRepository) : UpdateInsertItem {
+class UpdateInsertParamsImpl(private val uiStateRepository: UiStateRepository) : UpdateInsertParams {
   override operator fun invoke(paramFunc: ParamMap.() -> ParamMap) {
     (uiStateRepository.getUIState().value as? UIState.Insert)?.let { state ->
       uiStateRepository.setInsertItem(state.insertItem.copy(

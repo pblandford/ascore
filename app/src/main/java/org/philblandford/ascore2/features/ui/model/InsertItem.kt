@@ -1,5 +1,6 @@
 package org.philblandford.ascore2.features.ui.model
 
+import com.philblandford.kscore.engine.types.EventParam
 import com.philblandford.kscore.engine.types.EventType
 import com.philblandford.kscore.engine.types.ParamMap
 
@@ -22,4 +23,8 @@ data class InsertItem(
   val rangeCapable: Boolean = false,
   val tapInsertBehaviour: TapInsertBehaviour = TapInsertBehaviour.INSERT,
   val deleteBehaviour: DeleteBehaviour = DeleteBehaviour.ENTER_STATE,
-)
+) {
+  fun <T>getParam(param:EventParam)= params[param] as T
+}
+
+val stubItem = InsertItem(-1, -1, "", LayoutID.LAYOUT, EventType.NO_TYPE)

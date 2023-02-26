@@ -9,21 +9,38 @@ import com.github.zsoltk.compose.router.Router
 sealed class CreateRoute {
   object MetaData : CreateRoute()
   object KeySignature : CreateRoute()
+  object TimeSignature : CreateRoute()
+  object Instruments : CreateRoute()
 }
 
 @Composable
-fun CreateScore() {
+fun CreateScore(done: () -> Unit) {
 
   VMView(CreateViewModel::class.java) { state, iface, _ ->
     Router(CreateRoute.MetaData as CreateRoute) { backStack ->
+
+      fun clear() {
+        backStack.newRoot(CreateRoute.MetaData)
+        done()
+      }
+
       when (backStack.last()) {
         CreateRoute.MetaData -> {
           CreateMetaData(state, {
             backStack.push(CreateRoute.KeySignature)
-          }, {}, iface)
+          }, ::clear, iface)
         }
         CreateRoute.KeySignature -> {
-          CreateKeySignature(state, next = { }, cancel = { }, iface)
+          CreateKeySignature(state, { backStack.push(CreateRoute.TimeSignature) }, ::clear, iface)
+        }
+        CreateRoute.TimeSignature -> {
+          CreateTimeSignature(state, { backStack.push(CreateRoute.Instruments) }, ::clear, iface)
+        }
+        CreateRoute.Instruments -> {
+          CreateInstruments(state.availableInstruments, state.newScoreDescriptor.instruments.toList(), {
+            iface.create()
+            clear()
+          }, ::clear, iface)
         }
       }
     }

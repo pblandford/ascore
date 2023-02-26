@@ -32,11 +32,10 @@ fun UtilityRowInternal(
   togglePanel: () -> Unit
 ) {
 
-  Box(Modifier.background(MaterialTheme.colors.surface)) {
     ConstraintLayout(
       Modifier
         .height(block())
-        .fillMaxWidth()
+        .fillMaxWidth().background(MaterialTheme.colors.surface)
     ) {
       val (left, right) = createRefs()
       Row(Modifier.constrainAs(left) { start.linkTo(parent.start) }) {
@@ -55,7 +54,7 @@ fun UtilityRowInternal(
         TogglePanelButton(panelShowing, togglePanel)
         ToggleInsertButton(model.panelType, iface::togglePanelType)
       }
-    }
+
   }
 
 }

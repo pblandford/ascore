@@ -11,8 +11,3 @@ private val articulationIds = listOf(
   R.drawable.marcato_icon to ArticulationType.MARCATO,
   R.drawable.spiccato_icon to ArticulationType.STACCATISSIMO
 )
-
-val articulationModel = RowInsertModel(
-  R.string.articulation, "",
-  articulationIds, 0
-)

@@ -28,8 +28,8 @@ fun ClipboardView(modifier:Modifier) {
 @Composable
 fun ClipboardViewInternal(modifier: Modifier, iface:ClipboardInterface) {
   Row(modifier.border(1.dp, Color.Black)) {
-    Item(R.drawable.left_arrow) {  }
-    Item(R.drawable.right_arrow) {  }
+    Item(R.drawable.left_arrow) { iface.selectionLeft()  }
+    Item(R.drawable.right_arrow) { iface.selectionRight()  }
     Item(R.drawable.copy) { iface.copy() }
     Item(R.drawable.cut) { iface.cut() }
     Item(R.drawable.paste) { iface.paste() }

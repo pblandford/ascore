@@ -10,7 +10,10 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.tooling.preview.Preview
+import com.philblandford.kscore.api.Instrument
+import com.philblandford.kscore.api.InstrumentGroup
 import com.philblandford.kscore.api.NewScoreDescriptor
+import com.philblandford.kscore.engine.time.TimeSignature
 import com.philblandford.kscore.engine.types.MetaType
 import org.philblandford.ui.common.block
 import org.philblandford.ui.create.viewmodel.CreateInterface
@@ -22,8 +25,8 @@ import org.philblandford.ui.theme.PopupTheme
 internal fun CreateMetaData(
   model: CreateModel,
   next: () -> Unit,
-  cancel:() -> Unit,
-  iface:CreateInterface
+  cancel: () -> Unit,
+  iface: CreateInterface
 ) {
 
   CreateFrame(R.string.create_score_meta_data, next, cancel) {
@@ -42,19 +45,19 @@ internal fun CreateMetaData(
         )
         TextLine(
           model.text(MetaType.SUBTITLE),
-          { },
+          iface::setSubtitle,
           R.string.subtitle,
           next
         )
         TextLine(
           model.text(MetaType.COMPOSER),
-          { },
+          iface::setComposer,
           R.string.composer,
           next
         )
         TextLine(
           model.text(MetaType.LYRICIST),
-          { },
+          iface::setLyricist,
           R.string.lyricist,
           next
         )
@@ -63,7 +66,8 @@ internal fun CreateMetaData(
   }
 }
 
-private fun CreateModel.text(metaType: MetaType):String = newScoreDescriptor.meta.getSection(metaType).text
+private fun CreateModel.text(metaType: MetaType): String =
+  newScoreDescriptor.meta.getSection(metaType).text
 
 
 @Composable
@@ -86,16 +90,51 @@ private fun TextLine(
 @Preview
 private fun Preview() {
   PopupTheme {
-    CreateMetaData(CreateModel(NewScoreDescriptor()), {}, {}, stubCreateIface)
+    CreateMetaData(CreateModel(NewScoreDescriptor(), listOf()), {}, {}, StubCreateInterface())
   }
 }
 
-internal val stubCreateIface = object : CreateInterface {
+internal class StubCreateInterface : CreateInterface {
+
+
   override fun reset() {
     TODO("Not yet implemented")
   }
 
   override fun setTitle(title: String) {
+    TODO("Not yet implemented")
+  }
+
+  override fun setSubtitle(subtitle: String) {
+    TODO("Not yet implemented")
+  }
+
+  override fun setComposer(composer: String) {
+    TODO("Not yet implemented")
+  }
+
+  override fun setLyricist(lyricist: String) {
+    TODO("Not yet implemented")
+  }
+
+  override fun setKeySignature(key: Int) {
+    TODO("Not yet implemented")
+  }
+
+  override fun setTimeSignature(func: TimeSignature.() -> TimeSignature) {
+  }
+
+  override fun addInstrument(instrument: Instrument) {
+  }
+
+  override fun removeInstrument(instrument: Instrument) {
+  }
+
+  override fun reorderInstruments(oldIndex: Int, newIndex: Int) {
+    TODO("Not yet implemented")
+  }
+
+  override fun create() {
     TODO("Not yet implemented")
   }
 }

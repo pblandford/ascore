@@ -1,10 +1,9 @@
 package org.philblandford.ui.screen.compose
 
-import androidx.compose.foundation.Canvas
-import androidx.compose.foundation.background
-import androidx.compose.foundation.border
-import androidx.compose.foundation.clickable
+import androidx.compose.foundation.*
+import androidx.compose.foundation.gestures.detectDragGestures
 import androidx.compose.foundation.gestures.detectTapGestures
+import androidx.compose.foundation.gestures.detectTransformGestures
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.runtime.*
@@ -26,28 +25,35 @@ import org.philblandford.ui.base.compose.VMView
 import org.philblandford.ui.screen.viewmodels.ScreenEffect
 import org.philblandford.ui.screen.viewmodels.ScreenInterface
 import org.philblandford.ui.screen.viewmodels.ScreenViewModel
+import timber.log.Timber
 
 @Composable
 fun ScreenView() {
 
   VMView(ScreenViewModel::class.java) { model, iface, effects ->
 
-    BoxWithConstraints(Modifier.fillMaxSize().background(lightGray)) {
+    BoxWithConstraints(
+      Modifier
+        .fillMaxSize()
+        .background(lightGray)
+    ) {
       val defaultScale = calculateDefaultScale(model.scoreLayout)
+      val zoom = remember { mutableStateOf(1f) }
       val scale = remember { mutableStateOf(defaultScale) }
-      scale.value = calculateDefaultScale(model.scoreLayout)
 
       val canvasSize = calculateCanvasSize(model.scoreLayout)
 
-      model.updateCounter.let { counter ->
-        ScreenPages(
-          model.scoreLayout.numPages,
-          scale.value,
-          canvasSize.first,
-          canvasSize.second,
-          counter,
-          iface
-        )
+      ScreenPages(
+        model.scoreLayout.numPages,
+        scale.value * zoom.value,
+        canvasSize.first * zoom.value,
+        canvasSize.second * zoom.value,
+        model.updateCounter,
+        iface, {
+          zoom.value *= it
+          Timber.e("scale ${scale.value}")
+        }) {
+        zoom.value = 1f
       }
     }
   }
@@ -58,19 +64,27 @@ private fun ScreenPages(
   num: Int, scale: Float,
   canvasWidth: Dp, canvasHeight: Dp,
   redraw: Int,
-  iface: ScreenInterface
+  iface: ScreenInterface,
+  setScale: (Float) -> Unit,
+  resetZoom: () -> Unit
 ) {
 
-    LazyColumn {
-      items(num) { page ->
-        ScreenPage(
-          Modifier.size(canvasWidth, canvasHeight),
-          page + 1,
-          scale,
-          redraw,
-          iface
-        )
-      }
+  LazyColumn(
+    Modifier
+      .width(canvasWidth)
+      .horizontalScroll(rememberScrollState())
+  ) {
+    items(num) { page ->
+      ScreenPage(
+        Modifier.size(canvasWidth, canvasHeight),
+        page + 1,
+        scale,
+        redraw,
+        iface,
+        setScale,
+        resetZoom
+      )
+    }
   }
 }
 
@@ -78,11 +92,21 @@ private fun ScreenPages(
 private fun ScreenPage(
   modifier: Modifier, num: Int, scale: Float,
   redraw: Int,
-  iface:ScreenInterface
+  iface: ScreenInterface,
+  setScale: (Float) -> Unit,
+  resetZoom: () -> Unit
 ) {
   Canvas(
-    modifier.padding(5.dp)
-      .background(Color.White).tap(num, scale, iface)
+    modifier
+      .padding(5.dp)
+      .background(Color.White)
+      .tap(num, scale, iface, resetZoom)
+//      .pointerInput(Unit) {
+//        detectTransformGestures { centroid, pan, zoom, rotation ->
+//          Timber.e("POINT zoom $centroid $pan $zoom $rotation")
+//          setScale(zoom)
+//        }
+//      }
   ) {
     scale(scale, pivot = Offset(0f, 0f)) {
       redraw.let {
@@ -93,21 +117,24 @@ private fun ScreenPage(
 }
 
 private fun Modifier.tap(
-  pageNum:Int,
+  pageNum: Int,
   scale: Float,
-  iface:ScreenInterface) = this.then(pointerInput(Unit) {
-    detectTapGestures(
-      onTap = {
-        ksLogt("tap $it $scale")
-        iface.handleTap(pageNum, (it.x / scale).toInt(), (it.y / scale).toInt())
-      },
-      onLongPress = {
-        iface.handleLongPress(pageNum, (it.x / scale).toInt(), (it.y / scale).toInt())
-      },
-      onDoubleTap = {
-      }
-    )
-  })
+  iface: ScreenInterface,
+  resetZoom: () -> Unit
+) = this.then(pointerInput(Unit) {
+  detectTapGestures(
+    onTap = {
+      ksLogt("tap $it $scale")
+      iface.handleTap(pageNum, (it.x / scale).toInt(), (it.y / scale).toInt())
+    },
+    onLongPress = {
+      iface.handleLongPress(pageNum, (it.x / scale).toInt(), (it.y / scale).toInt())
+    },
+    onDoubleTap = {
+      resetZoom()
+    }
+  )
+})
 
 
 @Composable
@@ -119,7 +146,7 @@ private fun BoxWithConstraintsScope.calculateDefaultScale(scoreLayout: ScoreLayo
 }
 
 @Composable
-private fun BoxWithConstraintsScope.calculateCanvasSize(scoreLayout: ScoreLayout):Pair<Dp, Dp> {
+private fun BoxWithConstraintsScope.calculateCanvasSize(scoreLayout: ScoreLayout): Pair<Dp, Dp> {
   val ratio = scoreLayout.height.toFloat() / scoreLayout.width
   return maxWidth to (maxWidth * ratio)
 }

@@ -9,6 +9,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import com.philblandford.ascore.android.ui.style.disabledColor
 import com.philblandford.ascore.android.ui.style.disabledDark
 import org.philblandford.ui.common.block
 
@@ -27,7 +28,7 @@ fun <T> IdRow(
     selected = selected,
     onSelect = { it?.let { onSelect(it) } },
     modifier = modifier,
-    disabledColor = disabledDark,
+    disabledColor = disabledColor,
     tag = {
       ids[it].second.toString()
     })

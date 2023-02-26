@@ -19,10 +19,11 @@ inline fun <M : VMModel, I : VMInterface, S : VMSideEffect, reified VM : BaseVie
   viewModelClass: Class<out VM>,
   modifier: Modifier = Modifier,
   tag: String = "",
+  viewModelFactory: @Composable ()->VM = { getViewModel() },
   contents: @Composable (M, I, Flow<S>) -> Unit
 ) {
 
-  val viewModel: VM = getViewModel()
+  val viewModel: VM = viewModelFactory()
 
   if (viewModel.resetOnLoad) {
     LaunchedEffect(Unit) {
@@ -38,13 +39,14 @@ inline fun <M : VMModel, I : VMInterface, S : VMSideEffect, reified VM : BaseVie
 
 
 @Composable
-inline fun <M : VMModel, I : VMInterface, S : VMSideEffect, reified VM : BaseViewModel<M, I, S>> VMView(
+inline fun <M : VMModel, I : VMInterface, S : VMSideEffect, reified VM : BaseViewModel<M, out I, S>> VMView(
   modifier: Modifier = Modifier,
   tag: String = "",
+  viewModelFactory: @Composable ()->VM = { getViewModel() },
   contents: @Composable (M, I, Flow<S>) -> Unit
 ) {
 
-  val viewModel: VM = getViewModel()
+  val viewModel: VM = viewModelFactory()
 
   if (viewModel.resetOnLoad) {
     LaunchedEffect(Unit) {

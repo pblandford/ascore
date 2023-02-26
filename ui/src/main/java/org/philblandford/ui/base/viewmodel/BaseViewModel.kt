@@ -165,6 +165,9 @@ abstract class BaseViewModel<M : VMModel, I : VMInterface, S : VMSideEffect> : V
     _viewState.emit(state)
   }
 
+  protected fun setState(state:M) {
+    _viewState.value = state
+  }
 
   private fun listen() {
     viewModelScope.launch {

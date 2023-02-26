@@ -1,4 +1,4 @@
-package com.philblandford.ascore.android.ui.style
+package org.philblandford.ui.theme
 
 import androidx.compose.material.Typography
 import androidx.compose.ui.graphics.Color
@@ -6,27 +6,26 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.sp
+import com.philblandford.ascore.android.ui.style.lightGray
 
 // Set of Material typography styles to start with
 val typographyDark = Typography(
   body1 = TextStyle(
     fontFamily = FontFamily.Default,
     fontWeight = FontWeight.Normal,
-    fontSize = 21.sp,
-    color = Color.White
+    fontSize = 21.sp
   ),
   body2 = TextStyle(
     fontFamily = FontFamily.Default,
     fontWeight = FontWeight.Normal,
-    fontSize = 17.sp,
-    color = Color.White
-  )
-  /* Other default text styles to override
+    fontSize = 17.sp
+  ),
     button = TextStyle(
         fontFamily = FontFamily.Default,
         fontWeight = FontWeight.W500,
-        fontSize = 14.sp
+        fontSize = 14.sp,
     ),
+        /*
     caption = TextStyle(
         fontFamily = FontFamily.Default,
         fontWeight = FontWeight.Normal,
@@ -48,6 +47,12 @@ val typographyContrast = Typography(
     fontWeight = FontWeight.Normal,
     fontSize = 17.sp,
     color = Color.Black
+  ),
+  button = TextStyle(
+    fontFamily = FontFamily.Default,
+    fontWeight = FontWeight.Normal,
+    fontSize = 17.sp,
+    color = Color.White
   )
 )
 

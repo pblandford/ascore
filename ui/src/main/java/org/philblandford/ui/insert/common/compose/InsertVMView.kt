@@ -2,51 +2,78 @@ package org.philblandford.ui.insert.common.compose
 
 import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.layout.*
+import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.stateIn
+import org.koin.androidx.compose.getViewModel
+import org.koin.core.parameter.parametersOf
 import org.philblandford.ascore2.features.ui.model.InsertItem
 import org.philblandford.ui.R
 import org.philblandford.ui.base.compose.VMView
+import org.philblandford.ui.base.viewmodel.BaseViewModel
+import org.philblandford.ui.base.viewmodel.VMInterface
+import org.philblandford.ui.base.viewmodel.VMModel
 import org.philblandford.ui.base.viewmodel.VMSideEffect
 import org.philblandford.ui.insert.common.viewmodel.InsertViewModel
+import org.philblandford.ui.insert.model.InsertCombinedState
 import org.philblandford.ui.insert.model.InsertInterface
 import org.philblandford.ui.insert.model.InsertModel
 import org.philblandford.ui.util.SquareButton
 
+
 @Composable
 inline fun <M : InsertModel, I : InsertInterface<M>,
-        reified VM : InsertViewModel<M, I>> InsertVMView(
-  model:M,
-  content: @Composable (M, I) -> Unit
+        reified VM : InsertViewModel<M, out I>> InsertVMView(
+  viewModelFactory: @Composable () -> VM = { getViewModel() },
+  contents: @Composable (M, InsertItem, I) -> Unit
 ) {
+  val viewModel: VM = viewModelFactory()
 
-    VMView<M, I, VMSideEffect, VM>() { state, iface, _ ->
+  if (viewModel.resetOnLoad) {
+    LaunchedEffect(Unit) {
+      viewModel.reset()
+    }
+  }
+
+  viewModel.getInsertState()
+    .collectAsState(InsertCombinedState(null, null)).value.let { (state, insertItem) ->
 
       BackHandler {
-        iface.back()
-      }
-
-      LaunchedEffect(model) {
-        iface.initialise(model)
+        viewModel.back()
       }
 
       Column(Modifier.fillMaxWidth()) {
-        Row(Modifier.fillMaxWidth().padding(horizontal = 5.dp),
-          verticalAlignment = Alignment.CenterVertically,
-          horizontalArrangement = Arrangement.SpaceBetween) {
-          if (state.title > 0) {
-            Text(stringResource(state.title))
+        insertItem?.let { insertItem ->
+          Row(
+            Modifier
+              .fillMaxWidth()
+              .padding(horizontal = 5.dp),
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.SpaceBetween
+          ) {
+            if (insertItem.string > 0) {
+              Text(stringResource(insertItem.string), color = MaterialTheme.colors.onSurface)
+            }
+            SquareButton(R.drawable.help)
           }
-          SquareButton(R.drawable.help)
+          state?.let { state ->
+            contents(state, insertItem, viewModel.getInterface())
+          }
         }
-        content(state, iface)
       }
-    }
 
+    }
 }

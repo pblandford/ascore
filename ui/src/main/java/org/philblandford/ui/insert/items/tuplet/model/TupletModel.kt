@@ -1,15 +1,12 @@
 package org.philblandford.ui.insert.items.tuplet.model
 
-import com.philblandford.kscore.engine.types.EventParam
+import com.philblandford.kscore.engine.types.ParamMap
 import com.philblandford.kscore.engine.types.paramMapOf
-import org.philblandford.ui.insert.items.tuplet.viewmodel.TupletInsertModel
+import org.philblandford.ui.insert.model.InsertModel
+
+data class TupletInsertModel(
+  val minNumerator: Int = 2,
+  val maxNumerator: Int = 32,
+) : InsertModel()
 
 
-
-val tupletModel = TupletInsertModel(
-  2, 32,
-  paramMapOf(
-    EventParam.NUMERATOR to 3,
-    EventParam.HIDDEN to false
-  )
-)

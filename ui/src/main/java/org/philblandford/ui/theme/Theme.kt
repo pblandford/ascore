@@ -33,7 +33,7 @@ private val BlueColors = darkColors(
   background = darkBlue,
   surface = darkBlue,
   onPrimary = Color.White,
-  onSecondary = Color.Black,
+  onSecondary = Color.White,
   onBackground = Color.White,
   onSurface = Color.White
 )
@@ -42,24 +42,24 @@ private val RedColors = darkColors(
   primary = darkRed,
   primaryVariant = darkRed2,
   secondary = lightRed,
-  background = darkRed,
-  surface = darkRed,
+  background = Color.White,
+  surface = Color.White,
   onPrimary = Color.White,
   onSecondary = Color.Black,
-  onBackground = Color.White,
-  onSurface = Color.White
+  onBackground = Color.Black,
+  onSurface = Color.Black
 )
 
 private val BlackColors = darkColors(
   primary = Color.Black,
   primaryVariant = Color.Gray,
   secondary = veryLightGray,
-  background = Color.Black,
-  surface = Color.Black,
+  background = Color.White,
+  surface = Color.White,
   onPrimary = Color.White,
   onSecondary = Color.Black,
-  onBackground = Color.White,
-  onSurface = Color.White
+  onBackground = Color.Black,
+  onSurface = Color.Black
 )
 
 @SuppressLint("ConflictingOnColor")
@@ -67,45 +67,21 @@ private val GreenColors = darkColors(
   primary = darkGreen,
   primaryVariant = lightGreen2,
   secondary = lightGreen2,
-  background = darkGreen,
+  background = Color.White,
   surface = darkGreen,
   onPrimary = Color.White,
   onSecondary = Color.Black,
-  onBackground = Color.White,
-  onSurface = Color.White
+  onBackground = Color.Black,
+  onSurface = Color.Black
 )
 
 private val VioletColors = darkColors(
   primary = violet,
   primaryVariant = violet2,
   secondary = darkViolet,
-  background = violet,
-  surface = violet,
-  onPrimary = Color.White,
-  onSecondary = Color.Black,
-  onBackground = Color.White,
-  onSurface = Color.White
-)
-
-private val DarkColors = darkColors(
-  primary = darkBlue,
-  primaryVariant = darkBlue2,
-  secondary = teal200,
-  background = darkBlue,
-  surface = darkBlue,
-  onPrimary = Color.White,
-  onSecondary = Color.Black,
-  onBackground = Color.White,
-  onSurface = Color.White
-)
-
-private val LightColors = lightColors(
-  primary = veryLightGray,
-  primaryVariant = lightBlueVariant,
-  secondary = veryLightGray2,
   background = Color.White,
   surface = Color.White,
-  onPrimary = Color.Black,
+  onPrimary = Color.White,
   onSecondary = Color.Black,
   onBackground = Color.Black,
   onSurface = Color.Black
@@ -127,7 +103,7 @@ private val GrayColors = lightColors(
   primary = lightGray,
   primaryVariant = veryLightGray,
   secondary = lightGray,
-  background = veryLightGray2,
+  background = Color.White,
   surface = veryLightGray2,
   onPrimary = Color.Black,
   onSecondary = Color.Black,
@@ -166,7 +142,9 @@ fun AscoreTheme(
 fun PopupTheme(
   content: @Composable() () -> Unit
 ) {
-  val colors = ContrastColors
+  val colors = with(MaterialTheme.colors) {
+    copy(surface = Color.White, onSurface = Color.Black)
+  }
 
   MaterialTheme(
     colors = colors,
@@ -198,7 +176,9 @@ fun PopupBorder(content: @Composable() () -> Unit) {
     shape = RoundedCornerShape(5.dp)
   ) {
     ThemeBox(
-      Modifier.wrapContentSize().testTag("SettingsPopup"),
+      Modifier
+        .wrapContentSize()
+        .testTag("SettingsPopup"),
       shape = RoundedCornerShape(5.dp),
       padding = block(0.5)
     ) {

@@ -2,6 +2,7 @@ package org.philblandford.ui.clipboard.viewmodel
 
 import org.philblandford.ascore2.features.clipboard.usecases.Copy
 import org.philblandford.ascore2.features.clipboard.usecases.Cut
+import org.philblandford.ascore2.features.clipboard.usecases.MoveSelection
 import org.philblandford.ascore2.features.clipboard.usecases.Paste
 import org.philblandford.ascore2.util.ok
 import org.philblandford.ui.base.viewmodel.BaseViewModel
@@ -25,7 +26,7 @@ class ClipboardViewModel(
   private val copyUC: Copy,
   private val cutUC: Cut,
   private val pasteUC: Paste,
-
+  private val moveSelection: MoveSelection
   ) : BaseViewModel<ClipboardModel, ClipboardInterface, VMSideEffect>(), ClipboardInterface {
 
   override suspend fun initState(): Result<ClipboardModel> {
@@ -35,11 +36,11 @@ class ClipboardViewModel(
   override fun getInterface() = this
 
   override fun selectionLeft() {
-    TODO("Not yet implemented")
+    moveSelection(true)
   }
 
   override fun selectionRight() {
-    TODO("Not yet implemented")
+    moveSelection(false)
   }
 
   override fun copy() {

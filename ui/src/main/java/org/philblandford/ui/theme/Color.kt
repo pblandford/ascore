@@ -9,7 +9,7 @@ val teal200 = Color(0xFF03DAC5)
 
 val selectedColor = Color(0xFF03DAC5)
 val scoreBackground = Color(0xffaaaaaa)
-val disabledColor = Color(0x33aaaaaa)
+val disabledColor = Color(0xffaaaaaa)
 val disabledDark = Color(0x77cccccc)
 
 val darkBlue = Color(0xff303f9f)
