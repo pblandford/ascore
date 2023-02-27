@@ -74,6 +74,7 @@ dependencies {
     implementation "androidx.constraintlayout:constraintlayout-compose:1.0.0"
     implementation "com.google.accompanist:accompanist-systemuicontroller:0.17.0"
     implementation 'com.github.zsoltk:compose-router:0.28.0'
+    implementation 'androidx.lifecycle:lifecycle-viewmodel-compose:2.5.1'
 
     implementation 'androidx.lifecycle:lifecycle-runtime-ktx:2.4.1'
     implementation 'androidx.activity:activity-compose:1.4.0'

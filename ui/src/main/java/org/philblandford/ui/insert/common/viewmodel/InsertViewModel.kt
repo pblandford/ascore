@@ -30,9 +30,6 @@ abstract class InsertViewModel<M : InsertModel, I : InsertInterface<M>> :
   private val combinedState =
     getInsertItemUC().combine(getState()) { insertItem, state ->
       Timber.e("Combined $insertItem $state")
-      insertItem?.let {
-        updateParams(it.params)
-      }
       InsertCombinedState(state, insertItem)
     }.stateIn(viewModelScope, SharingStarted.Eagerly, InsertCombinedState(null as M?, null))
 

@@ -47,5 +47,6 @@ open class RowInsertViewModel<T>(ids:List<Pair<Int, T>>, selected: Int = 0
     getState().value?.let { state ->
       setParam(param, state.ids[idx].second)
     }
+    update { copy(selected = idx) }
   }
 }

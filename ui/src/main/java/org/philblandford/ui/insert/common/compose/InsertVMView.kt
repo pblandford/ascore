@@ -32,6 +32,7 @@ import org.philblandford.ui.insert.model.InsertCombinedState
 import org.philblandford.ui.insert.model.InsertInterface
 import org.philblandford.ui.insert.model.InsertModel
 import org.philblandford.ui.util.SquareButton
+import timber.log.Timber
 
 
 @Composable
@@ -40,6 +41,7 @@ inline fun <M : InsertModel, I : InsertInterface<M>,
   viewModelFactory: @Composable () -> VM = { getViewModel() },
   contents: @Composable (M, InsertItem, I) -> Unit
 ) {
+
   val viewModel: VM = viewModelFactory()
 
   if (viewModel.resetOnLoad) {
@@ -48,8 +50,11 @@ inline fun <M : InsertModel, I : InsertInterface<M>,
     }
   }
 
+
   viewModel.getInsertState()
     .collectAsState(InsertCombinedState(null, null)).value.let { (state, insertItem) ->
+
+      Timber.e("seriously, fuck yourself $state $insertItem")
 
       BackHandler {
         viewModel.back()

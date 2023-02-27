@@ -25,6 +25,7 @@ internal val insertItems = listOf(
     "insert_articulation",
     LayoutID.ARTICULATION,
     EventType.ARTICULATION,
+    paramMapOf(EventParam.TYPE to ArticulationType.ACCENT),
     rangeCapable = true
   ),
   InsertItem(
