@@ -25,6 +25,7 @@ import org.philblandford.ui.base.compose.VMView
 import org.philblandford.ui.screen.viewmodels.ScreenEffect
 import org.philblandford.ui.screen.viewmodels.ScreenInterface
 import org.philblandford.ui.screen.viewmodels.ScreenViewModel
+import org.philblandford.ui.util.ZoomView
 import timber.log.Timber
 
 @Composable
@@ -45,9 +46,9 @@ fun ScreenView() {
 
       ScreenPages(
         model.scoreLayout.numPages,
-        scale.value * zoom.value,
-        canvasSize.first * zoom.value,
-        canvasSize.second * zoom.value,
+        defaultScale,
+        canvasSize.first,
+        canvasSize.second,
         model.updateCounter,
         iface, {
           zoom.value *= it
@@ -59,9 +60,10 @@ fun ScreenView() {
   }
 }
 
+@OptIn(ExperimentalFoundationApi::class)
 @Composable
 private fun ScreenPages(
-  num: Int, scale: Float,
+  num: Int, drawingScale: Float,
   canvasWidth: Dp, canvasHeight: Dp,
   redraw: Int,
   iface: ScreenInterface,
@@ -69,46 +71,61 @@ private fun ScreenPages(
   resetZoom: () -> Unit
 ) {
 
-  LazyColumn(
-    Modifier
-      .width(canvasWidth)
-      .horizontalScroll(rememberScrollState())
-  ) {
-    items(num) { page ->
-      ScreenPage(
-        Modifier.size(canvasWidth, canvasHeight),
-        page + 1,
-        scale,
-        redraw,
-        iface,
-        setScale,
-        resetZoom
-      )
+  ZoomView { modifier, onDoubleTap ->
+    LazyColumn(
+      modifier.fillMaxWidth()
+    ) {
+      items(num) { page ->
+        ScreenPage(
+          Modifier.size(canvasWidth, canvasHeight),
+          page + 1,
+          redraw,
+          iface,
+          drawingScale,
+          onTap = {
+            Timber.e("onTap $it")
+            iface.handleTap(page+1, (it.x).toInt(), (it.y).toInt())
+          },
+          onLongPress = {
+            iface.handleLongPress(page + 1, (it.x).toInt(), (it.y).toInt())
+          },
+          onDoubleTap = onDoubleTap,
+          resetZoom
+        )
+      }
     }
   }
 }
 
 @Composable
 private fun ScreenPage(
-  modifier: Modifier, num: Int, scale: Float,
+  modifier: Modifier, num: Int,
   redraw: Int,
   iface: ScreenInterface,
-  setScale: (Float) -> Unit,
+  drawingScale: Float,
+  onTap:(Offset)->Unit = {},
+  onLongPress:(Offset) -> Unit = {},
+  onDoubleTap:()->Unit = {},
   resetZoom: () -> Unit
 ) {
   Canvas(
     modifier
       .padding(5.dp)
       .background(Color.White)
-      .tap(num, scale, iface, resetZoom)
-//      .pointerInput(Unit) {
-//        detectTransformGestures { centroid, pan, zoom, rotation ->
-//          Timber.e("POINT zoom $centroid $pan $zoom $rotation")
-//          setScale(zoom)
-//        }
-//      }
+      .pointerInput(Unit) {
+
+        detectTapGestures(
+          onTap = { offset ->
+            onTap(Offset(offset.x / drawingScale, offset.y / drawingScale))
+          },
+          onLongPress = {  offset ->
+            onLongPress(Offset(offset.x / drawingScale, offset.y / drawingScale))
+          },
+          onDoubleTap = { onDoubleTap() }
+        )
+      }
   ) {
-    scale(scale, pivot = Offset(0f, 0f)) {
+    scale(drawingScale, pivot = Offset(0f, 0f)) {
       redraw.let {
         iface.drawPage(num, this)
       }
