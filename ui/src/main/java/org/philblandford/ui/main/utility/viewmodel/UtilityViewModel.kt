@@ -3,9 +3,13 @@ package org.philblandford.ui.main.utility.viewmodel
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.launch
 import org.philblandford.ascore2.features.clipboard.usecases.ClearSelection
+import org.philblandford.ascore2.features.gesture.HandleDeleteLongPress
+import org.philblandford.ascore2.features.gesture.HandleDeletePress
 import org.philblandford.ascore2.features.input.usecases.*
 import org.philblandford.ascore2.features.ui.model.LayoutID
+import org.philblandford.ascore2.features.ui.model.UIState
 import org.philblandford.ascore2.features.ui.usecases.GetPanelLayout
+import org.philblandford.ascore2.features.ui.usecases.GetUIState
 import org.philblandford.ascore2.features.ui.usecases.TogglePanelLayout
 import org.philblandford.ascore2.util.ok
 import org.philblandford.ui.base.viewmodel.BaseViewModel
@@ -38,7 +42,7 @@ sealed class UtilityEffect : VMSideEffect()
 
 
 class UtilityViewModel(
-  private val deleteUC: Delete,
+  private val getUIState: GetUIState,
   private val currentVoice: CurrentVoice,
   private val toggleVoiceUC: ToggleVoice,
   private val getPanelLayout: GetPanelLayout,
@@ -47,7 +51,9 @@ class UtilityViewModel(
   private val redoUC: Redo,
   private val clearSelectionUC:ClearSelection,
   private val zoomInUC: ZoomIn,
-  private val zoomOutUC: ZoomOut
+  private val zoomOutUC: ZoomOut,
+  private val handleDeletePress: HandleDeletePress,
+  private val handleDeleteLongPress: HandleDeleteLongPress
 ) : BaseViewModel<UtilityModel, UtilityInterface, UtilityEffect>(),
   UtilityInterface {
 
@@ -62,6 +68,11 @@ class UtilityViewModel(
         update{ copy(panelType = layout)}
       }
     }
+    viewModelScope.launch {
+      getUIState().collect { state ->
+        update { copy(deleteSelected = state == UIState.Delete) }
+      }
+    }
   }
 
   override suspend fun initState(): Result<UtilityModel> {
@@ -71,11 +82,11 @@ class UtilityViewModel(
   override fun getInterface() = this
 
   override fun delete() {
-    deleteUC()
+    handleDeletePress()
   }
 
   override fun deleteLong() {
-    TODO("Not yet implemented")
+    handleDeleteLongPress()
   }
 
   override fun toggleVoice() {

@@ -1,5 +1,6 @@
-package org.philblandford.ui.insert.viewmodel
+package org.philblandford.ui.insert.choose.viewmodel
 
+import com.philblandford.kscore.engine.duration.SEMIQUAVER
 import com.philblandford.kscore.engine.duration.crotchet
 import com.philblandford.kscore.engine.types.*
 import org.philblandford.ui.R
@@ -47,7 +48,8 @@ internal val insertItems = listOf(
     R.string.key_signature,
     "insert_key",
     LayoutID.KEY,
-    EventType.KEY_SIGNATURE
+    EventType.KEY_SIGNATURE,
+    typeParam = EventParam.SHARPS
   ),
   InsertItem(R.drawable.tempo, R.string.tempo, "insert_tempo", LayoutID.TEMPO, EventType.TEMPO,
     paramMapOf(
@@ -100,7 +102,8 @@ internal val insertItems = listOf(
     R.string.dynamic,
     "insert_dynamic",
     LayoutID.DYNAMIC,
-    EventType.DYNAMIC
+    EventType.DYNAMIC,
+    paramMapOf(EventParam.IS_UP to false)
   ),
   InsertItem(
     R.drawable.bar_double,
@@ -115,21 +118,24 @@ internal val insertItems = listOf(
     EventType.INSTRUMENT
   ),
   InsertItem(
-    R.drawable.title, R.string.title, "insert_title", LayoutID.METADATA, EventType.META,
+    R.drawable.title, R.string.title, "insert_title", LayoutID.METADATA, EventType.TITLE,
     tapInsertBehaviour = TapInsertBehaviour.NONE
   ),
-  InsertItem(R.drawable.slur, R.string.slur, "insert_slur", LayoutID.SLUR, EventType.SLUR, line = true),
+  InsertItem(R.drawable.slur, R.string.slur, "insert_slur", LayoutID.SLUR, EventType.SLUR,
+    params = paramMapOf(EventParam.IS_UP to true),
+    line = true),
   InsertItem(
     R.drawable.hairpin_crescendo,
     R.string.wedge,
     "insert_wedge",
     LayoutID.WEDGE,
     EventType.WEDGE,
+    params = paramMapOf(EventParam.IS_UP to true),
     line = true
   ),
   InsertItem(
     R.drawable.octave, R.string.octave, "insert_octave", LayoutID.OCTAVE,
-    EventType.OCTAVE, line = true
+    EventType.OCTAVE, paramMapOf(EventParam.NUMBER to 1), line = true, typeParam = EventParam.NUMBER
   ),
   InsertItem(
     R.drawable.pedal, R.string.pedal, "insert_pedal", LayoutID.PEDAL,
@@ -150,15 +156,23 @@ internal val insertItems = listOf(
     "insert_fingering",
     LayoutID.FINGERING,
     EventType.FINGERING,
+    typeParam = EventParam.NUMBER,
     rangeCapable = true
   ),
-  InsertItem(R.drawable.fermata, R.string.pause, "insert_pause", LayoutID.PAUSE, EventType.PAUSE),
+  InsertItem(R.drawable.fermata, R.string.pause, "insert_pause", LayoutID.PAUSE,
+    EventType.FERMATA, getEventType = {
+      when (it) {
+        is FermataType -> EventType.FERMATA
+        else -> EventType.PAUSE
+      }
+    }),
   InsertItem(
     R.drawable.coda,
     R.string.navigation,
     "insert_navigation",
     LayoutID.NAVIGATION,
-    EventType.NAVIGATION
+    EventType.NAVIGATION,
+    paramMapOf(EventParam.START to true)
   ),
   InsertItem(
     R.drawable.first_time_bar,
@@ -166,6 +180,7 @@ internal val insertItems = listOf(
     "insert_volta",
     LayoutID.VOLTA,
     EventType.VOLTA,
+    paramMapOf(EventParam.NUMBER to 1),
     line = true
   ),
   InsertItem(
@@ -174,6 +189,8 @@ internal val insertItems = listOf(
     "insert_repeat_bar",
     LayoutID.REPEAT_BAR,
     EventType.REPEAT_BAR,
+    paramMapOf(EventParam.NUMBER to 1),
+    typeParam = EventParam.NUMBER,
     rangeCapable = true
   ),
   InsertItem(
@@ -182,6 +199,8 @@ internal val insertItems = listOf(
     "insert_tremolo",
     LayoutID.TREMOLO,
     EventType.TREMOLO,
+    paramMapOf(EventParam.TREMOLO_BEATS to SEMIQUAVER),
+    typeParam = EventParam.TREMOLO_BEATS,
     rangeCapable = true
   ),
   InsertItem(

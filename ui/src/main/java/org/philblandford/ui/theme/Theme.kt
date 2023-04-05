@@ -8,12 +8,16 @@ import androidx.compose.material.Colors
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.darkColors
 import androidx.compose.material.lightColors
-import androidx.compose.runtime.Composable
+import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.unit.dp
 import com.philblandford.ascore.android.ui.style.*
+import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.launch
+import org.koin.androidx.compose.inject
+import org.philblandford.ascore2.features.settings.usecases.GetColors
 import org.philblandford.ui.common.block
 import org.philblandford.ui.util.ThemeBox
 
@@ -23,20 +27,23 @@ enum class Theme {
   GREEN,
   BLACK,
   VIOLET,
-  GRAY
+  GRAY,
+  COOL
 }
 
 private val BlueColors = darkColors(
   primary = darkBlue,
   primaryVariant = darkBlue2,
   secondary = lightBlue2,
+  secondaryVariant = powderBlue,
   background = darkBlue,
   surface = darkBlue,
   onPrimary = Color.White,
-  onSecondary = Color.White,
+  onSecondary = Color.Black,
   onBackground = Color.White,
-  onSurface = Color.White
-)
+  onSurface = Color.White,
+
+  )
 
 private val RedColors = darkColors(
   primary = darkRed,
@@ -111,6 +118,11 @@ private val GrayColors = lightColors(
   onSurface = Color.Black
 )
 
+val CoolColors = lightColors(
+  surface = Color(0xffe6e6e6),
+  onSurface = Color(0xff4d3900)
+)
+
 private fun getColors(theme: Theme): Colors {
   return when (theme) {
     Theme.BLUE -> BlueColors
@@ -119,19 +131,34 @@ private fun getColors(theme: Theme): Colors {
     Theme.BLACK -> BlackColors
     Theme.VIOLET -> VioletColors
     Theme.GRAY -> GrayColors
+    Theme.COOL -> CoolColors
   }
 }
 
 
 @Composable
 fun AscoreTheme(
-  theme: Theme = Theme.BLUE,
+  theme: Theme = Theme.COOL,
   content: @Composable() () -> Unit
 ) {
-  val colors = getColors(theme)
 
+
+  val coroutineScope = rememberCoroutineScope()
+  val getColors: GetColors by inject()
+
+  val colorState = remember {
+    mutableStateOf(getColors().value)
+  }
+
+  LaunchedEffect(Unit) {
+    coroutineScope.launch {
+      getColors().collectLatest { colors ->
+        colorState.value = colors
+      }
+    }
+  }
   MaterialTheme(
-    colors = colors,
+    colors = colorState.value,
     typography = typographyDark,
     shapes = shapes,
     content = content

@@ -6,6 +6,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import com.philblandford.kscore.engine.types.EventParam
+import com.philblandford.kscore.engine.types.TimeSignatureType
 import org.philblandford.ascore2.features.ui.model.InsertItem
 import org.philblandford.ui.R
 import org.philblandford.ui.common.block
@@ -29,14 +30,14 @@ fun TimeSignatureInsert() {
 private fun TimeSignatureInsertInternal(insertItem: InsertItem, iface:InsertInterface<InsertModel>) {
   Row(verticalAlignment = Alignment.CenterVertically) {
     TimeSignatureSelector(
-      numerator =  insertItem.getParam(EventParam.NUMERATOR),
+      numerator =  insertItem.getParam(EventParam.NUMERATOR) ?: 4,
       setNumerator = { iface.setParam(EventParam.NUMERATOR, it) },
-      denominator = insertItem.getParam(EventParam.DENOMINATOR),
+      denominator = insertItem.getParam(EventParam.DENOMINATOR) ?: 4,
       setDenominator = { iface.setParam(EventParam.DENOMINATOR, it) },
-      type = insertItem.getParam(EventParam.TYPE),
+      type = insertItem.getParam(EventParam.TYPE) ?: TimeSignatureType.CUSTOM,
       setType = { iface.setParam(EventParam.TYPE, it) }
     )
-    val hidden = insertItem.getParam<Boolean>(EventParam.HIDDEN)
+    val hidden = insertItem.getParam<Boolean>(EventParam.HIDDEN) ?: false
     Gap(0.5f)
     SquareButton(R.drawable.hidden,  Modifier.size(block()), hidden) {
       iface.setParam(EventParam.HIDDEN, !hidden)

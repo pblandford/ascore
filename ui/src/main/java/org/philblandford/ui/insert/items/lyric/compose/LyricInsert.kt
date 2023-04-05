@@ -14,10 +14,7 @@ import org.philblandford.ui.insert.common.compose.InsertVMView
 import org.philblandford.ui.insert.items.lyric.model.LyricInsertModel
 import org.philblandford.ui.insert.items.lyric.viewmodel.LyricInsertInterface
 import org.philblandford.ui.insert.items.lyric.viewmodel.LyricInsertViewModel
-import org.philblandford.ui.util.FreeKeyboard
-import org.philblandford.ui.util.Gap
-import org.philblandford.ui.util.NumberPicker
-import org.philblandford.ui.util.SquareButton
+import org.philblandford.ui.util.*
 import timber.log.Timber
 
 @Composable
@@ -31,20 +28,23 @@ fun LyricInsert() {
 
 
 @Composable
-fun LyricInsertInternal(model: LyricInsertModel,insertItem: InsertItem, iface:LyricInsertInterface) {
-  val text = insertItem.getParam<String?>(EventParam.TEXT) ?: ""
+fun LyricInsertInternal(model: LyricInsertModel, insertItem: InsertItem, iface:LyricInsertInterface) {
+  val text = insertItem.getParam(EventParam.TEXT) ?: ""
+
+  Timber.e("text $text")
 
   FreeKeyboard(
     initValue = text,
     tag = "LyricTextField",
+    onEnter = { iface.nextSyllable() },
     onValueChanged = {
       iface.insertLyric(it)
     }) {
     Row {
       Box {
-        NumberPicker(min = 1, max = model.maxNum,
-          getNum = { insertItem.getParam(EventParam.NUMBER) }, setNum = {
-            iface.setParam(EventParam.NUMBER, it)
+        NumberSelector(min = 1, max = model.maxNum,
+          num = model.number, setNum = {
+            iface.setNumber(it)
           }, editable = false
         )
       }

@@ -1,9 +1,6 @@
 package org.philblandford.ui.save.compose
 
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.*
 import androidx.compose.material.Button
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
@@ -18,6 +15,7 @@ import org.philblandford.ui.base.compose.VMView
 import org.philblandford.ui.save.viewmodel.SaveInterface
 import org.philblandford.ui.save.viewmodel.SaveModel
 import org.philblandford.ui.save.viewmodel.SaveViewModel
+import org.philblandford.ui.theme.DialogTheme
 import org.philblandford.ui.util.Gap
 import org.philblandford.ui.util.LabelText
 import org.philblandford.ui.util.OutlinedTextField2
@@ -26,15 +24,17 @@ import timber.log.Timber
 @Composable
 fun SaveScore(dismiss: () -> Unit) {
   VMView(SaveViewModel::class.java) { state, iface, _ ->
-    SaveFileInternal(state, iface, dismiss)
+    DialogTheme {
+      SaveFileInternal(it, state, iface, dismiss)
+    }
   }
 }
 
 @Composable
-private fun SaveFileInternal(model: SaveModel, iface: SaveInterface, dismiss: () -> Unit) {
+private fun SaveFileInternal(modifier: Modifier, model: SaveModel, iface: SaveInterface, dismiss: () -> Unit) {
 
   val title = remember { mutableStateOf(model.scoreTitle) }
-  Column(Modifier.fillMaxWidth(0.9f),
+  Column(modifier.fillMaxWidth(0.9f).wrapContentHeight(),
     horizontalAlignment = Alignment.CenterHorizontally) {
     LabelText(stringResource(R.string.save_score_title))
     Gap(0.5f)
@@ -59,15 +59,18 @@ private fun SaveFileInternal(model: SaveModel, iface: SaveInterface, dismiss: ()
 @Composable
 @Preview
 private fun Preview() {
-  SaveFileInternal(SaveModel(""), object : SaveInterface {
-    override fun reset() {
-      TODO("Not yet implemented")
-    }
+  DialogTheme {
 
-    override fun saveInternal(name: String) {
-      TODO("Not yet implemented")
-    }
-  }) {
+    SaveFileInternal(it, SaveModel(""), object : SaveInterface {
+      override fun reset() {
+        TODO("Not yet implemented")
+      }
 
+      override fun saveInternal(name: String) {
+        TODO("Not yet implemented")
+      }
+    }) {
+
+    }
   }
 }

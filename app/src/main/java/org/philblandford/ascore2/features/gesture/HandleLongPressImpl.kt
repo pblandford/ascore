@@ -10,12 +10,18 @@ class HandleLongPressImpl(
   private val kScore: KScore
 ) : HandleLongPress {
   override operator fun invoke(page: Int, x: Int, y: Int) {
+    uiStateRepository.dragStart()
     val location = Location(page, x, y)
-    when (uiStateRepository.getUIState().value) {
+    when (val state = uiStateRepository.getUIState().value) {
       UIState.Input, UIState.Clipboard -> {
         kScore.getEventAddress(location)?.let { eventAddress ->
           uiStateRepository.setUiState(UIState.Clipboard)
           kScore.setStartSelection(eventAddress)
+        }
+      }
+      is UIState.Insert -> {
+        if (state.insertItem.rangeCapable) {
+          kScore.setStartSelection(location)
         }
       }
 
@@ -24,4 +30,5 @@ class HandleLongPressImpl(
       }
     }
   }
+
 }

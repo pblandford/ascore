@@ -54,6 +54,7 @@ fun ZoomView(
     }
   }
 
+
   Box(
     modifier = Modifier
       .pointerInput(Unit) {

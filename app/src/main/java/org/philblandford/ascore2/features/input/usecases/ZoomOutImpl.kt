@@ -4,6 +4,6 @@ import com.philblandford.kscore.api.KScore
 
 class ZoomOutImpl(private val kScore: KScore) : ZoomOut {
   override operator fun invoke() {
-    kScore.adjustPageWidth(-100)
+    kScore.adjustPageWidth(100)
   }
 }

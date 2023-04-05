@@ -1,118 +1,126 @@
 package org.philblandford.ui.insert.items.ornament.compose
 
+import GridSelection
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.material.Checkbox
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.testTag
 import com.philblandford.kscore.engine.types.Accidental
+import com.philblandford.kscore.engine.types.EventParam
+import com.philblandford.kscore.engine.types.OrnamentType
+import com.philblandford.kscore.engine.types.isTrue
+import org.philblandford.ascore2.features.ui.model.InsertItem
 import org.philblandford.ui.insert.common.compose.InsertVMView
 import org.philblandford.ui.insert.common.viewmodel.InsertViewModel
 import org.philblandford.ui.insert.items.ornament.model.OrnamentInsertModel
 import org.philblandford.ui.insert.items.ornament.viewmodel.OrnamentInsertInterface
 import org.philblandford.ui.insert.items.ornament.viewmodel.OrnamentInsertViewModel
 import org.philblandford.ui.insert.model.InsertInterface
+import org.philblandford.ui.insert.model.InsertModel
+import org.philblandford.ui.insert.row.compose.RowInsert
+import org.philblandford.ui.insert.row.viewmodel.RowInsertInterface
+import org.philblandford.ui.insert.row.viewmodel.RowInsertModel
+import org.philblandford.ui.keyboard.compose.selectors.AccidentalSpinner
 import org.philblandford.ui.util.Gap
-import org.philblandford.ui.util.GridSelection
+import org.philblandford.ui.util.ornamentIds
 
 @Composable
 fun OrnamentInsert() {
-  InsertVMView<OrnamentInsertModel,
-          OrnamentInsertInterface,
-          InsertViewModel<OrnamentInsertModel, OrnamentInsertInterface>> { state, _, iface ->
-    OrnamentInsertInternal(state, iface)
+  RowInsert(ornamentIds) { model, item, iface ->
+    OrnamentInsertInternal(item, model, iface)
   }
 }
 
 @Composable
-private fun OrnamentInsertInternal(model: OrnamentInsertModel, iface: OrnamentInsertInterface) {
+private fun OrnamentInsertInternal(
+  insertItem: InsertItem,
+  model: RowInsertModel<OrnamentType>,
+  iface: RowInsertInterface<OrnamentType>
+) {
   Column {
     Grid(model, iface)
     Gap(0.5f)
-    CheckBoxRow(model, iface)
+    CheckBoxRow(insertItem, iface)
   }
 }
 
 @Composable
-private fun Grid(model: OrnamentInsertModel, iface: OrnamentInsertInterface) {
+private fun Grid(
+  model: RowInsertModel<OrnamentType>,
+  iface: RowInsertInterface<OrnamentType>
+) {
   val ornamentIds = model.ids
   GridSelection(images = ornamentIds.map { it.first },
     rows = 1, columns = ornamentIds.size,
     itemBorder = true,
     selected = { model.selected },
     onSelect = {
-      iface.insert(it)
+      iface.selectItem(it)
     })
 }
 
 @Composable
-private fun CheckBoxRow(model: OrnamentInsertModel, iface: OrnamentInsertInterface) {
+private fun CheckBoxRow(item: InsertItem, iface: RowInsertInterface<OrnamentType>) {
+  val type = item.getParam<OrnamentType>(EventParam.TYPE) ?: OrnamentType.TRILL
   Row() {
-//    if (model.accidentalAbove.isDisplayed) {
-//      AccidentalSelector(true, model, cmd)
-//    }
-//    if (model.accidentalBelow.isDisplayed) {
-//      AccidentalSelector(false, model, cmd)
-//    }
+    if (type.accidentalAbove()) {
+      AccidentalCheckbox(true, iface)
+    }
+    if (type.accidentalBelow()) {
+      AccidentalCheckbox(false, iface)
+    }
   }
 }
 
-@Composable
-private fun AccidentalSelector(
-  above: Boolean,
-  model: OrnamentInsertModel,
-  iface: OrnamentInsertInterface
-) {
-  Row() {
-    AccidentalCheckbox(above, model, iface)
-  }
-}
 
 @Composable
 private fun AccidentalCheckbox(
   above: Boolean,
-  model: OrnamentInsertModel,
-  iface: OrnamentInsertInterface
+  iface: RowInsertInterface<OrnamentType>
 ) {
-//  val desc =
-//    if (above) model.accidentalAbove else model.accidentalBelow
-//  val tag = if (above) "AccidentalAboveCheckBox" else "AccidentalBelowCheckBox"
-//  Checkbox(checked = desc.isSelected, modifier = Modifier.testTag(tag),
-//    onCheckedChange = {
-//      if (above) cmd(OrnamentInsertIntent.EnableAccidentalAbove(it)) else cmd(
-//        OrnamentInsertIntent.EnableAccidentalBelow(
-//          it
-//        )
-//      )
-//    })
-//  AccidentalChooser(above, model, cmd)
+  val param = if (above) EventParam.ACCIDENTAL_ABOVE else EventParam.ACCIDENTAL_BELOW
+
+  val enabled = remember { mutableStateOf(false) }
+  val selectedAccidental = remember { mutableStateOf(Accidental.SHARP) }
+
+  Checkbox(checked = enabled.value,
+    onCheckedChange = { yes ->
+      enabled.value = yes
+      if (yes) {
+        iface.setParam(param, selectedAccidental.value)
+      } else {
+        iface.setParam(param, null)
+      }
+    })
+
+  AccidentalChooser(selectedAccidental.value) {
+    selectedAccidental.value = it
+    if (enabled.value) {
+      iface.setParam(param, selectedAccidental.value)
+    }
+  }
 }
-//
-//@Composable
-//fun AccidentalChooser(
-//  above: Boolean,
-//  model: OrnamentInsertModel,
-//  cmd: (OrnamentInsertIntent) -> Unit
-//) {
-//  val desc =
-//    if (above) model.accidentalAbove else model.accidentalBelow
-//  val tag = if (above) "AccidentalAboveSpinner" else "AccidentalBelowSpinner"
-//  val intent = { a: Accidental ->
-//    if (above) OrnamentInsertIntent.SetAccidentalAbove(a) else OrnamentInsertIntent.SetAccidentalBelow(
-//      a
-//    )
-//  }
-//  val accidentals = Accidental.values().toList().minus(Accidental.FORCE_FLAT)
-//  Box(Modifier.testTag(tag)) {
-//    AccidentalSpinner(
-//      selectedAccidental = { desc.accidental },
-//      accidentals = accidentals
-//        .minus(Accidental.FORCE_SHARP),
-//      tag = {
-//        accidentals[it].toString()
-//      },
-//      setAccidental = { cmd(intent(it)) })
-//  }
-//}
+
+@Composable
+fun AccidentalChooser(
+  selectedAccidental: Accidental,
+  select: (Accidental) -> Unit
+) {
+
+  val accidentals = Accidental.values().toList().minus(Accidental.FORCE_FLAT)
+  AccidentalSpinner(
+    selectedAccidental = selectedAccidental,
+    accidentals = accidentals
+      .minus(Accidental.FORCE_SHARP),
+    setAccidental = select
+  )
+}
+
+private fun OrnamentType.accidentalAbove() = this != OrnamentType.LOWER_MORDENT
+private fun OrnamentType.accidentalBelow() =
+  this == OrnamentType.TURN || this == OrnamentType.LOWER_MORDENT

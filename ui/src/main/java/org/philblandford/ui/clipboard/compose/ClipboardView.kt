@@ -1,5 +1,6 @@
 package org.philblandford.ui.clipboard.compose
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Row
 import androidx.compose.runtime.Composable
@@ -27,7 +28,7 @@ fun ClipboardView(modifier:Modifier) {
 
 @Composable
 fun ClipboardViewInternal(modifier: Modifier, iface:ClipboardInterface) {
-  Row(modifier.border(1.dp, Color.Black)) {
+  Row(modifier.border(1.dp, Color.Black).background(Color.White)) {
     Item(R.drawable.left_arrow) { iface.selectionLeft()  }
     Item(R.drawable.right_arrow) { iface.selectionRight()  }
     Item(R.drawable.copy) { iface.copy() }

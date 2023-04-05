@@ -89,6 +89,8 @@
     <string name="settings">Settings</string>
     <string name="settings_audio">Audio Settings</string>
     <string name="settings_layout">Layout Settings</string>
+    <string name="settings_foreground_color">Foreground</string>
+    <string name="settings_background_color">Background</string>
     <string name="page_margins">Page Margins</string>
     <string name="settings_playing">Playback Settings</string>
     <string name="mixer">Mixer</string>
@@ -336,6 +338,7 @@
 
     <string name="create_score_meta_data">Choose a title etc. for this score (optional)</string>
     <string name="create_score_key_signature">Choose a key signature</string>
+    <string name="create_score_key_time_signature">Choose a key signature and time signature</string>
     <string name="create_score_time_signature">Choose a time signature</string>
     <string name="create_score_common_time">Common</string>
     <string name="create_score_cut_common_time">Cut common</string>

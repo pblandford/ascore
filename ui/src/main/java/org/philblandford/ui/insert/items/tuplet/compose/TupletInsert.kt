@@ -15,6 +15,7 @@ import org.philblandford.ui.insert.items.tuplet.model.TupletInsertModel
 import org.philblandford.ui.insert.items.tuplet.viewmodel.TupletInsertInterface
 import org.philblandford.ui.insert.items.tuplet.viewmodel.TupletInsertViewModel
 import org.philblandford.ui.util.NumberPicker
+import org.philblandford.ui.util.NumberSelector
 import org.philblandford.ui.util.ToggleButton
 
 @Composable
@@ -37,18 +38,18 @@ private fun TupletInsertInternal(
       Modifier
         .align(Alignment.Center)
     ) {
-      NumberPicker(min = model.minNumerator,
-        max = model.maxNumerator, editable = false, getNum = {
-          insertItem.getParam(EventParam.NUMERATOR)
-        }, setNum =
+      NumberSelector(min = model.minNumerator,
+        max = model.maxNumerator, editable = false, num =
+          insertItem.getParam(EventParam.NUMERATOR) ?: 3
+        , setNum =
         { iface.setParam(EventParam.NUMERATOR, it) })
       ToggleButton(resource = R.drawable.hidden,
         tag = "HiddenToggle",
-        selected = insertItem.getParam(EventParam.HIDDEN),
+        selected = insertItem.getParam(EventParam.HIDDEN) ?: false,
         toggle = {
           iface.setParam(
             EventParam.HIDDEN,
-            !insertItem.getParam<Boolean>(EventParam.HIDDEN)
+            !(insertItem.getParam<Boolean>(EventParam.HIDDEN) ?: false)
           )
         }
       )

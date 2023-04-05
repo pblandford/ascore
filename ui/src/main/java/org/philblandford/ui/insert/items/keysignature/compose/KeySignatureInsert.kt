@@ -7,5 +7,5 @@ import org.philblandford.ui.util.keySignatureIds
 
 @Composable
 fun KeySignatureInsert() {
-  RowInsert(keySignatureIds, 0, EventParam.SHARPS, 2)
+  RowInsert(keySignatureIds, 0, 2)
 }

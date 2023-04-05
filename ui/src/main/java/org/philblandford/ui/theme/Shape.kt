@@ -1,4 +1,4 @@
-package com.philblandford.ascore.android.ui.style
+package org.philblandford.ui.theme
 
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Shapes

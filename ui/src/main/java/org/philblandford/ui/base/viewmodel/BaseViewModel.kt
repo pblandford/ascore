@@ -12,6 +12,7 @@ import org.koin.core.component.inject
 import org.philblandford.ascore2.features.crosscutting.model.ErrorDescr
 import org.philblandford.ascore2.features.crosscutting.usecases.SetError
 import org.philblandford.ascore2.features.crosscutting.usecases.SetProgress
+import org.philblandford.ascore2.features.score.ScoreUpdate
 import org.philblandford.ascore2.util.andThen
 import org.philblandford.ascore2.util.ok
 import timber.log.Timber
@@ -44,6 +45,7 @@ abstract class BaseViewModel<M : VMModel, I : VMInterface, S : VMSideEffect> : V
 
   private val setErrorUC: SetError by inject()
   private val setProgressUC: SetProgress by inject()
+  protected val scoreUpdate:ScoreUpdate by inject()
   private val _viewState = MutableStateFlow<M?>(null)
   private val _actions = Channel<Action<M>>(Channel.UNLIMITED)
   private val _sideEffects = Channel<S>()
@@ -155,6 +157,14 @@ abstract class BaseViewModel<M : VMModel, I : VMInterface, S : VMSideEffect> : V
     receiveAction {
       it.action().ok()
     }
+  }
+
+  fun updateSynchronous(action: M.()->M) {
+    val newValue = _viewState.value?.action()
+    viewModelScope.launch {
+      _viewState.emit(newValue)
+    }
+    _viewState.value = newValue
   }
 
   protected suspend fun setProgress(yes:Boolean) {

@@ -7,6 +7,7 @@ import com.philblandford.kscore.engine.types.ParamMap
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 import org.koin.core.component.inject
+import org.philblandford.ascore2.features.insert.InsertEvent
 import org.philblandford.ascore2.features.ui.model.InsertItem
 import org.philblandford.ascore2.features.ui.usecases.GetInsertItem
 import org.philblandford.ascore2.features.ui.usecases.InsertItemMenu
@@ -32,10 +33,6 @@ abstract class InsertViewModel<M : InsertModel, I : InsertInterface<M>> :
       Timber.e("Combined $insertItem $state")
       InsertCombinedState(state, insertItem)
     }.stateIn(viewModelScope, SharingStarted.Eagerly, InsertCombinedState(null as M?, null))
-
-  override suspend fun initState(): Result<M> {
-    TODO()
-  }
 
   override fun getInsertState(): StateFlow<InsertCombinedState<M>> {
     return combinedState

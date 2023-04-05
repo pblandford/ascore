@@ -17,7 +17,7 @@ fun PlayButton() {
 private fun PlayButtonInternal(state: PlayModel, iface: PlayInterface) {
   SquareButton(
     R.drawable.ic_media_play,
-    selected = state.playState != PlayState.STOPPED,
+    dim = state.playState != PlayState.STOPPED,
     onLongPress = { iface.pause() }
   ) { iface.togglePlay() }
 }

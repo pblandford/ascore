@@ -34,7 +34,7 @@ fun GraceButtons(
         onClick = {
           val grace = if (model.graceType == GraceType.APPOGGIATURA) GraceType.NONE else GraceType.APPOGGIATURA
           iface.setGrace(grace)
-        }, selected = model.graceType == GraceType.APPOGGIATURA
+        }, dim = model.graceType == GraceType.APPOGGIATURA
       )
       SquareButton(
         resource = R.drawable.acciaccatura,
@@ -42,14 +42,14 @@ fun GraceButtons(
         onClick = {
           val grace = if (model.graceType == GraceType.ACCIACCATURA) GraceType.NONE else GraceType.ACCIACCATURA
           iface.setGrace(grace)
-        }, selected = model.graceType == GraceType.ACCIACCATURA
+        }, dim = model.graceType == GraceType.ACCIACCATURA
       )
       SquareButton(
         resource = R.drawable.add_bar_right,
         tag = "GraceShift",
         onClick = {
           iface.toggleGraceShift()
-        }, selected = model.graceShift
+        }, dim = model.graceShift
       )
     }
   }

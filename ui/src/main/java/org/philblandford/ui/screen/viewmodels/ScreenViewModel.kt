@@ -6,6 +6,7 @@ import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import org.philblandford.ascore2.features.drawing.DrawPage
 import org.philblandford.ascore2.features.drawing.ScoreChanged
+import org.philblandford.ascore2.features.gesture.HandleDrag
 import org.philblandford.ascore2.features.gesture.HandleLongPress
 import org.philblandford.ascore2.features.gesture.HandleTap
 import org.philblandford.ascore2.features.score.CreateDefaultScore
@@ -27,6 +28,7 @@ interface ScreenInterface : VMInterface {
   fun drawPage(page: Int, drawScope: DrawScope)
   fun handleTap(page: Int, x: Int, y: Int)
   fun handleLongPress(page: Int, x: Int, y: Int)
+  fun handleDrag(x:Float, y:Float)
 }
 
 sealed class ScreenEffect : VMSideEffect() {
@@ -40,7 +42,8 @@ class ScreenViewModel(
   private val getPlaybackMarker: GetPlaybackMarker,
   private val drawPageUC: DrawPage,
   private val handleTapUC: HandleTap,
-  private val handleLongPressUC : HandleLongPress
+  private val handleLongPressUC : HandleLongPress,
+  private val handleDragUC: HandleDrag
 ) : BaseViewModel<ScreenModel, ScreenInterface, ScreenEffect>(),
   ScreenInterface {
 
@@ -78,5 +81,9 @@ class ScreenViewModel(
 
   override fun handleLongPress(page: Int, x: Int, y: Int) {
     handleLongPressUC(page, x, y)
+  }
+
+  override fun handleDrag(x: Float, y: Float) {
+    handleDragUC(x, y)
   }
 }

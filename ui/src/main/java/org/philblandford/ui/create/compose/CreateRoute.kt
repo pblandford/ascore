@@ -9,7 +9,6 @@ import com.github.zsoltk.compose.router.Router
 sealed class CreateRoute {
   object MetaData : CreateRoute()
   object KeySignature : CreateRoute()
-  object TimeSignature : CreateRoute()
   object Instruments : CreateRoute()
 }
 
@@ -31,10 +30,7 @@ fun CreateScore(done: () -> Unit) {
           }, ::clear, iface)
         }
         CreateRoute.KeySignature -> {
-          CreateKeySignature(state, { backStack.push(CreateRoute.TimeSignature) }, ::clear, iface)
-        }
-        CreateRoute.TimeSignature -> {
-          CreateTimeSignature(state, { backStack.push(CreateRoute.Instruments) }, ::clear, iface)
+          CreateKeyTimeSignature(state, { backStack.push(CreateRoute.Instruments) }, ::clear, iface)
         }
         CreateRoute.Instruments -> {
           CreateInstruments(state.availableInstruments, state.newScoreDescriptor.instruments.toList(), {

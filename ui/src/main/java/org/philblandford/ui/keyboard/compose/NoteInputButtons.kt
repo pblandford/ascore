@@ -11,6 +11,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
 import com.philblandford.kscore.api.NoteInputDescriptor
 import com.philblandford.kscore.engine.duration.Duration
@@ -52,13 +53,12 @@ fun NoteInputButtonsColumn(
     Modifier
       .fillMaxWidth()
       .testTag("NoteInputButtons")
-      .background(MaterialTheme.colors.primary)
   ) {
     if (showMore.value) {
       MoreRow(model.noteInputDescriptor, iface)
     }
     Gap(0.1)
-    TopRow(true,
+    MainRow(true,
       showMore.value,
       { showMore.value = !showMore.value},
       Modifier.fillMaxWidth(), model.noteInputDescriptor,
@@ -68,7 +68,7 @@ fun NoteInputButtonsColumn(
       Modifier
         .height(block(0.1))
         .fillMaxWidth()
-        .background(MaterialTheme.colors.onPrimary))
+        .background(MaterialTheme.colors.onSurface))
     Gap(0.1f)
   }
 }
@@ -87,7 +87,7 @@ fun NoteInputButtonsRow(
   ) {
     ConstraintLayout(Modifier.fillMaxSize()) {
       val (left, right) = createRefs()
-      TopRow(
+      MainRow(
         false,false, {},
         Modifier
           .width(block(10.5))
@@ -139,7 +139,7 @@ private fun MoreRow(
 }
 
 @Composable
-private fun TopRow(
+private fun MainRow(
   includeMore: Boolean,
   showMore: Boolean,
   toggleMore:()->Unit,
@@ -160,8 +160,10 @@ private fun TopRow(
       DotToggle(descriptor.dots, iface::setNumDots)
       AccidentalSpinner(descriptor.accidental,
         accidentals, iface::setAccidental)
-      LeftRight({ iface.moveMarker(true) }, { iface.moveMarker(false) })
-      RestButton(descriptor.duration, iface::insertRest, iface::deleteRest)
+      LeftRight({ iface.moveMarker(true) }, { iface.moveMarker(false) },
+      Modifier.padding(1.dp))
+      RestButton(descriptor.duration, iface::insertRest, iface::deleteRest,
+      Modifier.padding(1.dp))
       if (includeMore) {
         MoreButton(showMore, toggleMore)
       }
@@ -171,9 +173,10 @@ private fun TopRow(
 
 
 @Composable
-private fun RestButton(duration:Duration, insert:()->Unit, delete:()->Unit) {
+private fun RestButton(duration:Duration, insert:()->Unit, delete:()->Unit,
+modifier: Modifier = Modifier) {
   Box(
-    Modifier.width(block(2)).border(styledBorder())
+    modifier.width(block(2)).border(styledBorder())
   ) {
     SquareButton(resource = duration.toResource()!!,
       modifier = Modifier.align(Alignment.Center),

@@ -2,13 +2,11 @@
 
 package org.philblandford.ui.util
 
-import android.annotation.SuppressLint
 import android.content.res.Configuration
 import androidx.compose.foundation.*
 import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.*
@@ -17,70 +15,26 @@ import androidx.compose.ui.*
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.layout.*
 import androidx.compose.ui.platform.*
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.*
 import androidx.compose.ui.text.input.*
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.*
-import androidx.compose.ui.window.Popup
-import org.philblandford.ui.theme.PopupTheme
 import com.philblandford.ascore.android.ui.style.backgroundGray
-import com.philblandford.ascore.android.ui.style.disabledDark
 import com.philblandford.kscore.log.ksLogt
 import com.philblandford.kscore.log.ksLogv
 import org.philblandford.ui.common.block
 import org.philblandford.ui.R
-import kotlin.math.log
-import kotlin.math.min
-import kotlin.math.pow
 
 @Composable
 fun styledBorder(): BorderStroke {
-  return BorderStroke(1.dp, Color.White)
+  return BorderStroke(1.dp, MaterialTheme.colors.onSurface)
 }
 
-
-
-@Composable
-fun GridSelection(
-  images: List<Int>,
-  rows: Int,
-  columns: Int,
-  modifier: Modifier = Modifier,
-  size: Dp = block(),
-  border: Boolean = false,
-  itemBorder: Boolean = false,
-  tag: (Int) -> String = { "" },
-  selected: () -> Int? = { null },
-  onSelect: (Int) -> Unit
-) {
-  val borderMod = if (border) modifier.border(2.dp, MaterialTheme.colors.onSurface) else modifier
-  ThemeBox(
-    modifier = borderMod.size(size * columns, size * rows)
-  ) {
-    Column {
-      (0 until rows).forEach { row ->
-        Row {
-          (0 until columns).forEach { column ->
-            val idx = (row * columns) + column
-            SquareButton(resource = images[idx], size = size,
-              tag = tag(idx),
-              border = itemBorder,
-              selected = selected() == idx,
-              onClick = { onSelect(idx) })
-          }
-        }
-      }
-    }
-  }
-}
 
 @Composable
 fun BorderBox(modifier: Modifier = Modifier, children: @Composable() () -> Unit) {
@@ -94,9 +48,9 @@ fun ToggleButton(
   resource: Int,
   selected: Boolean, toggle: () -> Unit,
   border: Boolean = false,
-  tag:String = ""
+  tag: String = ""
 ) {
-  SquareButton(resource = resource, border = border, selected = selected, tag = tag, onClick = {
+  SquareButton(resource = resource, border = border, dim = selected, tag = tag, onClick = {
     toggle()
   })
 }
@@ -117,65 +71,6 @@ fun ThemeBox(
   Box(mod2) { children() }
 }
 
-@Composable
-fun NumberPicker(
-  min: Int, max: Int, getNum: () -> Int, setNum: (Int) -> Unit,
-  step: Int = 1,
-  left: (Int) -> Int = { it - step },
-  right: (Int) -> Int = { it + step },
-  editable: Boolean = false,
-  tag: () -> String? = { null }
-) {
-  Row {
-    Text(
-      "-",
-      Modifier
-        .testTag(tag()?.let { "DecrementButton ${tag()}" } ?: "DecrementButton")
-        .clickable(
-          onClick = {
-            if (getNum() > min) {
-              setNum(left(getNum()))
-            }
-          })
-        .wrapContentWidth()
-        .padding(horizontal = block() / 2)
-    )
-    Box(Modifier.wrapContentWidth()) {
-      if (editable) {
-        TextField(
-          value = getNum().toString(),
-          onValueChange = { str: String ->
-            setNum(str.toInt())
-          },
-          label = {},
-          textStyle = MaterialTheme.typography.body1.copy(textAlign = TextAlign.Center),
-          keyboardOptions = KeyboardOptions.Default.copy(keyboardType = KeyboardType.Number)
-        )
-      } else {
-        Text(
-          getNum().toString(),
-          textAlign = TextAlign.Center,
-          modifier = Modifier
-            .wrapContentWidth()
-            .padding(horizontal = block() / 2)
-        )
-      }
-    }
-    Text("+",
-      Modifier
-        .testTag(tag()?.let { "IncrementButton ${tag()}" } ?: "IncrementButton")
-        .clickable(
-          onClick = {
-            if (getNum() < max) {
-              setNum(right(getNum()))
-            }
-          })
-        .padding(horizontal = block() / 2)
-    )
-  }
-}
-
-
 
 @Composable
 fun ToggleColumn(
@@ -195,7 +90,7 @@ fun ToggleColumn(
         SquareButton(
           resource = iv.value,
           size = size(iv.index),
-          selected = selected() == iv.index,
+          dim = selected() != iv.index,
           tag = "Button ${tag(iv.index)}",
           modifier = Modifier.align(Alignment.CenterHorizontally),
           onClick = {
@@ -210,7 +105,6 @@ fun ToggleColumn(
     }
   }
 }
-
 
 
 @Composable
@@ -244,6 +138,7 @@ fun Stoppable(
 fun FreeKeyboard(
   initValue: String,
   onValueChanged: (String) -> Unit,
+  onEnter: () -> Unit,
   refresh: Boolean = true,
   tag: String = "TextTextField",
   content: @Composable() KeyboardDelegate.() -> Unit
@@ -271,12 +166,14 @@ fun FreeKeyboard(
   val token = remember {
     inputService.startInput(textFieldValue.value,
       imeOptions = ImeOptions(
-        imeAction = ImeAction.None,
+        imeAction = ImeAction.Next,
         autoCorrect = false,
         keyboardType = KeyboardType.Text,
         capitalization = KeyboardCapitalization.None
       ),
-      onImeActionPerformed = {},
+      onImeActionPerformed = {
+        onEnter()
+      },
       onEditCommand = { things ->
         var text = textFieldValue.value.text
         things.forEach { ksLogt("$it $text") }
@@ -331,7 +228,7 @@ fun FreeKeyboard(
 }
 
 @OptIn(ExperimentalComposeUiApi::class)
-class KeyboardDelegate  constructor(
+class KeyboardDelegate constructor(
   private val keyboardController: SoftwareKeyboardController,
   private val focusRequester: FocusRequester
 ) {
@@ -388,8 +285,7 @@ fun UpDownColumn(isUp: () -> Boolean, set: (Boolean) -> Unit, modifier: Modifier
 fun UpDownRow(isUp: () -> Boolean, set: (Boolean) -> Unit, modifier: Modifier = Modifier) {
   Column(modifier) {
     ToggleRow(ids = listOf(R.drawable.up, R.drawable.down), selected =
-      if (isUp()) 0 else 1
-    , onSelect = { set(it == 0) }, tag = {
+    if (isUp()) 0 else 1, onSelect = { set(it == 0) }, tag = {
       if (it == 0) "Up" else "Down"
     })
   }
@@ -402,8 +298,8 @@ fun Gap(size: Dp) = Spacer(Modifier.size(size))
 fun Gap(blocks: Float) = Gap(block(blocks))
 
 @Composable
-fun LeftRight(left: () -> Unit, right: () -> Unit) {
-  Row(Modifier.border(styledBorder())) {
+fun LeftRight(left: () -> Unit, right: () -> Unit, modifier:Modifier = Modifier) {
+  Row(modifier.border(styledBorder())) {
     SquareButton(
       resource = R.drawable.left_arrow,
       onClick = { left() }, tag = "LeftArrow"

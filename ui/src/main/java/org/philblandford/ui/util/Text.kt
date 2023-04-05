@@ -35,8 +35,8 @@ fun LabelText(resId: Int, modifier: Modifier = Modifier, align: TextAlign? = nul
 }
 
 @Composable
-fun LabelText(string: String, color: Color = MaterialTheme.colors.onBackground) {
-  Text(string, fontSize = 20.sp, color = color, fontWeight = FontWeight.Bold)
+fun LabelText(string: String) {
+  Text(string, fontSize = 20.sp, fontWeight = FontWeight.Bold)
 }
 
 

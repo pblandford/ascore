@@ -34,6 +34,7 @@ class GetPanelLayoutImpl(
             it.insertItem.layoutID
           }
           UIState.InsertChoose -> LayoutID.INSERT_CHOOSE
+          UIState.Delete -> LayoutID.EMPTY
         }
         layoutFlow.emit(layout)
       }

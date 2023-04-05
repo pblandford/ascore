@@ -12,6 +12,7 @@ enum class DeleteBehaviour {
   ENTER_STATE, DELETE_AT_MARKER
 }
 
+@Suppress("UNCHECKED_CAST")
 data class InsertItem(
   val drawable: Int,
   val string: Int,
@@ -21,10 +22,10 @@ data class InsertItem(
   val params:ParamMap = mapOf(),
   val line: Boolean = false,
   val rangeCapable: Boolean = false,
+  val typeParam:EventParam = EventParam.TYPE,
   val tapInsertBehaviour: TapInsertBehaviour = TapInsertBehaviour.INSERT,
   val deleteBehaviour: DeleteBehaviour = DeleteBehaviour.ENTER_STATE,
+  val getEventType:(Any)->EventType = { eventType }
 ) {
-  fun <T>getParam(param:EventParam)= params[param] as T
+  fun <T>getParam(param:EventParam)= params[param] as T?
 }
-
-val stubItem = InsertItem(-1, -1, "", LayoutID.LAYOUT, EventType.NO_TYPE)

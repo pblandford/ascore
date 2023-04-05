@@ -8,20 +8,21 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import org.philblandford.ui.R
 import org.philblandford.ui.common.Gap
 
 @Composable
-fun CreateFrame(titleRes:Int, next:()->Unit, cancel:()->Unit, content: @Composable () -> Unit) {
+fun CreateFrame(titleRes:Int, next:()->Unit, cancel:()->Unit, content: @Composable ColumnScope.() -> Unit) {
   CreateFrame(stringResource(titleRes), next, cancel, content)
 }
 
 @Composable
-fun CreateFrame(title:String, next:()->Unit, cancel:()->Unit, content: @Composable ()->Unit) {
+fun CreateFrame(title:String, next:()->Unit, cancel:()->Unit, content: @Composable ColumnScope.()->Unit) {
   Column(
     Modifier
-      .fillMaxWidth(0.8f)
+      .fillMaxWidth(0.9f).padding(5.dp)
       .wrapContentHeight(), horizontalAlignment = Alignment.CenterHorizontally) {
     Text(title, fontSize = 18.sp, fontWeight = FontWeight.Bold)
     Gap(0.2f)

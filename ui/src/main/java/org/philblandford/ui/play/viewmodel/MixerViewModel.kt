@@ -27,7 +27,11 @@ class MixerViewModel(
 
   override suspend fun initState(): Result<MixerModel> {
     val instruments = getInstruments().withIndex().map { (idx, instrument) ->
-      MixerInstrument(instrument.abbreviation, instrument.name, getVolume(idx + 1))
+      MixerInstrument(
+        instrument.name.split(" ").joinToString("") { it.first().uppercase() },
+        instrument.name,
+        getVolume(idx + 1)
+      )
     }
     return MixerModel(instruments).ok()
   }
@@ -35,7 +39,7 @@ class MixerViewModel(
   override fun getInterface() = this
 
   override fun setVolume(idx: Int, volume: Int) {
-      setVolumeUC(idx + 1, volume).ok()
+    setVolumeUC(idx + 1, volume).ok()
     update {
       val newInstrument = instruments[idx].copy(level = volume)
       val newList = instruments.take(idx) + newInstrument + instruments.drop(idx + 1)

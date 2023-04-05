@@ -1,5 +1,6 @@
 package org.philblandford.ui.create.compose
 
+import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -10,10 +11,13 @@ import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.rememberScrollState
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Text
+import androidx.compose.material.*
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Delete
 import androidx.compose.runtime.*
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.scale
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.testTag
@@ -31,10 +35,8 @@ import org.philblandford.ui.R
 import org.philblandford.ui.common.block
 import org.philblandford.ui.create.viewmodel.CreateInterface
 import org.philblandford.ui.create.viewmodel.CreateModel
-import org.philblandford.ui.util.DraggableList
-import org.philblandford.ui.util.Gap
-import org.philblandford.ui.util.SquareButton
-import org.philblandford.ui.util.reorder
+import org.philblandford.ui.util.*
+import timber.log.Timber
 
 @Composable
 internal fun CreateInstruments(
@@ -47,19 +49,19 @@ internal fun CreateInstruments(
   val scrollState = rememberLazyListState()
   val coroutineScope = rememberCoroutineScope()
 
-  CreateFrame(R.string.create_score_instruments, next, cancel) {
+  WizardFrame(R.string.create_score_instruments, next, cancel) {
     Column {
       InstrumentList(
         Modifier
           .fillMaxWidth()
-          .fillMaxHeight(0.3f), availableInstruments, object : CreateInterface by iface {
-          override fun addInstrument(instrument: Instrument) {
-            iface.addInstrument(instrument)
-            coroutineScope.launch {
-              scrollState.animateScrollToItem((selectedInstruments.size - 1).coerceAtLeast(0))
-            }
-          }
-        })
+          .fillMaxHeight(0.5f), availableInstruments
+      ) {
+        iface.addInstrument(it)
+        coroutineScope.launch {
+          scrollState.animateScrollToItem((selectedInstruments.size - 1).coerceAtLeast(0))
+        }
+      }
+
       Gap(0.5f)
       Text(
         stringResource(R.string.selected_instruments),
@@ -69,52 +71,11 @@ internal fun CreateInstruments(
       SelectedInstruments(
         Modifier
           .fillMaxWidth()
-          .fillMaxHeight(0.4f), selectedInstruments, iface, scrollState
+          .weight(1f), selectedInstruments, iface, scrollState
       )
     }
   }
 }
-
-@Composable
-private fun InstrumentList(
-  modifier: Modifier, instrumentGroups: List<InstrumentGroup>,
-  createInterface: CreateInterface
-) {
-
-  val expandedMap = remember { mutableStateOf((instrumentGroups.indices).associateWith { false }) }
-
-  LazyColumn(
-    modifier
-      .padding(5.dp)
-      .border(1.dp, MaterialTheme.colors.primary)
-  ) {
-    items(instrumentGroups.withIndex().toList()) { (idx, group) ->
-      Column {
-        Row {
-          Text("+", Modifier.clickable {
-            expandedMap.value = expandedMap.value + (idx to !(expandedMap.value[idx] ?: false))
-          }, fontSize = 20.sp)
-          Gap(5.dp)
-          Text(group.name, fontSize = 17.sp)
-        }
-        if (expandedMap.value[idx] == true) {
-          group.instruments.forEach {
-            Text(
-              it.name,
-              Modifier
-                .offset(20.dp)
-                .padding(5.dp)
-                .clickable {
-                  createInterface.addInstrument(it)
-                }, fontSize = 16.sp
-            )
-          }
-        }
-      }
-    }
-  }
-}
-
 
 @Composable
 private fun SelectedInstruments(
@@ -125,57 +86,91 @@ private fun SelectedInstruments(
 ) {
 
   DraggableList(
-    instruments.toList(),
+    instruments.withIndex().toList(),
     { instrument ->
-      SelectedInstrument(instrument = instrument, false, iface)
+      SwipeableInstrument(instrument.value, iface)
     },
     iface::reorderInstruments,
-    modifier
-      .padding(5.dp)
-      .border(1.dp, MaterialTheme.colors.primary),
+    modifier,
     listState,
-    { _, i -> i.name }
+    { _, i -> "${i.index} ${i.value}" }
   )
 }
+
+@OptIn(ExperimentalMaterialApi::class)
+@Composable
+private fun SwipeableInstrument(instrument: Instrument, iface: CreateInterface) {
+  val state = rememberDismissState(
+    confirmStateChange = {
+      Timber.e("state change $it $instrument")
+      if (it == DismissValue.DismissedToStart) {
+        iface.removeInstrument(instrument)
+        false
+      } else {
+        true
+      }
+    }
+  )
+
+  SwipeToDismiss(state,
+    Modifier.fillMaxWidth(),
+    directions = setOf(DismissDirection.EndToStart),
+    dismissThresholds = { androidx.compose.material.FractionalThreshold(0.5f) },
+    background = {
+      SwipeBackground(state)
+    }
+  ) {
+    SelectedInstrument(instrument, iface)
+  }
+}
+
+@OptIn(ExperimentalMaterialApi::class)
+@Composable
+private fun SwipeBackground(state: DismissState) {
+  val scale by animateFloatAsState(
+    if (state.targetValue == DismissValue.Default) 0.75f else 1f
+  )
+  Box(
+    Modifier
+      .fillMaxSize()
+      .background(Color.Red)
+      .padding(horizontal = 20.dp),
+    contentAlignment = Alignment.CenterEnd
+  ) {
+    Icon(
+      Icons.Default.Delete,
+      contentDescription = "Delete Icon",
+      modifier = Modifier.scale(scale)
+    )
+  }
+}
+
 
 @Composable
 private fun SelectedInstrument(
   instrument: Instrument,
-  selected: Boolean,
   iface: CreateInterface
 ) {
-
-  val chosen = remember {
-    mutableStateOf(instrument)
-  }
 
   Box(
     Modifier
       .fillMaxWidth()
-      .background(if (selected) MaterialTheme.colors.secondary else Color.Transparent)
+      .background(MaterialTheme.colors.surface)
   ) {
-    ConstraintLayout(Modifier.fillMaxWidth()) {
-      val (text, editButton) = createRefs()
-
+    Row(
+      Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween,
+      verticalAlignment = Alignment.CenterVertically
+    ) {
+      Text(
+        instrument.label, modifier = Modifier
+          .height(block())
+          .padding(5.dp),
+        fontSize = 17.sp
+      )
       SquareButton(resource = android.R.drawable.ic_menu_edit, tag = "${instrument.label} edit",
         backgroundColor = Color.Transparent,
         size = block(0.5),
-        modifier = Modifier.constrainAs(editButton) {
-          end.linkTo(parent.end)
-          centerVerticallyTo(parent)
-        },
         onClick = { })
-      Text(
-        instrument.label,
-        modifier = Modifier
-          .testTag("${instrument.name} selected $chosen")
-          .height(block())
-          .padding(5.dp)
-          .clickable(onClick = {
-
-          })
-          .constrainAs(text) { start.linkTo(parent.start) }
-      )
     }
   }
 }

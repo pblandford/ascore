@@ -1,7 +1,9 @@
 package org.philblandford.ui.util
 
+import GridSelection
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.unit.dp
 import com.philblandford.kscore.api.Ks
 import org.philblandford.ui.common.block
 
@@ -33,6 +35,8 @@ fun KeySelector(
     rows = rows, columns = clefs.size / rows,
     tag = { selectionToKs(it).toString() },
     itemBorder = true,
+    size = block(1.2),
+    gap = 7.dp,
     modifier = modifier,
     selected = { selected?.let { ksToSelection(it) } ?: -1 },
     onSelect = {

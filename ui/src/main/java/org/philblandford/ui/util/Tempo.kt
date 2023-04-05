@@ -40,7 +40,7 @@ fun TempoSelector(
     Spacer(modifier = Modifier.width(block(0.25f)))
     SquareButton(
       R.drawable.onedot, tag = "Dot", modifier = Modifier.align(Alignment.CenterVertically),
-      selected = getDot(), size = size
+      dim = getDot(), size = size
     ) {
       setDot(!getDot())
     }

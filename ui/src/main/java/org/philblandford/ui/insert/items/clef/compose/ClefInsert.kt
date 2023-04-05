@@ -6,5 +6,5 @@ import org.philblandford.ui.util.clefIds
 
 @Composable
 fun ClefInsert() {
-  RowInsert(clefIds)
+  RowInsert(clefIds, rows = 2)
 }

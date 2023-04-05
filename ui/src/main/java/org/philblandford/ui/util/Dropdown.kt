@@ -1,5 +1,6 @@
 package org.philblandford.ui.util
 
+import GridSelection
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.material.DropdownMenu
@@ -38,7 +39,6 @@ fun ImageGridDropdown(
         modifier = Modifier.background(Color.White),
         onDismissRequest = { showDropdown.value = false }) {
 
-        PopupTheme {
           GridSelection(
             images = images, rows = rows, border = border,
             columns = columns, size = size, tag = {
@@ -48,7 +48,6 @@ fun ImageGridDropdown(
             onSelect(it)
             showDropdown.value = false
           }
-        }
       }
     }
   }

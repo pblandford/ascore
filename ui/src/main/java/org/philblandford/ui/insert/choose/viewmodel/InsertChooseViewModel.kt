@@ -7,7 +7,6 @@ import org.philblandford.ui.base.viewmodel.VMModel
 import org.philblandford.ui.base.viewmodel.VMSideEffect
 import org.philblandford.ascore2.features.ui.model.InsertItem
 import org.philblandford.ascore2.features.ui.usecases.SelectInsertItem
-import org.philblandford.ui.insert.viewmodel.insertItems
 
 data class InsertChooseModel(
   val page: Int,
@@ -43,7 +42,8 @@ class InsertChooseViewModel(private val selectInsertItem: SelectInsertItem) :
   override fun nextPage() {
     update {
       val newPage = (page + 1) % grouped.size
-      copy(page = newPage, items = grouped[newPage])
+      val items = grouped[newPage]
+      copy(page = newPage, items = items)
     }
   }
 

@@ -1,5 +1,6 @@
 package org.philblandford.ui.insert.compose
 
+import GridSelection
 import androidx.compose.foundation.layout.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
@@ -9,7 +10,6 @@ import androidx.constraintlayout.compose.ConstraintLayout
 import org.philblandford.ui.common.block
 import org.philblandford.ui.insert.choose.viewmodel.InsertChooseInterface
 import org.philblandford.ui.insert.choose.viewmodel.InsertChooseModel
-import org.philblandford.ui.util.GridSelection
 import org.philblandford.ui.util.SquareButton
 import org.philblandford.ui.util.ThemeBox
 import org.philblandford.ui.R

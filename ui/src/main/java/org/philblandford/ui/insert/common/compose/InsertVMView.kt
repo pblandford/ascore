@@ -27,7 +27,9 @@ import org.philblandford.ui.base.viewmodel.BaseViewModel
 import org.philblandford.ui.base.viewmodel.VMInterface
 import org.philblandford.ui.base.viewmodel.VMModel
 import org.philblandford.ui.base.viewmodel.VMSideEffect
+import org.philblandford.ui.insert.common.viewmodel.DefaultInsertViewModel
 import org.philblandford.ui.insert.common.viewmodel.InsertViewModel
+import org.philblandford.ui.insert.model.DefaultInsertInterface
 import org.philblandford.ui.insert.model.InsertCombinedState
 import org.philblandford.ui.insert.model.InsertInterface
 import org.philblandford.ui.insert.model.InsertModel
@@ -54,8 +56,6 @@ inline fun <M : InsertModel, I : InsertInterface<M>,
   viewModel.getInsertState()
     .collectAsState(InsertCombinedState(null, null)).value.let { (state, insertItem) ->
 
-      Timber.e("seriously, fuck yourself $state $insertItem")
-
       BackHandler {
         viewModel.back()
       }
@@ -81,4 +81,13 @@ inline fun <M : InsertModel, I : InsertInterface<M>,
       }
 
     }
+}
+
+@Composable
+inline fun DefaultInsertVMView( contents: @Composable (InsertModel, InsertItem, DefaultInsertInterface) -> Unit
+) {
+
+  InsertVMView<InsertModel, DefaultInsertInterface, DefaultInsertViewModel> { model, item, iface ->
+    contents(model, item, iface)
+  }
 }

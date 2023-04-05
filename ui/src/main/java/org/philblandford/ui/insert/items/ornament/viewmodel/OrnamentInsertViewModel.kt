@@ -12,6 +12,7 @@ import org.philblandford.ascore2.features.ui.usecases.UpdateInsertEvent
 import org.philblandford.ascore2.features.ui.usecases.UpdateInsertParams
 import org.philblandford.ascore2.util.ok
 import org.philblandford.ui.insert.common.viewmodel.InsertViewModel
+import org.philblandford.ui.insert.items.ornament.model.OrnamentInsertModel
 import org.philblandford.ui.insert.model.InsertInterface
 import org.philblandford.ui.insert.model.InsertModel
 import org.philblandford.ui.insert.row.viewmodel.RowInsertInterface
@@ -24,8 +25,19 @@ interface OrnamentInsertInterface : RowInsertInterface<Enum<*>> {
   fun insert(idx: Int)
 }
 
-class OrnamentInsertViewModel: RowInsertViewModel<Enum<*>>(ornamentIds), OrnamentInsertInterface {
+class OrnamentInsertViewModel: InsertViewModel<OrnamentInsertModel, OrnamentInsertInterface>(), OrnamentInsertInterface {
 
+  override suspend fun initState(): Result<OrnamentInsertModel> {
+    TODO("Not yet implemented")
+  }
+
+  override fun selectItem(idx: Int) {
+    TODO("Not yet implemented")
+  }
+
+  override fun setParamType(eventParam: EventParam) {
+    TODO("Not yet implemented")
+  }
 
   override fun getInterface() = this
 

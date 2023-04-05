@@ -3,11 +3,9 @@ package org.philblandford.ui.play.compose
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.*
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Slider
-import androidx.compose.material.Text
-import androidx.compose.material.darkColors
+import androidx.compose.material.*
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.TransformOrigin
@@ -32,34 +30,17 @@ private val gold = Color(0xffFFD700)
 private val grey = Color(0xffaaaaaa)
 
 @Composable
-fun Mixer() {
+fun Mixer(modifier: Modifier) {
   VMView(MixerViewModel::class.java) { state, iface, _ ->
     MixerInternal(
-      Modifier
-        .fillMaxWidth(0.95f)
-        .height(350.dp),
+      modifier
+        .fillMaxWidth(0.95f).wrapContentHeight(),
       state.instruments,
       iface::setVolume
     )
   }
 }
 
-@Composable
-fun MixerTheme(
-  modifier: Modifier = Modifier,
-  content: @Composable () -> Unit
-) {
-  val colors = darkColors(
-    primary = gold,
-    secondary = grey,
-    background = Color.Black
-  )
-  MaterialTheme(colors) {
-    Box(modifier.background(MaterialTheme.colors.background)) {
-      content()
-    }
-  }
-}
 
 @Composable
 private fun MixerInternal(
@@ -67,31 +48,33 @@ private fun MixerInternal(
   setVolume: (Int, Int) -> Unit
 ) {
 
-  MixerTheme(modifier) {
-    Box(
+  Box(
+    modifier
+      .background(MaterialTheme.colors.surface)
+      .padding(2.dp)
+      .border(3.dp, MaterialTheme.colors.onSurface)
+  ) {
+    Column(
       Modifier
-        .fillMaxSize()
-        .padding(2.dp)
-        .border(3.dp, MaterialTheme.colors.primary)
+        .wrapContentHeight()
+        .padding(10.dp)
     ) {
-      Row(
-        Modifier
-          .fillMaxSize()
-          .padding(10.dp)
-      ) {
-        instruments.withIndex().forEach { (idx, instrument) ->
-          MixerControl(instrument) { setVolume(idx, it) }
-          Gap(0.1f)
-        }
+      instruments.withIndex().forEach { (idx, instrument) ->
+        MixerControl(instrument) { setVolume(idx, it) }
+        Gap(0.1f)
       }
     }
   }
+
 }
 
 @Composable
 private fun MixerControl(instrument: MixerInstrument, setVolume: (Int) -> Unit) {
-  Column {
-
+  Row(verticalAlignment = Alignment.CenterVertically) {
+    Text(instrument.shortName,
+Modifier.width(25.dp),
+      fontSize = 18.sp, color = MaterialTheme.colors.onSurface, maxLines = 1)
+    Gap(0.2f)
     BoxWithConstraints(
       Modifier
         .width(30.dp)
@@ -99,20 +82,29 @@ private fun MixerControl(instrument: MixerInstrument, setVolume: (Int) -> Unit) 
     ) {
       MixerSlider(instrument.level, setVolume)
     }
-    Gap(0.2f)
-    Text(instrument.shortName, fontSize = 18.sp, color = MaterialTheme.colors.primary)
   }
 }
 
 @Composable
-private fun MixerSlider(value: Int,
-setVolume: (Int) -> Unit) {
+private fun MixerSlider(
+  value: Int,
+  setVolume: (Int) -> Unit
+) {
   Timber.e("value $value")
-  Slider(value.toFloat() / 100,
-    modifier = sliderModifier, onValueChange = {
+  Slider(
+    value.toFloat() / 100,
+    modifier = Modifier
+      .fillMaxWidth()
+      .height(50.dp),
+    onValueChange = {
       Timber.e("change $it")
       setVolume((it * 100).toInt())
-    })
+    },
+    colors = SliderDefaults.colors(
+      activeTrackColor = MaterialTheme.colors.onSurface,
+      thumbColor = MaterialTheme.colors.onSurface
+    )
+  )
 
 }
 
@@ -160,5 +152,5 @@ private fun Preview() {
       MixerInstrument("ES", "Electric Sackbutt", 80),
       MixerInstrument("PS", "Piccolo Sousaphone", 20),
     )
-  ){ _,_ -> }
+  ) { _, _ -> }
 }

@@ -1,5 +1,6 @@
 package org.philblandford.ascore2.features.file
 
+import FileInfo
 import ResourceManager
 import com.philblandford.kscore.api.KScore
 import com.philblandford.kscore.api.ProgressFunc
@@ -8,7 +9,6 @@ import com.philblandford.kscore.engine.types.EventType
 import com.philblandford.kscore.engine.types.FileSource
 import com.philblandford.kscore.log.LogLevel
 import com.philblandford.kscore.log.ksLog
-import com.philblandford.kscore.log.ksLogv
 import org.apache.commons.io.FileUtils
 import timber.log.Timber
 import java.io.File
@@ -29,13 +29,14 @@ class AutoSave(private val kScore: KScore, private val resourceManager: Resource
   }
 
   fun tryAutoSave(progressFunc: ProgressFunc = noProgress): ByteArray? {
-    return resourceManager.getSavedFilePaths(FileSource.AUTOSAVE)
-      .maxByOrNull { File(it).lastModified() }?.let { autosave ->
-        val file = File(autosave)
-        progressFunc("Loading saved file ${file.name}", "", 0f)
+    return resourceManager.getSavedFiles(FileSource.AUTOSAVE)
+      .maxByOrNull { it.accessTime }?.let { autosave ->
+        val file = File(autosave.path)
+        progressFunc("Loading saved file ${file.absolutePath}", "", 0f)
         try {
           return FileUtils.readFileToByteArray(file)
         } catch (e:Exception) {
+          Timber.e("Could not load file $e")
           return null
         }
       }
@@ -45,13 +46,13 @@ class AutoSave(private val kScore: KScore, private val resourceManager: Resource
     return null //Loader.getScoreFile(AUTOSAVE_NAME, FileSource.AUTOSAVE)?.name
   }
 
-  fun getAutosaves(): List<String> {
-    return resourceManager.getSavedFileNames(FileSource.AUTOSAVE)
+  fun getAutosaves(): List<FileInfo> {
+    return resourceManager.getSavedFiles(FileSource.AUTOSAVE)
   }
 
-  internal fun saveAutoSave() {
+  private fun saveAutoSave() {
     kScore.getScoreAsBytes()?.let { scoreBytes ->
-      var title = kScore.getMeta(EventType.TITLE)
+      var title = kScore.getCurrentFilename()
       if (title.isNullOrEmpty()) title = "untitled"
       Timber.e("Autosaving $title")
       resourceManager.saveScore("$title", scoreBytes, FileSource.AUTOSAVE)

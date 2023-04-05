@@ -14,6 +14,7 @@ import org.philblandford.ui.insert.common.viewmodel.DefaultInsertViewModel
 import org.philblandford.ui.insert.model.InsertInterface
 import org.philblandford.ui.insert.model.InsertModel
 import org.philblandford.ui.util.NumberPicker
+import org.philblandford.ui.util.NumberSelector
 import org.philblandford.ui.util.ToggleRow
 
 @Composable
@@ -34,14 +35,14 @@ private fun BarInsertInternal(insertItem: InsertItem, iface: InsertInterface<Ins
     Row(Modifier.align(Alignment.CenterStart)) {
       ToggleRow(ids = listOf(R.drawable.add_bar_left, R.drawable.add_bar_right),
         tag = { if (it == 1) "After" else "Before" },
-        selected = if (insertItem.getParam(EventParam.AFTER)) 1 else 0,
+        selected = if (insertItem.getParam<Boolean>(EventParam.AFTER) == true) 1 else 0,
         onSelect = {
           iface.setParam(EventParam.AFTER, it == 1)
         })
       Spacer(Modifier.width(block()))
-      NumberPicker(min = 1, max = 32,
+      NumberSelector(min = 1, max = 32,
         editable = false,
-        getNum = { insertItem.getParam(EventParam.NUMBER) },
+        num = insertItem.getParam(EventParam.NUMBER) ?: 1,
         setNum = { iface.setParam(EventParam.NUMBER, it) })
     }
   }

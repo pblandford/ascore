@@ -1,11 +1,15 @@
 package org.philblandford.ui.main.utility.compose
 
-import androidx.compose.foundation.background
+import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.ColorFilter
+import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
 import org.philblandford.ascore2.features.ui.model.LayoutID
 import org.philblandford.ui.common.Gap
@@ -16,9 +20,10 @@ import org.philblandford.ui.main.utility.viewmodel.UtilityModel
 import org.philblandford.ui.R
 import org.philblandford.ui.base.compose.VMView
 import org.philblandford.ui.main.utility.viewmodel.UtilityViewModel
+import org.philblandford.ui.util.DimmableBox
 
 @Composable
-fun UtilityRow(panelShowing:Boolean, togglePanel:()->Unit) {
+fun UtilityRow(panelShowing: Boolean, togglePanel: () -> Unit) {
   VMView(UtilityViewModel::class.java) { model, iface, _ ->
     UtilityRowInternal(model, iface, panelShowing, togglePanel)
   }
@@ -32,43 +37,52 @@ fun UtilityRowInternal(
   togglePanel: () -> Unit
 ) {
 
-    ConstraintLayout(
-      Modifier
-        .height(block())
-        .fillMaxWidth().background(MaterialTheme.colors.surface)
-    ) {
-      val (left, right) = createRefs()
-      Row(Modifier.constrainAs(left) { start.linkTo(parent.start) }) {
-        DeleteButton(model, iface::delete, iface::deleteLong)
-        Gap(0.3f)
-        VoiceButton(model, iface::toggleVoice)
-        Gap(0.3f)
-        ZoomInOutButtons(iface::zoomIn, iface::zoomOut)
-        Gap(0.3f)
-        ClearButton(iface::clear)
-        Gap(0.3f)
-        UndoButton(iface::undo, iface::redo)
-        Gap(0.3f)
-      }
-      Row(Modifier.constrainAs(right) { end.linkTo(parent.end) }) {
-        TogglePanelButton(panelShowing, togglePanel)
-        ToggleInsertButton(model.panelType, iface::togglePanelType)
-      }
+  ConstraintLayout(
+    Modifier
+      .height(block())
+      .fillMaxWidth()
+      .background(MaterialTheme.colors.surface)
+      .border(1.dp, MaterialTheme.colors.onSurface)
+  ) {
+    val (left, right) = createRefs()
+    Row(Modifier.constrainAs(left) { start.linkTo(parent.start) }) {
+      DeleteButton(model, iface::delete, iface::deleteLong)
+      Gap(0.3f)
+      VoiceButton(model, iface::toggleVoice)
+      Gap(0.3f)
+      ZoomInOutButtons(iface::zoomIn, iface::zoomOut)
+      Gap(0.3f)
+      ClearButton(iface::clear)
+      Gap(0.3f)
+      UndoButton(iface::undo, iface::redo)
+      Gap(0.3f)
+    }
+    Row(Modifier.constrainAs(right) { end.linkTo(parent.end) }) {
+      TogglePanelButton(panelShowing, togglePanel)
+      ToggleInsertButton(model.panelType, iface::togglePanelType)
+    }
 
   }
 
 }
 
+@OptIn(ExperimentalFoundationApi::class)
 @Composable
 private fun DeleteButton(
   model: UtilityModel, delete: () -> Unit,
   deleteLong: () -> Unit
 ) {
-  Box(Modifier.width(block(2))) {
-    SquareButton(R.drawable.eraser,
-      Modifier.align(Alignment.Center),
-      model.deleteSelected,
-      onLongPress = { deleteLong() }) { delete() }
+  DimmableBox(model.deleteSelected, Modifier.width(block(2))) {
+    Image(
+      painterResource(R.drawable.eraser),
+      "",
+      Modifier
+        .align(Alignment.Center)
+        .combinedClickable(
+          onClick = delete, onLongClick = deleteLong
+        ),
+      colorFilter = ColorFilter.tint(if (model.deleteSelected) Color.White else MaterialTheme.colors.onSurface)
+    )
   }
 }
 

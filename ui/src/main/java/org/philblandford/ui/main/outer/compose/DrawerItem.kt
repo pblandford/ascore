@@ -4,6 +4,7 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
@@ -12,6 +13,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
@@ -33,16 +35,12 @@ fun DrawerItems(
   selected: (DrawerItem) -> Unit,
   close:()->Unit
 ) {
-  Column(Modifier.fillMaxSize().background(MaterialTheme.colors.primary)) {
-    SquareButton(R.drawable.cross, Modifier.offset(10.dp, 10.dp),
-    size = block(0.75f)) {
-      close()
-    }
+  Column(Modifier.wrapContentWidth().fillMaxHeight().background(MaterialTheme.colors.surface)) {
     Column(
       Modifier
         .width(200.dp)
         .testTag("SettingsDrawer")
-        .offset(50.dp, 50.dp)
+        .offset(10.dp, 10.dp)
         .verticalScroll(rememberScrollState())
     ) {
       groups.map { group ->
@@ -53,9 +51,8 @@ fun DrawerItems(
         if (opened.value) {
           group.items.map { setting ->
 
-            val background = MaterialTheme.colors.primaryVariant
             TextItem(
-              setting.nameId, background, "SubOption ${stringResource(setting.nameId)}",
+              setting.nameId, Color.Transparent, "SubOption ${stringResource(setting.nameId)}",
               10.dp
             ) {
               selected(setting)
@@ -91,7 +88,7 @@ private fun TextItem(
         .offset(offset)
         .testTag(tag)
         .align(Alignment.CenterStart),
-      color = MaterialTheme.colors.onPrimary
+      color = MaterialTheme.colors.onSurface
     )
   }
 }

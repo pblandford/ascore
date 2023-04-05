@@ -7,4 +7,5 @@ sealed class UIState {
   object InsertChoose : UIState()
   data class Insert(val insertItem: InsertItem) : UIState()
   object Clipboard : UIState()
+  object Delete : UIState()
 }

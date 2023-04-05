@@ -14,6 +14,7 @@ import org.philblandford.ui.base.viewmodel.VMInterface
 import org.philblandford.ui.base.viewmodel.VMModel
 import org.philblandford.ui.base.viewmodel.VMSideEffect
 import org.philblandford.ui.util.reorder
+import timber.log.Timber
 
 data class CreateModel(
   val newScoreDescriptor: NewScoreDescriptor,
@@ -64,7 +65,10 @@ CreateInterface {
   }
 
   override fun setTimeSignature(func: TimeSignature.() -> TimeSignature) {
-    updateScore { copy(timeSignature = timeSignature.func()) }
+
+    updateScore {
+      Timber.e("set time ${timeSignature.func()}")
+      copy(timeSignature = timeSignature.func()) }
   }
 
   override fun addInstrument(instrument: Instrument) {

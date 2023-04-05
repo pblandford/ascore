@@ -7,6 +7,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
+import timber.log.Timber
 
 class GetSelectedPartImpl(private val kScore: KScore) : GetSelectedPart{
   private val selectedPartFlow = MutableStateFlow(kScore.getSelectedPart())
@@ -14,7 +15,9 @@ class GetSelectedPartImpl(private val kScore: KScore) : GetSelectedPart{
 
   init {
     coroutineScope.launch {
+
       kScore.scoreUpdate().collectLatest {
+        Timber.e("scoreUpdate ${kScore.getSelectedPart()}")
         selectedPartFlow.emit(kScore.getSelectedPart())
       }
     }

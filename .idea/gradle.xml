@@ -12,6 +12,8 @@
           <set>
             <option value="$PROJECT_DIR$" />
             <option value="$PROJECT_DIR$/app" />
+            <option value="$PROJECT_DIR$/kscore" />
+            <option value="$PROJECT_DIR$/kscoreandroid" />
             <option value="$PROJECT_DIR$/ui" />
           </set>
         </option>

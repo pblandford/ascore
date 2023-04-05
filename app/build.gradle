@@ -6,11 +6,11 @@ plugins {
 apply from: "../versions.gradle"
 
 android {
-    compileSdk 32
+    compileSdk target_sdk
 
     defaultConfig {
-        minSdk 21
-        targetSdk 32
+        minSdkVersion "$min_sdk"
+        targetSdkVersion "$target_sdk"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables {
@@ -35,7 +35,7 @@ android {
         compose true
     }
     composeOptions {
-        kotlinCompilerExtensionVersion compose_version
+        kotlinCompilerExtensionVersion compose_compiler_version
     }
     packagingOptions {
         resources {
@@ -50,26 +50,29 @@ dependencies {
 
 
     implementation 'androidx.core:core-ktx:1.7.0'
-    implementation "androidx.compose.ui:ui:$compose_version"
-    implementation "androidx.compose.material:material:$compose_version"
-    implementation "androidx.compose.ui:ui-tooling-preview:$compose_version"
+    implementation platform("androidx.compose:compose-bom:$compose_bom_version")
+    implementation "androidx.compose.ui:ui"
+    implementation "androidx.compose.material:material"
+    implementation "androidx.compose.ui:ui-tooling-preview"
     implementation 'androidx.lifecycle:lifecycle-runtime-ktx:2.3.1'
     implementation 'androidx.activity:activity-compose:1.3.1'
-
-    // KScore
-    implementation "com.philblandford:kscoreandroid:$kscore_android_version"
-    implementation "com.philblandford:KScore:$kscore_version"
 
     /* Logging */
     implementation "com.jakewharton.timber:timber:$timber_version"
 
+    implementation 'com.google.code.gson:gson:2.10.1'
+
+
     implementation("org.apache.commons:commons-math3:$maths_version")
     implementation "commons-io:commons-io:${io_version}"
+    implementation project(path: ':kscore')
+    implementation project(path: ':kscoreandroid')
 
 
     testImplementation 'junit:junit:4.13.2'
     androidTestImplementation 'androidx.test.ext:junit:1.1.3'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.4.0'
-    androidTestImplementation "androidx.compose.ui:ui-test-junit4:$compose_version"
-    debugImplementation "androidx.compose.ui:ui-tooling:$compose_version"
+    androidTestImplementation "androidx.compose.ui:ui-test-junit4"
+    debugImplementation "androidx.compose.ui:ui-tooling"
+    implementation "org.jetbrains.kotlin:kotlin-reflect:1.7.21"
 }

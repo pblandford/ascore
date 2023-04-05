@@ -1,5 +1,6 @@
 package org.philblandford.ui.insert.items.text.compose
 
+import GridSelection
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -9,6 +10,8 @@ import androidx.compose.material.OutlinedTextField
 import androidx.compose.material.TextFieldColors
 import androidx.compose.material.TextFieldDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.testTag
@@ -22,7 +25,6 @@ import org.philblandford.ui.insert.common.viewmodel.DefaultInsertViewModel
 import org.philblandford.ui.insert.model.InsertInterface
 import org.philblandford.ui.insert.model.InsertModel
 import org.philblandford.ui.util.Gap
-import org.philblandford.ui.util.GridSelection
 import org.philblandford.ui.util.ToggleRow
 
 @Composable
@@ -54,9 +56,13 @@ private fun TextInsertInternal(
 
 @Composable
 private fun Insert(insertItem: InsertItem, iface: InsertInterface<InsertModel>) {
+  val text = remember(insertItem.eventType) { mutableStateOf(insertItem.getParam(EventParam.TEXT) ?: "") }
+
   OutlinedTextField(
-    value = insertItem.getParam<String>(EventParam.TEXT),
-    onValueChange = { iface.setParam(EventParam.TEXT, it) },
+    value = text.value,
+    onValueChange = {
+      text.value = it
+      iface.setParam(EventParam.TEXT, it) },
     modifier = Modifier
       .size(block(7), block(2))
       .testTag("MainText"),

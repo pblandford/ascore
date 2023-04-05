@@ -76,7 +76,7 @@ fun <T : Any> DraggableList(
     modifier = modifier.dragContainer(dragDropState),
     state = listState,
     contentPadding = PaddingValues(16.dp),
-    verticalArrangement = Arrangement.spacedBy(16.dp)
+    verticalArrangement = Arrangement.spacedBy(10.dp)
   ) {
     itemsIndexed(items, key = key) { index, item ->
       DraggableItem(dragDropState, index) { isDragging ->

@@ -2,7 +2,6 @@ package org.philblandford.ui.util
 
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.*
-import androidx.compose.material.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -10,7 +9,6 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.philblandford.ascore.android.ui.style.disabledColor
-import com.philblandford.ascore.android.ui.style.disabledDark
 import org.philblandford.ui.common.block
 
 
@@ -28,7 +26,6 @@ fun <T> IdRow(
     selected = selected,
     onSelect = { it?.let { onSelect(it) } },
     modifier = modifier,
-    disabledColor = disabledColor,
     tag = {
       ids[it].second.toString()
     })
@@ -45,7 +42,6 @@ fun ToggleRow(
   border: Boolean = true,
   tag: (Int) -> String = { "" },
   size: @Composable() (Int) -> Dp = { block() },
-  disabledColor: Color = com.philblandford.ascore.android.ui.style.disabledColor,
   selected: Int?,
   onSelect: (Int?) -> Unit
 ) {
@@ -59,8 +55,7 @@ fun ToggleRow(
             SquareButton(
               resource = ids[idx],
               size = size(idx),
-              selected = false,
-              foregroundColor = if (selected == idx) MaterialTheme.colors.onSurface else disabledColor,
+              dim = selected != idx,
               tag = tag(idx),
               border = border,
               modifier = Modifier.align(Alignment.CenterVertically),

@@ -1,34 +1,16 @@
 package org.philblandford.ui.util
 
-import android.content.res.Configuration
-import androidx.compose.foundation.BorderStroke
+import GridSelection
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.*
-import androidx.compose.material.Checkbox
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.LocalConfiguration
-import androidx.compose.ui.platform.testTag
-import androidx.compose.ui.text.input.KeyboardType
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.Dp
-import androidx.compose.ui.unit.dp
-import com.philblandford.ascore.android.ui.style.disabledColor
-import com.philblandford.kscore.api.Ks
 import com.philblandford.kscore.engine.duration.Duration
-import com.philblandford.kscore.engine.duration.dot
-import com.philblandford.kscore.engine.duration.numDots
-import com.philblandford.kscore.engine.duration.undot
 import com.philblandford.kscore.engine.types.*
-import com.philblandford.kscore.log.ksLogt
 import com.philblandford.kscore.log.ksLogv
 import org.philblandford.ui.common.block
 import org.philblandford.ui.R
-import kotlin.math.pow
 
 
 @Composable
@@ -76,7 +58,7 @@ fun DotToggle(
   numDots: Int, setDots: (Int) -> Unit
 ) {
   SquareButton(resource = if (numDots < 2) R.drawable.onedot else R.drawable.twodot,
-    selected = numDots > 0,
+    dim = numDots > 0,
     tag = if (numDots < 2) "Onedot" else "Twodot",
     onLongPress = { setDots(2) }) {
     if (numDots > 0) setDots(0) else setDots(1)

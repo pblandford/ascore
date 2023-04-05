@@ -51,7 +51,7 @@ class InputViewModel(
   override suspend fun initState(): Result<InputModel> {
     return InputModel(
       noteInputState().value,
-      Accidental.values().toList()
+      Accidental.values().toList() - Accidental.NATURAL
     ).ok()
   }
 
