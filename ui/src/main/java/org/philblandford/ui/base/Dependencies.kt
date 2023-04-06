@@ -49,10 +49,7 @@ import org.philblandford.ascore2.features.scorelayout.usecases.GetScoreLayout
 import org.philblandford.ascore2.features.scorelayout.usecases.GetScoreLayoutImpl
 import org.philblandford.ascore2.features.settings.SettingsDataSource
 import org.philblandford.ascore2.features.settings.repository.SettingsRepository
-import org.philblandford.ascore2.features.settings.usecases.GetColors
-import org.philblandford.ascore2.features.settings.usecases.GetColorsImpl
-import org.philblandford.ascore2.features.settings.usecases.SetColors
-import org.philblandford.ascore2.features.settings.usecases.SetColorsImpl
+import org.philblandford.ascore2.features.settings.usecases.*
 import org.philblandford.ascore2.features.sound.usecases.*
 import org.philblandford.ascore2.features.startup.StartupManager
 import org.philblandford.ascore2.features.ui.usecases.*
@@ -79,6 +76,7 @@ import org.philblandford.ui.insert.items.ornament.viewmodel.OrnamentInsertViewMo
 import org.philblandford.ui.insert.items.pagesize.viewmodel.PageSizeViewModel
 import org.philblandford.ui.insert.items.segmentwidth.viewmodel.SegmentWidthViewModel
 import org.philblandford.ui.insert.items.transposeby.viewmodel.TransposeViewModel
+import org.philblandford.ui.layout.viewmodel.LayoutOptionViewModel
 import org.philblandford.ui.load.viewmodels.LoadViewModel
 import org.philblandford.ui.main.inputpage.viewmodel.MainPageViewModel
 import org.philblandford.ui.main.panel.viewmodels.TabsViewModel
@@ -162,7 +160,7 @@ object Dependencies {
     single<ZoomOut> { ZoomOutImpl(get()) }
     single<ClearSelection> { ClearSelectionImpl(get(), get()) }
     single<MoveSelection> { MoveSelectionImpl(get()) }
-    single<HandleDeletePress> { HandleDeletePressImpl(get(), get()) }
+    single<HandleDeletePress> { HandleDeletePressImpl(get(), get(), get()) }
     single<HandleDeleteLongPress> { HandleDeleteLongPressImpl(get()) }
     viewModel {
       UtilityViewModel(
@@ -203,6 +201,7 @@ object Dependencies {
   }
 
   private val insertModule = module {
+    single<GetMarker> { GetMarkerImpl(get()) }
     single<UpdateInsertParams> { UpdateInsertParamsImpl(get()) }
     single<UpdateInsertEvent> { UpdateInsertEventImpl(get()) }
     single<UpdateInsertItem> { UpdateInsertItemImpl(get()) }
@@ -218,7 +217,7 @@ object Dependencies {
     single<InsertMetaEvent> { InsertMetaEventImpl(get()) }
     single<GetMetaEvent> { GetMetaEventImpl(get()) }
     single<InsertLyricAtMarker> { InsertLyricAtMarkerImpl(get()) }
-    single<GetLyricAtMarker> { GetLyricAtMarkerImpl(get()) }
+    single<GetLyricAtMarker> { GetLyricAtMarkerImpl(get(), get()) }
     single<GetPageWidth> { GetPageWidthImpl(get()) }
     single<GetPageMinMax> { GetPageMinMaxImpl(get()) }
     single<SetPageWidth> { SetPageWidthImpl(get())}
@@ -227,10 +226,12 @@ object Dependencies {
     single<GetSegmentWidth> { GetSegmentWidthImpl(get()) }
     single<SetSegmentWidth> { SetSegmentWidthImpl(get()) }
     single<GetHarmoniesForKey> { GetHarmoniesForKeyImpl(get()) }
+    single<SplitBar> { SplitBarImpl(get()) }
+    single<RemoveBarSplit> { RemoveBarSplitImpl(get()) }
     viewModel { InsertChooseViewModel(get()) }
     viewModel { DefaultInsertViewModel() }
-    viewModel { LyricInsertViewModel(get(), get(), get()) }
-    viewModel { HarmonyInsertViewModel(get(), get(), get()) }
+    viewModel { LyricInsertViewModel(get(), get(), get(), get()) }
+    viewModel { HarmonyInsertViewModel(get(), get(), get(), get(), get()) }
     viewModel { InstrumentInsertViewModel(get()) }
     viewModel { MetaInsertViewModel(get(), get(), get()) }
     viewModel { OrnamentInsertViewModel() }
@@ -291,7 +292,10 @@ object Dependencies {
     single<SetColors> { SetColorsImpl(get()) }
     single{ SettingsDataSource(get()) }
     single { SettingsRepository(get()) }
+    single<GetOption> { GetOptionImpl(get()) }
+    single<SetOption> { SetOptionImpl(get()) }
     viewModel { SettingsViewModel(get(), get()) }
+    viewModel{ LayoutOptionViewModel(get(), get()) }
   }
 
   private val modules = listOf(

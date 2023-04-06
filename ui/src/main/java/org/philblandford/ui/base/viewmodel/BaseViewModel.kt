@@ -23,6 +23,7 @@ abstract class VMModel
 
 interface VMInterface {
   fun reset()
+  fun getSideEffects():Flow<VMSideEffect>
 }
 
 abstract class VMSideEffect
@@ -62,6 +63,8 @@ abstract class BaseViewModel<M : VMModel, I : VMInterface, S : VMSideEffect> : V
   open val resetOnLoad = true
 
   val effectFlow = _sideEffects.receiveAsFlow()
+
+  fun getSideEffects():Flow<VMSideEffect> = effectFlow
 
   protected fun launchEffect(effect: S) {
     viewModelScope.launch {

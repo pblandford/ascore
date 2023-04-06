@@ -30,10 +30,9 @@ fun SquareButton(
   tag: String = "",
   onClick: () -> Unit = {}
 ) {
-  DimmableBox(dim, modifier.combinedClickable(onClick = onClick, onLongClick = onLongPress)) {
     SquareImage(
       resource,
-      Modifier,
+      modifier.combinedClickable(onClick = onClick, onLongClick = onLongPress),
       dim,
       border,
       size,
@@ -41,7 +40,6 @@ fun SquareButton(
       foregroundColor,
       tag,
     )
-  }
 }
 
 @Composable
@@ -58,18 +56,16 @@ fun SquareImage(
   var sizeMod = modifier.size(size)
   if (border) sizeMod = sizeMod.border(1.dp, MaterialTheme.colors.onSurface)
   Box(
-    sizeMod.background(Color.Transparent,
-      shape = RoundedCornerShape(5)
-    ),
+    sizeMod,
   ) {
     val realTag = if (dim) "$tag on" else tag
+    val foreground = foregroundColor ?: MaterialTheme.colors.onSurface
     Image(
       painterResource(resource), "",
       Modifier
         .testTag(realTag)
-        .size(size)
-        .padding(2.dp),
-      colorFilter = ColorFilter.tint(if (dim) Color.White else foregroundColor ?: MaterialTheme.colors.onSurface)
+        .size(size),
+      colorFilter = ColorFilter.tint(if (dim) foreground.copy(alpha = 0.25f) else foreground)
     )
 
   }

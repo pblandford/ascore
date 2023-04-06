@@ -50,7 +50,7 @@ class TabsViewModel(
 
   override suspend fun initState(): Result<TabsModel> {
     val parts = getTabSelections()
-    return TabsModel(true, parts, 0).ok()
+    return TabsModel(true, parts, getSelectedPart().value).ok()
   }
 
   override fun getInterface() = this

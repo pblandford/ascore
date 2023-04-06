@@ -10,19 +10,23 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import com.philblandford.ascore.external.interfaces.ExportDestination
 import com.philblandford.kscore.engine.types.ExportType
+import kotlinx.coroutines.flow.Flow
 import org.koin.androidx.compose.getViewModel
 import org.koin.core.parameter.parametersOf
 import org.philblandford.ui.R
 import org.philblandford.ui.base.compose.VMView
+import org.philblandford.ui.base.viewmodel.VMSideEffect
 import org.philblandford.ui.common.block
 import org.philblandford.ui.export.viewmodel.ExportInterface
 import org.philblandford.ui.export.viewmodel.ExportModel
 import org.philblandford.ui.export.viewmodel.ExportViewModel
 import org.philblandford.ui.insert.row.viewmodel.RowInsertViewModel
+import org.philblandford.ui.theme.DialogButton
 import org.philblandford.ui.theme.DialogTheme
 
 private fun ExportType.asStringRes(): Int {
@@ -66,7 +70,7 @@ private fun ExportFileInternal(modifier: Modifier, model: ExportModel, iface: Ex
 
 @Composable
 private fun Main(model: ExportModel, iface: ExportInterface) {
-  Column {
+  Column(Modifier.padding(10.dp), horizontalAlignment = Alignment.CenterHorizontally) {
 
     Text(stringResource(R.string.exporting_as, stringResource(id = model.exportType.asStringRes())))
     Spacer(Modifier.height(block()))
@@ -74,7 +78,8 @@ private fun Main(model: ExportModel, iface: ExportInterface) {
       modifier = Modifier.testTag("FileNameTextField"),
       onValueChange = { tf ->
         iface.setFileName(tf)
-      }, label = { Text(stringResource(R.string.filename)) })
+      },
+      label = { Text(stringResource(R.string.filename)) })
     Spacer(Modifier.height(block()))
     if (model.allParts != null) {
       Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.End) {
@@ -93,7 +98,12 @@ private fun Main(model: ExportModel, iface: ExportInterface) {
       }
       Spacer(Modifier.height(block()))
     }
-    SaveOptions(model, iface, setOf(ExportDestination.SHARE))
+    DialogButton(
+      stringResource(
+        R.string.export
+      )
+    )
+    { iface.export(ExportDestination.SHARE) }
   }
 }
 
@@ -122,5 +132,11 @@ private fun Preview() {
     override fun setExportType(exportType: ExportType) {
       TODO("Not yet implemented")
     }
+
+    override fun getSideEffects(): Flow<VMSideEffect> {
+      TODO("Not yet implemented")
+    }
+
+
   })
 }

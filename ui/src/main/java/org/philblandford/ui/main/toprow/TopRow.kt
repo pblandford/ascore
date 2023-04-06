@@ -10,12 +10,15 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
+import org.philblandford.ascore2.features.ui.model.LayoutID
 import org.philblandford.ui.R
 import org.philblandford.ui.util.SquareButton
 import org.philblandford.ui.util.ThemeBox
 
 @Composable
-fun TopRow(modifier: Modifier, openDrawer:()->Unit,
+fun TopRow(modifier: Modifier,
+           openDrawer:()->Unit,
+           showLayoutOptions:()->Unit,
            fullScreen:()->Unit,
            showConsole:()->Unit) {
 
@@ -24,7 +27,7 @@ fun TopRow(modifier: Modifier, openDrawer:()->Unit,
       SquareButton(R.drawable.settings) { openDrawer() }
       Tabs(Modifier.weight(1f))
       SquareButton(R.drawable.fullscreen) {
-        fullScreen()
+        showLayoutOptions()
       }
       SquareButton(R.drawable.mixer) {
         showConsole()

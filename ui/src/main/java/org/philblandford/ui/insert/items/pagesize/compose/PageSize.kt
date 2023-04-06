@@ -1,14 +1,12 @@
 package org.philblandford.ui.insert.items.pagesize.compose
 
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.*
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalConfiguration
+import androidx.compose.ui.unit.dp
 import org.philblandford.ui.base.compose.VMView
 import org.philblandford.ui.common.block
 import org.philblandford.ui.insert.items.pagesize.model.PageSizeModel
@@ -28,7 +26,7 @@ fun PageSize() {
 @Composable
 private fun PageSizeInternal(model: PageSizeModel, iface:PageSizeInterface) {
 
-  Column(Modifier.fillMaxWidth()) {
+  Row(Modifier.fillMaxWidth().padding(10.dp)) {
     Number(model, iface)
     Gap(0.5f)
     Presets(model, iface)

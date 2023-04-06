@@ -5,10 +5,7 @@ import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.gestures.Orientation
 import androidx.compose.foundation.gestures.scrollable
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.MaterialTheme
@@ -42,23 +39,20 @@ private fun TabsInternal(
   select: (Int) -> Unit
 ) {
   if (parts.size > 1) {
-    Row(Modifier.scrollable(rememberScrollState(), Orientation.Horizontal)) {
+    Row(Modifier.scrollable(rememberScrollState(), Orientation.Horizontal).offset(y = 5.dp)) {
       parts.withIndex().forEach { (index, part) ->
         Box(
           Modifier
             .border(2.dp, MaterialTheme.colors.onSurface, RoundedCornerShape(topEnd = 5.dp))
         ) {
-          DimmableBox(
-            selected != index, Modifier.clickable(onClick = { select(index) })
-          ) {
-            Text(
-              if (short) part.short else part.full,
-              Modifier
-                .padding(5.dp),
-              maxLines = 1,
-              color = if (selected != index) Color.White else MaterialTheme.colors.onSurface, fontSize = 15.sp,
-            )
-          }
+          Text(
+            if (short) part.short else part.full,
+            Modifier
+              .padding(5.dp).clickable { select(index) },
+            maxLines = 1,
+            color = if (selected != index) MaterialTheme.colors.onSurface.copy(alpha = 0.25f) else MaterialTheme.colors.onSurface,
+            fontSize = 15.sp,
+          )
         }
       }
     }

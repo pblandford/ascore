@@ -27,9 +27,10 @@ fun GridSelection(
   selected: () -> Int? = { null },
   onSelect: (Int) -> Unit
 ) {
-  val borderMod = if (border) modifier.border(2.dp, MaterialTheme.colors.onSurface) else modifier
+  val sizeMod = modifier.size((size + gap) * columns, (size + gap) * rows)
+  val borderMod = if (border) sizeMod.border(2.dp, MaterialTheme.colors.onSurface) else sizeMod
   ThemeBox(
-    modifier = borderMod.size((size + gap) * columns, (size + gap) * rows)
+    modifier = borderMod
   ) {
     Column {
       (0 until rows).forEach { row ->
@@ -40,7 +41,7 @@ fun GridSelection(
               SquareButton(resource = images[idx], size = size,
                 tag = tag(idx),
                 border = itemBorder,
-                dim = selected() == idx,
+                dim = selected() != null && selected() != idx,
                 onClick = { onSelect(idx) })
             }
             Gap(gap)

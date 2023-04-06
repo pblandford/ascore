@@ -26,9 +26,11 @@ import com.google.accompanist.pager.rememberPagerState
 import com.philblandford.kscore.engine.core.score.Score
 import com.philblandford.kscore.engine.types.FileSource
 import com.philblandford.kscore.engine.types.Horizontal
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.launch
 import org.philblandford.ui.R
 import org.philblandford.ui.base.compose.VMView
+import org.philblandford.ui.base.viewmodel.VMSideEffect
 import org.philblandford.ui.load.viewmodels.LoadInterface
 import org.philblandford.ui.load.viewmodels.LoadModel
 import org.philblandford.ui.load.viewmodels.LoadViewModel
@@ -221,6 +223,10 @@ private fun Preview() {
       }
 
       override fun delete(fileInfo: FileInfo) {
+        TODO("Not yet implemented")
+      }
+
+      override fun getSideEffects(): Flow<VMSideEffect> {
         TODO("Not yet implemented")
       }
     }) {

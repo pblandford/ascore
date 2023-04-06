@@ -17,10 +17,12 @@ import com.philblandford.kscore.api.InstrumentGroup
 import com.philblandford.kscore.api.NewScoreDescriptor
 import com.philblandford.kscore.engine.time.TimeSignature
 import com.philblandford.kscore.engine.types.MetaType
+import kotlinx.coroutines.flow.Flow
 import org.philblandford.ui.common.block
 import org.philblandford.ui.create.viewmodel.CreateInterface
 import org.philblandford.ui.create.viewmodel.CreateModel
 import org.philblandford.ui.R
+import org.philblandford.ui.base.viewmodel.VMSideEffect
 import org.philblandford.ui.theme.PopupTheme
 
 @Composable
@@ -137,6 +139,10 @@ internal class StubCreateInterface : CreateInterface {
   }
 
   override fun create() {
+    TODO("Not yet implemented")
+  }
+
+  override fun getSideEffects(): Flow<VMSideEffect> {
     TODO("Not yet implemented")
   }
 }

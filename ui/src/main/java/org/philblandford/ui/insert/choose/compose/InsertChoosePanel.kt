@@ -1,7 +1,9 @@
 package org.philblandford.ui.insert.compose
 
 import GridSelection
+import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.*
+import androidx.compose.material.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.testTag
@@ -30,7 +32,7 @@ fun InsertChoosePanel(model: InsertChooseModel, iface: InsertChooseInterface) {
     Modifier
       .fillMaxWidth()
       .wrapContentHeight()
-      .testTag("InsertChoosePanel")
+      .border(1.dp, MaterialTheme.colors.onSurface)
   ) {
     Column(Modifier.fillMaxWidth()) {
       SearchBox(model, iface)

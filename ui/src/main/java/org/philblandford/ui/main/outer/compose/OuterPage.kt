@@ -40,7 +40,7 @@ fun OuterPage() {
           }
         }) { scope.launch { drawerState.close() } }
     }) {
-    MainPageView { scope.launch { drawerState.open() } }
+    MainPageView( { scope.launch { drawerState.open() } }) { popupLayout.value = it }
     popupLayout.value?.let { popup ->
       SettingsDialog(popup) {
         popupLayout.value = null

@@ -2,6 +2,7 @@ package org.philblandford.ui.util
 
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.*
+import androidx.compose.material.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -46,26 +47,29 @@ fun ToggleRow(
   onSelect: (Int?) -> Unit
 ) {
 
-  Box(modifier.border(if (border) 1.dp else 0.dp, Color.White)) {
+  Box(modifier.border(if (border) 1.dp else 0.dp, MaterialTheme.colors.onSurface)) {
     Column {
       (0 until rows).forEach { row ->
-        Row {
+        Row(verticalAlignment = Alignment.CenterVertically) {
           (0 until columns).forEach { column ->
             val idx = (row * columns) + column
-            SquareButton(
-              resource = ids[idx],
-              size = size(idx),
-              dim = selected != idx,
-              tag = tag(idx),
-              border = border,
-              modifier = Modifier.align(Alignment.CenterVertically),
-              onClick = {
-                if (selected == idx) {
-                  onSelect(null)
-                } else {
-                  onSelect(idx)
-                }
-              })
+            Box(Modifier.size(size(idx) + 10.dp).
+            border(if (border) 1.dp else 0.dp, MaterialTheme.colors.onSurface).padding(5.dp)) {
+              SquareButton(
+                resource = ids[idx],
+                size = size(idx),
+                dim = selected != idx,
+                tag = tag(idx),
+             //   modifier = Modifier.padding(5.dp),
+                border = false,
+                onClick = {
+                  if (selected == idx) {
+                    onSelect(null)
+                  } else {
+                    onSelect(idx)
+                  }
+                })
+            }
             Spacer(modifier = Modifier.width(spacing))
           }
         }

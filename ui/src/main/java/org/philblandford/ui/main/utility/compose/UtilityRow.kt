@@ -59,7 +59,12 @@ fun UtilityRowInternal(
     }
     Row(Modifier.constrainAs(right) { end.linkTo(parent.end) }) {
       TogglePanelButton(panelShowing, togglePanel)
-      ToggleInsertButton(model.panelType, iface::togglePanelType)
+      ToggleInsertButton(model.panelType) {
+        iface.togglePanelType()
+        if (!panelShowing) {
+          togglePanel()
+        }
+      }
     }
 
   }
@@ -72,16 +77,16 @@ private fun DeleteButton(
   model: UtilityModel, delete: () -> Unit,
   deleteLong: () -> Unit
 ) {
-  DimmableBox(model.deleteSelected, Modifier.width(block(2))) {
+  Box(Modifier.width(block(2))) {
     Image(
       painterResource(R.drawable.eraser),
       "",
-      Modifier
+      Modifier.width(block(2))
         .align(Alignment.Center)
         .combinedClickable(
           onClick = delete, onLongClick = deleteLong
         ),
-      colorFilter = ColorFilter.tint(if (model.deleteSelected) Color.White else MaterialTheme.colors.onSurface)
+      colorFilter = ColorFilter.tint(if (model.deleteSelected) MaterialTheme.colors.onSurface.copy(alpha = 0.25f) else MaterialTheme.colors.onSurface)
     )
   }
 }

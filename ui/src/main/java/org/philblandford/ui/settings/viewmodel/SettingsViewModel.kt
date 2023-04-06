@@ -26,10 +26,11 @@ private val setColors: SetColors) : BaseViewModel<SettingsModel, SettingsInterfa
   override fun setBackgroundColor(color: HsvColor) {
     val secondary = color.copy(saturation = color.saturation * 0.6f)
     val secondaryVariant = color.copy(saturation = 1f)
-    setColors{ copy(surface = color.toColor(), secondary = secondary.toColor(), secondaryVariant = secondaryVariant.toColor())}
+    setColors{ copy(surface = color.toColor(), secondary = secondary.toColor(),
+      secondaryVariant = secondaryVariant.toColor())}
   }
 
   override fun setForegroundColor(color: HsvColor) {
-    setColors{ copy(onSurface = color.toColor()) }
+    setColors{ copy(onSurface = color.toColor(), primary = color.toColor()) }
   }
 }

@@ -34,7 +34,7 @@ fun DurationSelector(
           setDuration(selectionToDuration(selection - 1))
         }
       }
-      SquareButton(resId, tag = "Display ${getDuration()}", size = size) {}
+      SquareButton(resId, tag = "Display ${getDuration()}", size = size * 0.9f) {}
       SquareButton(R.drawable.arrow_right, tag = "ButtonRight", size = size) {
         val selection = durationToSelection(getDuration())
         if (selection < durationIds.size - 1) {

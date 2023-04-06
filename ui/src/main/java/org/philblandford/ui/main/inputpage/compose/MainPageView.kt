@@ -19,6 +19,7 @@ import com.google.accompanist.systemuicontroller.rememberSystemUiController
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import org.philblandford.ascore2.features.crosscutting.model.ErrorDescr
+import org.philblandford.ascore2.features.ui.model.LayoutID
 import org.philblandford.ui.base.compose.VMView
 import org.philblandford.ui.clipboard.compose.ClipboardView
 import org.philblandford.ui.common.Gap
@@ -37,7 +38,7 @@ import timber.log.Timber
 
 
 @Composable
-fun MainPageView(openDrawer: () -> Unit) {
+fun MainPageView(openDrawer: () -> Unit, setPopupLayout:(LayoutID)->Unit) {
   VMView(MainPageViewModel::class.java) { state, _, effect ->
 
     val coroutineScope = rememberCoroutineScope()
@@ -84,7 +85,7 @@ fun MainPageView(openDrawer: () -> Unit) {
             .fillMaxWidth()
             .align(Alignment.TopCenter)
         ) {
-          TopRow(Modifier, openDrawer, { fullScreen.value = true }) {
+          TopRow(Modifier, openDrawer, { setPopupLayout(LayoutID.LAYOUT_OPTIONS) }, { fullScreen.value = true }) {
             showConsole.value = !showConsole.value
           }
 

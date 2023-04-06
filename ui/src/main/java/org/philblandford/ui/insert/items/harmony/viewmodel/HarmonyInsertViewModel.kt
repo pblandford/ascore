@@ -1,10 +1,15 @@
 package org.philblandford.ui.insert.items.harmony.viewmodel
 
 import com.philblandford.kscore.engine.pitch.Harmony
+import com.philblandford.kscore.engine.pitch.qualityNames
+import com.philblandford.kscore.engine.types.NoteLetter
 import com.philblandford.kscore.engine.types.ParamMap
+import com.philblandford.kscore.engine.types.Pitch
 import org.philblandford.ascore2.features.harmony.GetHarmoniesForKey
 import org.philblandford.ascore2.features.input.usecases.MoveMarker
 import org.philblandford.ascore2.features.insert.InsertEventAtMarker
+import org.philblandford.ascore2.features.insert.RemoveBarSplit
+import org.philblandford.ascore2.features.insert.SplitBar
 import org.philblandford.ascore2.features.ui.model.InsertItem
 import org.philblandford.ascore2.features.ui.usecases.GetInsertItem
 import org.philblandford.ascore2.features.ui.usecases.InsertItemMenu
@@ -21,21 +26,26 @@ interface HarmonyInsertInterface : InsertInterface<HarmonyInsertModel> {
   fun markerRight()
   fun split()
   fun removeSplit()
-  fun setTone(tone:String)
-  fun setQuality(quality:String)
-  fun setRoot(root:String)
+  fun setTone(tone: Pitch)
+  fun setQuality(quality: String)
+  fun setRoot(root: Pitch)
 }
 
 class HarmonyInsertViewModel(
 
   private val moveMarker: MoveMarker,
   private val getHarmoniesForKey: GetHarmoniesForKey,
-  private val insertEventAtMarker: InsertEventAtMarker
+  private val insertEventAtMarker: InsertEventAtMarker,
+  private val splitBar: SplitBar,
+  private val removeBarSplit: RemoveBarSplit
 ) : InsertViewModel<HarmonyInsertModel, HarmonyInsertInterface>(), HarmonyInsertInterface {
 
   override suspend fun initState(): Result<HarmonyInsertModel> {
     val common = getHarmoniesForKey()
-    return HarmonyInsertModel(common.first(), common, listOf()).ok()
+    return HarmonyInsertModel(
+      common.first(), common, listOf(), Pitch.allPitches, Pitch.allPitches,
+      qualityNames
+    ).ok()
   }
 
   override fun getInterface(): HarmonyInsertInterface {
@@ -44,10 +54,10 @@ class HarmonyInsertViewModel(
 
   override fun insertHarmony(harmony: Harmony) {
     receiveAction { model ->
-        insertEventAtMarker(harmony.toEvent()).map { model }
+      insertEventAtMarker(harmony.toEvent()).map { model }
+      model.addToRecent(harmony).ok()
     }
   }
-
 
   override fun markerLeft() {
     moveMarker(true)
@@ -58,28 +68,41 @@ class HarmonyInsertViewModel(
   }
 
   override fun insertCurrent() {
-    getState().value?.let { model ->
+    receiveAction { model ->
       insertEventAtMarker(model.current.toEvent())
+      model.addToRecent(model.current).ok()
     }
   }
 
   override fun split() {
-    TODO("Not yet implemented")
+    splitBar()
   }
 
   override fun removeSplit() {
-    TODO("Not yet implemented")
+    removeBarSplit()
   }
 
-  override fun setTone(tone: String) {
-    TODO("Not yet implemented")
+  override fun setTone(tone: Pitch) {
+    update {
+      copy(current = current.copy(tone = tone))
+    }
   }
 
   override fun setQuality(quality: String) {
-    TODO("Not yet implemented")
+    update {
+      copy(current = current.copy(quality = quality))
+    }
   }
 
-  override fun setRoot(root: String) {
-    TODO("Not yet implemented")
+  override fun setRoot(root: Pitch) {
+    update {
+      copy(current = current.copy(root = root))
+    }
   }
+
+  private fun HarmonyInsertModel.addToRecent(harmony: Harmony):HarmonyInsertModel {
+    return copy(recent = (recent + harmony).reversed().distinct().reversed().takeLast(7))
+  }
+
+
 }

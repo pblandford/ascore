@@ -47,7 +47,7 @@ fun TimeSelector(modifier:Modifier, newScoreDescriptor: NewScoreDescriptor, ifac
       ) {
         SquareButton(
           R.drawable.common, Modifier.padding(10.dp),
-          dim = newScoreDescriptor.timeSignature.type == TimeSignatureType.COMMON,
+          dim = newScoreDescriptor.timeSignature.type != TimeSignatureType.COMMON,
           size = 55.dp
         ) {
           iface.setTimeSignature {
@@ -60,7 +60,7 @@ fun TimeSelector(modifier:Modifier, newScoreDescriptor: NewScoreDescriptor, ifac
         Gap(1f)
         SquareButton(
           R.drawable.cut_common,
-          dim = newScoreDescriptor.timeSignature.type == TimeSignatureType.CUT_COMMON,
+          dim = newScoreDescriptor.timeSignature.type != TimeSignatureType.CUT_COMMON,
           size = 65.dp
         ) {
           iface.setTimeSignature {

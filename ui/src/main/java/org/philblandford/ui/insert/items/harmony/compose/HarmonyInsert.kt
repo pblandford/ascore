@@ -94,7 +94,7 @@ private fun SelectRow(
 ) {
   Row(modifier) {
     ksLogt("${model.notes}")
-    TextSpinner(strings = model.notes,
+    TextSpinner(strings = model.notes.map { it.letterString() },
       grid = true,
       gridRows = 4, gridColumns = 5,
       buttonBorder = true,
@@ -121,7 +121,7 @@ private fun SelectRow(
         model.current.quality
       }, onSelect = { iface.setQuality(model.qualities[it]) })
     Text("/", Modifier.width(block()), textAlign = TextAlign.Center)
-    TextSpinner(strings = model.rootNotes,
+    TextSpinner(strings = model.rootNotes.map { it.letterString() },
       grid = true,
       gridRows = 7, gridColumns = 3,
       buttonBorder = true,
@@ -176,7 +176,9 @@ private fun RecentChords(
       text, rows = 1, columns = 7, border = true,
       textStyle = MaterialTheme.typography.body2.copy(fontSize = 13.sp)
     ) { selected ->
-      iface.insertHarmony(model.recent[selected])
+      model.recent.getOrNull(selected)?.let { harmony ->
+        iface.insertHarmony(harmony)
+      }
     }
   }
 }

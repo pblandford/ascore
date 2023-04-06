@@ -2,12 +2,14 @@ package org.philblandford.ui.insert.items.lyric.compose
 
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
-import androidx.compose.runtime.Composable
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import com.philblandford.kscore.engine.types.EventParam
 import com.philblandford.kscore.engine.types.g
 import com.philblandford.kscore.log.ksLogt
+import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.launch
 import org.philblandford.ascore2.features.ui.model.InsertItem
 import org.philblandford.ui.R
 import org.philblandford.ui.insert.common.compose.InsertVMView
@@ -28,10 +30,22 @@ fun LyricInsert() {
 
 
 @Composable
-fun LyricInsertInternal(model: LyricInsertModel, insertItem: InsertItem, iface:LyricInsertInterface) {
-  val text = insertItem.getParam(EventParam.TEXT) ?: ""
+fun LyricInsertInternal(model: LyricInsertModel,
+                        insertItem: InsertItem,
+                        iface:LyricInsertInterface) {
+  var text by remember{ mutableStateOf(insertItem.getParam(EventParam.TEXT) ?: "") }
 
   Timber.e("text $text")
+
+  val coroutineScope = rememberCoroutineScope()
+  LaunchedEffect(Unit) {
+    coroutineScope.launch {
+      iface.getSideEffects().collectLatest {
+        text = insertItem.getParam(EventParam.TEXT) ?: ""
+        Timber.e("LYR sideEffect $text")
+      }
+    }
+  }
 
   FreeKeyboard(
     initValue = text,

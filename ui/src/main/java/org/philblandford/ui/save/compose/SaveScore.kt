@@ -10,8 +10,10 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
+import kotlinx.coroutines.flow.Flow
 import org.philblandford.ui.R
 import org.philblandford.ui.base.compose.VMView
+import org.philblandford.ui.base.viewmodel.VMSideEffect
 import org.philblandford.ui.save.viewmodel.SaveInterface
 import org.philblandford.ui.save.viewmodel.SaveModel
 import org.philblandford.ui.save.viewmodel.SaveViewModel
@@ -67,6 +69,10 @@ private fun Preview() {
       }
 
       override fun saveInternal(name: String) {
+        TODO("Not yet implemented")
+      }
+
+      override fun getSideEffects(): Flow<VMSideEffect> {
         TODO("Not yet implemented")
       }
     }) {

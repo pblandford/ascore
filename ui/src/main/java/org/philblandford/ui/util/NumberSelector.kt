@@ -38,7 +38,7 @@ fun NumberSelector(
             }
           })
         .wrapContentWidth()
-        .padding(horizontal = block() / 2)
+        .padding(horizontal = block() / 3)
     )
     Box(Modifier.wrapContentWidth()) {
       if (editable) {
@@ -57,7 +57,7 @@ fun NumberSelector(
           textAlign = TextAlign.Center,
           modifier = Modifier
             .wrapContentWidth()
-            .padding(horizontal = block() / 2)
+            .padding(horizontal = block() / 3)
         )
       }
     }
@@ -70,7 +70,7 @@ fun NumberSelector(
               setNum(right(num))
             }
           })
-        .padding(horizontal = block() / 2)
+        .padding(horizontal = block() / 3)
     )
   }
 }

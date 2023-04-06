@@ -29,6 +29,7 @@ import com.philblandford.kscore.log.ksLogt
 import com.philblandford.kscore.log.ksLogv
 import org.philblandford.ui.common.block
 import org.philblandford.ui.R
+import timber.log.Timber
 
 @Composable
 fun styledBorder(): BorderStroke {
@@ -164,7 +165,8 @@ fun FreeKeyboard(
   }
 
   val token = remember {
-    inputService.startInput(textFieldValue.value,
+    inputService.startInput(
+      textFieldValue.value,
       imeOptions = ImeOptions(
         imeAction = ImeAction.Next,
         autoCorrect = false,
@@ -176,19 +178,21 @@ fun FreeKeyboard(
       },
       onEditCommand = { things ->
         var text = textFieldValue.value.text
-        things.forEach { ksLogt("$it $text") }
+        things.forEach { Timber.e("LYR $it $text") }
 
         things.forEach {
           when (it) {
             is SetComposingTextCommand -> {
-              it.text.lastOrNull()?.let { text += it }
-              ksLogt("setComp2 $text ${it.text}")
+           //   it.text.lastOrNull()?.let { text += it }
+              text = it.text
+              Timber.e("LYR setComp2 $text ${it.text}")
             }
             is CommitTextCommand -> {
-              ksLogt("commit")
-              it.text.lastOrNull()?.let { lastChar ->
-                text += lastChar
-              }
+              Timber.e("commit")
+//              it.text.lastOrNull()?.let { lastChar ->
+//                text += lastChar
+//              }
+              text = it.text
             }
             is BackspaceCommand -> {
               text = text.dropLast(1)

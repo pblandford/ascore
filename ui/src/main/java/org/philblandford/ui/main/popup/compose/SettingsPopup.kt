@@ -23,6 +23,7 @@ import org.philblandford.ui.settings.compose.Settings
 import org.philblandford.ui.create.compose.CreateScore
 import org.philblandford.ui.export.PrintFile
 import org.philblandford.ui.export.compose.ExportFile
+import org.philblandford.ui.layout.compose.LayoutOptions
 import org.philblandford.ui.load.compose.LoadScore
 import org.philblandford.ui.quickscore.compose.QuickScore
 import org.philblandford.ui.save.compose.SaveScore
@@ -44,9 +45,7 @@ fun SettingsDialog(layoutID: LayoutID, dismiss: () -> Unit) {
       }
     }
   }
-
 }
-
 
 @Composable
 private fun Layout(layoutID: LayoutID, dismiss: () -> Unit) {
@@ -84,6 +83,9 @@ private fun Layout(layoutID: LayoutID, dismiss: () -> Unit) {
     }
     LayoutID.EXPORT_SAVE -> {
       ExportFile(ExportType.SAVE)
+    }
+    LayoutID.LAYOUT_OPTIONS -> {
+      LayoutOptions()
     }
     LayoutID.SETTINGS_LAYOUT -> {
       Settings()
