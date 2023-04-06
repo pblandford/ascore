@@ -15,6 +15,7 @@ import org.philblandford.ui.R
 import org.philblandford.ui.insert.common.compose.InsertVMView
 import org.philblandford.ui.insert.items.lyric.model.LyricInsertModel
 import org.philblandford.ui.insert.items.lyric.viewmodel.LyricInsertInterface
+import org.philblandford.ui.insert.items.lyric.viewmodel.LyricInsertSideEffect
 import org.philblandford.ui.insert.items.lyric.viewmodel.LyricInsertViewModel
 import org.philblandford.ui.util.*
 import timber.log.Timber
@@ -30,19 +31,26 @@ fun LyricInsert() {
 
 
 @Composable
-fun LyricInsertInternal(model: LyricInsertModel,
-                        insertItem: InsertItem,
-                        iface:LyricInsertInterface) {
-  var text by remember{ mutableStateOf(insertItem.getParam(EventParam.TEXT) ?: "") }
+fun LyricInsertInternal(
+  model: LyricInsertModel,
+  insertItem: InsertItem,
+  iface: LyricInsertInterface
+) {
+  var text by remember { mutableStateOf(insertItem.getParam(EventParam.TEXT) ?: "") }
 
-  Timber.e("text $text")
+  Timber.e("text $text ")
+  Timber.e("LYR recompose ${insertItem.params}")
 
   val coroutineScope = rememberCoroutineScope()
   LaunchedEffect(Unit) {
     coroutineScope.launch {
-      iface.getSideEffects().collectLatest {
-        text = insertItem.getParam(EventParam.TEXT) ?: ""
-        Timber.e("LYR sideEffect $text")
+      iface.getSideEffects().collectLatest { effect ->
+        when (effect) {
+          is LyricInsertSideEffect.UpdateText -> {
+            text = effect.text
+            Timber.e("LYR sideEffect $text")
+          }
+        }
       }
     }
   }
@@ -56,7 +64,8 @@ fun LyricInsertInternal(model: LyricInsertModel,
     }) {
     Row {
       Box {
-        NumberSelector(min = 1, max = model.maxNum,
+        NumberSelector(
+          min = 1, max = model.maxNum,
           num = model.number, setNum = {
             iface.setNumber(it)
           }, editable = false

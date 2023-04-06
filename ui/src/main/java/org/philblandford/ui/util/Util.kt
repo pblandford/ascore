@@ -148,25 +148,30 @@ fun FreeKeyboard(
   val editProcessor = remember { EditProcessor() }
   val focusRequester = remember { FocusRequester() }
 
-  val textFieldValue =
-    remember {
-      mutableStateOf(
-        TextFieldValue(
+//  val textFieldValue =
+//    remember(initValue) {
+//      Timber.e("LYR remember $initValue")
+//      mutableStateOf(
+//        TextFieldValue(
+//          initValue, TextRange(
+//            initValue.length,
+//            initValue.length
+//          )
+//        )
+//      )
+//    }
+//
+//  if (refresh) {
+//    textFieldValue.value = TextFieldValue(initValue, TextRange(initValue.length, initValue.length))
+//  }
+
+  val token = remember(initValue) {
+    inputService.startInput(
+      TextFieldValue(
           initValue, TextRange(
             initValue.length,
             initValue.length
-          )
-        )
-      )
-    }
-
-  if (refresh) {
-    textFieldValue.value = TextFieldValue(initValue, TextRange(initValue.length, initValue.length))
-  }
-
-  val token = remember {
-    inputService.startInput(
-      textFieldValue.value,
+          )),
       imeOptions = ImeOptions(
         imeAction = ImeAction.Next,
         autoCorrect = false,

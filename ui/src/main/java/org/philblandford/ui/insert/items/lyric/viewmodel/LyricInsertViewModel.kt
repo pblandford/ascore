@@ -28,7 +28,7 @@ interface LyricInsertInterface : InsertInterface<LyricInsertModel> {
 }
 
 sealed class LyricInsertSideEffect : VMSideEffect() {
-  object UpdateText : VMSideEffect()
+  data class UpdateText(val text:String) : VMSideEffect()
 }
 
 class LyricInsertViewModel(
@@ -44,7 +44,8 @@ class LyricInsertViewModel(
     listenForUpdates()
     viewModelScope.launch {
       markerPosition.stateIn(viewModelScope).collectLatest {
-        launchEffect(LyricInsertSideEffect.UpdateText)
+        val text = getLyricAtMarker(getInsertItem()?.getParam<Int>(EventParam.NUMBER) ?: 1) ?: ""
+        launchEffect(LyricInsertSideEffect.UpdateText(text))
       }
     }
     return LyricInsertModel().ok()
