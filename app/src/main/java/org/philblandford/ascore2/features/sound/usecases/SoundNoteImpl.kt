@@ -12,8 +12,8 @@ class SoundNoteImpl(
   override operator fun invoke(midiVal: Int) {
     val instrument = kScore.getInstrumentAtMarker()
     instrument?.let {
-      soundManager.soundSingleNote(midiVal + instrument.transposition, instrument.program, 100, 350,
-      instrument.percussion, instrument.soundFont, instrument.bank)
+//      soundManager.soundSingleNote(midiVal + instrument.transposition, instrument.program, 100, 350,
+//      instrument.percussion, instrument.soundFont, instrument.bank)
     }
   }
 }

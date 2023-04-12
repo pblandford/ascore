@@ -12,9 +12,11 @@ import org.philblandford.ascore2.util.ok
 import org.philblandford.ui.base.viewmodel.BaseViewModel
 import org.philblandford.ui.base.viewmodel.VMInterface
 import org.philblandford.ui.base.viewmodel.VMSideEffect
+import org.philblandford.ui.insert.common.viewmodel.InsertViewModel
 import org.philblandford.ui.insert.items.pagesize.model.PageSizeModel
+import org.philblandford.ui.insert.model.InsertInterface
 
-interface PageSizeInterface : VMInterface {
+interface PageSizeInterface : InsertInterface<PageSizeModel> {
   fun setPageSize(size:Int)
   fun setPreset(preset:PageSize)
 }
@@ -23,7 +25,7 @@ class PageSizeViewModel(private val getPageWidth: GetPageWidth,
                         private val getPageMinMax: GetPageMinMax,
                         private val setPageWidth: SetPageWidth,
                         private val setPageWidthPreset: SetPageWidthPreset,
-) : BaseViewModel<PageSizeModel, PageSizeInterface, VMSideEffect>(), PageSizeInterface {
+) : InsertViewModel<PageSizeModel, PageSizeInterface>(), PageSizeInterface {
 
   init {
     viewModelScope.launch {

@@ -6,11 +6,17 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.material.OutlinedTextField
 import androidx.compose.material.Text
+import androidx.compose.material.TextField
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
@@ -25,9 +31,10 @@ import org.philblandford.ui.util.ButtonState.Companion.selected
 
 
 @Composable
-fun TempoSelector(tempo: Tempo,
-                  size: Dp = block(),
-                  update:(Tempo)->Unit,
+fun TempoSelector(
+  tempo: Tempo,
+  size: Dp = block(),
+  update: (Tempo) -> Unit,
 ) {
 
   Row(verticalAlignment = Alignment.CenterVertically) {
@@ -45,8 +52,12 @@ fun TempoSelector(tempo: Tempo,
       R.drawable.onedot, tag = "Dot", modifier = Modifier.align(Alignment.CenterVertically),
       state = selected(tempo.duration.numDots() > 0), size = size
     ) {
-      update(tempo.copy(duration = if (tempo.duration.numDots() > 0) tempo.duration.undot() else
-        tempo.duration.dot(1)))
+      update(
+        tempo.copy(
+          duration = if (tempo.duration.numDots() > 0) tempo.duration.undot() else
+            tempo.duration.dot(1)
+        )
+      )
     }
     Spacer(modifier = Modifier.width(size / 2))
     Text("=", Modifier.align(Alignment.CenterVertically))
@@ -55,6 +66,7 @@ fun TempoSelector(tempo: Tempo,
       val num = tempo.bpm
       if (num > 0) num.toString() else ""
     }
+    val bpmValue = remember{ mutableStateOf(bpm) }
     Box(
       Modifier
         .width(size * 3)
@@ -66,14 +78,18 @@ fun TempoSelector(tempo: Tempo,
           )
         )
     ) {
-      DefocusableTextField(
-        value = bpm,
-        onValueChange = { str ->
-          val int = str.toIntOrNull() ?: 0
+      OutlinedTextField(
+        value = bpmValue.value,
+        onValueChange = {
+          val int = it.toIntOrNull() ?: 0
+          bpmValue.value = it
           update(tempo.copy(bpm = int))
         },
         modifier = Modifier.width(block(2.5)),
-        keyboardType = KeyboardType.Number
+        keyboardOptions = KeyboardOptions(
+          keyboardType = KeyboardType.Number,
+          imeAction = ImeAction.Done
+        ),
       )
     }
   }

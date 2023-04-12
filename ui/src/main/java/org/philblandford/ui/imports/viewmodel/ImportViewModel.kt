@@ -27,7 +27,6 @@ class ImportViewModel(private val importScore: ImportScore) :
   override fun import(uri: Uri) {
     viewModelScope.launch {
       importScore(uri) {
-        Timber.e("FUCK YOU $it")
         update { copy(progress = it) }
       }
     }

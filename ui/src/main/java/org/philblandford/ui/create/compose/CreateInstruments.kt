@@ -180,7 +180,6 @@ private fun SelectedInstrument(
       SquareButton(resource = android.R.drawable.ic_menu_edit, tag = "${instrument.label} edit",
         size = block(0.5),
         onClick = {
-          Timber.e("FUCK YOU TWAT")
           edit()
         })
     }

@@ -4,6 +4,7 @@ import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.gestures.Orientation
 import androidx.compose.foundation.gestures.scrollable
+import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.offset
@@ -24,7 +25,6 @@ import org.philblandford.ui.main.panel.viewmodels.TabsViewModel
 fun Tabs(modifier: Modifier) {
   VMView(TabsViewModel::class.java, modifier) { state, iface, _ ->
     TabsInternal(state.short, state.instruments, state.selected, iface::select)
-
   }
 }
 
@@ -36,7 +36,10 @@ private fun TabsInternal(
   select: (Int) -> Unit
 ) {
   if (parts.size > 1) {
-    Row(Modifier.scrollable(rememberScrollState(), Orientation.Horizontal).offset(y = 5.dp)) {
+    Row(
+      Modifier
+        .horizontalScroll(rememberScrollState())
+        .offset(y = 5.dp)) {
       parts.withIndex().forEach { (index, part) ->
         val foreground =if (selected != index) MaterialTheme.colors.onSurface.copy(alpha = 0.7f) else MaterialTheme.colors.onSurface
         Box(
@@ -46,7 +49,8 @@ private fun TabsInternal(
           Text(
             if (short) part.short else part.full,
             Modifier
-              .padding(5.dp).clickable { select(index) },
+              .padding(5.dp)
+              .clickable { select(index) },
             maxLines = 1,
             color = foreground,
             fontSize = 15.sp,
