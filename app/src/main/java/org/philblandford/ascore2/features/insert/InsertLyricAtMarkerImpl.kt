@@ -9,16 +9,31 @@ class InsertLyricAtMarkerImpl(
   private val kScore: KScore,
 ) : InsertLyricAtMarker {
 
-  override fun invoke(text: String, number: Int) {
+  override fun invoke(text: String, number: Int, moveMarker: Boolean) {
     kScore.getMarker()?.let { marker ->
-      val existing = kScore.getEvent(EventType.LYRIC, marker.copy(id = number)) ?: Event(
+      val lyricAddress = marker.copy(voice = 1, id = number)
+      val existing = kScore.getEvent(EventType.LYRIC, lyricAddress) ?: Event(
         EventType.LYRIC
       )
-      kScore.addEvent(
-        EventType.LYRIC,
-        marker,
-        existing.params + (EventParam.TEXT to text) + (EventParam.NUMBER to number)
-      )
+      if (text.isNotEmpty()) {
+        kScore.batch(
+          {
+            if (moveMarker) {
+              kScore.moveMarker(false)
+            }
+          },
+          {
+            kScore.addEvent(
+              EventType.LYRIC,
+              lyricAddress,
+              existing.params + (EventParam.TEXT to text) + (EventParam.NUMBER to number)
+            )
+          }
+
+        )
+      } else {
+        kScore.deleteEvent(EventType.LYRIC, lyricAddress)
+      }
     }
   }
 }

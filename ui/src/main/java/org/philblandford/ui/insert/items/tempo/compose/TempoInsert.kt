@@ -3,7 +3,9 @@ package org.philblandford.ui.insert.items.tempo.compose
 import androidx.compose.foundation.layout.Row
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
-import com.philblandford.kscore.engine.duration.*
+import com.philblandford.kscore.engine.duration.Duration
+import com.philblandford.kscore.engine.duration.crotchet
+import com.philblandford.kscore.engine.tempo.Tempo
 import com.philblandford.kscore.engine.types.EventParam
 import org.philblandford.ascore2.features.ui.model.InsertItem
 import org.philblandford.ui.insert.common.compose.InsertVMView
@@ -15,25 +17,21 @@ import org.philblandford.ui.util.TempoSelector
 @Composable
 fun TempoInsert() {
   InsertVMView<InsertModel, InsertInterface<InsertModel>, DefaultInsertViewModel>(
-  ) { _, insertItem, iface->
+  ) { _, insertItem, iface ->
     TempoInsertInternal(insertItem, iface)
   }
 }
 
 
 @Composable
-fun TempoInsertInternal(insertItem: InsertItem, iface:InsertInterface<InsertModel>) {
+fun TempoInsertInternal(insertItem: InsertItem, iface: InsertInterface<InsertModel>) {
   val duration = insertItem.getParam<Duration>(EventParam.DURATION) ?: crotchet()
   val bpm = insertItem.getParam<Int>(EventParam.BPM) ?: 120
-  val isDotted = duration.numDots() > 0
+  val tempo = Tempo(duration, bpm)
   Row(verticalAlignment = Alignment.CenterVertically) {
-    TempoSelector(getDuration = { duration },
-      setDuration = { iface.setParam(EventParam.DURATION, it) },
-      { isDotted },
-      {
-        iface.setParam(EventParam.DURATION, if (isDotted) duration.undot() else duration.dot(1))
-      },
-      getBpm = { bpm },
-      setBpm = { iface.setParam(EventParam.BPM, it) })
+    TempoSelector(tempo) {
+      iface.setParam(EventParam.DURATION, tempo.duration)
+      iface.setParam(EventParam.BPM, tempo.bpm)
+    }
   }
 }

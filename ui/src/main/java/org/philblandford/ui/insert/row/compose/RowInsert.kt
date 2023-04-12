@@ -8,17 +8,12 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewmodel.compose.viewModel
-import com.philblandford.kscore.engine.types.EventParam
-import org.koin.androidx.compose.getViewModel
-import org.koin.core.parameter.ParametersDefinition
 import org.philblandford.ascore2.features.ui.model.InsertItem
 import org.philblandford.ui.insert.common.compose.InsertVMView
-import org.philblandford.ui.insert.model.InsertModel
 import org.philblandford.ui.insert.row.viewmodel.RowInsertInterface
 import org.philblandford.ui.insert.row.viewmodel.RowInsertModel
 import org.philblandford.ui.insert.row.viewmodel.RowInsertViewModel
 import org.philblandford.ui.util.IdRow
-import timber.log.Timber
 
 @Composable
 fun <T> RowInsert(

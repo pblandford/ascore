@@ -4,7 +4,6 @@ import androidx.lifecycle.viewModelScope
 import com.philblandford.kscore.engine.types.EventParam
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
-import org.philblandford.ascore2.features.score.ScoreUpdate
 import org.philblandford.ascore2.features.settings.usecases.GetOption
 import org.philblandford.ascore2.features.settings.usecases.SetOption
 import org.philblandford.ascore2.util.ok

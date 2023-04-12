@@ -56,6 +56,7 @@
     <string name="product_build">Build</string>
     <string name="ok">OK</string>
     <string name="cancel">Cancel</string>
+    <string name="done">Done</string>
     <string name="nothanks">No Thanks</string>
     <string name="new_score">New score</string>
     <string name="full_score">Full score</string>
@@ -223,7 +224,8 @@
     <string name="system_gap">System Gaps</string>
     <string name="system_break">Score Break</string>
     <string name="segment_width">Segment Width</string>
-    <string name="meta_data">Meta-Data</string>
+    <string name="meta_data">MetaData</string>
+    <string name="type">Type</string>
     <string name="transpose">Transpose</string>
     <string name="transpose_to">Transpose to</string>
     <string name="transpose_by">Transpose by</string>
@@ -254,6 +256,7 @@
     <string name="cached_chord">Recent:</string>
     <string name="color_scheme">Color Scheme</string>
 
+    <string name="font">Font</string>
     <string name="font_system_text">System Text</string>
     <string name="font_expression_text">Expression Text</string>
     <string name="font_title_text">Title Text</string>
@@ -339,6 +342,7 @@
     <string name="create_score_meta_data">Choose a title etc. for this score (optional)</string>
     <string name="create_score_key_signature">Choose a key signature</string>
     <string name="create_score_key_time_signature">Choose a key signature and time signature</string>
+    <string name="create_score_tempo">Choose a Tempo</string>
     <string name="create_score_time_signature">Choose a time signature</string>
     <string name="create_score_common_time">Common</string>
     <string name="create_score_cut_common_time">Cut common</string>

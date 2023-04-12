@@ -21,14 +21,11 @@ import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.times
-import androidx.compose.ui.window.Popup
 import com.philblandford.kscore.log.ksLogt
 import org.philblandford.ui.R
 import org.philblandford.ui.common.block
-import org.philblandford.ui.theme.PopupTheme
 import kotlin.math.log
 import kotlin.math.min
 import kotlin.math.pow
@@ -233,7 +230,6 @@ fun NumberImage(number: Int, color: Color = MaterialTheme.colors.onBackground) {
         SquareImage(
           numberRes,
           foregroundColor = color,
-          tag = num.toString(),
         )
       }
     }

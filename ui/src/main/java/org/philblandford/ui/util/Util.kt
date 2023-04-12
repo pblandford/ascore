@@ -9,27 +9,30 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.material.*
-import androidx.compose.runtime.*
-import androidx.compose.ui.*
-import androidx.compose.ui.focus.FocusRequester
-import androidx.compose.ui.focus.focusRequester
+import androidx.compose.material.Button
+import androidx.compose.material.MaterialTheme
+import androidx.compose.material.OutlinedTextField
+import androidx.compose.material.Text
+import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.input.pointer.pointerInput
-import androidx.compose.ui.layout.*
-import androidx.compose.ui.platform.*
+import androidx.compose.ui.platform.LocalConfiguration
+import androidx.compose.ui.platform.LocalFocusManager
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.*
-import androidx.compose.ui.text.input.*
-import androidx.compose.ui.unit.*
+import androidx.compose.ui.text.input.ImeAction
+import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.unit.Dp
+import androidx.compose.ui.unit.dp
 import com.philblandford.ascore.android.ui.style.backgroundGray
-import com.philblandford.kscore.log.ksLogt
 import com.philblandford.kscore.log.ksLogv
-import org.philblandford.ui.common.block
 import org.philblandford.ui.R
-import timber.log.Timber
+import org.philblandford.ui.common.block
+import org.philblandford.ui.util.ButtonState.Companion.selected
 
 @Composable
 fun styledBorder(): BorderStroke {
@@ -51,7 +54,7 @@ fun ToggleButton(
   border: Boolean = false,
   tag: String = ""
 ) {
-  SquareButton(resource = resource, border = border, dim = selected, tag = tag, onClick = {
+  SquareButton(resource = resource, border = border, state = selected(selected), tag = tag, onClick = {
     toggle()
   })
 }
@@ -91,7 +94,7 @@ fun ToggleColumn(
         SquareButton(
           resource = iv.value,
           size = size(iv.index),
-          dim = selected() != iv.index,
+          state = selected(selected() == iv.index),
           tag = "Button ${tag(iv.index)}",
           modifier = Modifier.align(Alignment.CenterHorizontally),
           onClick = {
@@ -134,144 +137,8 @@ fun Stoppable(
 }
 
 
-@OptIn(ExperimentalComposeUiApi::class)
 @Composable
-fun FreeKeyboard(
-  initValue: String,
-  onValueChanged: (String) -> Unit,
-  onEnter: () -> Unit,
-  refresh: Boolean = true,
-  tag: String = "TextTextField",
-  content: @Composable() KeyboardDelegate.() -> Unit
-) {
-  val inputService = LocalTextInputService.current!!
-  val editProcessor = remember { EditProcessor() }
-  val focusRequester = remember { FocusRequester() }
-
-//  val textFieldValue =
-//    remember(initValue) {
-//      Timber.e("LYR remember $initValue")
-//      mutableStateOf(
-//        TextFieldValue(
-//          initValue, TextRange(
-//            initValue.length,
-//            initValue.length
-//          )
-//        )
-//      )
-//    }
-//
-//  if (refresh) {
-//    textFieldValue.value = TextFieldValue(initValue, TextRange(initValue.length, initValue.length))
-//  }
-
-  val token = remember(initValue) {
-    inputService.startInput(
-      TextFieldValue(
-          initValue, TextRange(
-            initValue.length,
-            initValue.length
-          )),
-      imeOptions = ImeOptions(
-        imeAction = ImeAction.Next,
-        autoCorrect = false,
-        keyboardType = KeyboardType.Text,
-        capitalization = KeyboardCapitalization.None
-      ),
-      onImeActionPerformed = {
-        onEnter()
-      },
-      onEditCommand = { things ->
-        var text = textFieldValue.value.text
-        things.forEach { Timber.e("LYR $it $text") }
-
-        things.forEach {
-          when (it) {
-            is SetComposingTextCommand -> {
-           //   it.text.lastOrNull()?.let { text += it }
-              text = it.text
-              Timber.e("LYR setComp2 $text ${it.text}")
-            }
-            is CommitTextCommand -> {
-              Timber.e("commit")
-//              it.text.lastOrNull()?.let { lastChar ->
-//                text += lastChar
-//              }
-              text = it.text
-            }
-            is BackspaceCommand -> {
-              text = text.dropLast(1)
-            }
-          }
-        }
-
-        if (text != textFieldValue.value.text) {
-          textFieldValue.value = TextFieldValue(text, TextRange(text.length))
-          onValueChanged(text)
-        }
-      })
-  }
-  LocalView.current.requestFocus()
-
-  editProcessor.reset(textFieldValue.value, null)
-  val keyboardController = LocalSoftwareKeyboardController.current!!
-
-  val delegate = remember {
-    KeyboardDelegate(keyboardController, focusRequester)
-  }
-  Box(
-    Modifier
-      .focusRequester(focusRequester)
-      .testTag(tag)
-  ) {
-    delegate.content()
-  }
-
-  DisposableEffect(Unit) {
-    onDispose {
-      ksLogt("Ondispose")
-      delegate.close()
-      inputService.stopInput(token)
-    }
-  }
-}
-
-@OptIn(ExperimentalComposeUiApi::class)
-class KeyboardDelegate constructor(
-  private val keyboardController: SoftwareKeyboardController,
-  private val focusRequester: FocusRequester
-) {
-  private var haveFocus = false
-
-  fun show() {
-    ksLogt("Show")
-    focusRequester.requestFocus()
-    keyboardController.show()
-    haveFocus = true
-  }
-
-  fun hide() {
-    focusRequester.freeFocus()
-    keyboardController.show()
-    haveFocus = false
-  }
-
-  fun close() {
-    keyboardController.hide()
-  }
-
-  fun toggle() {
-    ksLogt("toggle $haveFocus")
-    if ((haveFocus)) {
-      hide()
-    } else {
-      show()
-    }
-  }
-}
-
-@Composable
-fun UpDownDependent(modifier: Modifier, isUp: () -> Boolean, set: (Boolean) -> Unit) {
+fun UpDownDependent(modifier: Modifier, isUp: Boolean, set: (Boolean) -> Unit) {
   if (LocalConfiguration.current.orientation == Configuration.ORIENTATION_PORTRAIT) {
     UpDownColumn(isUp, set, modifier)
   } else {
@@ -280,10 +147,10 @@ fun UpDownDependent(modifier: Modifier, isUp: () -> Boolean, set: (Boolean) -> U
 }
 
 @Composable
-fun UpDownColumn(isUp: () -> Boolean, set: (Boolean) -> Unit, modifier: Modifier = Modifier) {
+fun UpDownColumn(isUp: Boolean, set: (Boolean) -> Unit, modifier: Modifier = Modifier) {
   Column(modifier) {
     ToggleColumn(ids = listOf(R.drawable.up, R.drawable.down), selected = {
-      if (isUp()) 0 else 1
+      if (isUp) 0 else 1
     }, onSelect = { set(it == 0) }, tag = {
       if (it == 0) "Up" else "Down"
     })
@@ -291,10 +158,10 @@ fun UpDownColumn(isUp: () -> Boolean, set: (Boolean) -> Unit, modifier: Modifier
 }
 
 @Composable
-fun UpDownRow(isUp: () -> Boolean, set: (Boolean) -> Unit, modifier: Modifier = Modifier) {
+fun UpDownRow(isUp: Boolean, set: (Boolean) -> Unit, modifier: Modifier = Modifier) {
   Column(modifier) {
     ToggleRow(ids = listOf(R.drawable.up, R.drawable.down), selected =
-    if (isUp()) 0 else 1, onSelect = { set(it == 0) }, tag = {
+    if (isUp) 0 else 1, onSelect = { set(it == 0) }, tag = {
       if (it == 0) "Up" else "Down"
     })
   }
@@ -422,6 +289,7 @@ fun DefocusableTextField(
     value = value,
     onValueChange = onValueChange,
     modifier = modifier,
+    maxLines = 1,
     keyboardOptions = KeyboardOptions(keyboardType = keyboardType, imeAction = ImeAction.Done),
     keyboardActions = KeyboardActions(onDone = { focusManager.clearFocus() })
   )

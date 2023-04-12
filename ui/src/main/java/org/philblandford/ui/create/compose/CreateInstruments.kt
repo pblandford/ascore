@@ -2,15 +2,9 @@ package org.philblandford.ui.create.compose
 
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.foundation.background
-import androidx.compose.foundation.border
-import androidx.compose.foundation.clickable
-import androidx.compose.foundation.gestures.detectDragGesturesAfterLongPress
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListState
-import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
-import androidx.compose.foundation.rememberScrollState
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Delete
@@ -19,22 +13,17 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.scale
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.input.pointer.pointerInput
-import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.constraintlayout.compose.ConstraintLayout
 import com.philblandford.kscore.api.Instrument
 import com.philblandford.kscore.api.InstrumentGroup
-import com.philblandford.kscore.api.NewScoreDescriptor
 import kotlinx.coroutines.launch
 import org.philblandford.ui.R
 import org.philblandford.ui.common.block
 import org.philblandford.ui.create.viewmodel.CreateInterface
-import org.philblandford.ui.create.viewmodel.CreateModel
 import org.philblandford.ui.util.*
 import timber.log.Timber
 
@@ -49,7 +38,11 @@ internal fun CreateInstruments(
   val scrollState = rememberLazyListState()
   val coroutineScope = rememberCoroutineScope()
 
-  WizardFrame(R.string.create_score_instruments, next, cancel) {
+  WizardFrame(
+    R.string.create_score_instruments,
+    { if (selectedInstruments.isNotEmpty()) next() },
+    cancel
+  ) {
     Column {
       InstrumentList(
         Modifier
@@ -72,7 +65,9 @@ internal fun CreateInstruments(
         Modifier
           .fillMaxWidth()
           .weight(1f), selectedInstruments, iface, scrollState
-      )
+      ) { idx, instrument ->
+        iface.updateInstrument(idx, instrument)
+      }
     }
   }
 }
@@ -82,15 +77,27 @@ private fun SelectedInstruments(
   modifier: Modifier,
   instruments: List<Instrument>,
   iface: CreateInterface,
-  listState: LazyListState
+  listState: LazyListState,
+  update: (Int, Instrument) -> Unit
 ) {
+  var editDialog by remember { mutableStateOf<IndexedValue<Instrument>?>(null) }
+
+  editDialog?.let { (idx, instrument) ->
+    EditPartDialog(instrument, {
+      editDialog = editDialog?.copy(value = it)
+    }) {
+      editDialog?.value?.let { update(idx, it) }
+      editDialog = null
+    }
+  }
 
   DraggableList(
     instruments.withIndex().toList(),
-    { instrument ->
-      SwipeableInstrument(instrument.value, iface)
+    { iv ->
+      SwipeableInstrument(iv.value, iface) { editDialog = iv }
     },
     iface::reorderInstruments,
+    true,
     modifier,
     listState,
     { _, i -> "${i.index} ${i.value}" }
@@ -99,7 +106,10 @@ private fun SelectedInstruments(
 
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
-private fun SwipeableInstrument(instrument: Instrument, iface: CreateInterface) {
+private fun SwipeableInstrument(
+  instrument: Instrument, iface: CreateInterface,
+  edit: () -> Unit
+) {
   val state = rememberDismissState(
     confirmStateChange = {
       Timber.e("state change $it $instrument")
@@ -115,12 +125,12 @@ private fun SwipeableInstrument(instrument: Instrument, iface: CreateInterface) 
   SwipeToDismiss(state,
     Modifier.fillMaxWidth(),
     directions = setOf(DismissDirection.EndToStart),
-    dismissThresholds = { androidx.compose.material.FractionalThreshold(0.5f) },
+    dismissThresholds = { FractionalThreshold(0.5f) },
     background = {
       SwipeBackground(state)
     }
   ) {
-    SelectedInstrument(instrument, iface)
+    SelectedInstrument(instrument, edit)
   }
 }
 
@@ -149,7 +159,7 @@ private fun SwipeBackground(state: DismissState) {
 @Composable
 private fun SelectedInstrument(
   instrument: Instrument,
-  iface: CreateInterface
+  edit: () -> Unit
 ) {
 
   Box(
@@ -168,9 +178,11 @@ private fun SelectedInstrument(
         fontSize = 17.sp
       )
       SquareButton(resource = android.R.drawable.ic_menu_edit, tag = "${instrument.label} edit",
-        backgroundColor = Color.Transparent,
         size = block(0.5),
-        onClick = { })
+        onClick = {
+          Timber.e("FUCK YOU TWAT")
+          edit()
+        })
     }
   }
 }

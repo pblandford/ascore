@@ -1,7 +1,6 @@
 package org.philblandford.ui.insert.items.keysignature.model
 
 import org.philblandford.ui.R
-import org.philblandford.ui.insert.row.viewmodel.RowInsertModel
 
 private val keySignatureIds = listOf(
   R.drawable.key_c to 0,

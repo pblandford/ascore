@@ -4,18 +4,48 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
+import org.philblandford.ascore2.features.clipboard.usecases.SelectionUpdate
+import org.philblandford.ascore2.features.input.usecases.GetSelectedArea
+import org.philblandford.ascore2.features.score.ScoreUpdate
 import org.philblandford.ascore2.features.ui.model.InsertItem
-import org.philblandford.ascore2.features.ui.model.LayoutID
 import org.philblandford.ascore2.features.ui.model.UIState
+import timber.log.Timber
 import kotlin.math.sign
 
-class UiStateRepository {
-  private val coroutineScope = CoroutineScope(Dispatchers.Main)
+class UiStateRepository(
+  private val selectionUpdate: SelectionUpdate,
+  private val getSelectedArea: GetSelectedArea
+) {
 
+  private val coroutineScope = CoroutineScope(Dispatchers.Main)
   private val _voice = MutableStateFlow(1)
   private var _uiState = MutableStateFlow<UIState>(UIState.Input)
   private var _drag = MutableStateFlow(0f to 0f)
+
+  init {
+    coroutineScope.launch {
+      selectionUpdate().collectLatest {
+        Timber.e("SelectionUpdate")
+        when (val state = _uiState.value) {
+          is UIState.Edit -> {
+            getSelectedArea()?.let { area ->
+              Timber.e("COORD SelectionUpdate area ${area.scoreArea.rectangle}")
+
+              val item = state.editItem.copy(
+                event = area.event,
+                address = area.eventAddress,
+                rectangle = area.scoreArea.rectangle
+              )
+              setUiState(state.copy(editItem = item))
+            }
+          }
+          else -> {}
+        }
+      }
+    }
+  }
 
   fun setInsertItem(insertItem: InsertItem) {
     coroutineScope.launch {

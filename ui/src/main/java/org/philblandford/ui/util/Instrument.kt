@@ -71,7 +71,7 @@ fun InstrumentSelectorPortrait(
     }
     up?.let { up ->
       UpDownColumn(
-        isUp = { up },
+        isUp = up,
         set = { setUp(it) },
         modifier = Modifier.align(Alignment.CenterVertically)
       )
@@ -97,7 +97,7 @@ fun InstrumentSelectorLandscape(
     Gap(block(0.5))
     up?.let { up ->
       UpDownRow(
-        isUp = { up },
+        isUp = up,
         set = { setUp(it) },
         modifier = Modifier.align(Alignment.CenterVertically)
       )

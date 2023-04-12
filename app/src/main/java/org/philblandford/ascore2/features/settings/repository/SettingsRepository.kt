@@ -30,7 +30,7 @@ class SettingsRepository(private val settingsDataSource: SettingsDataSource) {
     settingsDataSource.getObject(colorsKey, ColorStore::class.java)?.let { stored ->
       setColors {
         lightColors(surface = Color(stored.surface), onSurface = Color(stored.onSurface),
-        secondary = Color(stored.secondary), primary = Color(stored.onSurface))
+        secondary = Color(stored.secondary), primary = Color(stored.onSurface), onPrimary = Color(stored.surface))
       }
     }
   }

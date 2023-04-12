@@ -10,6 +10,7 @@ import kotlinx.coroutines.launch
 import org.philblandford.ascore2.features.clipboard.usecases.GetSelection
 import org.philblandford.ascore2.features.crosscutting.model.ErrorDescr
 import org.philblandford.ascore2.features.crosscutting.usecases.GetError
+import org.philblandford.ascore2.features.error.GetErrorFlow
 import org.philblandford.ascore2.features.ui.model.UIState
 import org.philblandford.ascore2.features.ui.usecases.GetUIState
 import org.philblandford.ascore2.util.ok
@@ -21,6 +22,7 @@ import timber.log.Timber
 
 data class MainPageModel(
   val showClipboard: Boolean = false,
+  val showEdit: Boolean = false,
   val selectedArea: Location? = null
 ) : VMModel()
 
@@ -28,23 +30,35 @@ sealed class MainPageSideEffect : VMSideEffect() {
   data class Error(val errorDescr: ErrorDescr) : MainPageSideEffect()
 }
 
-class MainPageViewModel(private val getUIState: GetUIState,
-private val getError: GetError,
-private val getSelection: GetSelection) :
+class MainPageViewModel(
+  getUIState: GetUIState,
+  private val getError: GetErrorFlow,
+  getSelection: GetSelection
+) :
   BaseViewModel<MainPageModel, VMInterface, MainPageSideEffect>(), VMInterface {
 
   init {
-
     getSelection().combine(getUIState()) { selection, uiState ->
       update {
-        copy(showClipboard = uiState == UIState.Clipboard, selectedArea = selection?.startLocation)
+        copy(
+          showClipboard = uiState == UIState.Clipboard,
+          showEdit = uiState is UIState.Edit,
+          selectedArea = selection?.startLocation
+        )
       }
     }.stateIn(viewModelScope, SharingStarted.Eagerly, Unit)
 
     viewModelScope.launch {
       getError().collectLatest { error ->
         Timber.e("Error $error")
-        launchEffect(MainPageSideEffect.Error(error))
+        launchEffect(
+          MainPageSideEffect.Error(
+            ErrorDescr(
+              error.exception.message ?: "",
+              error.command.toString()
+            )
+          )
+        )
       }
     }
   }

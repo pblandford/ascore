@@ -11,13 +11,9 @@ import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.ViewModelProvider
 import com.philblandford.ascore.external.interfaces.ExportDestination
 import com.philblandford.kscore.engine.types.ExportType
 import kotlinx.coroutines.flow.Flow
-import org.koin.androidx.compose.getViewModel
-import org.koin.core.parameter.parametersOf
 import org.philblandford.ui.R
 import org.philblandford.ui.base.compose.VMView
 import org.philblandford.ui.base.viewmodel.VMSideEffect
@@ -25,7 +21,6 @@ import org.philblandford.ui.common.block
 import org.philblandford.ui.export.viewmodel.ExportInterface
 import org.philblandford.ui.export.viewmodel.ExportModel
 import org.philblandford.ui.export.viewmodel.ExportViewModel
-import org.philblandford.ui.insert.row.viewmodel.RowInsertViewModel
 import org.philblandford.ui.theme.DialogButton
 import org.philblandford.ui.theme.DialogTheme
 

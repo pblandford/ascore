@@ -11,13 +11,9 @@ import androidx.compose.material.Surface
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.compositionLocalOf
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
-import androidx.core.view.WindowCompat
 import com.github.zsoltk.compose.backpress.BackPressHandler
 import com.github.zsoltk.compose.backpress.LocalBackPressHandler
-import com.google.accompanist.systemuicontroller.SystemUiController
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
-import org.philblandford.ui.main.inputpage.compose.MainPageView
 import org.philblandford.ui.main.outer.compose.OuterPage
 import org.philblandford.ui.theme.AscoreTheme
 

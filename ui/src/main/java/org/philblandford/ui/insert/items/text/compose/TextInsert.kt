@@ -7,12 +7,10 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.size
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.OutlinedTextField
-import androidx.compose.material.TextFieldColors
 import androidx.compose.material.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.testTag
 import com.philblandford.kscore.engine.types.EventParam
@@ -66,7 +64,7 @@ private fun Insert(insertItem: InsertItem, iface: InsertInterface<InsertModel>) 
     modifier = Modifier
       .size(block(7), block(2))
       .testTag("MainText"),
-    colors = TextFieldDefaults.textFieldColors(cursorColor = MaterialTheme.colors.onBackground)
+    colors = TextFieldDefaults.textFieldColors(cursorColor = MaterialTheme.colors.onSurface)
   )
 }
 

@@ -2,18 +2,12 @@ package org.philblandford.ui.insert.items.harmony.viewmodel
 
 import com.philblandford.kscore.engine.pitch.Harmony
 import com.philblandford.kscore.engine.pitch.qualityNames
-import com.philblandford.kscore.engine.types.NoteLetter
-import com.philblandford.kscore.engine.types.ParamMap
 import com.philblandford.kscore.engine.types.Pitch
 import org.philblandford.ascore2.features.harmony.GetHarmoniesForKey
 import org.philblandford.ascore2.features.input.usecases.MoveMarker
 import org.philblandford.ascore2.features.insert.InsertEventAtMarker
 import org.philblandford.ascore2.features.insert.RemoveBarSplit
 import org.philblandford.ascore2.features.insert.SplitBar
-import org.philblandford.ascore2.features.ui.model.InsertItem
-import org.philblandford.ascore2.features.ui.usecases.GetInsertItem
-import org.philblandford.ascore2.features.ui.usecases.InsertItemMenu
-import org.philblandford.ascore2.features.ui.usecases.UpdateInsertParams
 import org.philblandford.ascore2.util.ok
 import org.philblandford.ui.insert.common.viewmodel.InsertViewModel
 import org.philblandford.ui.insert.items.harmony.model.HarmonyInsertModel

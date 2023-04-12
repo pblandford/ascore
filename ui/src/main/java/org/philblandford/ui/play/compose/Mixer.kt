@@ -3,7 +3,12 @@ package org.philblandford.ui.play.compose
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.*
-import androidx.compose.material.*
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
+import androidx.compose.material.MaterialTheme
+import androidx.compose.material.Slider
+import androidx.compose.material.SliderDefaults
+import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -15,9 +20,18 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Constraints
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import kotlinx.coroutines.flow.Flow
+import org.philblandford.ascore2.features.playback.entities.PlaybackState
 import org.philblandford.ui.base.compose.VMView
 import org.philblandford.ui.common.Gap
+import org.philblandford.ui.play.viewmodel.MixerInterface
+import org.philblandford.ui.play.viewmodel.MixerModel
 import org.philblandford.ui.play.viewmodel.MixerViewModel
+import org.philblandford.ui.util.SquareButton
+import org.philblandford.ui.R
+import org.philblandford.ui.base.viewmodel.VMSideEffect
+import org.philblandford.ui.util.ButtonState
+import org.philblandford.ui.util.ButtonState.Companion.selected
 import timber.log.Timber
 
 data class MixerInstrument(
@@ -26,26 +40,22 @@ data class MixerInstrument(
   val level: Int
 )
 
-private val gold = Color(0xffFFD700)
-private val grey = Color(0xffaaaaaa)
-
 @Composable
 fun Mixer(modifier: Modifier) {
   VMView(MixerViewModel::class.java) { state, iface, _ ->
     MixerInternal(
       modifier
-        .fillMaxWidth(0.95f).wrapContentHeight(),
-      state.instruments,
-      iface::setVolume
+        .fillMaxWidth(0.95f)
+        .wrapContentHeight(),
+      state,
+      iface
     )
   }
 }
 
-
 @Composable
 private fun MixerInternal(
-  modifier: Modifier, instruments: List<MixerInstrument>,
-  setVolume: (Int, Int) -> Unit
+  modifier: Modifier, model: MixerModel, iface: MixerInterface
 ) {
 
   Box(
@@ -59,10 +69,14 @@ private fun MixerInternal(
         .wrapContentHeight()
         .padding(10.dp)
     ) {
-      instruments.withIndex().forEach { (idx, instrument) ->
-        MixerControl(instrument) { setVolume(idx, it) }
-        Gap(0.1f)
+      LazyColumn(Modifier.sizeIn(maxHeight = 400.dp)) {
+        items(model.instruments.withIndex().toList()) { (idx, instrument) ->
+          MixerControl(instrument) { iface.setVolume(idx, it) }
+          Gap(0.1f)
+        }
       }
+      Gap(0.5f)
+      ButtonRow(model, iface)
     }
   }
 
@@ -105,7 +119,6 @@ private fun MixerSlider(
       thumbColor = MaterialTheme.colors.onSurface
     )
   )
-
 }
 
 @Composable
@@ -120,26 +133,18 @@ private fun MixerButton(modifier: Modifier) {
   }
 }
 
-private val sliderModifier = Modifier
-  .graphicsLayer {
-    rotationZ = 270f
-    transformOrigin = TransformOrigin(0f, 0f)
+@Composable
+private fun ButtonRow(model:MixerModel, iface:MixerInterface) {
+  Row(Modifier.fillMaxWidth().border(1.dp, MaterialTheme.colors.onSurface).padding(2.dp),
+  verticalAlignment = Alignment.CenterVertically) {
+    SquareButton(R.drawable.shuffle,state = selected(model.playbackState.shuffle)) { iface.toggleShuffle() }
+    Gap(0.5f)
+    SquareButton(R.drawable.chord, state = selected(model.playbackState.harmonies)) { iface.toggleHarmonies() }
+    Gap(0.5f)
+    SquareButton(R.drawable.loop, state = selected(model.playbackState.loop)) { iface.toggleLoop() }
+    Gap(0.5f)
   }
-  .layout { measurable, constraints ->
-    val placeable = measurable.measure(
-      Constraints(
-        minWidth = constraints.minHeight,
-        maxWidth = constraints.maxHeight,
-        minHeight = constraints.minWidth,
-        maxHeight = constraints.maxHeight,
-      )
-    )
-    layout(placeable.height, placeable.width) {
-      placeable.place(-placeable.width, 0)
-    }
-  }
-  .fillMaxWidth()
-  .height(50.dp)
+}
 
 @Composable
 @Preview
@@ -147,10 +152,37 @@ private fun Preview() {
   MixerInternal(
     Modifier
       .fillMaxWidth()
-      .height(300.dp), listOf(
+      .height(300.dp),
+    MixerModel(
+    listOf(
       MixerInstrument("AC", "Acoustic Crumhorn", 50),
       MixerInstrument("ES", "Electric Sackbutt", 80),
       MixerInstrument("PS", "Piccolo Sousaphone", 20),
-    )
-  ) { _, _ -> }
+    ), PlaybackState(false, false, false)),
+    object : MixerInterface {
+      override fun reset() {
+        TODO("Not yet implemented")
+      }
+
+      override fun getSideEffects(): Flow<VMSideEffect> {
+        TODO("Not yet implemented")
+      }
+
+      override fun setVolume(idx: Int, volume: Int) {
+        TODO("Not yet implemented")
+      }
+
+      override fun toggleLoop() {
+        TODO("Not yet implemented")
+      }
+
+      override fun toggleShuffle() {
+        TODO("Not yet implemented")
+      }
+
+      override fun toggleHarmonies() {
+        TODO("Not yet implemented")
+      }
+    }
+  )
 }

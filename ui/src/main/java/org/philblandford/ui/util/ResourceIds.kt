@@ -1,6 +1,5 @@
 package org.philblandford.ui.util
 
-import org.philblandford.ui.R
 import com.philblandford.kscore.engine.duration.*
 import com.philblandford.kscore.engine.types.*
 import com.philblandford.kscore.engine.types.ArticulationType.*
@@ -11,6 +10,7 @@ import com.philblandford.kscore.engine.types.DynamicType.*
 import com.philblandford.kscore.engine.types.FermataType.SQUARE
 import com.philblandford.kscore.engine.types.FermataType.TRIANGLE
 import com.philblandford.kscore.engine.types.OrnamentType.*
+import org.philblandford.ui.R
 
 internal val durationIds by lazy {
   listOf(

@@ -5,8 +5,6 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.material.Checkbox
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -20,60 +18,56 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.google.accompanist.pager.ExperimentalPagerApi
-import com.google.accompanist.pager.PagerState
 import com.google.accompanist.pager.VerticalPager
 import com.google.accompanist.pager.rememberPagerState
 import com.philblandford.ascore.android.ui.style.disabledColor
+import com.philblandford.kscore.engine.time.TimeSignature
 import com.philblandford.kscore.engine.types.TimeSignatureType
 import org.philblandford.ui.common.block
 import timber.log.Timber
-import java.lang.Math.pow
 import kotlin.math.log
 import kotlin.math.pow
 
 
 @Composable
 fun TimeSignatureSelector(
-  numerator: Int,
-  setNumerator: (Int) -> Unit,
-  denominator: Int,
-  setDenominator: (Int) -> Unit,
-  type: TimeSignatureType,
-  setType: (TimeSignatureType) -> Unit,
+  timeSignature: TimeSignature,
+  set:(TimeSignature)->Unit,
   disableNumbersIfNotCustom: Boolean = true
 ) {
-  val enabled = !disableNumbersIfNotCustom || type == TimeSignatureType.CUSTOM
+  val enabled = !disableNumbersIfNotCustom || timeSignature.type == TimeSignatureType.CUSTOM
 
   Row(verticalAlignment = Alignment.CenterVertically) {
     Stoppable(enabled, disabledColor = Color.Transparent) {
-      CustomTimeSelector(numerator, denominator, setNumerator, setDenominator)
+      CustomTimeSelector(timeSignature, set)
     }
     Spacer(Modifier.width(block()))
-    TimeSignatureTypeSelector(type, setType)
+    TimeSignatureTypeSelector(timeSignature.type, { set(timeSignature.copy(type = it))})
   }
 }
 
 @Composable
 fun CustomTimeSelector(
-  numerator: Int,
-  denominator: Int,
-  setNumerator: (Int) -> Unit,
-  setDenominator: (Int) -> Unit,
+  timeSignature: TimeSignature,
+  set: (TimeSignature) -> Unit,
   enabled: Boolean = true
 ) {
   val color = if (enabled) MaterialTheme.colors.onSurface else disabledColor
 
   Row {
-    TimeNumberPicker(Modifier.size(100.dp, 50.dp), (1..32).toList(), numerator, setNumerator)
-    Text(
-      "/",
-      Modifier.width(block()),
-      fontSize = 30.sp,
-      color = color,
-      textAlign = TextAlign.Center
-    )
-    val range = (1..5).map { 2.0.pow(it.toDouble()).toInt() }
-    TimeNumberPicker(Modifier.size(100.dp, 50.dp), range, denominator, setDenominator)
+      TimeNumberPicker(Modifier.size(100.dp, 50.dp), (1..32).toList(), timeSignature.numerator)
+      { set(timeSignature.copy(numerator = it)) }
+      Text(
+        "/",
+        Modifier.width(block()),
+        fontSize = 30.sp,
+        color = color,
+        textAlign = TextAlign.Center
+      )
+      val range = (1..5).map { 2.0.pow(it.toDouble()).toInt() }
+      TimeNumberPicker(Modifier.size(100.dp, 50.dp), range, timeSignature.denominator)
+      { set(timeSignature.copy(denominator = it)) }
+
   }
 }
 
@@ -192,8 +186,8 @@ fun TimeNumberPicker(
   }
 
   LaunchedEffect(pagerState.currentPage) {
-      range.getOrNull(pagerState.currentPage)?.let {
-        if (it != initValue)
+    range.getOrNull(pagerState.currentPage)?.let {
+      if (it != initValue)
         set(it)
     }
   }

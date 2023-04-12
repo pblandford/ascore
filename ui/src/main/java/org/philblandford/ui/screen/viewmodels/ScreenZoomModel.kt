@@ -6,9 +6,6 @@ import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import org.philblandford.ascore2.features.drawing.DrawPage
 import org.philblandford.ascore2.features.drawing.ScoreChanged
-import org.philblandford.ascore2.features.gesture.HandleLongPress
-import org.philblandford.ascore2.features.gesture.HandleTap
-import org.philblandford.ascore2.features.score.CreateDefaultScore
 import org.philblandford.ascore2.features.scorelayout.usecases.GetScoreLayout
 import org.philblandford.ascore2.features.scorelayout.usecases.ScoreLayout
 import org.philblandford.ascore2.features.sound.usecases.GetPlaybackMarker

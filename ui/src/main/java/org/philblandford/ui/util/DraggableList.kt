@@ -23,27 +23,11 @@ import androidx.compose.animation.core.spring
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.gestures.detectDragGesturesAfterLongPress
 import androidx.compose.foundation.gestures.scrollBy
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.ColumnScope
-import androidx.compose.foundation.layout.PaddingValues
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.LazyItemScope
-import androidx.compose.foundation.lazy.LazyListItemInfo
-import androidx.compose.foundation.lazy.LazyListState
-import androidx.compose.foundation.lazy.itemsIndexed
-import androidx.compose.foundation.lazy.rememberLazyListState
+import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.lazy.*
 import androidx.compose.material.Card
 import androidx.compose.material.Text
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
-import androidx.compose.runtime.setValue
+import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.graphicsLayer
@@ -51,7 +35,6 @@ import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.zIndex
-import com.philblandford.kscore.engine.util.replace
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.launch
@@ -62,27 +45,46 @@ fun <T : Any> DraggableList(
   items: List<T>,
   itemContent: @Composable (T) -> Unit,
   reorder: (Int, Int) -> Unit,
+  vertical:Boolean = true,
   modifier: Modifier = Modifier,
   listState: LazyListState = rememberLazyListState(),
   key:(Int, T)->Any = { _, item -> item},
 
   ) {
 
-  val dragDropState = rememberDragDropState(listState) { fromIndex, toIndex ->
+  val dragDropState = rememberDragDropState(listState, vertical) { fromIndex, toIndex ->
     reorder(fromIndex, toIndex)
   }
 
-  LazyColumn(
-    modifier = modifier.dragContainer(dragDropState),
-    state = listState,
-    contentPadding = PaddingValues(16.dp),
-    verticalArrangement = Arrangement.spacedBy(10.dp)
-  ) {
-    itemsIndexed(items, key = key) { index, item ->
-      DraggableItem(dragDropState, index) { isDragging ->
-        val elevation by animateDpAsState(if (isDragging) 4.dp else 1.dp)
-        Card(elevation = elevation) {
-          itemContent(item)
+  if (vertical) {
+    LazyColumn(
+      modifier = modifier.dragContainer(dragDropState),
+      state = listState,
+      contentPadding = PaddingValues(16.dp),
+      verticalArrangement = Arrangement.spacedBy(10.dp)
+    ) {
+      itemsIndexed(items, key = key) { index, item ->
+        DraggableItem(dragDropState, index) { isDragging ->
+          val elevation by animateDpAsState(if (isDragging) 4.dp else 1.dp)
+          Card(elevation = elevation) {
+            itemContent(item)
+          }
+        }
+      }
+    }
+  } else {
+    LazyRow(
+      modifier = modifier.dragContainer(dragDropState),
+      state = listState,
+      contentPadding = PaddingValues(16.dp),
+      horizontalArrangement = Arrangement.spacedBy(5.dp)
+    ) {
+      itemsIndexed(items, key = key) { index, item ->
+        DraggableItem(dragDropState, index, false) { isDragging ->
+          val elevation by animateDpAsState(if (isDragging) 4.dp else 1.dp)
+          Card(elevation = elevation) {
+            itemContent(item)
+          }
         }
       }
     }
@@ -92,6 +94,7 @@ fun <T : Any> DraggableList(
 @Composable
 fun rememberDragDropState(
   lazyListState: LazyListState,
+  vertical: Boolean,
   onMove: (Int, Int) -> Unit
 ): DragDropState {
   val scope = rememberCoroutineScope()
@@ -99,7 +102,8 @@ fun rememberDragDropState(
     DragDropState(
       state = lazyListState,
       onMove = onMove,
-      scope = scope
+      scope = scope,
+      vertical = vertical
     )
   }
   LaunchedEffect(state) {
@@ -114,6 +118,7 @@ fun rememberDragDropState(
 class DragDropState internal constructor(
   private val state: LazyListState,
   private val scope: CoroutineScope,
+  private val vertical: Boolean,
   private val onMove: (Int, Int) -> Unit
 ) {
   var draggingItemIndex by mutableStateOf<Int?>(null)
@@ -140,7 +145,8 @@ class DragDropState internal constructor(
   internal fun onDragStart(offset: Offset) {
     state.layoutInfo.visibleItemsInfo
       .firstOrNull { item ->
-        offset.y.toInt() in item.offset..(item.offset + item.size)
+        if (vertical ) offset.y.toInt() in item.offset..(item.offset + item.size)
+        else offset.x.toInt() in item.offset..(item.offset + item.size)
       }?.also {
         draggingItemIndex = it.index
         draggingItemInitialOffset = it.offset
@@ -169,7 +175,8 @@ class DragDropState internal constructor(
   }
 
   internal fun onDrag(offset: Offset) {
-    draggingItemDraggedDelta += offset.y
+    if (vertical) draggingItemDraggedDelta += offset.y
+    else draggingItemDraggedDelta += offset.x
 
     val draggingItem = draggingItemLayoutInfo ?: return
     val startOffset = draggingItem.offset + draggingItemOffset
@@ -235,6 +242,7 @@ fun Modifier.dragContainer(dragDropState: DragDropState): Modifier {
 fun LazyItemScope.DraggableItem(
   dragDropState: DragDropState,
   index: Int,
+  vertical: Boolean = true,
   modifier: Modifier = Modifier,
   content: @Composable ColumnScope.(isDragging: Boolean) -> Unit
 ) {
@@ -243,13 +251,15 @@ fun LazyItemScope.DraggableItem(
     Modifier
       .zIndex(1f)
       .graphicsLayer {
-        translationY = dragDropState.draggingItemOffset
+        if (vertical) translationY = dragDropState.draggingItemOffset
+        else translationX = dragDropState.draggingItemOffset
       }
   } else if (index == dragDropState.previousIndexOfDraggedItem) {
     Modifier
       .zIndex(1f)
       .graphicsLayer {
-        translationY = dragDropState.previousItemOffset.value
+        if (vertical) translationY = dragDropState.previousItemOffset.value
+        else translationX = dragDropState.previousItemOffset.value
       }
   } else {
     Modifier.animateItemPlacement()
@@ -263,8 +273,8 @@ fun LazyItemScope.DraggableItem(
 @Preview
 private fun Preview() {
   var instruments by remember { mutableStateOf(List(50) { it }) }
-  DraggableList(instruments, {
-    Text("Instrument $it", Modifier.padding(10.dp))
+  DraggableList(instruments, { item ->
+    Text("Instrument $item", Modifier.padding(10.dp))
   },
     { old, new -> instruments = instruments.reorder(old, new) }
   )

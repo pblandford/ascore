@@ -4,10 +4,8 @@ import com.philblandford.kscore.engine.types.EventType
 import com.philblandford.kscore.engine.types.eZero
 import org.philblandford.ascore2.features.insert.InsertEvent
 import org.philblandford.ascore2.util.ok
-import org.philblandford.ui.insert.common.viewmodel.DefaultInsertViewModel
 import org.philblandford.ui.insert.common.viewmodel.InsertViewModel
 import org.philblandford.ui.insert.model.DefaultInsertInterface
-import org.philblandford.ui.insert.model.InsertInterface
 import org.philblandford.ui.insert.model.InsertModel
 
 interface TransposeInterface : DefaultInsertInterface {

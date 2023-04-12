@@ -1,6 +1,8 @@
 package org.philblandford.ui.insert.items.dynamic.compose
 
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.width
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -19,8 +21,9 @@ fun DynamicInsert() {
       Spacer(Modifier.width(block(0.5)))
       UpDownDependent(
         Modifier.align(Alignment.CenterVertically),
-        { item.getParam<Boolean>(EventParam.IS_UP) == true },
-        { iface.setParam(EventParam.IS_UP, it) })
+        item.getParam<Boolean>(EventParam.IS_UP) == true
+      )
+      { iface.setParam(EventParam.IS_UP, it) }
     }
   }
 }

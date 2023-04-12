@@ -7,6 +7,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import com.philblandford.kscore.engine.types.GraceType
 import org.philblandford.ui.R
+import org.philblandford.ui.util.ButtonState.Companion.selected
 import org.philblandford.ui.util.SquareButton
 import org.philblandford.ui.util.styledBorder
 
@@ -34,7 +35,7 @@ fun GraceButtons(
         onClick = {
           val grace = if (model.graceType == GraceType.APPOGGIATURA) GraceType.NONE else GraceType.APPOGGIATURA
           iface.setGrace(grace)
-        }, dim = model.graceType == GraceType.APPOGGIATURA
+        }, state = selected(model.graceType == GraceType.APPOGGIATURA)
       )
       SquareButton(
         resource = R.drawable.acciaccatura,
@@ -42,14 +43,14 @@ fun GraceButtons(
         onClick = {
           val grace = if (model.graceType == GraceType.ACCIACCATURA) GraceType.NONE else GraceType.ACCIACCATURA
           iface.setGrace(grace)
-        }, dim = model.graceType == GraceType.ACCIACCATURA
+        }, state = selected(model.graceType == GraceType.ACCIACCATURA)
       )
       SquareButton(
         resource = R.drawable.add_bar_right,
         tag = "GraceShift",
         onClick = {
           iface.toggleGraceShift()
-        }, dim = model.graceShift
+        }, state = selected(model.graceShift)
       )
     }
   }

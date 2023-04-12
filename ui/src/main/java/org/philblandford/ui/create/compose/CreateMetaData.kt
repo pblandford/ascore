@@ -1,6 +1,9 @@
 package org.philblandford.ui.create.compose
 
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.MaterialTheme
@@ -13,16 +16,16 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.tooling.preview.Preview
 import com.philblandford.kscore.api.Instrument
-import com.philblandford.kscore.api.InstrumentGroup
 import com.philblandford.kscore.api.NewScoreDescriptor
+import com.philblandford.kscore.engine.tempo.Tempo
 import com.philblandford.kscore.engine.time.TimeSignature
 import com.philblandford.kscore.engine.types.MetaType
 import kotlinx.coroutines.flow.Flow
+import org.philblandford.ui.R
+import org.philblandford.ui.base.viewmodel.VMSideEffect
 import org.philblandford.ui.common.block
 import org.philblandford.ui.create.viewmodel.CreateInterface
 import org.philblandford.ui.create.viewmodel.CreateModel
-import org.philblandford.ui.R
-import org.philblandford.ui.base.viewmodel.VMSideEffect
 import org.philblandford.ui.theme.PopupTheme
 
 @Composable
@@ -128,6 +131,18 @@ internal class StubCreateInterface : CreateInterface {
   override fun setTimeSignature(func: TimeSignature.() -> TimeSignature) {
   }
 
+  override fun setUpbeatBar(func: TimeSignature.() -> TimeSignature) {
+
+  }
+
+  override fun setUpbeatEnabled(enabled: Boolean) {
+    TODO("Not yet implemented")
+  }
+
+  override fun setTempo(func: Tempo.() -> Tempo) {
+    TODO("Not yet implemented")
+  }
+
   override fun addInstrument(instrument: Instrument) {
   }
 
@@ -143,6 +158,10 @@ internal class StubCreateInterface : CreateInterface {
   }
 
   override fun getSideEffects(): Flow<VMSideEffect> {
+    TODO("Not yet implemented")
+  }
+
+  override fun updateInstrument(idx: Int, instrument: Instrument) {
     TODO("Not yet implemented")
   }
 }

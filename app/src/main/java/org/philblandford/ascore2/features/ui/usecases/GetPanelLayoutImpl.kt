@@ -22,7 +22,6 @@ class GetPanelLayoutImpl(
 
       uiStateRepository.getUIState().collectLatest {
         val layout = when (it) {
-          UIState.Clipboard -> LayoutID.EMPTY
           UIState.Input -> {
             if (kScore.getInstrumentAtMarker()?.percussion == true) {
               LayoutID.PERCUSSION
@@ -34,7 +33,7 @@ class GetPanelLayoutImpl(
             it.insertItem.layoutID
           }
           UIState.InsertChoose -> LayoutID.INSERT_CHOOSE
-          UIState.Delete -> LayoutID.EMPTY
+          else -> LayoutID.EMPTY
         }
         layoutFlow.emit(layout)
       }

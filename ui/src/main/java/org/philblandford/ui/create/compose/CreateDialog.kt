@@ -1,23 +1,19 @@
 package org.philblandford.ui.create.compose
 
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.*
+import androidx.compose.material.MaterialTheme
+import androidx.compose.material.Surface
+import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.window.Dialog
-import androidx.compose.ui.window.DialogProperties
 import org.philblandford.ui.R
-import org.philblandford.ui.theme.AscoreTheme
 import org.philblandford.ui.theme.DialogButton
 import org.philblandford.ui.theme.DialogTheme
 import org.philblandford.ui.util.Gap
-import timber.log.Timber
 
 @Composable
 fun WizardFrame(
@@ -60,12 +56,12 @@ fun WizardFrame(
             content()
           }
           Row(Modifier.align(Alignment.CenterHorizontally)) {
-            DialogButton(stringResource(R.string.next), Modifier.width(100.dp)) {
-              next()
-            }
-            Gap(1f)
             DialogButton(stringResource(R.string.cancel), Modifier.width(100.dp)) {
               cancel()
+            }
+            Gap(1f)
+            DialogButton(stringResource(R.string.next), Modifier.width(100.dp)) {
+              next()
             }
           }
         }

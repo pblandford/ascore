@@ -2,7 +2,6 @@ package org.philblandford.ui.insert.items.instrument.viewmodel
 
 import com.philblandford.kscore.api.Instrument
 import org.philblandford.ascore2.features.instruments.GetAvailableInstruments
-import org.philblandford.ascore2.features.instruments.GetInstruments
 import org.philblandford.ascore2.util.ok
 import org.philblandford.ui.insert.common.viewmodel.InsertViewModel
 import org.philblandford.ui.insert.items.instrument.model.InstrumentInsertModel

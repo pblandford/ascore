@@ -3,18 +3,18 @@ package org.philblandford.ui.main.panel.compose
 import TransposeBy
 import androidx.compose.runtime.Composable
 import org.philblandford.ascore2.features.ui.model.LayoutID
-import org.philblandford.ui.insert.items.articulation.compose.ArticulationInsert
 import org.philblandford.ui.base.compose.VMView
-import org.philblandford.ui.main.panel.viewmodels.PanelModel
-import org.philblandford.ui.main.panel.viewmodels.PanelViewModel
-import org.philblandford.ui.insert.compose.InsertChoosePanel
-import org.philblandford.ui.insert.items.bars.compose.BarInsert
+import org.philblandford.ui.insert.choose.compose.InsertChoosePanel
+import org.philblandford.ui.insert.items.articulation.compose.ArticulationInsert
 import org.philblandford.ui.insert.items.barline.compose.BarLineInsert
+import org.philblandford.ui.insert.items.barnumbering.compose.BarNumberingInsert
+import org.philblandford.ui.insert.items.bars.compose.BarInsert
 import org.philblandford.ui.insert.items.bowing.compose.BowingInsert
 import org.philblandford.ui.insert.items.clef.compose.ClefInsert
 import org.philblandford.ui.insert.items.dynamic.compose.DynamicInsert
 import org.philblandford.ui.insert.items.fingering.compose.FingeringInsert
 import org.philblandford.ui.insert.items.glissando.compose.GlissandoInsert
+import org.philblandford.ui.insert.items.groupstaves.compose.GroupStavesInsert
 import org.philblandford.ui.insert.items.harmony.compose.HarmonyInsert
 import org.philblandford.ui.insert.items.instrument.compose.InstrumentInsert
 import org.philblandford.ui.insert.items.keysignature.compose.KeySignatureInsert
@@ -24,6 +24,7 @@ import org.philblandford.ui.insert.items.navigation.compose.NavigationInsert
 import org.philblandford.ui.insert.items.octave.compose.OctaveInsert
 import org.philblandford.ui.insert.items.octave.compose.WedgeInsert
 import org.philblandford.ui.insert.items.ornament.compose.OrnamentInsert
+import org.philblandford.ui.insert.items.pagemargins.compose.PageMargins
 import org.philblandford.ui.insert.items.pagesize.compose.PageSize
 import org.philblandford.ui.insert.items.pause.compose.PauseInsert
 import org.philblandford.ui.insert.items.pedal.compose.PedalInsert
@@ -40,6 +41,8 @@ import org.philblandford.ui.insert.items.tremolo.compose.TremoloInsert
 import org.philblandford.ui.insert.items.tuplet.compose.TupletInsert
 import org.philblandford.ui.insert.items.volta.compose.VoltaInsert
 import org.philblandford.ui.keyboard.compose.KeyboardPanel
+import org.philblandford.ui.main.panel.viewmodels.PanelModel
+import org.philblandford.ui.main.panel.viewmodels.PanelViewModel
 import org.philblandford.ui.util.ThemeBox
 
 @Composable
@@ -56,17 +59,20 @@ private fun PanelInternal(model:PanelModel) {
       LayoutID.ARTICULATION -> ArticulationInsert()
       LayoutID.BAR -> BarInsert()
       LayoutID.BARLINE -> BarLineInsert()
+      LayoutID.BAR_NUMBERING -> BarNumberingInsert()
       LayoutID.BOWING -> BowingInsert()
       LayoutID.CLEF -> ClefInsert()
       LayoutID.DYNAMIC -> DynamicInsert()
       LayoutID.FINGERING -> FingeringInsert()
       LayoutID.GLISSANDO -> GlissandoInsert()
+      LayoutID.GROUP_STAVES -> GroupStavesInsert()
       LayoutID.HARMONY -> HarmonyInsert()
       LayoutID.INSERT_CHOOSE -> InsertChoosePanel()
       LayoutID.INSTRUMENT -> InstrumentInsert()
       LayoutID.KEY -> KeySignatureInsert()
       LayoutID.KEYBOARD -> KeyboardPanel()
       LayoutID.LYRIC -> LyricInsert()
+      LayoutID.MARGIN -> PageMargins()
       LayoutID.METADATA -> MetaInsert()
       LayoutID.NAVIGATION -> NavigationInsert()
       LayoutID.OCTAVE -> OctaveInsert()

@@ -6,10 +6,10 @@ import com.philblandford.kscore.engine.types.EventType
 
 class SetSegmentWidthImpl(private val kScore: KScore) : SetSegmentWidth {
   override fun invoke(width: Int) {
-    if (width == -1) {
+    if (width <= kScore.getMinSegmentWidth()) {
       kScore.deleteEventAtMarker(EventType.SPACE)
     } else {
-      kScore.setParamAtMarker(EventType.SPACE, EventParam.AMOUNT, width)
+      kScore.setParamAtMarker(EventType.SPACE, EventParam.AMOUNT, width - kScore.getMinSegmentWidth())
     }
   }
 }

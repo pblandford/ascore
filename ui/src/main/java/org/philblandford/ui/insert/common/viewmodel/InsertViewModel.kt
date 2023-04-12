@@ -4,10 +4,11 @@ import androidx.lifecycle.viewModelScope
 import com.philblandford.kscore.engine.types.EventParam
 import com.philblandford.kscore.engine.types.EventType
 import com.philblandford.kscore.engine.types.ParamMap
-import kotlinx.coroutines.flow.*
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.stateIn
 import org.koin.core.component.inject
-import org.philblandford.ascore2.features.insert.InsertEvent
 import org.philblandford.ascore2.features.ui.model.InsertItem
 import org.philblandford.ascore2.features.ui.usecases.GetInsertItem
 import org.philblandford.ascore2.features.ui.usecases.InsertItemMenu
@@ -42,7 +43,7 @@ abstract class InsertViewModel<M : InsertModel, I : InsertInterface<M>> :
     insertItemMenu()
   }
 
-  fun updateParams(params: ParamMap) {
+  override fun updateParams(params: ParamMap) {
     updateInsertParams { params }
   }
 

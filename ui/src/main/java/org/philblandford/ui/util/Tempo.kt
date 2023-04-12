@@ -2,7 +2,10 @@ package org.philblandford.ui.util
 
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.border
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.width
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -11,44 +14,45 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
-import com.philblandford.kscore.engine.duration.Duration
 import com.philblandford.kscore.engine.duration.dot
 import com.philblandford.kscore.engine.duration.numDots
 import com.philblandford.kscore.engine.duration.undot
+import com.philblandford.kscore.engine.tempo.Tempo
 import com.philblandford.kscore.log.ksLogv
 import org.philblandford.ui.R
 import org.philblandford.ui.common.block
+import org.philblandford.ui.util.ButtonState.Companion.selected
 
 
 @Composable
-fun TempoSelector(
-  getDuration: () -> Duration, setDuration: (Duration) -> Unit,
-  getDot: () -> Boolean, setDot: (Boolean) -> Unit,
-  getBpm: () -> Int, setBpm: (Int) -> Unit, size: Dp = block()
+fun TempoSelector(tempo: Tempo,
+                  size: Dp = block(),
+                  update:(Tempo)->Unit,
 ) {
 
   Row(verticalAlignment = Alignment.CenterVertically) {
     Box(Modifier.align(Alignment.CenterVertically)) {
       DurationSelector(
-        { getDuration().undot() },
+        tempo.duration.undot(),
         {
           ksLogv("Duration selected $it")
-          setDuration(it.dot(getDuration().numDots()))
+          update(tempo.copy(duration = it.dot(tempo.duration.numDots())))
         }, size = size
       )
     }
     Spacer(modifier = Modifier.width(block(0.25f)))
     SquareButton(
       R.drawable.onedot, tag = "Dot", modifier = Modifier.align(Alignment.CenterVertically),
-      dim = getDot(), size = size
+      state = selected(tempo.duration.numDots() > 0), size = size
     ) {
-      setDot(!getDot())
+      update(tempo.copy(duration = if (tempo.duration.numDots() > 0) tempo.duration.undot() else
+        tempo.duration.dot(1)))
     }
     Spacer(modifier = Modifier.width(size / 2))
     Text("=", Modifier.align(Alignment.CenterVertically))
     Spacer(modifier = Modifier.width(size / 2))
     val bpm: String = run {
-      val num = getBpm()
+      val num = tempo.bpm
       if (num > 0) num.toString() else ""
     }
     Box(
@@ -56,7 +60,7 @@ fun TempoSelector(
         .width(size * 3)
         .align(Alignment.CenterVertically)
         .border(
-          if (getBpm() < 1) BorderStroke(1.dp, Color.Red) else BorderStroke(
+          if (tempo.bpm < 1) BorderStroke(1.dp, Color.Red) else BorderStroke(
             0.dp,
             Color.Transparent
           )
@@ -66,9 +70,9 @@ fun TempoSelector(
         value = bpm,
         onValueChange = { str ->
           val int = str.toIntOrNull() ?: 0
-          setBpm(int)
+          update(tempo.copy(bpm = int))
         },
-        modifier = Modifier.size(block(2.5), block(2)),
+        modifier = Modifier.width(block(2.5)),
         keyboardType = KeyboardType.Number
       )
     }

@@ -1,12 +1,12 @@
 package org.philblandford.ui.insert.choose.viewmodel
 
+import org.philblandford.ascore2.features.ui.model.InsertItem
+import org.philblandford.ascore2.features.ui.usecases.SelectInsertItem
 import org.philblandford.ascore2.util.ok
 import org.philblandford.ui.base.viewmodel.BaseViewModel
 import org.philblandford.ui.base.viewmodel.VMInterface
 import org.philblandford.ui.base.viewmodel.VMModel
 import org.philblandford.ui.base.viewmodel.VMSideEffect
-import org.philblandford.ascore2.features.ui.model.InsertItem
-import org.philblandford.ascore2.features.ui.usecases.SelectInsertItem
 
 data class InsertChooseModel(
   val page: Int,
@@ -25,6 +25,8 @@ class InsertChooseViewModel(private val selectInsertItem: SelectInsertItem) :
   BaseViewModel<InsertChooseModel, InsertChooseInterface, VMSideEffect>(), InsertChooseInterface {
   private val grouped = groupItems()
 
+  override val resetOnLoad = false
+
   override suspend fun initState(): Result<InsertChooseModel> {
     return InsertChooseModel(0, grouped[0], listOf(), true).ok()
   }
@@ -32,7 +34,6 @@ class InsertChooseViewModel(private val selectInsertItem: SelectInsertItem) :
   override fun getInterface() = this
 
   override fun helpText(string: String) {
-    TODO("Not yet implemented")
   }
 
   override fun select(item: InsertItem) {
@@ -52,7 +53,7 @@ class InsertChooseViewModel(private val selectInsertItem: SelectInsertItem) :
       if (false) {
         24
       } else {
-        14
+        12
       }
     } else {
       if (false) {

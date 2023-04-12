@@ -16,7 +16,6 @@ import org.philblandford.ascore2.features.score.ScoreUpdate
 import org.philblandford.ascore2.util.andThen
 import org.philblandford.ascore2.util.ok
 import timber.log.Timber
-import java.time.LocalDateTime
 
 
 abstract class VMModel
@@ -52,11 +51,13 @@ abstract class BaseViewModel<M : VMModel, I : VMInterface, S : VMSideEffect> : V
   private val _sideEffects = Channel<S>()
 
   init {
-    // launchInitState()
     listen()
   }
 
   fun reset() {
+    if (!resetOnLoad && _viewState.value != null) {
+      return
+    }
     launchInitState()
   }
 
@@ -150,7 +151,6 @@ abstract class BaseViewModel<M : VMModel, I : VMInterface, S : VMSideEffect> : V
     } else {
       viewModelScope.launch {
         val actionClass = Action(actionId++, action)
-        Timber.e("AVM sending action $actionClass")
         _actions.send(actionClass)
       }
     }
@@ -185,7 +185,6 @@ abstract class BaseViewModel<M : VMModel, I : VMInterface, S : VMSideEffect> : V
   private fun listen() {
     viewModelScope.launch {
       _actions.consumeAsFlow().collect { action ->
-        Timber.e("AVM collected action $action")
         _viewState.value?.let { value ->
           emitOrFail { action.func(value) }
         }

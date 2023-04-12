@@ -4,7 +4,6 @@ import androidx.compose.runtime.Composable
 import com.philblandford.kscore.api.KScore
 import org.koin.androidx.compose.inject
 import org.philblandford.ui.LocalActivity
-import org.philblandford.ui.print.AndroidPdfCreator
 import org.philblandford.ui.print.AndroidPrinter
 
 @Composable

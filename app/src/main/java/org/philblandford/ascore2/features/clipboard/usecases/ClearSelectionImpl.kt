@@ -8,6 +8,11 @@ class ClearSelectionImpl(private val kScore: KScore,
                          private val uiStateRepository: UiStateRepository) : ClearSelection {
   override operator fun invoke() {
     kScore.clearSelection()
-    uiStateRepository.setUiState(UIState.Input)
+    when (uiStateRepository.getUIState().value) {
+      is UIState.Insert -> {}
+      else -> {
+        uiStateRepository.setUiState(UIState.Input)
+      }
+    }
   }
 }

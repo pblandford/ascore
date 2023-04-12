@@ -6,6 +6,7 @@ sealed class UIState {
   object Input : UIState()
   object InsertChoose : UIState()
   data class Insert(val insertItem: InsertItem) : UIState()
+  data class Edit(val editItem: EditItem) : UIState()
   object Clipboard : UIState()
   object Delete : UIState()
 }

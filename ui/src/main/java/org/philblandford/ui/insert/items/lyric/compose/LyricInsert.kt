@@ -6,8 +6,6 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import com.philblandford.kscore.engine.types.EventParam
-import com.philblandford.kscore.engine.types.g
-import com.philblandford.kscore.log.ksLogt
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import org.philblandford.ascore2.features.ui.model.InsertItem
@@ -17,7 +15,10 @@ import org.philblandford.ui.insert.items.lyric.model.LyricInsertModel
 import org.philblandford.ui.insert.items.lyric.viewmodel.LyricInsertInterface
 import org.philblandford.ui.insert.items.lyric.viewmodel.LyricInsertSideEffect
 import org.philblandford.ui.insert.items.lyric.viewmodel.LyricInsertViewModel
-import org.philblandford.ui.util.*
+import org.philblandford.ui.util.FreeKeyboard
+import org.philblandford.ui.util.Gap
+import org.philblandford.ui.util.NumberSelector
+import org.philblandford.ui.util.SquareButton
 import timber.log.Timber
 
 @Composable
@@ -37,6 +38,7 @@ fun LyricInsertInternal(
   iface: LyricInsertInterface
 ) {
   var text by remember { mutableStateOf(insertItem.getParam(EventParam.TEXT) ?: "") }
+  val updateCount = remember { mutableStateOf(0) }
 
   Timber.e("text $text ")
   Timber.e("LYR recompose ${insertItem.params}")
@@ -48,6 +50,7 @@ fun LyricInsertInternal(
         when (effect) {
           is LyricInsertSideEffect.UpdateText -> {
             text = effect.text
+            updateCount.value++
             Timber.e("LYR sideEffect $text")
           }
         }
@@ -55,30 +58,32 @@ fun LyricInsertInternal(
     }
   }
 
-  FreeKeyboard(
-    initValue = text,
-    tag = "LyricTextField",
-    onEnter = { iface.nextSyllable() },
-    onValueChanged = {
-      iface.insertLyric(it)
-    }) {
-    Row {
-      Box {
-        NumberSelector(
-          min = 1, max = model.maxNum,
-          num = model.number, setNum = {
-            iface.setNumber(it)
-          }, editable = false
-        )
-      }
+ // key(updateCount) {
+    FreeKeyboard(
+      initValue = text,
+      onEnter = { iface.nextSyllable() },
+      onValueChanged = {
+        iface.insertLyric(it)
+      }, updateCounter = updateCount
+      ) {
+      Row {
+        Box {
+          NumberSelector(
+            min = 1, max = model.maxNum,
+            num = model.number, setNum = {
+              iface.setNumber(it)
+            }, editable = false
+          )
+        }
 
-      LeftRight(iface, Modifier.align(Alignment.CenterVertically))
-      Gap(0.5f)
-      SquareButton(resource = R.drawable.keyboard_letter, onClick = {
-        show()
-      })
+        LeftRight(iface, Modifier.align(Alignment.CenterVertically))
+        Gap(0.5f)
+        SquareButton(resource = R.drawable.keyboard_letter, onClick = {
+          show()
+        })
+      }
     }
-  }
+  //}
 
 }
 

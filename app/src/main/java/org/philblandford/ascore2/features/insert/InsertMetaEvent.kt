@@ -5,5 +5,5 @@ import com.philblandford.kscore.engine.types.ParamMap
 
 interface InsertMetaEvent {
 
-  operator fun invoke(eventType: EventType, text:String)
+  operator fun invoke(eventType: EventType, params:ParamMap)
 }

@@ -1,27 +1,16 @@
 package org.philblandford.ui.insert.items.ornament.compose
 
 import GridSelection
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.material.Checkbox
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.testTag
 import com.philblandford.kscore.engine.types.Accidental
 import com.philblandford.kscore.engine.types.EventParam
 import com.philblandford.kscore.engine.types.OrnamentType
-import com.philblandford.kscore.engine.types.isTrue
 import org.philblandford.ascore2.features.ui.model.InsertItem
-import org.philblandford.ui.insert.common.compose.InsertVMView
-import org.philblandford.ui.insert.common.viewmodel.InsertViewModel
-import org.philblandford.ui.insert.items.ornament.model.OrnamentInsertModel
-import org.philblandford.ui.insert.items.ornament.viewmodel.OrnamentInsertInterface
-import org.philblandford.ui.insert.items.ornament.viewmodel.OrnamentInsertViewModel
-import org.philblandford.ui.insert.model.InsertInterface
-import org.philblandford.ui.insert.model.InsertModel
 import org.philblandford.ui.insert.row.compose.RowInsert
 import org.philblandford.ui.insert.row.viewmodel.RowInsertInterface
 import org.philblandford.ui.insert.row.viewmodel.RowInsertModel

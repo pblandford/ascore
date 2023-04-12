@@ -1,26 +1,26 @@
-package org.philblandford.ui.insert.compose
+package org.philblandford.ui.insert.choose.compose
 
 import GridSelection
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.MaterialTheme
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.unit.dp
-import androidx.constraintlayout.compose.ConstraintLayout
+import org.philblandford.ui.R
+import org.philblandford.ui.base.compose.VMView
 import org.philblandford.ui.common.block
 import org.philblandford.ui.insert.choose.viewmodel.InsertChooseInterface
 import org.philblandford.ui.insert.choose.viewmodel.InsertChooseModel
+import org.philblandford.ui.insert.choose.viewmodel.InsertChooseViewModel
 import org.philblandford.ui.util.SquareButton
 import org.philblandford.ui.util.ThemeBox
-import org.philblandford.ui.R
-import org.philblandford.ui.base.compose.VMView
-import org.philblandford.ui.insert.choose.compose.SearchBox
-import org.philblandford.ui.insert.choose.viewmodel.InsertChooseViewModel
+import timber.log.Timber
 
 @Composable
 fun InsertChoosePanel() {
+ Timber.e("TWAT InsertChoosePanel")
   VMView(InsertChooseViewModel::class.java) { state, iface, _ ->
     InsertChoosePanel(state, iface)
   }
@@ -37,22 +37,16 @@ fun InsertChoosePanel(model: InsertChooseModel, iface: InsertChooseInterface) {
     Column(Modifier.fillMaxWidth()) {
       SearchBox(model, iface)
 
-      ConstraintLayout(
+      Row(
         Modifier
           .fillMaxWidth()
-          .height(block(3.5f))
+          .height(block(3.5f)), verticalAlignment = Alignment.CenterVertically
       ) {
-        val (grid, next) = createRefs()
-        SelectionGrid(model, iface,
-          Modifier.constrainAs(grid) {
-            start.linkTo(
-              parent.start,
-              5.dp
-            ); centerVerticallyTo(parent)
-          })
+        Box(Modifier.weight(1f)) {
+          SelectionGrid(model, iface, Modifier.align(Alignment.Center))
+        }
         if (model.showNext) {
-          NextPage(iface,
-            Modifier.constrainAs(next) { end.linkTo(parent.end, 5.dp); centerVerticallyTo(parent) })
+          NextPage(iface)
         }
       }
     }

@@ -1,19 +1,22 @@
 package org.philblandford.ui.insert.items.navigation.compose
 
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import com.philblandford.kscore.engine.types.EventParam
 import com.philblandford.kscore.engine.types.NavigationType
 import org.philblandford.ascore2.features.ui.model.InsertItem
+import org.philblandford.ui.R
 import org.philblandford.ui.common.block
 import org.philblandford.ui.insert.row.compose.RowInsert
 import org.philblandford.ui.insert.row.compose.RowInsertInternal
 import org.philblandford.ui.insert.row.viewmodel.RowInsertInterface
 import org.philblandford.ui.insert.row.viewmodel.RowInsertModel
 import org.philblandford.ui.util.IdRow
-import org.philblandford.ui.R
 import org.philblandford.ui.util.navigationIds
 
 @Composable

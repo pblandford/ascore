@@ -18,11 +18,11 @@ import com.philblandford.kscore.engine.duration.Duration
 import com.philblandford.kscore.engine.types.Accidental
 import com.philblandford.kscore.engine.types.GraceInputMode
 import com.philblandford.kscore.engine.types.NoteHeadType
+import org.philblandford.ui.R
 import org.philblandford.ui.common.Gap
 import org.philblandford.ui.common.block
-import org.philblandford.ui.R
-import org.philblandford.ui.keyboard.viewmodel.InputModel
 import org.philblandford.ui.keyboard.compose.selectors.*
+import org.philblandford.ui.keyboard.viewmodel.InputModel
 import org.philblandford.ui.util.*
 
 
@@ -34,9 +34,9 @@ interface NoteInputButtonsInterface : GraceSelectorInterface {
   fun toggleSmall()
   fun toggleNoEdit()
   fun setDuration(duration: Duration)
-  fun setNumDots(dots:Int)
+  fun setNumDots(dots: Int)
   fun setAccidental(accidental: Accidental)
-  fun moveMarker(left:Boolean)
+  fun moveMarker(left: Boolean)
   fun insertRest()
   fun deleteRest()
 }
@@ -58,17 +58,20 @@ fun NoteInputButtonsColumn(
       MoreRow(model.noteInputDescriptor, iface)
     }
     Gap(0.1)
-    MainRow(true,
+    MainRow(
+      true,
       showMore.value,
-      { showMore.value = !showMore.value},
+      { showMore.value = !showMore.value },
       Modifier.fillMaxWidth(), model.noteInputDescriptor,
-      model.accidentals, iface)
+      model.accidentals, iface
+    )
     Gap(0.1f)
     Box(
       Modifier
         .height(block(0.1))
         .fillMaxWidth()
-        .background(MaterialTheme.colors.onSurface))
+        .background(MaterialTheme.colors.onSurface)
+    )
     Gap(0.1f)
   }
 }
@@ -88,7 +91,7 @@ fun NoteInputButtonsRow(
     ConstraintLayout(Modifier.fillMaxSize()) {
       val (left, right) = createRefs()
       MainRow(
-        false,false, {},
+        false, false, {},
         Modifier
           .width(block(10.5))
           .constrainAs(left) {
@@ -142,10 +145,10 @@ private fun MoreRow(
 private fun MainRow(
   includeMore: Boolean,
   showMore: Boolean,
-  toggleMore:()->Unit,
+  toggleMore: () -> Unit,
   modifier: Modifier,
   descriptor: NoteInputDescriptor,
-  accidentals:List<Accidental>,
+  accidentals: List<Accidental>,
   iface: NoteInputButtonsInterface,
 ) {
   Box(modifier.fillMaxWidth()) {
@@ -155,15 +158,21 @@ private fun MainRow(
         .fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween
     ) {
       DurationSelector(
-        { descriptor.duration },
-        iface::setDuration)
+        descriptor.duration,
+        iface::setDuration
+      )
       DotToggle(descriptor.dots, iface::setNumDots)
-      AccidentalSpinner(descriptor.accidental,
-        accidentals, iface::setAccidental)
+      AccidentalSpinner(
+        descriptor.accidental,
+        accidentals, iface::setAccidental
+      )
       LeftRight({ iface.moveMarker(true) }, { iface.moveMarker(false) },
-      Modifier.padding(1.dp))
-      RestButton(descriptor.duration, iface::insertRest, iface::deleteRest,
-      Modifier.padding(1.dp))
+        Modifier.padding(1.dp)
+      )
+      RestButton(
+        descriptor.duration, iface::insertRest, iface::deleteRest,
+        Modifier.padding(1.dp)
+      )
       if (includeMore) {
         MoreButton(showMore, toggleMore)
       }
@@ -173,10 +182,14 @@ private fun MainRow(
 
 
 @Composable
-private fun RestButton(duration:Duration, insert:()->Unit, delete:()->Unit,
-modifier: Modifier = Modifier) {
+private fun RestButton(
+  duration: Duration, insert: () -> Unit, delete: () -> Unit,
+  modifier: Modifier = Modifier
+) {
   Box(
-    modifier.width(block(2)).border(styledBorder())
+    modifier
+      .width(block(2))
+      .border(styledBorder())
   ) {
     SquareButton(resource = duration.toResource()!!,
       modifier = Modifier.align(Alignment.Center),
@@ -187,7 +200,7 @@ modifier: Modifier = Modifier) {
 }
 
 @Composable
-private fun MoreButton(showMore:Boolean, toggle:()->Unit) {
+private fun MoreButton(showMore: Boolean, toggle: () -> Unit) {
   SquareButton(
     resource = if (showMore) R.drawable.expand_more else R.drawable.expand_less,
     border = true,

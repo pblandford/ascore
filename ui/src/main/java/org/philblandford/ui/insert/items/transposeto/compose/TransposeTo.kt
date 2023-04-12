@@ -1,7 +1,6 @@
 package org.philblandford.ui.insert.items.transposeto.compose
 
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -10,11 +9,9 @@ import com.philblandford.kscore.engine.types.EventParam
 import com.philblandford.kscore.log.ksLogt
 import org.philblandford.ascore2.features.ui.model.InsertItem
 import org.philblandford.ui.R
-import org.philblandford.ui.insert.common.compose.DefaultInsertVMView
 import org.philblandford.ui.insert.common.compose.InsertVMView
 import org.philblandford.ui.insert.items.transposeby.viewmodel.TransposeInterface
 import org.philblandford.ui.insert.items.transposeby.viewmodel.TransposeViewModel
-import org.philblandford.ui.insert.model.DefaultInsertInterface
 import org.philblandford.ui.insert.model.InsertModel
 import org.philblandford.ui.util.Gap
 import org.philblandford.ui.util.KeySelector
@@ -39,8 +36,8 @@ private fun TransposeToInternal(insertItem: InsertItem, iface:TransposeInterface
     Gap(0.5f)
     UpDownDependent(
       Modifier.align(Alignment.CenterVertically),
-      { insertItem.getParam<Boolean>(EventParam.IS_UP) == true },
-      { iface.setParam(EventParam.IS_UP, it) })
+      insertItem.getParam<Boolean>(EventParam.IS_UP) == true)
+      { iface.setParam(EventParam.IS_UP, it) }
     Gap(0.5f)
     SquareButton(
       R.drawable.tick, modifier = Modifier.align(Alignment.CenterVertically)) {

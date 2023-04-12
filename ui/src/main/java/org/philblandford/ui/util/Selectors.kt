@@ -2,24 +2,25 @@ package org.philblandford.ui.util
 
 import GridSelection
 import androidx.compose.foundation.border
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Row
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.Dp
 import com.philblandford.kscore.engine.duration.Duration
-import com.philblandford.kscore.engine.types.*
+import com.philblandford.kscore.engine.types.ClefType
 import com.philblandford.kscore.log.ksLogv
-import org.philblandford.ui.common.block
 import org.philblandford.ui.R
+import org.philblandford.ui.common.block
+import org.philblandford.ui.util.ButtonState.Companion.selected
 
 
 @Composable
 fun DurationSelector(
-  getDuration: () -> Duration, setDuration: (Duration) -> Unit,
+  duration:Duration, setDuration: (Duration) -> Unit,
   size: Dp = block(),
-  tag: () -> String = { "" }
 ) {
-  val resId = durationIds.find { it.second == getDuration() }?.first ?: R.drawable.crotchet_rest
+  val resId = durationIds.find { it.second == duration }?.first ?: R.drawable.crotchet_rest
 
   Box(Modifier.border(styledBorder())) {
     Row() {
@@ -27,16 +28,16 @@ fun DurationSelector(
         R.drawable.arrow_left, tag = "ButtonLeft",
         size = size
       ) {
-        val selection = durationToSelection(getDuration())
+        val selection = durationToSelection(duration)
         ksLogv("ButtonLeft $selection")
 
         if (selection > 0) {
           setDuration(selectionToDuration(selection - 1))
         }
       }
-      SquareButton(resId, tag = "Display ${getDuration()}", size = size * 0.9f) {}
+      SquareButton(resId, tag = "Display $duration", size = size * 0.9f) {}
       SquareButton(R.drawable.arrow_right, tag = "ButtonRight", size = size) {
-        val selection = durationToSelection(getDuration())
+        val selection = durationToSelection(duration)
         if (selection < durationIds.size - 1) {
           setDuration(selectionToDuration(selection + 1))
         }
@@ -58,7 +59,7 @@ fun DotToggle(
   numDots: Int, setDots: (Int) -> Unit
 ) {
   SquareButton(resource = if (numDots < 2) R.drawable.onedot else R.drawable.twodot,
-    dim = numDots > 0,
+    state = selected(numDots > 0),
     tag = if (numDots < 2) "Onedot" else "Twodot",
     onLongPress = { setDots(2) }) {
     if (numDots > 0) setDots(0) else setDots(1)

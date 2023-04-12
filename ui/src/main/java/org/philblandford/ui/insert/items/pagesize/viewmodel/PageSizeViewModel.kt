@@ -8,7 +8,6 @@ import org.philblandford.ascore2.features.page.GetPageMinMax
 import org.philblandford.ascore2.features.page.GetPageWidth
 import org.philblandford.ascore2.features.page.SetPageWidth
 import org.philblandford.ascore2.features.page.SetPageWidthPreset
-import org.philblandford.ascore2.features.score.ScoreUpdate
 import org.philblandford.ascore2.util.ok
 import org.philblandford.ui.base.viewmodel.BaseViewModel
 import org.philblandford.ui.base.viewmodel.VMInterface

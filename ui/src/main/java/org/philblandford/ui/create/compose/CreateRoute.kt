@@ -1,14 +1,15 @@
 package org.philblandford.ui.create.compose
 
 import androidx.compose.runtime.Composable
+import com.github.zsoltk.compose.router.Router
 import org.philblandford.ui.base.compose.VMView
 import org.philblandford.ui.create.viewmodel.CreateViewModel
-import com.github.zsoltk.compose.router.Router
 
 
 sealed class CreateRoute {
   object MetaData : CreateRoute()
   object KeySignature : CreateRoute()
+  object Tempo : CreateRoute()
   object Instruments : CreateRoute()
 }
 
@@ -30,7 +31,10 @@ fun CreateScore(done: () -> Unit) {
           }, ::clear, iface)
         }
         CreateRoute.KeySignature -> {
-          CreateKeyTimeSignature(state, { backStack.push(CreateRoute.Instruments) }, ::clear, iface)
+          CreateKeyTimeSignature(state, { backStack.push(CreateRoute.Tempo) }, ::clear, iface)
+        }
+        CreateRoute.Tempo -> {
+          CreateTempo(state, { backStack.push(CreateRoute.Instruments) }, ::clear, iface)
         }
         CreateRoute.Instruments -> {
           CreateInstruments(state.availableInstruments, state.newScoreDescriptor.instruments.toList(), {

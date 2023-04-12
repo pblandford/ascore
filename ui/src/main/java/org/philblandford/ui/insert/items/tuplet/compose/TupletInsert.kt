@@ -1,11 +1,12 @@
 package org.philblandford.ui.insert.items.tuplet.compose
 
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.testTag
-import androidx.constraintlayout.compose.ConstraintLayout
 import com.philblandford.kscore.engine.types.EventParam
 import org.philblandford.ascore2.features.ui.model.InsertItem
 import org.philblandford.ui.R
@@ -14,7 +15,6 @@ import org.philblandford.ui.insert.common.constants.panelHeight
 import org.philblandford.ui.insert.items.tuplet.model.TupletInsertModel
 import org.philblandford.ui.insert.items.tuplet.viewmodel.TupletInsertInterface
 import org.philblandford.ui.insert.items.tuplet.viewmodel.TupletInsertViewModel
-import org.philblandford.ui.util.NumberPicker
 import org.philblandford.ui.util.NumberSelector
 import org.philblandford.ui.util.ToggleButton
 

@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
-<manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools">
+<manifest xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
 
     <application
         android:name="org.philblandford.ui.base.BaseApplication"
@@ -19,6 +20,42 @@
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
+        </activity>
+        <activity
+            android:name=".imports.activity.IntentActivity"
+            android:exported="true"
+            android:label="@string/app_name">
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.DEFAULT" />
+
+                <data android:scheme="file" />
+                <data android:scheme="content" />
+                <data android:mimeType="*/*" />
+                <data android:pathPattern=".*\\.asc" />
+                <data android:pathPattern=".*\\.mxl" />
+                <data android:pathPattern=".*\\.sf2" />
+                <data android:pathPattern=".*\\.ttf" />
+                <data android:pathPattern=".*\\.otf" />
+                <data android:pathPattern=".*\\.xml" />
+                <data android:pathPattern=".*\\.ASC" />
+                <data android:pathPattern=".*\\.MXL" />
+                <data android:pathPattern=".*\\.SF2" />
+                <data android:pathPattern=".*\\.TTF" />
+                <data android:pathPattern=".*\\.OTF" />
+                <data android:pathPattern=".*\\.XML" />
+                <data android:host="*" />
+            </intent-filter>
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.DEFAULT" />
+
+                <data android:scheme="file" />
+                <data android:scheme="content" />
+                <data android:mimeType="text/*" />
+                <data android:mimeType="application/octet-stream" />
+            </intent-filter>
+
         </activity>
 
     </application>

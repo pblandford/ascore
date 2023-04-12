@@ -1,11 +1,13 @@
 package org.philblandford.ui.insert.items.pagesize.compose
 
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.unit.dp
 import org.philblandford.ui.base.compose.VMView
 import org.philblandford.ui.common.block
@@ -13,7 +15,6 @@ import org.philblandford.ui.insert.items.pagesize.model.PageSizeModel
 import org.philblandford.ui.insert.items.pagesize.viewmodel.PageSizeInterface
 import org.philblandford.ui.insert.items.pagesize.viewmodel.PageSizeViewModel
 import org.philblandford.ui.util.Gap
-import org.philblandford.ui.util.NumberPicker
 import org.philblandford.ui.util.NumberSelector
 
 @Composable

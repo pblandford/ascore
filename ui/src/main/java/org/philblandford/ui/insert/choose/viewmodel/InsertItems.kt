@@ -3,11 +3,11 @@ package org.philblandford.ui.insert.choose.viewmodel
 import com.philblandford.kscore.engine.duration.SEMIQUAVER
 import com.philblandford.kscore.engine.duration.crotchet
 import com.philblandford.kscore.engine.types.*
-import org.philblandford.ui.R
 import org.philblandford.ascore2.features.ui.model.DeleteBehaviour
 import org.philblandford.ascore2.features.ui.model.InsertItem
 import org.philblandford.ascore2.features.ui.model.LayoutID
 import org.philblandford.ascore2.features.ui.model.TapInsertBehaviour
+import org.philblandford.ui.R
 
 internal val insertItems = listOf(
   InsertItem(
@@ -115,10 +115,10 @@ internal val insertItems = listOf(
 
   InsertItem(
     R.drawable.trumpet, R.string.instrument, "insert_instrument", LayoutID.INSTRUMENT,
-    EventType.INSTRUMENT
+    EventType.PART
   ),
   InsertItem(
-    R.drawable.title, R.string.title, "insert_title", LayoutID.METADATA, EventType.TITLE,
+    R.drawable.title, R.string.meta_data, "insert_title", LayoutID.METADATA, EventType.TITLE,
     tapInsertBehaviour = TapInsertBehaviour.NONE
   ),
   InsertItem(R.drawable.slur, R.string.slur, "insert_slur", LayoutID.SLUR, EventType.SLUR,
@@ -130,7 +130,7 @@ internal val insertItems = listOf(
     "insert_wedge",
     LayoutID.WEDGE,
     EventType.WEDGE,
-    params = paramMapOf(EventParam.IS_UP to true),
+    params = paramMapOf(EventParam.IS_UP to true, EventParam.TYPE to WedgeType.CRESCENDO),
     line = true
   ),
   InsertItem(
@@ -148,6 +148,7 @@ internal val insertItems = listOf(
     "insert_bowing",
     LayoutID.BOWING,
     EventType.BOWING,
+    paramMapOf(EventParam.TYPE to BowingType.UP_BOW),
     rangeCapable = true
   ),
   InsertItem(
@@ -248,6 +249,7 @@ internal val insertItems = listOf(
     "stave_join",
     LayoutID.GROUP_STAVES,
     EventType.STAVE_JOIN,
+    paramMapOf(EventParam.TYPE to StaveJoinType.BRACKET),
     line = true
   ),
   InsertItem(

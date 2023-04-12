@@ -19,13 +19,10 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
-import com.godaddy.android.colorpicker.HsvColor
 import com.google.accompanist.pager.ExperimentalPagerApi
 import com.google.accompanist.pager.HorizontalPager
 import com.google.accompanist.pager.rememberPagerState
-import com.philblandford.kscore.engine.core.score.Score
 import com.philblandford.kscore.engine.types.FileSource
-import com.philblandford.kscore.engine.types.Horizontal
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.launch
 import org.philblandford.ui.R
@@ -34,12 +31,11 @@ import org.philblandford.ui.base.viewmodel.VMSideEffect
 import org.philblandford.ui.load.viewmodels.LoadInterface
 import org.philblandford.ui.load.viewmodels.LoadModel
 import org.philblandford.ui.load.viewmodels.LoadViewModel
+import org.philblandford.ui.theme.DialogButton
 import org.philblandford.ui.theme.DialogTheme
-import org.philblandford.ui.theme.PopupTheme
 import org.philblandford.ui.util.Gap
 import org.philblandford.ui.util.LabelText
 import java.text.SimpleDateFormat
-import java.time.format.DateTimeFormatter
 import java.util.*
 
 @Composable
@@ -58,7 +54,8 @@ private fun LoadScoreInternal(
 ) {
   Column(
     modifier
-      .fillMaxWidth().fillMaxHeight(0.7f), horizontalAlignment = Alignment.CenterHorizontally
+      .fillMaxWidth()
+      .fillMaxHeight(0.7f), horizontalAlignment = Alignment.CenterHorizontally
   ) {
     LabelText(stringResource(R.string.load_score_title))
     Gap(0.5f)
@@ -146,19 +143,17 @@ private fun ColumnScope.ScorePager(
 
 @Composable
 private fun ConfirmDialog(fileInfo: FileInfo, action: () -> Unit, dismiss: () -> Unit) {
+
+
   Dialog(onDismissRequest = dismiss) {
     DialogTheme { modifier ->
       Column(modifier.fillMaxWidth(), horizontalAlignment = Alignment.CenterHorizontally) {
         Text(stringResource(R.string.file_delete_confirm, fileInfo.name))
         Gap(10.dp)
         Row {
-          Button({ action(); dismiss() }) {
-            Text(stringResource(R.string.ok))
-          }
+          DialogButton(stringResource(R.string.ok)) { action(); dismiss() }
           Gap(1f)
-          Button(dismiss) {
-            Text(stringResource(R.string.cancel))
-          }
+          DialogButton(stringResource(R.string.cancel)) { dismiss() }
         }
       }
     }
@@ -189,7 +184,7 @@ private fun ScoreDetailCard(
           Modifier
             .size(30.dp)
             .padding(5.dp)
-            .clickable { delete(fileInfo) }, tint = Color.Black
+            .clickable { delete(fileInfo) }, tint = MaterialTheme.colors.onSurface
         )
       }
       Gap(0.5f)

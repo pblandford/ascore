@@ -1,6 +1,7 @@
 package org.philblandford.ui.insert.items.ornament.model
 
-import com.philblandford.kscore.engine.types.*
+import com.philblandford.kscore.engine.types.EventType
+import com.philblandford.kscore.engine.types.OrnamentType
 import org.philblandford.ui.R
 import org.philblandford.ui.insert.row.viewmodel.RowInsertModel
 

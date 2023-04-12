@@ -4,6 +4,7 @@ import androidx.compose.runtime.Composable
 import com.philblandford.kscore.sound.PlayState
 import org.philblandford.ui.R
 import org.philblandford.ui.base.compose.VMView
+import org.philblandford.ui.util.ButtonState.Companion.selected
 import org.philblandford.ui.util.SquareButton
 
 @Composable
@@ -17,7 +18,7 @@ fun PlayButton() {
 private fun PlayButtonInternal(state: PlayModel, iface: PlayInterface) {
   SquareButton(
     R.drawable.ic_media_play,
-    dim = state.playState != PlayState.STOPPED,
+    state = selected(state.playState != PlayState.STOPPED),
     onLongPress = { iface.pause() }
   ) { iface.togglePlay() }
 }

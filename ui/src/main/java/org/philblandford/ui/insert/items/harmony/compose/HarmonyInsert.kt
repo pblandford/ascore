@@ -11,15 +11,14 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.constraintlayout.compose.ConstraintLayout
 import com.philblandford.kscore.log.ksLogt
-import org.philblandford.ascore2.features.ui.model.InsertItem
+import org.philblandford.ui.R
 import org.philblandford.ui.common.block
+import org.philblandford.ui.insert.common.compose.InsertVMView
 import org.philblandford.ui.insert.items.harmony.model.HarmonyInsertModel
 import org.philblandford.ui.insert.items.harmony.viewmodel.HarmonyInsertInterface
-import org.philblandford.ui.util.SquareButton
-import org.philblandford.ui.R
-import org.philblandford.ui.insert.common.compose.InsertVMView
 import org.philblandford.ui.insert.items.harmony.viewmodel.HarmonyInsertViewModel
 import org.philblandford.ui.util.Gap
+import org.philblandford.ui.util.SquareButton
 import org.philblandford.ui.util.TextGrid
 import org.philblandford.ui.util.TextSpinner
 

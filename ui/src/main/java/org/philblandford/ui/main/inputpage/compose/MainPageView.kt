@@ -1,20 +1,20 @@
 package org.philblandford.ui.main.inputpage.compose
 
 import androidx.activity.compose.BackHandler
-import androidx.compose.animation.*
-import androidx.compose.foundation.gestures.detectDragGestures
-import androidx.compose.foundation.layout.*
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.slideInVertically
+import androidx.compose.animation.slideOutVertically
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.material.AlertDialog
+import androidx.compose.material.Button
 import androidx.compose.material.Text
 import androidx.compose.runtime.*
-import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
-import androidx.compose.ui.input.pointer.pointerInput
-import androidx.compose.ui.unit.dp
-import androidx.compose.ui.window.Popup
-import com.github.zsoltk.compose.backpress.LocalBackPressHandler
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
@@ -22,23 +22,23 @@ import org.philblandford.ascore2.features.crosscutting.model.ErrorDescr
 import org.philblandford.ascore2.features.ui.model.LayoutID
 import org.philblandford.ui.base.compose.VMView
 import org.philblandford.ui.clipboard.compose.ClipboardView
-import org.philblandford.ui.common.Gap
 import org.philblandford.ui.main.inputpage.viewmodel.MainPageModel
 import org.philblandford.ui.main.inputpage.viewmodel.MainPageSideEffect
 import org.philblandford.ui.main.inputpage.viewmodel.MainPageViewModel
 import org.philblandford.ui.main.panel.compose.Panel
-import org.philblandford.ui.main.utility.compose.UtilityRow
 import org.philblandford.ui.main.toprow.TopRow
+import org.philblandford.ui.main.utility.compose.UtilityRow
 import org.philblandford.ui.play.compose.Mixer
 import org.philblandford.ui.screen.compose.ScreenView
-import org.philblandford.ui.screen.compose.ScreenView2
 import org.philblandford.ui.screen.compose.ScreenZoom
 import org.philblandford.ui.util.DraggableItem
 import timber.log.Timber
 
 
 @Composable
-fun MainPageView(openDrawer: () -> Unit, setPopupLayout:(LayoutID)->Unit) {
+fun MainPageView(openDrawer: () -> Unit, setPopupLayout: (LayoutID) -> Unit) {
+  Timber.e("RECO MainPageView")
+
   VMView(MainPageViewModel::class.java) { state, _, effect ->
 
     val coroutineScope = rememberCoroutineScope()
@@ -56,7 +56,7 @@ fun MainPageView(openDrawer: () -> Unit, setPopupLayout:(LayoutID)->Unit) {
 
     alertText.value?.let { errorDescr ->
       AlertDialog(onDismissRequest = { alertText.value = null },
-        confirmButton = { alertText.value = null },
+        confirmButton = { Button({ alertText.value = null }) { Text("OK") } },
 
         text = {
           Text(errorDescr.message)
@@ -85,7 +85,11 @@ fun MainPageView(openDrawer: () -> Unit, setPopupLayout:(LayoutID)->Unit) {
             .fillMaxWidth()
             .align(Alignment.TopCenter)
         ) {
-          TopRow(Modifier, openDrawer, { setPopupLayout(LayoutID.LAYOUT_OPTIONS) }, { fullScreen.value = true }) {
+          TopRow(
+            Modifier,
+            openDrawer,
+            { setPopupLayout(LayoutID.LAYOUT_OPTIONS) },
+            { fullScreen.value = true }) {
             showConsole.value = !showConsole.value
           }
 
@@ -117,12 +121,14 @@ fun MainPageView(openDrawer: () -> Unit, setPopupLayout:(LayoutID)->Unit) {
 
 @Composable
 private fun ScreenBox(modifier: Modifier, state: MainPageModel) {
+  Timber.e("RECO ScreenBox")
+
 
   val clipboardOffset = remember { mutableStateOf(Offset(0f, 10f)) }
   val zoomOffset = remember { mutableStateOf(Offset(-10f, 50f)) }
 
   Box(modifier) {
-    ScreenView2()
+    ScreenView()
 
     if (state.showClipboard) {
       DraggableItem(Modifier.align(Alignment.TopCenter), clipboardOffset) {

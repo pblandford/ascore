@@ -1,4 +1,7 @@
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -8,15 +11,12 @@ import com.philblandford.kscore.engine.types.EventParam
 import org.philblandford.ascore2.features.ui.model.InsertItem
 import org.philblandford.ui.R
 import org.philblandford.ui.common.block
-import org.philblandford.ui.insert.common.compose.DefaultInsertVMView
 import org.philblandford.ui.insert.common.compose.InsertVMView
 import org.philblandford.ui.insert.items.transposeby.viewmodel.TransposeInterface
 import org.philblandford.ui.insert.items.transposeby.viewmodel.TransposeViewModel
-import org.philblandford.ui.insert.model.DefaultInsertInterface
 import org.philblandford.ui.insert.model.InsertModel
 import org.philblandford.ui.keyboard.compose.selectors.AccidentalSpinner
 import org.philblandford.ui.util.Gap
-import org.philblandford.ui.util.NumberPicker
 import org.philblandford.ui.util.NumberSelector
 import org.philblandford.ui.util.SquareButton
 

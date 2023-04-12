@@ -9,24 +9,11 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.SharingStarted
-import kotlinx.coroutines.flow.combine
-import kotlinx.coroutines.flow.stateIn
 import org.koin.androidx.compose.getViewModel
-import org.koin.core.parameter.parametersOf
 import org.philblandford.ascore2.features.ui.model.InsertItem
 import org.philblandford.ui.R
-import org.philblandford.ui.base.compose.VMView
-import org.philblandford.ui.base.viewmodel.BaseViewModel
-import org.philblandford.ui.base.viewmodel.VMInterface
-import org.philblandford.ui.base.viewmodel.VMModel
-import org.philblandford.ui.base.viewmodel.VMSideEffect
 import org.philblandford.ui.insert.common.viewmodel.DefaultInsertViewModel
 import org.philblandford.ui.insert.common.viewmodel.InsertViewModel
 import org.philblandford.ui.insert.model.DefaultInsertInterface
@@ -34,7 +21,6 @@ import org.philblandford.ui.insert.model.InsertCombinedState
 import org.philblandford.ui.insert.model.InsertInterface
 import org.philblandford.ui.insert.model.InsertModel
 import org.philblandford.ui.util.SquareButton
-import timber.log.Timber
 
 
 @Composable

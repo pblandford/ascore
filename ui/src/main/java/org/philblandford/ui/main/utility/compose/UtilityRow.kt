@@ -6,21 +6,19 @@ import androidx.compose.material.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
 import org.philblandford.ascore2.features.ui.model.LayoutID
-import org.philblandford.ui.common.Gap
-import org.philblandford.ui.common.block
-import org.philblandford.ui.util.SquareButton
-import org.philblandford.ui.main.utility.viewmodel.UtilityInterface
-import org.philblandford.ui.main.utility.viewmodel.UtilityModel
 import org.philblandford.ui.R
 import org.philblandford.ui.base.compose.VMView
+import org.philblandford.ui.common.Gap
+import org.philblandford.ui.common.block
+import org.philblandford.ui.main.utility.viewmodel.UtilityInterface
+import org.philblandford.ui.main.utility.viewmodel.UtilityModel
 import org.philblandford.ui.main.utility.viewmodel.UtilityViewModel
-import org.philblandford.ui.util.DimmableBox
+import org.philblandford.ui.util.SquareButton
 
 @Composable
 fun UtilityRow(panelShowing: Boolean, togglePanel: () -> Unit) {
@@ -46,9 +44,9 @@ fun UtilityRowInternal(
   ) {
     val (left, right) = createRefs()
     Row(Modifier.constrainAs(left) { start.linkTo(parent.start) }) {
-      DeleteButton(model, iface::delete, iface::deleteLong)
+      DeleteButton(model.deleteSelected, iface::delete, iface::deleteLong)
       Gap(0.3f)
-      VoiceButton(model, iface::toggleVoice)
+      VoiceButton(model.voice, iface::toggleVoice)
       Gap(0.3f)
       ZoomInOutButtons(iface::zoomIn, iface::zoomOut)
       Gap(0.3f)
@@ -74,26 +72,34 @@ fun UtilityRowInternal(
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
 private fun DeleteButton(
-  model: UtilityModel, delete: () -> Unit,
+  selected:Boolean, delete: () -> Unit,
   deleteLong: () -> Unit
 ) {
+  val colors = with(MaterialTheme.colors) {
+    if (selected) {
+      onSurface to surface
+    } else {
+      surface to onSurface
+    }
+  }
+
   Box(Modifier.width(block(2))) {
     Image(
       painterResource(R.drawable.eraser),
       "",
-      Modifier.width(block(2))
+      Modifier.width(block(2)).background(colors.first)
         .align(Alignment.Center)
         .combinedClickable(
           onClick = delete, onLongClick = deleteLong
         ),
-      colorFilter = ColorFilter.tint(if (model.deleteSelected) MaterialTheme.colors.onSurface.copy(alpha = 0.25f) else MaterialTheme.colors.onSurface)
+      colorFilter = ColorFilter.tint(colors.second)
     )
   }
 }
 
 @Composable
-private fun VoiceButton(model: UtilityModel, toggle: () -> Unit) {
-  val voiceRes = if (model.voice == 1) R.drawable.voice1 else R.drawable.voice2
+private fun VoiceButton(voice:Int, toggle: () -> Unit) {
+  val voiceRes = if (voice == 1) R.drawable.voice1 else R.drawable.voice2
   SquareButton(voiceRes) { toggle() }
 }
 

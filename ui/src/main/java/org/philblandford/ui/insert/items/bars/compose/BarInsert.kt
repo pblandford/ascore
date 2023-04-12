@@ -13,7 +13,6 @@ import org.philblandford.ui.insert.common.compose.InsertVMView
 import org.philblandford.ui.insert.common.viewmodel.DefaultInsertViewModel
 import org.philblandford.ui.insert.model.InsertInterface
 import org.philblandford.ui.insert.model.InsertModel
-import org.philblandford.ui.util.NumberPicker
 import org.philblandford.ui.util.NumberSelector
 import org.philblandford.ui.util.ToggleRow
 

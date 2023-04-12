@@ -4,11 +4,11 @@ import ResourceManager
 import SamplerManager
 import TextFontManager
 import com.philblandford.ascore.android.export.AndroidExporter
-import org.philblandford.ascore2.android.export.AndroidExternalSaver
 import com.philblandford.ascore.external.export.Exporter
 import com.philblandford.ascore.external.interfaces.ExporterIf
 import com.philblandford.ascore.external.interfaces.ExternalSaver
 import com.philblandford.ascore.external.interfaces.PdfCreator
+import com.philblandford.ascore.external.interfaces.ScoreLoader
 import com.philblandford.kscore.api.*
 import com.philblandford.kscore.engine.types.ArticulationType
 import com.philblandford.kscore.log.KSLogger
@@ -25,26 +25,32 @@ import org.koin.androidx.viewmodel.dsl.viewModel
 import org.koin.core.module.Module
 import org.koin.dsl.binds
 import org.koin.dsl.module
+import org.philblandford.ascore2.android.export.AndroidExternalSaver
+import org.philblandford.ascore2.android.export.AndroidImporter
+import org.philblandford.ascore2.android.export.AndroidScoreLoader
 import org.philblandford.ascore2.features.clipboard.usecases.*
 import org.philblandford.ascore2.features.crosscutting.usecases.GetError
 import org.philblandford.ascore2.features.crosscutting.usecases.GetErrorImpl
 import org.philblandford.ascore2.features.crosscutting.usecases.SetError
 import org.philblandford.ascore2.features.drawing.*
+import org.philblandford.ascore2.features.edit.MoveSelectedArea
+import org.philblandford.ascore2.features.edit.MoveSelectedAreaImpl
+import org.philblandford.ascore2.features.error.GetErrorFlow
+import org.philblandford.ascore2.features.error.GetErrorFlowImpl
 import org.philblandford.ascore2.features.export.ExportScore
 import org.philblandford.ascore2.features.export.ExportScoreImpl
 import org.philblandford.ascore2.features.file.AutoSave
 import org.philblandford.ascore2.features.gesture.*
 import org.philblandford.ascore2.features.harmony.GetHarmoniesForKey
 import org.philblandford.ascore2.features.harmony.GetHarmoniesForKeyImpl
-import org.philblandford.ascore2.features.ui.repository.UiStateRepository
 import org.philblandford.ascore2.features.input.usecases.*
 import org.philblandford.ascore2.features.insert.*
 import org.philblandford.ascore2.features.instruments.*
 import org.philblandford.ascore2.features.load.usecases.*
 import org.philblandford.ascore2.features.page.*
+import org.philblandford.ascore2.features.playback.usecases.*
 import org.philblandford.ascore2.features.save.*
 import org.philblandford.ascore2.features.score.*
-import org.philblandford.ui.base.log.AndroidLogger
 import org.philblandford.ascore2.features.scorelayout.usecases.GetScoreLayout
 import org.philblandford.ascore2.features.scorelayout.usecases.GetScoreLayoutImpl
 import org.philblandford.ascore2.features.settings.SettingsDataSource
@@ -52,36 +58,43 @@ import org.philblandford.ascore2.features.settings.repository.SettingsRepository
 import org.philblandford.ascore2.features.settings.usecases.*
 import org.philblandford.ascore2.features.sound.usecases.*
 import org.philblandford.ascore2.features.startup.StartupManager
+import org.philblandford.ascore2.features.ui.repository.UiStateRepository
 import org.philblandford.ascore2.features.ui.usecases.*
+import org.philblandford.ui.base.log.AndroidLogger
 import org.philblandford.ui.clipboard.viewmodel.ClipboardViewModel
 import org.philblandford.ui.create.viewmodel.CreateViewModel
+import org.philblandford.ui.edit.items.text.viewmodel.TextEditViewModel
+import org.philblandford.ui.edit.viewmodel.EditViewModel
 import org.philblandford.ui.export.viewmodel.ExportViewModel
-import org.philblandford.ui.print.AndroidPdfCreator
-import org.philblandford.ui.print.AndroidPrinter
-import org.philblandford.ui.main.panel.viewmodels.PanelViewModel
-import org.philblandford.ui.keyboard.viewmodel.InputViewModel
-import org.philblandford.ui.main.toprow.PlayViewModel
-import org.philblandford.ui.play.viewmodel.MixerViewModel
-import org.philblandford.ui.screen.viewmodels.ScreenViewModel
-import org.philblandford.ui.main.utility.viewmodel.UtilityViewModel
-import org.philblandford.ui.insert.row.viewmodel.RowInsertViewModel
-import org.philblandford.ui.insert.items.tuplet.viewmodel.TupletInsertViewModel
+import org.philblandford.ui.imports.viewmodel.ImportViewModel
 import org.philblandford.ui.insert.choose.viewmodel.InsertChooseViewModel
 import org.philblandford.ui.insert.common.viewmodel.DefaultInsertViewModel
+import org.philblandford.ui.insert.items.barnumbering.viewmodel.BarNumberingViewModel
 import org.philblandford.ui.insert.items.harmony.viewmodel.HarmonyInsertViewModel
 import org.philblandford.ui.insert.items.instrument.viewmodel.InstrumentInsertViewModel
 import org.philblandford.ui.insert.items.lyric.viewmodel.LyricInsertViewModel
 import org.philblandford.ui.insert.items.meta.viewmodel.MetaInsertViewModel
 import org.philblandford.ui.insert.items.ornament.viewmodel.OrnamentInsertViewModel
+import org.philblandford.ui.insert.items.pagemargins.viewmodel.PageMarginsViewModel
 import org.philblandford.ui.insert.items.pagesize.viewmodel.PageSizeViewModel
 import org.philblandford.ui.insert.items.segmentwidth.viewmodel.SegmentWidthViewModel
 import org.philblandford.ui.insert.items.transposeby.viewmodel.TransposeViewModel
+import org.philblandford.ui.insert.items.tuplet.viewmodel.TupletInsertViewModel
+import org.philblandford.ui.insert.row.viewmodel.RowInsertViewModel
+import org.philblandford.ui.keyboard.viewmodel.InputViewModel
 import org.philblandford.ui.layout.viewmodel.LayoutOptionViewModel
 import org.philblandford.ui.load.viewmodels.LoadViewModel
 import org.philblandford.ui.main.inputpage.viewmodel.MainPageViewModel
+import org.philblandford.ui.main.panel.viewmodels.PanelViewModel
 import org.philblandford.ui.main.panel.viewmodels.TabsViewModel
+import org.philblandford.ui.main.toprow.PlayViewModel
+import org.philblandford.ui.main.utility.viewmodel.UtilityViewModel
+import org.philblandford.ui.play.viewmodel.MixerViewModel
+import org.philblandford.ui.print.AndroidPdfCreator
+import org.philblandford.ui.print.AndroidPrinter
 import org.philblandford.ui.quickscore.viewmodel.QuickScoreViewModel
 import org.philblandford.ui.save.viewmodel.SaveViewModel
+import org.philblandford.ui.screen.viewmodels.ScreenViewModel
 import org.philblandford.ui.screen.viewmodels.ScreenZoomViewModel
 import org.philblandford.ui.settings.viewmodel.SettingsViewModel
 
@@ -95,6 +108,8 @@ object Dependencies {
     single<SoundManager> { AndroidSoundManagerFluid(get(), get()) }
     single<TextFontManager> { AndroidTextFontManager(androidContext()) }
     single<DrawableGetter> { ComposeDrawableGetter(androidContext(), get()) }
+    single<ScoreLoader> { AndroidScoreLoader(get(), get(), get()) }
+    single { AndroidImporter(get()) }
   }
 
   private val stubModules = module {
@@ -124,7 +139,9 @@ object Dependencies {
     single<LoadScore> { LoadScoreImpl(get(), get(), get()) }
     single<GetSavedScores> { GetSavedScoresImpl(get()) }
     single<DeleteScore> { DeleteScoreImpl(get()) }
+    single<ImportScore> { ImportScoreImpl(get(), get()) }
     viewModel { LoadViewModel(get(), get(), get()) }
+    viewModel { ImportViewModel(get()) }
   }
 
   private val printModule = module {
@@ -134,6 +151,10 @@ object Dependencies {
 
   private val startupModule = module {
     single { StartupManager(get(), get()) }
+  }
+
+  private val errorModule = module {
+    single<GetErrorFlow> { GetErrorFlowImpl(get()) }
   }
 
   private val scoreModule = module {
@@ -150,7 +171,7 @@ object Dependencies {
 
 
   private val utilityModule = module {
-    single { UiStateRepository() }
+    single { UiStateRepository(get(), get()) }
     single<Delete> { DeleteImpl(get(), get()) }
     single<CurrentVoice> { CurrentVoiceImpl(get()) }
     single<ToggleVoice> { ToggleVoiceImpl(get()) }
@@ -220,21 +241,24 @@ object Dependencies {
     single<GetLyricAtMarker> { GetLyricAtMarkerImpl(get(), get()) }
     single<GetPageWidth> { GetPageWidthImpl(get()) }
     single<GetPageMinMax> { GetPageMinMaxImpl(get()) }
-    single<SetPageWidth> { SetPageWidthImpl(get())}
-    single<SetPageWidthPreset> { SetPageWidthPresetImpl(get())}
+    single<SetPageWidth> { SetPageWidthImpl(get()) }
+    single<SetPageWidthPreset> { SetPageWidthPresetImpl(get()) }
     single<GetSegmentMinMax> { GetSegmentMinMaxImpl(get()) }
     single<GetSegmentWidth> { GetSegmentWidthImpl(get()) }
     single<SetSegmentWidth> { SetSegmentWidthImpl(get()) }
     single<GetHarmoniesForKey> { GetHarmoniesForKeyImpl(get()) }
     single<SplitBar> { SplitBarImpl(get()) }
     single<RemoveBarSplit> { RemoveBarSplitImpl(get()) }
+    single<GetFonts> { GetFontsImpl(get()) }
     viewModel { InsertChooseViewModel(get()) }
     viewModel { DefaultInsertViewModel() }
+    viewModel { BarNumberingViewModel(get(), get()) }
     viewModel { LyricInsertViewModel(get(), get(), get(), get()) }
     viewModel { HarmonyInsertViewModel(get(), get(), get(), get(), get()) }
     viewModel { InstrumentInsertViewModel(get()) }
-    viewModel { MetaInsertViewModel(get(), get(), get()) }
+    viewModel { MetaInsertViewModel(get(), get(), get(), get()) }
     viewModel { OrnamentInsertViewModel() }
+    viewModel { PageMarginsViewModel(get(), get()) }
     viewModel { parameters ->
       RowInsertViewModel<ArticulationType>(
         parameters.get(),
@@ -242,10 +266,18 @@ object Dependencies {
       )
     }
     viewModel { PageSizeViewModel(get(), get(), get(), get()) }
-    viewModel { SegmentWidthViewModel(get(), get(), get())}
+    viewModel { SegmentWidthViewModel(get(), get(), get()) }
     viewModel { TransposeViewModel(get()) }
     viewModel { TupletInsertViewModel() }
+  }
 
+  private val editModule = module {
+    single<UpdateEvent> { UpdateEventImpl(get()) }
+    single<DeleteSelectedEvent> { DeleteSelectedEventImpl(get(), get()) }
+    single<GetSelectedArea> { GetSelectedAreaImpl(get()) }
+    single<MoveSelectedArea> { MoveSelectedAreaImpl(get()) }
+    viewModel { EditViewModel(get(), get(), get(), get()) }
+    viewModel { TextEditViewModel(get(), get(), get(), get(), get()) }
   }
 
   private val screenModule = module {
@@ -258,7 +290,7 @@ object Dependencies {
     single<HandleTap> { HandleTapImpl(get(), get()) }
     single<HandleLongPress> { HandleLongPressImpl(get(), get()) }
     single<HandleDrag> { HandleDragImpl(get(), get()) }
-    viewModel { ScreenViewModel(get(), get(), get(), get(), get(), get(), get()) }
+    viewModel { ScreenViewModel(get(), get(), get(), get(), get(), get(), get(), get()) }
     viewModel { ScreenZoomViewModel(get(), get(), get(), get()) }
     viewModel { MainPageViewModel(get(), get(), get()) }
   }
@@ -274,8 +306,12 @@ object Dependencies {
     single<GetAvailableInstruments> { GetAvailableInstrumentsImpl(get()) }
     single<GetVolume> { GetVolumeImpl(get()) }
     single<SetVolume> { SetVolumeImpl(get()) }
+    single<ToggleShuffle> { ToggleShuffleImpl(get()) }
+    single<ToggleHarmonies> { ToggleHarmoniesImpl(get()) }
+    single<ToggleLoop> { ToggleLoopImpl(get()) }
+    single<GetPlaybackState> { GetPlaybackStateImpl(get()) }
     viewModel { PlayViewModel(get(), get(), get(), get()) }
-    viewModel { MixerViewModel(get(), get(), get()) }
+    viewModel { MixerViewModel(get(), get(), get(), get(), get(), get(), get()) }
   }
 
   private val clipboardModule = module {
@@ -284,22 +320,24 @@ object Dependencies {
     single<Paste> { PasteImpl(get(), get()) }
     single<SetEndSelection> { SetEndSelectionImpl(get()) }
     single<GetSelection> { GetSelectionImpl(get()) }
+    single<SelectionUpdate> { SelectionUpdateImpl(get()) }
     viewModel { ClipboardViewModel(get(), get(), get(), get()) }
   }
 
   private val settingsModule = module {
     single<GetColors> { GetColorsImpl(get()) }
     single<SetColors> { SetColorsImpl(get()) }
-    single{ SettingsDataSource(get()) }
+    single { SettingsDataSource(get()) }
     single { SettingsRepository(get()) }
     single<GetOption> { GetOptionImpl(get()) }
     single<SetOption> { SetOptionImpl(get()) }
     viewModel { SettingsViewModel(get(), get()) }
-    viewModel{ LayoutOptionViewModel(get(), get()) }
+    viewModel { LayoutOptionViewModel(get(), get()) }
   }
 
   private val modules = listOf(
     scoreModule,
+    errorModule,
     saveModule,
     exportModule,
     loadModule,
@@ -310,6 +348,7 @@ object Dependencies {
     tabsModule,
     panelModule,
     insertModule,
+    editModule,
     inputModule,
     screenModule,
     clipboardModule,

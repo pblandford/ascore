@@ -5,12 +5,13 @@ import com.philblandford.kscore.engine.types.Event
 import com.philblandford.kscore.engine.types.EventParam
 import com.philblandford.kscore.engine.types.EventType
 import com.philblandford.kscore.engine.types.paramMapOf
-import kotlinx.coroutines.flow.*
+import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import org.philblandford.ascore2.features.input.usecases.MoveMarker
 import org.philblandford.ascore2.features.insert.GetLyricAtMarker
 import org.philblandford.ascore2.features.insert.GetMarker
-import org.philblandford.ascore2.features.insert.InsertEventAtMarker
 import org.philblandford.ascore2.features.insert.InsertLyricAtMarker
 import org.philblandford.ascore2.util.ok
 import org.philblandford.ui.base.viewmodel.VMSideEffect
@@ -45,6 +46,7 @@ class LyricInsertViewModel(
     viewModelScope.launch {
       markerPosition.stateIn(viewModelScope).collectLatest {
         val text = getLyricAtMarker(getInsertItem()?.getParam<Int>(EventParam.NUMBER) ?: 1) ?: ""
+        Timber.e("LYR update $text $it")
         launchEffect(LyricInsertSideEffect.UpdateText(text))
       }
     }
@@ -73,8 +75,7 @@ class LyricInsertViewModel(
   override fun nextSyllable() {
     getInsertItem()?.let { insertItem ->
       val text = insertItem.getParam<String>(EventParam.TEXT) + " -"
-      insertLyricAtMarker(text, getState().value?.number ?: 1)
-      moveMarker(false)
+      insertLyricAtMarker(text, getState().value?.number ?: 1, true)
     }
   }
 
@@ -88,7 +89,6 @@ class LyricInsertViewModel(
 
   override fun updateEvent(): Event? {
     return getLyricAtMarker(getState().value?.number ?: 1)?.let {
-      Timber.e("getLyric $it")
       Event(
         EventType.LYRIC,
         paramMapOf(EventParam.TEXT to it)

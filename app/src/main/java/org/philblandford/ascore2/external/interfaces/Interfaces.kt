@@ -52,7 +52,7 @@ interface ScoreLoader {
 
   fun haveScore(): Boolean
 
-  suspend fun setImportedScore(
+  fun setImportedScore(
     bytes: ByteArray, importType: ImportType,
     progressFunc: ProgressFunc = noProgress
   )

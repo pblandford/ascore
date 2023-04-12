@@ -9,6 +9,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import org.philblandford.ui.common.block
+import org.philblandford.ui.util.ButtonState
 import org.philblandford.ui.util.Gap
 import org.philblandford.ui.util.SquareButton
 import org.philblandford.ui.util.ThemeBox
@@ -41,7 +42,7 @@ fun GridSelection(
               SquareButton(resource = images[idx], size = size,
                 tag = tag(idx),
                 border = itemBorder,
-                dim = selected() != null && selected() != idx,
+                state = ButtonState.selected(selected() != null && selected() == idx),
                 onClick = { onSelect(idx) })
             }
             Gap(gap)

@@ -5,17 +5,14 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.viewmodel.compose.viewModel
 import com.philblandford.kscore.engine.types.EventParam
 import com.philblandford.kscore.engine.types.WedgeType
 import org.philblandford.ascore2.features.ui.model.InsertItem
 import org.philblandford.ui.common.block
-import org.philblandford.ui.insert.common.compose.InsertVMView
 import org.philblandford.ui.insert.row.compose.RowInsert
 import org.philblandford.ui.insert.row.compose.RowInsertInternal
 import org.philblandford.ui.insert.row.viewmodel.RowInsertInterface
 import org.philblandford.ui.insert.row.viewmodel.RowInsertModel
-import org.philblandford.ui.insert.row.viewmodel.RowInsertViewModel
 import org.philblandford.ui.util.UpDownRow
 import org.philblandford.ui.util.wedgeIds
 
@@ -32,8 +29,7 @@ private fun WedgeInsertInternal(model: RowInsertModel<WedgeType>, insertItem: In
     RowInsertInternal(model, iface, 1)
     Spacer(Modifier.width(block()))
     val up = insertItem.getParam<Boolean>(EventParam.IS_UP) == true
-    UpDownRow(
-      isUp = { up },
+    UpDownRow(up,
       set = {
         iface.setParam(EventParam.IS_UP, !up)
       },

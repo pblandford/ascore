@@ -6,11 +6,10 @@ import androidx.compose.material.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
-import com.philblandford.ascore.android.ui.style.disabledColor
 import org.philblandford.ui.common.block
+import org.philblandford.ui.util.ButtonState.Companion.selected
 
 
 @Composable
@@ -58,9 +57,8 @@ fun ToggleRow(
               SquareButton(
                 resource = ids[idx],
                 size = size(idx),
-                dim = selected != idx,
+                state = selected(selected == idx),
                 tag = tag(idx),
-             //   modifier = Modifier.padding(5.dp),
                 border = false,
                 onClick = {
                   if (selected == idx) {

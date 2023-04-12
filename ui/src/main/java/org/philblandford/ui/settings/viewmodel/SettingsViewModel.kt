@@ -1,6 +1,5 @@
 package org.philblandford.ui.settings.viewmodel
 
-import androidx.compose.ui.graphics.Color
 import com.godaddy.android.colorpicker.HsvColor
 import org.philblandford.ascore2.features.settings.usecases.GetColors
 import org.philblandford.ascore2.features.settings.usecases.SetColors

@@ -21,16 +21,20 @@ class HandleTapImpl(
     val location = Location(page, x, y)
     when (val state = uiStateRepository.getUIState().value) {
       UIState.Input -> kScore.setMarker(location)
-      is UIState.Insert -> handleInsert(state.insertItem, location)
+      is UIState.Insert -> handleInsert(state.insertItem, location, uiStateRepository.getVoice().value)
       UIState.Clipboard -> handleClipboard(location)
       UIState.InsertChoose -> {}
       UIState.Delete -> {
         kScore.deleteEventAt(location)
       }
+      is UIState.Edit -> {
+        kScore.clearSelection()
+        uiStateRepository.setUiState(UIState.Input)
+      }
     }
   }
 
-  private fun handleInsert(insertItem: InsertItem, location:Location) {
+  private fun handleInsert(insertItem: InsertItem, location:Location, voice:Int) {
 
     kScore.getStartSelect()?.let { start ->
       if (insertItem.rangeCapable || insertItem.line) {
