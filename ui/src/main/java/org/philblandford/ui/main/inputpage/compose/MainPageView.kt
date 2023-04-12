@@ -36,7 +36,7 @@ import timber.log.Timber
 
 
 @Composable
-fun MainPageView(openDrawer: () -> Unit, setPopupLayout: (LayoutID) -> Unit) {
+fun MainPageView(openDrawer: () -> Unit, setPopupLayout: (LayoutID) -> Unit, toggleMixer:()->Unit) {
   Timber.e("RECO MainPageView")
 
   VMView(MainPageViewModel::class.java) { state, _, effect ->
@@ -90,7 +90,7 @@ fun MainPageView(openDrawer: () -> Unit, setPopupLayout: (LayoutID) -> Unit) {
             openDrawer,
             { setPopupLayout(LayoutID.LAYOUT_OPTIONS) },
             { fullScreen.value = true }) {
-            showConsole.value = !showConsole.value
+            toggleMixer()
           }
 
           Timber.e("show clip ${state.showClipboard}")
@@ -107,10 +107,6 @@ fun MainPageView(openDrawer: () -> Unit, setPopupLayout: (LayoutID) -> Unit) {
                 Panel()
               }
               UtilityRow(showPanel.value) { showPanel.value = !showPanel.value }
-            }
-
-            if (showConsole.value) {
-              Mixer(Modifier.align(Alignment.BottomEnd))
             }
           }
         }

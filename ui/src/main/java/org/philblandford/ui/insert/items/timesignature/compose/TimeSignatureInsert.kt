@@ -1,5 +1,6 @@
 package org.philblandford.ui.insert.items.timesignature.compose
 
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.size
 import androidx.compose.runtime.Composable
@@ -15,6 +16,7 @@ import org.philblandford.ui.insert.common.viewmodel.DefaultInsertViewModel
 import org.philblandford.ui.insert.model.InsertInterface
 import org.philblandford.ui.insert.model.InsertModel
 import org.philblandford.ui.util.ButtonState.Companion.dimmed
+import org.philblandford.ui.util.ButtonState.Companion.selected
 import org.philblandford.ui.util.Gap
 import org.philblandford.ui.util.SquareButton
 import org.philblandford.ui.util.TimeSignatureSelector
@@ -35,12 +37,10 @@ private fun TimeSignatureInsertInternal(
     TimeSignatureSelector(
       TimeSignature.fromParams(insertItem.params),
       { iface.updateParams(it.toEvent().params) })
-
     val hidden = insertItem.getParam<Boolean>(EventParam.HIDDEN) ?: false
     Gap(0.5f)
-    SquareButton(R.drawable.hidden, Modifier.size(block()), dimmed(hidden)) {
+    SquareButton(R.drawable.hidden,  Modifier.size(block()), selected(hidden)) {
       iface.setParam(EventParam.HIDDEN, !hidden)
     }
-
   }
 }

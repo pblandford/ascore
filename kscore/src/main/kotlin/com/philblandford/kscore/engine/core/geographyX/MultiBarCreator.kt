@@ -15,8 +15,9 @@ fun createMultiBars(geogs:SortedMap<Int, BarGeography>,
     }
 
     if (geog.isEmpty) {
-      currentMultiBar = currentMultiBar?.let { it.first to it.second.copy(numBars = it.second.numBars+1)} ?:
-          bar to BarGeography(numBars = 1)
+      currentMultiBar =
+        currentMultiBar?.let { it.first to it.second.copy(numBars = it.second.numBars + 1) }
+          ?: (bar to BarGeography(numBars = 1))
     } else {
       currentMultiBar?.let { newGeogs[it.first] = it.second; currentMultiBar = null }
       newGeogs.put(bar, geog)

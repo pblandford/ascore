@@ -30,6 +30,7 @@ fun OuterPage() {
   val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
   val scope = rememberCoroutineScope()
   val popupLayout = remember { mutableStateOf<LayoutID?>(null) }
+  val showMixer = remember{ mutableStateOf(false) }
 
   ModalDrawer(drawerState = drawerState,
     drawerShape = customShape(),
@@ -43,10 +44,17 @@ fun OuterPage() {
           }
         }) { scope.launch { drawerState.close() } }
     }) {
-    MainPageView( { scope.launch { drawerState.open() } }) { popupLayout.value = it }
+    MainPageView( { scope.launch { drawerState.open() } }, { popupLayout.value = it }) {
+      showMixer.value = !showMixer.value
+    }
     popupLayout.value?.let { popup ->
       SettingsDialog(popup) {
         popupLayout.value = null
+      }
+    }
+    if (showMixer.value) {
+      SettingsDialog(LayoutID.MIXER) {
+        showMixer.value = false
       }
     }
   }

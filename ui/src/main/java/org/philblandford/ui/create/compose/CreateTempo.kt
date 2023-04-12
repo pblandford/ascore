@@ -1,21 +1,28 @@
 package org.philblandford.ui.create.compose
 
+import android.graphics.pdf.PdfDocument.Page
+import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
-import androidx.compose.material.Checkbox
-import androidx.compose.material.Text
+import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.material.*
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import com.philblandford.kscore.api.NewScoreDescriptor
+import com.philblandford.kscore.engine.time.TimeSignature
+import com.philblandford.kscore.engine.types.PageSize
 import org.philblandford.ui.R
 import org.philblandford.ui.create.viewmodel.CreateInterface
 import org.philblandford.ui.create.viewmodel.CreateModel
 import org.philblandford.ui.theme.PopupTheme
-import org.philblandford.ui.util.CustomTimeSelector
-import org.philblandford.ui.util.DimmableBox
-import org.philblandford.ui.util.TempoSelector
+import org.philblandford.ui.util.*
 
 @Composable
 internal fun CreateTempo(
@@ -29,16 +36,80 @@ internal fun CreateTempo(
     Column(Modifier.fillMaxSize()) {
       with(model.newScoreDescriptor) {
         TempoSelector(tempo) { iface.setTempo { it } }
-        Text(stringResource(R.string.upbeatbar), Modifier.padding(vertical = 5.dp))
-        Row {
-          DimmableBox(!upbeatEnabled, Modifier.wrapContentWidth()) {
-            CustomTimeSelector(timeSignature, { iface.setUpbeatBar { it } }, upbeatEnabled)
-          }
-          Checkbox(upbeatEnabled, { iface.setUpbeatEnabled(it) })
-        }
+        Gap(0.5f)
+        Label(R.string.upbeatbar)
+        UpbeatRow(upbeatEnabled, iface::setUpbeatEnabled , upBeat) { iface.setUpbeatBar { it }}
+        Gap(0.5f)
+        Label(R.string.page_size)
+        PageSizeRow(pageSize) { iface.setPageSize(it) }
+        Gap(0.5f)
+        Label(R.string.num_bars)
+        BarsRow(numBars) { iface.setNumBars(it)  }
       }
     }
   }
+}
+
+@Composable
+private fun Label(textId: Int) {
+  Text(
+    stringResource(textId),
+    Modifier.padding(vertical = 5.dp),
+    style = MaterialTheme.typography.h1
+  )
+}
+
+@Composable
+private fun UpbeatRow(
+  upbeatEnabled: Boolean, setEnabled: (Boolean) -> Unit,
+  timeSignature: TimeSignature, set: (TimeSignature) -> Unit
+) {
+  Row {
+    Checkbox(
+      upbeatEnabled, { setEnabled(it) },
+      colors = CheckboxDefaults.colors(//checkedColor = MaterialTheme.colors.onSurface,
+        checkmarkColor = MaterialTheme.colors.onSurface
+      )
+    )
+    DimmableBox(!upbeatEnabled, Modifier.wrapContentWidth()) {
+      CustomTimeSelector(timeSignature, { set(it) }, upbeatEnabled)
+    }
+  }
+}
+
+@Composable
+private fun PageSizeRow(selected: PageSize, select: (PageSize) -> Unit) {
+  Row {
+    PageSize.values().take(4).forEach { pageSize ->
+      val isSelected = selected == pageSize
+      Text(
+        pageSize.toString(),
+        Modifier
+          .background(
+            if (isSelected) MaterialTheme.colors.onSurface
+            else MaterialTheme.colors.surface
+          )
+          .padding(5.dp)
+          .clickable { select(pageSize) }, color = if (isSelected) MaterialTheme.colors.surface
+        else MaterialTheme.colors.onSurface, fontSize = 20.sp
+      )
+    }
+  }
+}
+
+@Composable
+private fun BarsRow(numBars: Int, set: (Int) -> Unit) {
+  val text = remember { mutableStateOf(numBars.toString()) }
+  OutlinedTextField(text.value, { textVal ->
+    val bars = textVal.toIntOrNull()
+    text.value = textVal
+
+    bars?.let {
+      if (bars > 0) {
+        set(bars)
+      }
+    }
+  }, Modifier.width(80.dp), keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number))
 }
 
 @Composable

@@ -55,18 +55,18 @@ fun CustomTimeSelector(
   val color = if (enabled) MaterialTheme.colors.onSurface else disabledColor
 
   Row {
-      TimeNumberPicker(Modifier.size(100.dp, 50.dp), (1..32).toList(), timeSignature.numerator)
-      { set(timeSignature.copy(numerator = it)) }
+      TimeNumberPicker(Modifier.size(50.dp, 30.dp), (1..32).toList(), timeSignature.numerator)
+      { set(timeSignature.copy(numerator = it, type = TimeSignatureType.CUSTOM)) }
       Text(
         "/",
         Modifier.width(block()),
-        fontSize = 30.sp,
+        fontSize = 25.sp,
         color = color,
         textAlign = TextAlign.Center
       )
       val range = (1..5).map { 2.0.pow(it.toDouble()).toInt() }
-      TimeNumberPicker(Modifier.size(100.dp, 50.dp), range, timeSignature.denominator)
-      { set(timeSignature.copy(denominator = it)) }
+      TimeNumberPicker(Modifier.size(50.dp, 30.dp), range, timeSignature.denominator)
+      { set(timeSignature.copy(denominator = it, type = TimeSignatureType.CUSTOM)) }
 
   }
 }
@@ -180,7 +180,6 @@ fun TimeNumberPicker(
   val pagerState = rememberPagerState()
 
   LaunchedEffect(initValue) {
-    Timber.e("LE1 $initValue")
     val page = range.indexOf(initValue).coerceAtLeast(0)
     pagerState.scrollToPage(page)
   }

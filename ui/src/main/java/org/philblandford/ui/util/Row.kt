@@ -52,8 +52,11 @@ fun ToggleRow(
         Row(verticalAlignment = Alignment.CenterVertically) {
           (0 until columns).forEach { column ->
             val idx = (row * columns) + column
-            Box(Modifier.size(size(idx) + 10.dp).
-            border(if (border) 1.dp else 0.dp, MaterialTheme.colors.onSurface).padding(5.dp)) {
+            Box(
+              Modifier
+                .size(size(idx) + 10.dp)
+                .padding(5.dp)
+            ) {
               SquareButton(
                 resource = ids[idx],
                 size = size(idx),

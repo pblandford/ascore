@@ -13,6 +13,7 @@ import com.philblandford.kscore.engine.core.area.factory.SlurArgs
 import com.philblandford.kscore.engine.core.representation.BLOCK_HEIGHT
 import com.philblandford.kscore.engine.core.representation.LINE_THICKNESS
 import com.philblandford.kscore.engine.core.representation.SLUR_THICKNESS
+import com.philblandford.kscore.log.ksLoge
 import kotlin.math.abs
 import kotlin.math.max
 import kotlin.math.min
@@ -22,7 +23,7 @@ private val BEZIER_CONTROL_GUESS = BLOCK_HEIGHT
 class ComposeSlurDrawable(
   override val width: Int, override val height: Int, val up: Boolean,
   heightDiff: Int, private val drawable: Drawable,
-  private val color:Color,
+  private val color: Color,
   override val getDrawScope: () -> DrawScope?
 ) : ComposeDrawable(getDrawScope, width, height) {
 
@@ -48,9 +49,11 @@ class ComposeSlurDrawable(
   }
 }
 
-fun composeSlurDrawable(slurArgs: SlurArgs,
-                        color: Color = Color.Black,
-                        getDrawScope: () -> DrawScope?): ComposeDrawable {
+fun composeSlurDrawable(
+  slurArgs: SlurArgs,
+  color: Color = Color.Black,
+  getDrawScope: () -> DrawScope?
+): ComposeDrawable {
   val width = slurArgs.end.x - slurArgs.start.x
   val height = getHeight(slurArgs)
   val drawable = getDrawable(slurArgs.start, slurArgs.mid, slurArgs.end, slurArgs.up, width, height)
@@ -126,7 +129,7 @@ private fun getVisibleTopBottom(
 
     if (width > 0 && height > 0) {
 
-      val bitmap = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_4444)
+      val bitmap = Bitmap.createBitmap(width, height, Bitmap.Config.ALPHA_8)
 
       canvas.drawColor(android.graphics.Color.TRANSPARENT, PorterDuff.Mode.CLEAR)
       canvas.setBitmap(bitmap)
@@ -142,7 +145,6 @@ private fun getVisibleTopBottom(
           return res
         }
       }
-
     }
     Pair(0, 0)
   }

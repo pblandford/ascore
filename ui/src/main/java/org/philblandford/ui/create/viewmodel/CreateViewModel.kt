@@ -6,6 +6,7 @@ import com.philblandford.kscore.api.NewScoreDescriptor
 import com.philblandford.kscore.engine.tempo.Tempo
 import com.philblandford.kscore.engine.time.TimeSignature
 import com.philblandford.kscore.engine.types.MetaType
+import com.philblandford.kscore.engine.types.PageSize
 import org.philblandford.ascore2.features.instruments.GetAvailableInstruments
 import org.philblandford.ascore2.features.score.CreateScore
 import org.philblandford.ascore2.util.ok
@@ -28,6 +29,8 @@ interface CreateInterface : VMInterface {
   fun setKeySignature(key:Int)
   fun setTimeSignature(func:TimeSignature.()->TimeSignature)
   fun setUpbeatBar(func:TimeSignature.()->TimeSignature)
+  fun setPageSize(pageSize: PageSize)
+  fun setNumBars(bars:Int)
   fun setUpbeatEnabled(enabled:Boolean)
   fun setTempo(func: Tempo.()->Tempo)
   fun addInstrument(instrument: Instrument)
@@ -86,6 +89,18 @@ CreateInterface {
   override fun setTempo(func: Tempo.() -> Tempo) {
     updateScore {
       copy(tempo = tempo.func())
+    }
+  }
+
+  override fun setPageSize(pageSize: PageSize) {
+    updateScore {
+      copy(pageSize = pageSize)
+    }
+  }
+
+  override fun setNumBars(bars: Int) {
+    updateScore {
+      copy(numBars = bars)
     }
   }
 

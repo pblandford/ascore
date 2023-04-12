@@ -17,8 +17,11 @@ import kotlin.math.max
 
 /* A directory containing the x-dimensions of bars and systems - the y-dimensions will be known
   later */
-data class GeographyXDirectory(val sxGeographies: List<SystemXGeography>,
-                               val barGeographies:Map<Int, BarGeography>) : GeographyXQuery {
+data class GeographyXDirectory(
+  val sxGeographies: List<SystemXGeography>,
+  val barGeographies: Map<Int, BarGeography>,
+  val rawBarGeographies: Map<Int, BarGeography> /* before being arranged into multi-bars */
+) : GeographyXQuery {
   override fun getSystemXGeographies(): List<SystemXGeography> {
     return sxGeographies
   }
@@ -29,14 +32,14 @@ fun geographyXDirectory(
   pageWidth: Int
 ): GeographyXDirectory {
 
-  val barGeographies = getBarGeographies(areaDirectoryQuery, scoreQuery)
+  val directory = getBarGeographies(areaDirectoryQuery, scoreQuery)
   val headerGeographies = areaDirectoryQuery.getAllHeaderGeogs()
   val preHeaderGeographies = areaDirectoryQuery.getAllPreHeaderGeogs()
   val breaks = getBreaks(scoreQuery)
   val systemGeographies =
-    spaceSystems(barGeographies, preHeaderGeographies, headerGeographies, breaks, pageWidth)
+    spaceSystems(directory.barGeographies.toSortedMap(), preHeaderGeographies, headerGeographies, breaks, pageWidth)
 
-  return GeographyXDirectory(systemGeographies, barGeographies)
+  return GeographyXDirectory(systemGeographies, directory.barGeographies, directory.rawBarGeographies)
 }
 
 fun geographyXDirectoryDiff(
@@ -44,15 +47,14 @@ fun geographyXDirectoryDiff(
   pageWidth: Int, old: GeographyXDirectory, bars: List<Int>? = null
 ): GeographyXDirectory {
 
-  val barGeographies = getBarGeographies(areaDirectoryQuery, scoreQuery, bars)
+  val directory = getBarGeographies(areaDirectoryQuery, scoreQuery, bars, old)
   val headerGeographies = areaDirectoryQuery.getAllHeaderGeogs()
   val preHeaderGeographies = areaDirectoryQuery.getAllPreHeaderGeogs()
   val breaks = getBreaks(scoreQuery)
-  val allBarGeographies = (old.barGeographies + barGeographies).toSortedMap()
   val systemGeographies =
-    spaceSystems(allBarGeographies, preHeaderGeographies, headerGeographies, breaks, pageWidth)
+    spaceSystems(directory.barGeographies.toSortedMap(), preHeaderGeographies, headerGeographies, breaks, pageWidth)
 
-  return GeographyXDirectory(systemGeographies, allBarGeographies)
+  return GeographyXDirectory(systemGeographies, directory.barGeographies, directory.rawBarGeographies)
 }
 
 /* Get any line/page breaks specified by the user that will override our default bar spacing */
@@ -84,14 +86,18 @@ private fun createBreaksPerLine(barsPerLine: Int, scoreQuery: ScoreQuery): Event
 private fun getBarGeographies(
   areaDirectoryQuery: AreaDirectoryQuery,
   scoreQuery: ScoreQuery,
-  bars: List<Int>? = null
-): SortedMap<Int, BarGeography> {
+  bars: List<Int>? = null,
+  old: GeographyXDirectory? = null
+):  GeographyXDirectory {
   val parts = scoreQuery.allParts(true).toSet()
+  val isMultiBar = getOption<Boolean>(EventParam.OPTION_SHOW_MULTI_BARS, scoreQuery)
 
   val segmentGeographies =
-    areaDirectoryQuery.getAllSegmentGeogsByBar().filter { bars == null || bars.contains(it.key) }.map {
-      it.key to it.value.filter { parts.contains(it.key.main) }
-    }
+    areaDirectoryQuery.getAllSegmentGeogsByBar()
+      .filter { bars == null || bars.contains(it.key) }
+      .map {
+        it.key to it.value.filter { parts.contains(it.key.main) }
+      }
 
   val lyricWidthsGrouped =
     areaDirectoryQuery.getLyricWidths().toList().groupBy { it.first.barNum }.map {
@@ -113,7 +119,7 @@ private fun getBarGeographies(
       it.key to it.value.map { it.first.offset to it.second }.toMap()
     }.toMap()
 
-  var barGeographies = segmentGeographies.map { (bar, map) ->
+  val barGeographies = segmentGeographies.map { (bar, map) ->
     val canBeLast = canBeLast(bar, scoreQuery)
     bar to createBarGeography(
       map, lyricWidthsGrouped[bar] ?: mapOf(),
@@ -123,11 +129,15 @@ private fun getBarGeographies(
     )!!
   }.toMap().toSortedMap()
 
-  if (getOption(EventParam.OPTION_SHOW_MULTI_BARS, scoreQuery)) {
-    barGeographies = createMultiBars(barGeographies, getMultiBarBreakers(scoreQuery))
+  val rawBarGeographies = ((old?.rawBarGeographies ?: mapOf()) + barGeographies).toSortedMap()
+
+  var allGeographies = rawBarGeographies
+
+  if (isMultiBar) {
+    allGeographies = createMultiBars(allGeographies, getMultiBarBreakers(scoreQuery))
   }
 
-  barGeographies = barGeographies.mapNotNull { (k, v) ->
+  allGeographies = allGeographies.mapNotNull { (k, v) ->
     areaDirectoryQuery.getAllBarStartGeogs()[ez(k)]?.let { startGeogPair ->
       areaDirectoryQuery.getAllBarEndGeogs()[ez(k + v.numBars - 1)]?.let { endGeogPair ->
         k to v.copy(barStartGeographyPair = startGeogPair, barEndGeographyPair = endGeogPair)
@@ -135,7 +145,7 @@ private fun getBarGeographies(
     }
   }.toMap().toSortedMap()
 
-  return barGeographies
+  return GeographyXDirectory(listOf(), allGeographies, rawBarGeographies)
 }
 
 /* Whether a bar is allowed to be the last in a system - only applies to the first of a 2-bar repeat */

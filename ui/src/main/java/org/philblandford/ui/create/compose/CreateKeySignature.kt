@@ -1,13 +1,14 @@
 package org.philblandford.ui.create.compose
 
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.*
+import androidx.compose.material.MaterialTheme
+import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment.Companion.CenterHorizontally
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
 import com.philblandford.kscore.api.NewScoreDescriptor
 import org.philblandford.ui.R
 import org.philblandford.ui.create.viewmodel.CreateInterface
@@ -19,16 +20,18 @@ import org.philblandford.ui.util.KeySelector
 internal fun CreateKeyTimeSignature(
   model: CreateModel,
   next: () -> Unit,
-  cancel:() -> Unit,
-  iface:CreateInterface
+  cancel: () -> Unit,
+  iface: CreateInterface
 ) {
 
-  WizardFrame(R.string.create_score_key_time_signature, next, cancel) {
+  WizardFrame(R.string.create_score_key_signature, next, cancel) {
     Column(Modifier.fillMaxSize(), verticalArrangement = Arrangement.SpaceEvenly) {
       KeySelector(
         model.newScoreDescriptor.keySignature, iface::setKeySignature,
         modifier = Modifier.align(CenterHorizontally)
       )
+      Text(stringResource(R.string.create_score_time_signature), Modifier.padding(vertical = 5.dp),
+        style = MaterialTheme.typography.h1)
       TimeSelector(Modifier.align(CenterHorizontally), model.newScoreDescriptor.timeSignature) {
         iface.setTimeSignature { it }
       }
@@ -41,7 +44,12 @@ internal fun CreateKeyTimeSignature(
 private fun Preview() {
   PopupTheme {
     Box(Modifier.fillMaxSize()) {
-      CreateKeyTimeSignature(CreateModel(NewScoreDescriptor(), listOf()), {}, {}, StubCreateInterface())
+      CreateKeyTimeSignature(
+        CreateModel(NewScoreDescriptor(), listOf()),
+        {},
+        {},
+        StubCreateInterface()
+      )
     }
   }
 }

@@ -61,8 +61,6 @@ private fun Score.getOptionDiff(oldScore: Score): ScoreDiff {
     }
   }
 
-
-
   subLevels.zip(oldScore.subLevels) { a, b ->
     for (type in listOf(EventType.LAYOUT, EventType.PLAYBACK_STATE)) {
       if (a.eventMap.getEvent(type) != b.eventMap.getEvent(type)) {

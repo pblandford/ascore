@@ -84,7 +84,7 @@ internal fun Representation.update(
 
 
 private fun getXGeogBarsChanged(old: GeographyXDirectory, new: GeographyXDirectory): Iterable<Int> {
-  val unchanged = old.sxGeographies.intersect(new.sxGeographies)
+  val unchanged = old.sxGeographies.intersect(new.sxGeographies.toSet())
   val oldDiff = old.sxGeographies.minus(unchanged)
   val newDiff = new.sxGeographies.minus(unchanged)
   return oldDiff.plus(newDiff).map { it.startBar }.distinct()

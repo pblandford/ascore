@@ -1,6 +1,8 @@
 package org.philblandford.ui.create.compose
 
+import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.*
+import androidx.compose.material.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -44,7 +46,7 @@ fun TimeSelector(modifier:Modifier, timeSignature: TimeSignature, set:(TimeSigna
         SquareButton(
           R.drawable.common, Modifier.padding(10.dp),
           selected(type == TimeSignatureType.COMMON),
-          size = 55.dp
+          size = 45.dp
         ) {
           set (
             if (type == TimeSignatureType.COMMON) TimeSignature.custom(
@@ -53,11 +55,11 @@ fun TimeSelector(modifier:Modifier, timeSignature: TimeSignature, set:(TimeSigna
             ) else TimeSignature.common()
           )
         }
-        Gap(1f)
+        Gap(0.2f)
         SquareButton(
           R.drawable.cut_common,
           state = selected(type == TimeSignatureType.CUT_COMMON),
-          size = 65.dp
+          size = 55.dp
         ) {
           set (
             if (type == TimeSignatureType.CUT_COMMON) TimeSignature.custom(
@@ -68,7 +70,9 @@ fun TimeSelector(modifier:Modifier, timeSignature: TimeSignature, set:(TimeSigna
         }
       }
       Gap(0.5)
-      CustomTimeSelector(timeSignature, set)
+      Box(Modifier.border(1.dp, MaterialTheme.colors.onSurface).padding(5.dp)) {
+        CustomTimeSelector(timeSignature, set)
+      }
       Gap(0.5)
     }
   }

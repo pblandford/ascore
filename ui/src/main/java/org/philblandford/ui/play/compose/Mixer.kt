@@ -30,6 +30,7 @@ import org.philblandford.ui.play.viewmodel.MixerViewModel
 import org.philblandford.ui.util.SquareButton
 import org.philblandford.ui.R
 import org.philblandford.ui.base.viewmodel.VMSideEffect
+import org.philblandford.ui.theme.DialogTheme
 import org.philblandford.ui.util.ButtonState
 import org.philblandford.ui.util.ButtonState.Companion.selected
 import timber.log.Timber
@@ -41,15 +42,15 @@ data class MixerInstrument(
 )
 
 @Composable
-fun Mixer(modifier: Modifier) {
-  VMView(MixerViewModel::class.java) { state, iface, _ ->
-    MixerInternal(
-      modifier
-        .fillMaxWidth(0.95f)
-        .wrapContentHeight(),
-      state,
-      iface
-    )
+fun Mixer() {
+  DialogTheme { modifier ->
+    VMView(MixerViewModel::class.java) { state, iface, _ ->
+      MixerInternal(
+        modifier.wrapContentHeight(),
+        state,
+        iface
+      )
+    }
   }
 }
 
@@ -135,7 +136,11 @@ private fun MixerButton(modifier: Modifier) {
 
 @Composable
 private fun ButtonRow(model:MixerModel, iface:MixerInterface) {
-  Row(Modifier.fillMaxWidth().border(1.dp, MaterialTheme.colors.onSurface).padding(2.dp),
+  Row(
+    Modifier
+      .fillMaxWidth()
+      .border(1.dp, MaterialTheme.colors.onSurface)
+      .padding(2.dp),
   verticalAlignment = Alignment.CenterVertically) {
     SquareButton(R.drawable.shuffle,state = selected(model.playbackState.shuffle)) { iface.toggleShuffle() }
     Gap(0.5f)

@@ -20,6 +20,7 @@ import com.philblandford.kscore.api.NewScoreDescriptor
 import com.philblandford.kscore.engine.tempo.Tempo
 import com.philblandford.kscore.engine.time.TimeSignature
 import com.philblandford.kscore.engine.types.MetaType
+import com.philblandford.kscore.engine.types.PageSize
 import kotlinx.coroutines.flow.Flow
 import org.philblandford.ui.R
 import org.philblandford.ui.base.viewmodel.VMSideEffect
@@ -149,7 +150,15 @@ internal class StubCreateInterface : CreateInterface {
   override fun removeInstrument(instrument: Instrument) {
   }
 
+  override fun setPageSize(pageSize: PageSize) {
+    TODO("Not yet implemented")
+  }
+
   override fun reorderInstruments(oldIndex: Int, newIndex: Int) {
+    TODO("Not yet implemented")
+  }
+
+  override fun setNumBars(bars: Int) {
     TODO("Not yet implemented")
   }
 

@@ -2,12 +2,7 @@ package com.philblandford.ascore.android.ui.style
 
 import androidx.compose.ui.graphics.Color
 
-val purple200 = Color(0xFFBB86FC)
-val purple500 = Color(0xFF6200EE)
-val purple700 = Color(0xFF3700B3)
-val teal200 = Color(0xFF03DAC5)
-
-val unselectedColor = Color(0x55000000)
+val unselectedColor = Color(0x33000000)
 val scoreBackground = Color(0xffaaaaaa)
 val disabledColor = Color(0x33aaaaaa)
 val disabledDark = Color(0x77cccccc)
