@@ -1,0 +1,101 @@
+plugins {
+    id 'com.android.library'
+    id 'kotlin-android'
+    id 'maven-publish'
+}
+
+apply from: "../versions.gradle"
+
+group = 'com.philblandford'
+version = '1.1.10b'
+
+android {
+    compileSdk 31
+
+    defaultConfig {
+        minSdk 21
+        targetSdk 31
+        versionCode 1
+        versionName "1.1"
+
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+        vectorDrawables {
+            useSupportLibrary true
+        }
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+        }
+    }
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
+    kotlinOptions {
+        jvmTarget = '1.8'
+    }
+    buildFeatures {
+        compose true
+    }
+    composeOptions {
+        kotlinCompilerExtensionVersion compose_compiler_version
+    }
+    packagingOptions {
+        resources {
+            excludes += '/META-INF/{AL2.0,LGPL2.1}'
+        }
+    }
+
+    task sourceJar(type: Jar) {
+        from android.sourceSets.main.java.srcDirs
+        classifier "sources"
+    }
+
+//    afterEvaluate {
+//        publishing {
+//            repositories {
+//                maven {
+//                    url "https://mymavenrepo.com/repo/TEjD1kUCCMs7bQAoWHUj/"
+//                    credentials {
+//                        username 'myMavenRepo'
+//                        password 'akkadian'
+//                    }
+//                }
+//            }
+//            publications {
+//                mavenRelease(MavenPublication) {
+//                    artifact(sourceJar)
+//                    from components.release
+//                }
+//            }
+//        }
+//    }
+}
+
+dependencies {
+
+    implementation 'androidx.core:core-ktx:1.6.0'
+    implementation 'androidx.appcompat:appcompat:1.3.1'
+    implementation 'com.google.android.material:material:1.4.0'
+
+    implementation platform("androidx.compose:compose-bom:$compose_bom_version")
+    implementation "androidx.compose.ui:ui"
+    implementation "androidx.compose.material:material"
+    implementation 'androidx.lifecycle:lifecycle-runtime-ktx:2.3.1'
+    implementation 'androidx.activity:activity-compose:1.3.1'
+    implementation 'commons-io:commons-io:2.6'
+    implementation("com.squareup.moshi:moshi-kotlin:1.9.3")
+
+    implementation project(path: ':kscore')
+   // implementation 'com.philblandford:KScore:1.0.1.46'
+    api 'com.philblandford:mp3converter:1.0.0'
+
+    testImplementation 'junit:junit:4.+'
+    androidTestImplementation 'androidx.test.ext:junit:1.1.3'
+    androidTestImplementation 'androidx.test.espresso:espresso-core:3.4.0'
+    androidTestImplementation "androidx.compose.ui:ui-test-junit4"
+    debugImplementation "androidx.compose.ui:ui-tooling"
+}
