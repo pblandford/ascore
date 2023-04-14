@@ -1,10 +1,7 @@
 package org.philblandford.ui.insert.items.text.compose
 
 import GridSelection
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.*
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.OutlinedTextField
 import androidx.compose.material.TextFieldDefaults
@@ -13,6 +10,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.testTag
+import androidx.compose.ui.unit.dp
 import com.philblandford.kscore.engine.types.EventParam
 import com.philblandford.kscore.engine.types.EventType
 import org.philblandford.ascore2.features.ui.model.InsertItem
@@ -27,19 +25,18 @@ import org.philblandford.ui.util.ToggleRow
 
 @Composable
 fun TextInsert() {
-  InsertVMView<InsertModel, InsertInterface<InsertModel>, DefaultInsertViewModel> { model, insertItem, iface ->
-    TextInsertInternal(model, insertItem, iface)
+  InsertVMView<InsertModel, InsertInterface<InsertModel>, DefaultInsertViewModel> { _, insertItem, iface ->
+    TextInsertInternal(insertItem, iface)
   }
 }
 
 
 @Composable
 private fun TextInsertInternal(
-  model: InsertModel,
   insertItem: InsertItem,
   iface: InsertInterface<InsertModel>
 ) {
-  Column {
+  Column(Modifier.padding(10.dp)) {
     Insert(insertItem, iface)
     Gap(0.5f)
     Row {

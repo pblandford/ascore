@@ -20,10 +20,9 @@ class HandleTapImpl(
   override operator fun invoke(page: Int, x: Int, y: Int) {
     val location = Location(page, x, y)
     when (val state = uiStateRepository.getUIState().value) {
-      UIState.Input -> kScore.setMarker(location)
+      UIState.Input, UIState.InsertChoose -> kScore.setMarker(location)
       is UIState.Insert -> handleInsert(state.insertItem, location, uiStateRepository.getVoice().value)
       UIState.Clipboard -> handleClipboard(location)
-      UIState.InsertChoose -> {}
       UIState.Delete -> {
         kScore.deleteEventAt(location)
       }
@@ -39,7 +38,7 @@ class HandleTapImpl(
     kScore.getStartSelect()?.let { start ->
       if (insertItem.rangeCapable || insertItem.line) {
         kScore.getEventAddress(location)?.let { end ->
-          kScore.addEvent(insertItem.eventType, start, insertItem.params, end)
+          kScore.addEvent(insertItem.eventType, start.copy(voice = voice), insertItem.params, end.copy(voice = voice))
           kScore.clearSelection()
         }
       } else null
@@ -50,7 +49,7 @@ class HandleTapImpl(
             if (insertItem.line) {
               kScore.setStartSelection(address)
             } else {
-              kScore.addEvent(insertItem.eventType, address, insertItem.params)
+              kScore.addEvent(insertItem.eventType, address.copy(voice = voice), insertItem.params)
             }
           }
           TapInsertBehaviour.SET_MARKER -> kScore.setMarker(location)

@@ -1,7 +1,9 @@
 package org.philblandford.ui.create.compose
 
 import android.graphics.pdf.PdfDocument.Page
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.text.KeyboardOptions
@@ -10,6 +12,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.tooling.preview.Preview
@@ -32,19 +35,25 @@ internal fun CreateTempo(
   iface: CreateInterface
 ) {
 
-  WizardFrame(R.string.create_score_tempo, next, cancel) {
+  WizardFrame(R.string.create_score_tempo, {
+    if (model.newScoreDescriptor.numBars > 0 &&
+      model.newScoreDescriptor.tempo.bpm > 0
+    ) {
+      next()
+    }
+  }, cancel) {
     Column(Modifier.fillMaxSize()) {
       with(model.newScoreDescriptor) {
         TempoSelector(tempo) { iface.setTempo { it } }
         Gap(0.5f)
         Label(R.string.upbeatbar)
-        UpbeatRow(upbeatEnabled, iface::setUpbeatEnabled , upBeat) { iface.setUpbeatBar { it }}
+        UpbeatRow(upbeatEnabled, iface::setUpbeatEnabled, upBeat) { iface.setUpbeatBar { it } }
         Gap(0.5f)
         Label(R.string.page_size)
         PageSizeRow(pageSize) { iface.setPageSize(it) }
         Gap(0.5f)
         Label(R.string.num_bars)
-        BarsRow(numBars) { iface.setNumBars(it)  }
+        BarsRow(numBars) { iface.setNumBars(it) }
       }
     }
   }
@@ -100,16 +109,26 @@ private fun PageSizeRow(selected: PageSize, select: (PageSize) -> Unit) {
 @Composable
 private fun BarsRow(numBars: Int, set: (Int) -> Unit) {
   val text = remember { mutableStateOf(numBars.toString()) }
-  OutlinedTextField(text.value, { textVal ->
-    val bars = textVal.toIntOrNull()
-    text.value = textVal
+  OutlinedTextField(
+    text.value, { textVal ->
+      val bars = textVal.toIntOrNull()
+      text.value = textVal
 
-    bars?.let {
-      if (bars > 0) {
+      bars?.let {
         set(bars)
+      } ?: run {
+        set(0)
       }
-    }
-  }, Modifier.width(80.dp), keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number))
+    },
+    Modifier
+      .width(80.dp)
+      .border(
+        if (numBars < 1) BorderStroke(1.dp, Color.Red) else BorderStroke(
+          0.dp,
+          Color.Transparent
+        )
+      ), keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number)
+  )
 }
 
 @Composable
