@@ -21,7 +21,7 @@ import org.philblandford.ui.util.*
 import timber.log.Timber
 
 @Composable
-fun TextEdit(scale:Float) {
+fun TextEdit(scale: Float) {
   Timber.e("RECO TextEdit $scale")
   VMView(TextEditViewModel::class.java) { model, iface, _ ->
     EditFrame(iface, scale = scale) {
@@ -31,9 +31,13 @@ fun TextEdit(scale:Float) {
 }
 
 @Composable
-private fun TextEditInternal(model: EditModel, iface:TextEditInterface) {
+private fun TextEditInternal(model: EditModel, iface: TextEditInterface) {
 
-  val text by remember { mutableStateOf(model.editItem.event.getParam<String>(EventParam.TEXT) ?: "") }
+  val text by remember {
+    mutableStateOf(
+      model.editItem.event.getParam<String>(EventParam.TEXT) ?: ""
+    )
+  }
 
   Column() {
     FreeKeyboard(initValue = text,
@@ -53,10 +57,15 @@ private fun TextEditInternal(model: EditModel, iface:TextEditInterface) {
     }
 
     Item {
-      NumberSelector(min = 10, max = 500, step = 10,
-        num = model.editItem.event.getParam<Int>(EventParam.TEXT_SIZE) ?: 50, setNum = {
+      NumberSelector(
+        min = 10,
+        max = 500,
+        step = 10,
+        num = model.editItem.event.getParam<Int>(EventParam.TEXT_SIZE) ?: iface.defaultTextSize(),
+        setNum = {
           iface.updateParam(EventParam.TEXT_SIZE, it)
-        }, editable = false
+        },
+        editable = false
       )
     }
   }

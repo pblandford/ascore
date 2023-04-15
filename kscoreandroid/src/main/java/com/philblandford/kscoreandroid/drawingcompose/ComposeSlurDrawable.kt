@@ -124,6 +124,7 @@ private fun getVisibleTopBottom(
   shapeDrawable: Drawable,
   up: Boolean
 ): Pair<Int, Int> {
+  return 0 to 0
 
   return topBottomCache[slurArgs] ?: run {
 

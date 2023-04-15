@@ -58,9 +58,10 @@ fun UtilityRowInternal(
     Row(Modifier.constrainAs(right) { end.linkTo(parent.end) }) {
       TogglePanelButton(panelShowing, togglePanel)
       ToggleInsertButton(model.panelType) {
-        iface.togglePanelType()
         if (!panelShowing) {
           togglePanel()
+        } else {
+          iface.togglePanelType()
         }
       }
     }

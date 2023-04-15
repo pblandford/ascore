@@ -1,4 +1,4 @@
-package org.philblandford.ui.keyboard.compose.selectors
+package org.philblandford.ui.input.compose.selectors
 
 import androidx.compose.runtime.Composable
 import com.philblandford.kscore.engine.types.Accidental

@@ -14,7 +14,7 @@ import org.philblandford.ascore2.features.ui.model.InsertItem
 import org.philblandford.ui.insert.row.compose.RowInsert
 import org.philblandford.ui.insert.row.viewmodel.RowInsertInterface
 import org.philblandford.ui.insert.row.viewmodel.RowInsertModel
-import org.philblandford.ui.keyboard.compose.selectors.AccidentalSpinner
+import org.philblandford.ui.input.compose.selectors.AccidentalSpinner
 import org.philblandford.ui.util.Gap
 import org.philblandford.ui.util.ornamentIds
 

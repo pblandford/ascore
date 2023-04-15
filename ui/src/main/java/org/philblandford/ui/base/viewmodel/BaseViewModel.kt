@@ -185,8 +185,11 @@ abstract class BaseViewModel<M : VMModel, I : VMInterface, S : VMSideEffect> : V
   private fun listen() {
     viewModelScope.launch {
       _actions.consumeAsFlow().collect { action ->
+        Timber.e("OI got action ${_viewState.value}")
         _viewState.value?.let { value ->
-          emitOrFail { action.func(value) }
+          emitOrFail {
+            Timber.e("OI emitting ${action.func(value)}")
+            action.func(value) }
         }
       }
     }
@@ -207,6 +210,7 @@ abstract class BaseViewModel<M : VMModel, I : VMInterface, S : VMSideEffect> : V
       setError(descr)
     }
   }
+
 
   @Synchronized
   private fun updateStateSync(state: M) {

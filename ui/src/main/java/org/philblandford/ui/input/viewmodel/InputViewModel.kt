@@ -1,4 +1,4 @@
-package org.philblandford.ui.keyboard.viewmodel
+package org.philblandford.ui.input.viewmodel
 
 import androidx.lifecycle.viewModelScope
 import com.philblandford.kscore.api.NoteInputDescriptor
@@ -13,14 +13,10 @@ import org.philblandford.ascore2.features.sound.usecases.SoundNote
 import org.philblandford.ascore2.util.ok
 import org.philblandford.ui.base.viewmodel.BaseViewModel
 import org.philblandford.ui.base.viewmodel.VMInterface
-import org.philblandford.ui.base.viewmodel.VMModel
 import org.philblandford.ui.base.viewmodel.VMSideEffect
-import org.philblandford.ui.keyboard.compose.NoteInputButtonsInterface
+import org.philblandford.ui.input.compose.keyboard.NoteInputButtonsInterface
+import org.philblandford.ui.input.model.InputModel
 
-data class InputModel(
-  val noteInputDescriptor: NoteInputDescriptor,
-  val accidentals: List<Accidental>
-) : VMModel()
 
 interface InputInterface : VMInterface, NoteInputButtonsInterface {
   fun insertNote(midiVal: Int, hold: Boolean)

@@ -2,6 +2,8 @@ package org.philblandford.ui.save.compose
 
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.Button
+import androidx.compose.material.OutlinedTextField
+import androidx.compose.material.RadioButton
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
@@ -10,6 +12,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
+import com.philblandford.kscore.engine.types.FileSource
 import kotlinx.coroutines.flow.Flow
 import org.philblandford.ui.R
 import org.philblandford.ui.base.compose.VMView
@@ -36,13 +39,18 @@ fun SaveScore(dismiss: () -> Unit) {
 private fun SaveFileInternal(modifier: Modifier, model: SaveModel, iface: SaveInterface, dismiss: () -> Unit) {
 
   val title = remember { mutableStateOf(model.scoreTitle) }
-  Column(modifier.fillMaxWidth(0.9f).wrapContentHeight(),
+  Column(
+    modifier
+      .fillMaxWidth(0.9f)
+      .wrapContentHeight(),
     horizontalAlignment = Alignment.CenterHorizontally) {
     LabelText(stringResource(R.string.save_score_title))
     Gap(0.5f)
-    OutlinedTextField2(title.value, {
+    OutlinedTextField(title.value, {
       Timber.e("TITLE ${title.value}")
-      title.value = it })
+      title.value = it }, Modifier.wrapContentHeight())
+    Gap(0.5f)
+    SourceSelect(model.source, iface::setFileSource)
     Gap(0.5f)
     Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceEvenly) {
       Button(onClick = {
@@ -59,11 +67,22 @@ private fun SaveFileInternal(modifier: Modifier, model: SaveModel, iface: SaveIn
 }
 
 @Composable
+private fun SourceSelect(current:FileSource, set:(FileSource)->Unit) {
+
+  Row(Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
+    RadioButton(current == FileSource.SAVE, onClick = { set(FileSource.SAVE) })
+    Text(stringResource(R.string.files_in_storage))
+    RadioButton(current == FileSource.EXTERNAL, onClick = { set(FileSource.EXTERNAL) })
+    Text(stringResource(R.string.files_in_external_storage))
+  }
+}
+
+@Composable
 @Preview
 private fun Preview() {
   DialogTheme {
 
-    SaveFileInternal(it, SaveModel(""), object : SaveInterface {
+    SaveFileInternal(it, SaveModel("", FileSource.SAVE), object : SaveInterface {
       override fun reset() {
         TODO("Not yet implemented")
       }
@@ -73,6 +92,10 @@ private fun Preview() {
       }
 
       override fun getSideEffects(): Flow<VMSideEffect> {
+        TODO("Not yet implemented")
+      }
+
+      override fun setFileSource(source: FileSource) {
         TODO("Not yet implemented")
       }
     }) {

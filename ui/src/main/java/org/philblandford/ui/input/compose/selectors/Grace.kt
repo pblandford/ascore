@@ -1,4 +1,4 @@
-package org.philblandford.ui.keyboard.compose.selectors
+package org.philblandford.ui.input.compose.selectors
 
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Box
@@ -25,7 +25,8 @@ interface GraceSelectorInterface {
 @Composable
 fun GraceButtons(
   model: GraceSelectorModel,
-  iface: GraceSelectorInterface) {
+  iface: GraceSelectorInterface
+) {
 
   Box(Modifier.border(styledBorder())) {
     Row {

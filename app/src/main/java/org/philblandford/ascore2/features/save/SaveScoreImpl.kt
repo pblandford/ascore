@@ -16,7 +16,7 @@ class SaveScoreImpl(
   private val saver: Saver,
   private val resourceManager: ResourceManager
 ) : SaveScore {
-  override operator fun invoke(name: String): Result<Unit> {
+  override operator fun invoke(name: String, fileSource: FileSource): Result<Unit> {
 
     kScore.addEvent(EventType.FILENAME, eZero(), paramMapOf(EventParam.TEXT to name))
 
@@ -24,7 +24,7 @@ class SaveScoreImpl(
       this.addEvent(Event(EventType.FILENAME, paramMapOf(EventParam.TEXT to name)), eZero())
         ?.let { withFilename ->
           val bytes = saver.createSaveScore(withFilename)
-          resourceManager.saveScore(name, bytes, FileSource.SAVE)
+          resourceManager.saveScore(name, bytes, fileSource)
         }
     }
 

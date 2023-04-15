@@ -4,6 +4,7 @@ import com.philblandford.kscore.engine.types.Event
 import com.philblandford.kscore.engine.types.EventParam
 import com.philblandford.kscore.engine.types.EventType
 import com.philblandford.kscore.engine.types.paramMapOf
+import org.philblandford.ascore2.features.insert.GetDefaultTextSize
 import org.philblandford.ascore2.features.insert.GetFonts
 import org.philblandford.ascore2.features.insert.GetMetaEvent
 import org.philblandford.ascore2.features.insert.InsertMetaEvent
@@ -16,13 +17,15 @@ import timber.log.Timber
 
 interface MetaInsertInterface : InsertInterface<MetaInsertModel> {
   fun insertText(text:String)
+  fun defaultTextSize():Int
 }
 
 class MetaInsertViewModel(
   private val insertMetaEvent: InsertMetaEvent,
   private val getMetaEvent: GetMetaEvent,
   private val updateInsertItem: UpdateInsertItem,
-  private val getFonts: GetFonts
+  private val getFonts: GetFonts,
+  private val getDefaultTextSize: GetDefaultTextSize
 ) :
   ScoreInsertViewModel<MetaInsertModel, MetaInsertInterface>(),
   MetaInsertInterface {
@@ -63,5 +66,11 @@ class MetaInsertViewModel(
       Timber.e("got insert item $item")
       getMetaEvent(item.eventType)
     }
+  }
+
+  override fun defaultTextSize(): Int {
+    return getInsertItem()?.let { item ->
+      getDefaultTextSize(item.eventType)
+    } ?: 100
   }
 }

@@ -29,11 +29,19 @@ internal fun Score.diff(other: Score): ScoreDiff {
     return getOptionDiff(other).copy(createHeaders = createHeaders)
   }
 
-  return ScoreDiff(lines, bars, createHeaders = createHeaders, createParts = lines.isNotEmpty() || bars.isNotEmpty())
+  return ScoreDiff(
+    lines,
+    bars,
+    createHeaders = createHeaders,
+    createParts = lines.isNotEmpty() || bars.isNotEmpty()
+  )
 }
 
-private fun compareOption(old:Score, new:Score, option:EventParam):Boolean {
-  return old.eventMap.getParam<Any>(EventType.OPTION, option) == new.eventMap.getParam<Any>(EventType.OPTION, option)
+private fun compareOption(old: Score, new: Score, option: EventParam): Boolean {
+  return old.eventMap.getParam<Any>(EventType.OPTION, option) == new.eventMap.getParam<Any>(
+    EventType.OPTION,
+    option
+  )
 }
 
 private fun Score.getOptionDiff(oldScore: Score): ScoreDiff {
@@ -89,10 +97,7 @@ private fun Score.recreate(other: Score): Boolean {
       }
     }
   }
-  if (eventMap.eventChanged(other.eventMap, EventType.OPTION)) {
-    return listOf(EventParam.OPTION_SHOW_TRANSPOSE_CONCERT, EventParam.OPTION_HIDE_EMPTY_STAVES,
-      EventParam.OPTION_SHOW_MULTI_BARS).any { compareOption(this, other, it) }
-  }
+
   return false
 }
 
@@ -168,6 +173,8 @@ private fun Score.lineDiff(new: Score): List<Int> {
       bars.addAll(1..numBars)
     } else if (partA.label != partB.label) {
       bars.add(1)
+    } else if (partA.eventMap.eventChanged(partB.eventMap, EventType.LAYOUT)) {
+      bars.addAll(1..numBars)
     }
   }
 

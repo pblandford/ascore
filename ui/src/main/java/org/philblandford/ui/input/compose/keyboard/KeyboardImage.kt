@@ -1,4 +1,4 @@
-package org.philblandford.ui.keyboard.compose
+package org.philblandford.ui.input.compose.keyboard
 
 import android.content.res.Configuration.ORIENTATION_LANDSCAPE
 import androidx.compose.foundation.Image

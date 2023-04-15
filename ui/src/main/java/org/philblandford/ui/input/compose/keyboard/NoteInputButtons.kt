@@ -1,4 +1,4 @@
-package org.philblandford.ui.keyboard.compose
+package org.philblandford.ui.input.compose.keyboard
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -21,8 +21,8 @@ import com.philblandford.kscore.engine.types.NoteHeadType
 import org.philblandford.ui.R
 import org.philblandford.ui.common.Gap
 import org.philblandford.ui.common.block
-import org.philblandford.ui.keyboard.compose.selectors.*
-import org.philblandford.ui.keyboard.viewmodel.InputModel
+import org.philblandford.ui.input.compose.selectors.*
+import org.philblandford.ui.input.model.InputModel
 import org.philblandford.ui.util.*
 
 

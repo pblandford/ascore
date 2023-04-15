@@ -15,7 +15,7 @@ import org.philblandford.ui.insert.common.compose.InsertVMView
 import org.philblandford.ui.insert.items.transposeby.viewmodel.TransposeInterface
 import org.philblandford.ui.insert.items.transposeby.viewmodel.TransposeViewModel
 import org.philblandford.ui.insert.model.InsertModel
-import org.philblandford.ui.keyboard.compose.selectors.AccidentalSpinner
+import org.philblandford.ui.input.compose.selectors.AccidentalSpinner
 import org.philblandford.ui.util.Gap
 import org.philblandford.ui.util.NumberSelector
 import org.philblandford.ui.util.SquareButton

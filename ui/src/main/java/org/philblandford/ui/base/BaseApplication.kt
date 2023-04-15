@@ -5,6 +5,7 @@ import android.util.Log
 import org.koin.android.ext.android.inject
 import org.koin.android.ext.koin.androidContext
 import org.koin.core.context.startKoin
+import org.philblandford.ascore2.features.file.AutoSave
 import org.philblandford.ascore2.features.startup.StartupManager
 import org.philblandford.ui.BuildConfig
 import timber.log.Timber
@@ -30,8 +31,8 @@ class BaseApplication : Application() {
   }
 
   private fun startAutosave() {
-    val startupManager:StartupManager by inject()
-    startupManager.start()
+    val autoSave:AutoSave by inject()
+    autoSave.startAutoSave()
   }
 
 }

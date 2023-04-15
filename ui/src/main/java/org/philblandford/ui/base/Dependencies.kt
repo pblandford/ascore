@@ -81,7 +81,7 @@ import org.philblandford.ui.insert.items.segmentwidth.viewmodel.SegmentWidthView
 import org.philblandford.ui.insert.items.transposeby.viewmodel.TransposeViewModel
 import org.philblandford.ui.insert.items.tuplet.viewmodel.TupletInsertViewModel
 import org.philblandford.ui.insert.row.viewmodel.RowInsertViewModel
-import org.philblandford.ui.keyboard.viewmodel.InputViewModel
+import org.philblandford.ui.input.viewmodel.InputViewModel
 import org.philblandford.ui.layout.viewmodel.LayoutOptionViewModel
 import org.philblandford.ui.load.viewmodels.LoadViewModel
 import org.philblandford.ui.main.inputpage.viewmodel.MainPageViewModel
@@ -141,7 +141,7 @@ object Dependencies {
     single<DeleteScore> { DeleteScoreImpl(get()) }
     single<ImportScore> { ImportScoreImpl(get(), get()) }
     viewModel { LoadViewModel(get(), get(), get()) }
-    viewModel { ImportViewModel(get()) }
+    viewModel { ImportViewModel(get(), get()) }
   }
 
   private val printModule = module {
@@ -250,13 +250,14 @@ object Dependencies {
     single<SplitBar> { SplitBarImpl(get()) }
     single<RemoveBarSplit> { RemoveBarSplitImpl(get()) }
     single<GetFonts> { GetFontsImpl(get()) }
+    single<GetDefaultTextSize> { GetDefaultTextSizeImpl(get()) }
     viewModel { InsertChooseViewModel(get()) }
     viewModel { DefaultInsertViewModel() }
     viewModel { BarNumberingViewModel(get(), get()) }
     viewModel { LyricInsertViewModel(get(), get(), get(), get()) }
     viewModel { HarmonyInsertViewModel(get(), get(), get(), get(), get()) }
     viewModel { InstrumentInsertViewModel(get()) }
-    viewModel { MetaInsertViewModel(get(), get(), get(), get()) }
+    viewModel { MetaInsertViewModel(get(), get(), get(), get(), get()) }
     viewModel { OrnamentInsertViewModel() }
     viewModel { PageMarginsViewModel(get(), get()) }
     viewModel { parameters ->
@@ -277,7 +278,7 @@ object Dependencies {
     single<GetSelectedArea> { GetSelectedAreaImpl(get()) }
     single<MoveSelectedArea> { MoveSelectedAreaImpl(get()) }
     viewModel { EditViewModel(get(), get(), get(), get()) }
-    viewModel { TextEditViewModel(get(), get(), get(), get(), get()) }
+    viewModel { TextEditViewModel(get(), get(), get(), get(), get(), get()) }
   }
 
   private val screenModule = module {

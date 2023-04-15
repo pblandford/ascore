@@ -1,15 +1,12 @@
 package org.philblandford.ui.main.toprow
 
-import androidx.compose.foundation.border
-import androidx.compose.foundation.clickable
+import androidx.compose.foundation.*
 import androidx.compose.foundation.gestures.Orientation
 import androidx.compose.foundation.gestures.scrollable
-import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
@@ -39,11 +36,16 @@ private fun TabsInternal(
     Row(
       Modifier
         .horizontalScroll(rememberScrollState())
-        .offset(y = 5.dp)) {
+        .offset(y = 5.dp)
+    ) {
       parts.withIndex().forEach { (index, part) ->
-        val foreground =if (selected != index) MaterialTheme.colors.onSurface.copy(alpha = 0.7f) else MaterialTheme.colors.onSurface
+        val foreground = if (selected != index) MaterialTheme.colors.onSurface else
+          MaterialTheme.colors.surface
+        val background = if (selected != index) MaterialTheme.colors.surface else
+          MaterialTheme.colors.onSurface
         Box(
           Modifier
+            .background(background)
             .border(2.dp, foreground, RoundedCornerShape(topEnd = 5.dp))
         ) {
           Text(

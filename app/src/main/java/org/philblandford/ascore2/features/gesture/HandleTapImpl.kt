@@ -2,12 +2,6 @@ package org.philblandford.ascore2.features.gesture
 
 import com.philblandford.kscore.api.KScore
 import com.philblandford.kscore.api.Location
-import com.philblandford.kscore.engine.types.Event
-import org.philblandford.ascore2.features.clipboard.usecases.ClearSelection
-import org.philblandford.ascore2.features.clipboard.usecases.SetEndSelection
-import org.philblandford.ascore2.features.insert.InsertEventAtLocation
-import org.philblandford.ascore2.features.insert.LocationIsInScore
-import org.philblandford.ascore2.features.insert.SetMarker
 import org.philblandford.ascore2.features.ui.model.InsertItem
 import org.philblandford.ascore2.features.ui.model.TapInsertBehaviour
 import org.philblandford.ascore2.features.ui.model.UIState

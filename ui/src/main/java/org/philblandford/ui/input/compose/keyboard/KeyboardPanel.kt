@@ -9,9 +9,11 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import org.philblandford.ui.base.compose.VMView
-import org.philblandford.ui.keyboard.viewmodel.InputInterface
-import org.philblandford.ui.keyboard.viewmodel.InputModel
-import org.philblandford.ui.keyboard.viewmodel.InputViewModel
+import org.philblandford.ui.input.compose.keyboard.KeyboardImage
+import org.philblandford.ui.input.compose.keyboard.NoteInputButtonsColumn
+import org.philblandford.ui.input.model.InputModel
+import org.philblandford.ui.input.viewmodel.InputInterface
+import org.philblandford.ui.input.viewmodel.InputViewModel
 import org.philblandford.ui.util.Gap
 
 @Composable

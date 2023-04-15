@@ -2,13 +2,13 @@ package org.philblandford.ui.main.toprow
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.*
 import androidx.compose.material.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import org.philblandford.ui.R
+import org.philblandford.ui.common.block
 import org.philblandford.ui.util.SquareButton
 
 @Composable
@@ -21,7 +21,9 @@ fun TopRow(modifier: Modifier,
     Row(modifier.fillMaxWidth().background(MaterialTheme.colors.surface)
       .border(1.dp, MaterialTheme.colors.onSurface)) {
       SquareButton(R.drawable.settings) { openDrawer() }
+      Box(Modifier.size(1.dp, block()).background(MaterialTheme.colors.onSurface))
       Tabs(Modifier.weight(1f))
+      Box(Modifier.size(1.dp, block()).background(MaterialTheme.colors.onSurface))
       SquareButton(R.drawable.fullscreen) {
         showLayoutOptions()
       }
