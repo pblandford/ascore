@@ -18,6 +18,27 @@ class GetPanelLayoutImpl(
   private val coroutineScope = CoroutineScope(Dispatchers.Default)
 
   init {
+    listenForUIState()
+    listenForMarkerChange()
+  }
+
+  private fun listenForMarkerChange() {
+    coroutineScope.launch {
+      kScore.scoreUpdate().collectLatest {
+        if (uiStateRepository.getUIState().value == UIState.Input) {
+          kScore.getInstrumentAtMarker()?.let {
+            if (it.percussion) {
+              layoutFlow.emit(LayoutID.PERCUSSION)
+            } else {
+              layoutFlow.emit(LayoutID.KEYBOARD)
+            }
+          }
+        }
+      }
+    }
+  }
+
+  private fun listenForUIState() {
     coroutineScope.launch {
 
       uiStateRepository.getUIState().collectLatest {

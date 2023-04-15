@@ -217,8 +217,9 @@ object Dependencies {
     single<MoveMarker> { MoveMarkerImpl(get()) }
     single<InsertNote> { InsertNoteImpl(get(), get(), get(), get()) }
     single<InsertRest> { InsertRestImpl(get(), get(), get()) }
+    single<GetInstrumentAtMarker>  { GetInstrumentAtMarkerImpl(get()) }
     single { UpdateInputStateImpl() }.binds(arrayOf(UpdateInputState::class, NoteInputState::class))
-    viewModel { InputViewModel(get(), get(), get(), get(), get(), get()) }
+    viewModel { InputViewModel(get(), get(), get(), get(), get(), get(), get()) }
   }
 
   private val insertModule = module {

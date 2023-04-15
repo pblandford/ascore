@@ -32,7 +32,8 @@ class InputViewModel(
   private val noteInputState: NoteInputState,
   private val updateInputState: UpdateInputState,
   private val moveMarkerUC: MoveMarker,
-  private val soundNote: SoundNote
+  private val soundNote: SoundNote,
+  private val getInstrumentAtMarker:GetInstrumentAtMarker
 ) :
   BaseViewModel<InputModel, InputInterface, InputEffect>(), InputInterface {
 
@@ -45,9 +46,11 @@ class InputViewModel(
   }
 
   override suspend fun initState(): Result<InputModel> {
+    val descrs = getInstrumentAtMarker()?.percussionDescrs ?: listOf()
     return InputModel(
       noteInputState().value,
-      Accidental.values().toList() - Accidental.NATURAL
+      Accidental.values().toList() - Accidental.NATURAL,
+      descrs
     ).ok()
   }
 

@@ -1,4 +1,4 @@
-package org.philblandford.ui.percussion.compose
+package org.philblandford.ui.input.compose.percussion
 
 import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
@@ -10,7 +10,6 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.LocalWindowInfo
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
@@ -21,17 +20,26 @@ import com.philblandford.kscore.api.NoteInputDescriptor
 import com.philblandford.kscore.api.PercussionDescr
 import com.philblandford.kscore.engine.types.Accidental
 import com.philblandford.kscore.log.ksLogt
+import org.philblandford.ui.base.compose.VMView
 import org.philblandford.ui.common.Gap
 import org.philblandford.ui.common.block
 import org.philblandford.ui.input.model.InputModel
 import org.philblandford.ui.input.viewmodel.InputInterface
+import org.philblandford.ui.input.viewmodel.InputViewModel
 import org.philblandford.ui.stubs.StubInputInterface
 import org.philblandford.ui.theme.PopupTheme
 import org.philblandford.ui.util.StyledText
 import org.philblandford.ui.util.isCompact
 
 @Composable
-fun PercussionInputPanel(model: InputModel, iface: InputInterface) {
+fun PercussionInputPanel() {
+  VMView(InputViewModel::class.java) { model, iface, _ ->
+    PercussionInputPanelInternal(model, iface)
+  }
+}
+
+@Composable
+private fun PercussionInputPanelInternal(model: InputModel, iface: InputInterface) {
   ksLogt("Percussion panel")
 
   val maxPerRow = if (isCompact()) 4 else 10
@@ -78,7 +86,8 @@ private fun InstrumentButton(descr: PercussionDescr, iface: InputInterface) {
   ) {
     val showPopup = remember { mutableStateOf(false) }
 
-    Text(getAbbreviation(descr.name),
+    Text(
+      getAbbreviation(descr.name),
       Modifier
         .combinedClickable(onClick = {
           if (showPopup.value) {
@@ -93,12 +102,14 @@ private fun InstrumentButton(descr: PercussionDescr, iface: InputInterface) {
 
     if (showPopup.value) {
       Popup(onDismissRequest = { showPopup.value = false }) {
-        PopupTheme {
-          StyledText(
-            descr.name,
-            Modifier.clickable(onClick = { showPopup.value = false })
-          )
-        }
+        Text(
+          descr.name,
+          Modifier
+            .clickable(onClick = { showPopup.value = false })
+            .background(MaterialTheme.colors.onSurface).border(1.dp, MaterialTheme.colors.surface)
+            .padding(5.dp),
+          color = MaterialTheme.colors.surface
+        )
       }
     }
   }
@@ -128,6 +139,6 @@ private fun Preview() {
     descrs
   )
 
-  PercussionInputPanel(model, StubInputInterface())
+  PercussionInputPanelInternal(model, StubInputInterface())
 
 }
