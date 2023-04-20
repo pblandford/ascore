@@ -8,6 +8,7 @@ interface InstrumentGetter {
   fun refresh()
   fun getInstrumentGroups(): List<InstrumentGroup>
   fun getInstrument(name: String): Instrument?
+  fun getInstrument(programId:Int):Instrument?
   fun getInstrumentGroup(name: String): InstrumentGroup?
   fun assignInstrument(instrumentName: String, group: String)
   fun createGroup(name: String, instruments: List<Instrument> = listOf())

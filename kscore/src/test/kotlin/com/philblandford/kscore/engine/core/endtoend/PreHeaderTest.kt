@@ -3,7 +3,7 @@ package com.philblandford.kscore.engine.core.endtoend
 import com.philblandford.kscore.engine.types.StaveId
 import com.philblandford.kscore.engine.types.ea
 import com.philblandford.kscore.engine.core.representation.PREHEADER_GAP
-import core.representation.RepTest
+import com.philblandford.kscore.engine.core.representation.RepTest
 import org.junit.Test
 
 class PreHeaderTest : RepTest() {

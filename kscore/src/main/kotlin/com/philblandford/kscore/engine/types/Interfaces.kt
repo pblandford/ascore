@@ -52,6 +52,7 @@ interface OffsetLookup {
   fun offsetToAddress(offset: Duration): EventAddress?
   fun getDuration(from: EventAddress, to: EventAddress): Duration?
   val numBars: Int
+  val lastOffset:Duration
 }
 
 interface ScoreQuery : EventGetter, BeamQuery, OffsetLookup {

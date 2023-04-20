@@ -2,11 +2,14 @@ package org.philblandford.ui.edit.viewmodel
 
 import androidx.lifecycle.viewModelScope
 import com.philblandford.kscore.engine.types.EventParam
+import com.philblandford.kscore.engine.types.ParamMap
+import com.philblandford.kscore.engine.types.paramMapOf
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import org.philblandford.ascore2.features.edit.MoveSelectedArea
 import org.philblandford.ascore2.features.input.usecases.DeleteSelectedEvent
-import org.philblandford.ascore2.features.insert.UpdateEvent
+import org.philblandford.ascore2.features.insert.InsertEvent
+import org.philblandford.ascore2.features.insert.UpdateEventParam
 import org.philblandford.ascore2.features.ui.model.UIState
 import org.philblandford.ascore2.features.ui.usecases.GetUIState
 import org.philblandford.ascore2.util.failure
@@ -18,18 +21,23 @@ import org.philblandford.ui.edit.model.EditModel
 
 interface EditInterface : VMInterface {
   fun <T> setType(type: T)
+  fun setTypeParam(param:EventParam)
   fun <T> updateParam(eventParam: EventParam, value: T)
-  fun move(x: Int, y: Int)
+  fun updateParams(params:ParamMap)
+  fun move(x: Int, y: Int, param: EventParam = EventParam.HARD_START)
   fun delete()
   fun clear()
 }
 
 open class EditViewModel(
   private val getUIState: GetUIState,
-  private val updateEvent: UpdateEvent,
+  private val updateEvent: UpdateEventParam,
+  private val insertEvent: InsertEvent,
   private val deleteSelectedEvent: DeleteSelectedEvent,
   private val moveSelectedArea: MoveSelectedArea
 ) : BaseViewModel<EditModel, EditInterface, VMSideEffect>(), EditInterface {
+
+  private var typeParam = EventParam.TYPE
 
   init {
     viewModelScope.launch {
@@ -56,26 +64,42 @@ open class EditViewModel(
     }
   }
 
+  override fun updateParams(params: ParamMap) {
+    receiveAction {
+      (params.toList() - it.editItem.event.params.toList().toSet()).firstOrNull()?.let { param ->
+        updateEvent(it.editItem.event.eventType, param.first, param.second, it.editItem.address)
+        it.ok()
+      } ?: it.ok()
+    }
+  }
+
   override fun <T> setType(type: T) {
     receiveAction { model ->
-      updateEvent(model.editItem.event.eventType, EventParam.TYPE, type, model.editItem.address)
+      updateEvent(model.editItem.event.eventType, typeParam, type, model.editItem.address)
       model.ok()
     }
+  }
+
+  override fun setTypeParam(param: EventParam) {
+    typeParam = param
   }
 
   override fun delete() {
     deleteSelectedEvent()
   }
 
-  override fun move(x: Int, y: Int) {
-    moveSelectedArea(x, y)
+  override fun move(x: Int, y: Int, param: EventParam) {
+    moveSelectedArea(x, y, param)
   }
 
   override fun clear() {
-    receiveAction { model ->
-      val newEvent = model.editItem.event.removeParam(EventParam.HARD_START)
-      updateEvent(model.editItem.event.eventType, EventParam.HARD_START, null, model.editItem.address)
-      model.ok()
+    getState().value?.editItem?.let { editItem ->
+      insertEvent(editItem.event.eventType, editItem.address, editItem.event.params  +
+        paramMapOf(
+          EventParam.HARD_START to null,
+          EventParam.HARD_MID to null,
+          EventParam.HARD_END to null,
+      ))
     }
   }
 }

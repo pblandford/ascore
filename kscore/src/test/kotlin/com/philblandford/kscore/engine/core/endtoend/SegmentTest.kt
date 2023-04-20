@@ -4,8 +4,7 @@ import com.philblandford.kscore.engine.core.representation.BLOCK_HEIGHT
 
 
 import com.philblandford.kscore.engine.types.*
-import core.representation.RepTest
-import org.junit.Before
+import com.philblandford.kscore.engine.core.representation.RepTest
 import org.junit.Test
 
 class SegmentTest : RepTest() {

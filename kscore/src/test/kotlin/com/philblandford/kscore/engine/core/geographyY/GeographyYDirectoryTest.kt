@@ -8,7 +8,7 @@ import com.philblandford.kscore.engine.core.geographyY.geographyYDirectory
 import com.philblandford.kscore.engine.core.representation.PAGE_WIDTH
 import com.philblandford.kscore.engine.core.stave.partDirectory
 import com.philblandford.kscore.engine.dsl.createScoreOneNote
-import core.representation.RepTest
+import com.philblandford.kscore.engine.core.representation.RepTest
 import org.junit.Test
 
 class GeographyYDirectoryTest : RepTest() {

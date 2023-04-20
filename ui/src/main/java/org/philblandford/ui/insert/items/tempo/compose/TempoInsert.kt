@@ -7,6 +7,7 @@ import com.philblandford.kscore.engine.duration.Duration
 import com.philblandford.kscore.engine.duration.crotchet
 import com.philblandford.kscore.engine.tempo.Tempo
 import com.philblandford.kscore.engine.types.EventParam
+import com.philblandford.kscore.engine.types.paramMapOf
 import org.philblandford.ascore2.features.ui.model.InsertItem
 import org.philblandford.ui.insert.common.compose.InsertVMView
 import org.philblandford.ui.insert.common.viewmodel.DefaultInsertViewModel
@@ -29,9 +30,13 @@ fun TempoInsertInternal(insertItem: InsertItem, iface: InsertInterface<InsertMod
   val bpm = insertItem.getParam<Int>(EventParam.BPM) ?: 120
   val tempo = Tempo(duration, bpm)
   Row(verticalAlignment = Alignment.CenterVertically) {
-    TempoSelector(tempo) {
-      iface.setParam(EventParam.DURATION, tempo.duration)
-      iface.setParam(EventParam.BPM, tempo.bpm)
+    TempoSelector(tempo) { tempo ->
+      iface.updateParams(
+        paramMapOf(
+          EventParam.DURATION to tempo.duration,
+          EventParam.BPM to tempo.bpm
+        )
+      )
     }
   }
 }

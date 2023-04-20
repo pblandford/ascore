@@ -97,9 +97,11 @@ class TimeSignatureChangeTest : ScoreTest() {
       }
     }
     setTs(3,4)
+    SAE(TimeSignature(3, 4).toHiddenEvent(), ez(1))
     verifyTs(1,4)
     verifyTs(3,4, ez(2))
-    SVP(EventType.TIME_SIGNATURE, EventParam.HIDDEN, true, ez(2))
+    SVE(EventType.HIDDEN_TIME_SIGNATURE, ez(1))
+    SVNE(EventType.HIDDEN_TIME_SIGNATURE, ez(2))
   }
 
   @Test

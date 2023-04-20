@@ -171,7 +171,7 @@ class SelectionManager {
 
   fun setSelectedArea(ats: AreaToShow, areas: List<AreaToShow>) {
     setState(SelectState(area = ats))
-    atsIdx = areas.filter { it.event.eventType == ats.event.eventType }.indexOf(ats)
+    atsIdx = areas.indexOfFirst { it.event.eventType == ats.event.eventType }
     ksLogt("COORD setSelectedArea ${ats.scoreArea.rectangle}")
   }
 
@@ -198,6 +198,7 @@ class SelectionManager {
   }
 
   private fun setState(state: SelectState) {
+    selectState.value = state
     coroutineScope.launch {
       selectState.emit(state)
     }

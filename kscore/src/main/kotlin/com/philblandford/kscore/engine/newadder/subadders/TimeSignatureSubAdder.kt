@@ -28,6 +28,28 @@ object TimeSignatureSubAdder : RangeSubAdder {
     }
   }
 
+  override fun <T> setParam(
+    score: Score,
+    destination: EventDestination,
+    eventType: EventType,
+    param: EventParam,
+    value: T,
+    eventAddress: EventAddress
+  ): ScoreResult {
+
+    /* Are we trying to set the prevailing TS when there's an upbeat bar?
+     * For now we can't set params on a hidden TS, so assume this is what we are
+     * trying to do
+     */
+    val adjustedAddress = if (eventAddress.barNum == 1 && score.getParam<Boolean>(EventType.TIME_SIGNATURE, EventParam.HIDDEN, ez(1)) == true) {
+      ez(2)
+    } else {
+      ez(1)
+    }
+
+    return super.setParam(score, destination, eventType, param, value, adjustedAddress)
+  }
+
   private fun Score.getEventAddressParams(
     eventType: EventType,
     params: ParamMap, eventAddress: EventAddress
@@ -38,7 +60,7 @@ object TimeSignatureSubAdder : RangeSubAdder {
         ez(1)
       ) == true && !params.isTrue(EventParam.HIDDEN)
     ) {
-      address + 1 to params.plus(EventParam.HIDDEN to true)
+      address + 1 to params.plus(EventParam.HIDDEN to false)
     } else {
       address to params
     }
@@ -79,67 +101,17 @@ object TimeSignatureSubAdder : RangeSubAdder {
     }
   }
 
-  private fun Score.addHidden(
-    originalScore: Score,
-    eventAddress: EventAddress,
-    timeSignature: TimeSignature
-  ): ScoreResult {
-    return originalScore.getTimeSignature(eventAddress)?.let { original ->
-      super.addEvent(
-        this,
-        scoreDestination,
-        EventType.TIME_SIGNATURE,
-        original.copy(hidden = true).toEvent().params,
-        eventAddress.inc()
-      ).then {
-        it.transformBars(eventAddress.barNum, eventAddress.barNum) { _, _, _, _ ->
-          voiceMaps.mapOrFail { it.adaptToHidden(timeSignature) }
-            .then { vms ->
-              Right(replaceSelf(eventMap, vms) as Bar)
-            }
-        }
-      }
-    } ?: Left(NotFound("Could not find original time signature"))
-  }
 
-  private fun TimeSignature.getRegularDivisions(): List<Pair<Offset, Duration>> {
-    if (numerator % 2 == 0 || numerator % 3 == 0) {
-      return listOf(dZero() to duration)
-    }
-    val first = dZero() to Duration(numerator / 2 + 1, denominator)
-    val second = first.second to Duration(numerator / 2, denominator)
-    return listOf(first, second)
-  }
-
-  private fun VoiceMap.adaptToHidden(timeSignature: TimeSignature): VoiceMapResult {
-    val events = eventMap.deleteEvent(ez(0, timeSignature.duration), EventType.DURATION)
-    return voiceMap(timeSignature, events).tidy()
-      .then { it.fillRestsForHidden() }
-  }
-
-  private fun VoiceMap.fillRestsForHidden(): VoiceMapResult {
-    return if (getEvents(EventType.DURATION)?.isEmpty() != false) {
-      val events = timeSignature.getRegularDivisions().fold(eventMap) { em, (o, div) ->
-        em.putEvent(ez(0, o), rest(div))
-      }
-      Right(voiceMap(timeSignature, events))
-    } else Right(this)
-  }
 
   private fun Score.postAdd(
     originalScore: Score,
     eventAddress: EventAddress,
     timeSignature: TimeSignature
   ): ScoreResult {
-    if (timeSignature.hidden) {
-      return addHidden(originalScore, eventAddress, timeSignature)
-    }
-    val nextTs = originalScore.getEvents(EventType.TIME_SIGNATURE)?.toList()?.dropWhile {
-      it.first.eventAddress.barNum <= eventAddress.barNum
-    }?.firstOrNull()?.first?.eventAddress
+
     val offsetEvents = originalScore.getEventsAsOffsets(eventAddress, null)
 
-    return calculateNumBars(originalScore, eventAddress, timeSignature).then { numBars ->
+    return calculateNumBars().then { numBars ->
       removeSameLater(EventType.TIME_SIGNATURE, eventAddress) {
         timeSignature(this) == timeSignature
       }
@@ -159,18 +131,10 @@ object TimeSignatureSubAdder : RangeSubAdder {
     }
   }
 
-  private fun calculateNumBars(
-    originalScore: Score, eventAddress: EventAddress,
-    newTimeSignature: TimeSignature
-  ): AnyResult<Int> {
-    return originalScore.getTimeSignature(ez(originalScore.numBars)).notNull().then { lastTs ->
-      originalScore.addressToOffset(ez(originalScore.numBars))?.plus(lastTs.duration).notNull()
-        .then { lastOffset ->
-          val res = lastOffset.div(newTimeSignature.duration)
-          val numBars = if (res.denominator != 1) res.toInt() + 1 else res.toInt()
-          Right(numBars)
-        }
-    }
+  private fun Score.calculateNumBars(): AnyResult<Int> {
+    val tsMap = this.eventMap.getEvents(EventType.TIME_SIGNATURE)?.map { it.key.eventAddress.barNum to timeSignature(it.value)!! }?.toMap() ?: mapOf()
+    val ol = offsetLookup(tsMap, this.lastOffset)
+    return ol.numBars.ok()
   }
 
 
@@ -250,7 +214,7 @@ object TimeSignatureSubAdder : RangeSubAdder {
   endAddress: EventAddress?): EventHash {
     return getAllEvents().filter { (key, event) ->
       !notThese.contains(key.eventType) && key.eventAddress.barNum >= eventAddress.barNum &&
-          key.eventAddress.barNum < (endAddress?.barNum ?: numBars + 1) &&
+          key.eventAddress.barNum < (endAddress?.barNum ?: (numBars + 1)) &&
           !isStartScoreEvent(key.eventAddress, event)
     }
   }
@@ -274,4 +238,5 @@ object TimeSignatureSubAdder : RangeSubAdder {
       replaceSelf(eventMap.replaceEvents(EventType.TIME_SIGNATURE, newMap.toMap())).ok()
     } ?: this.ok()
   }
+
 }

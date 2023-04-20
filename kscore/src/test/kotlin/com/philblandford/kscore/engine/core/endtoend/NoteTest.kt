@@ -14,7 +14,7 @@ import com.philblandford.kscore.engine.duration.crotchet
 import com.philblandford.kscore.engine.duration.quaver
 
 
-import core.representation.RepTest
+import com.philblandford.kscore.engine.core.representation.RepTest
 
 
 class NoteTest : RepTest() {

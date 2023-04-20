@@ -90,6 +90,10 @@ data class Event(val eventType: EventType, val params: ParamMap = paramMapOf()) 
     return isTrue(EventParam.IS_UP)
   }
 
+  fun isLine():Boolean {
+    return getParam<Duration>(EventParam.DURATION) != null
+  }
+
   fun number(default: Int): Int {
     return getParam<Int>(EventParam.NUMBER) ?: default
   }
@@ -318,6 +322,7 @@ enum class EventType {
   CLEF,
   KEY_SIGNATURE,
   TIME_SIGNATURE,
+  HIDDEN_TIME_SIGNATURE,
   TEMPO,
   NAVIGATION,
   INSTRUMENT,

@@ -4,10 +4,10 @@ import assertEqual
 
 
 import com.philblandford.kscore.engine.core.area.Coord
+import com.philblandford.kscore.engine.core.representation.RepTest
 import com.philblandford.kscore.engine.duration.crotchet
 import com.philblandford.kscore.engine.tempo.Tempo
 import com.philblandford.kscore.engine.types.*
-import core.representation.*
 import org.junit.Test
 
 class TempoTest : RepTest() {

@@ -5,7 +5,7 @@ import com.philblandford.kscore.engine.types.*
 
 import com.philblandford.kscore.engine.duration.dZero
 
-import core.representation.RepTest
+import com.philblandford.kscore.engine.core.representation.RepTest
 import org.junit.Test
 
 class StaveJoinTest : RepTest() {

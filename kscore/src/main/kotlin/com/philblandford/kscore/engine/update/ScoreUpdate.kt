@@ -144,7 +144,8 @@ private fun EventMap.eventChanged(new: EventMap, eventType: EventType): Boolean 
 }
 
 private fun Score.getChangedBars(new: Score): List<EventAddress> {
-  return getChangedSubLevels(new).flatMap { partChange ->
+  val topLevel = eventMap.diff(new.eventMap).map { EventAddress(it) }
+  return topLevel + getChangedSubLevels(new).flatMap { partChange ->
     partChange.old.getChangedSubLevels(partChange.new).flatMap { staveChange ->
       staveChange.old.getChangedSubLevels(staveChange.new).map { barChange ->
         EventAddress(barChange.num + 1, staveId = StaveId(partChange.num + 1, staveChange.num + 1))

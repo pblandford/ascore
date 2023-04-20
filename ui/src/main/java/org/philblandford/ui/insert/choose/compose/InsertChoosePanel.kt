@@ -1,10 +1,24 @@
 package org.philblandford.ui.insert.choose.compose
 
 import GridSelection
+import androidx.compose.animation.AnimatedContent
+import androidx.compose.animation.ExperimentalAnimationApi
+import androidx.compose.animation.SizeTransform
+import androidx.compose.animation.core.tween
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.slideInHorizontally
+import androidx.compose.animation.slideInVertically
+import androidx.compose.animation.slideOutHorizontally
+import androidx.compose.animation.with
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.MaterialTheme
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
@@ -20,7 +34,6 @@ import timber.log.Timber
 
 @Composable
 fun InsertChoosePanel() {
- Timber.e("TWAT InsertChoosePanel")
   VMView(InsertChooseViewModel::class.java) { state, iface, _ ->
     InsertChoosePanel(state, iface)
   }
@@ -53,28 +66,41 @@ fun InsertChoosePanel(model: InsertChooseModel, iface: InsertChooseInterface) {
   }
 }
 
+@OptIn(ExperimentalAnimationApi::class)
 @Composable
 private fun SelectionGrid(
   model: InsertChooseModel,
   iface: InsertChooseInterface,
   modifier: Modifier = Modifier
 ) {
-  Box(modifier) {
-    GridSelection(
-      images = model.items.map { it.drawable },
-      rows = 2,
-      columns = model.items.size / 2,
-      onSelect = {
-        model.items[it].let { item ->
-          iface.select(item)
-        }
-      },
-      tag = { model.items[it].helpTag },
-      border = false,
-      itemBorder = true,
-      size = block(1.15f)
-    )
-  }
+  var items by remember { mutableStateOf(model.items) }
+  items = model.items
+
+  AnimatedContent(items,
+    transitionSpec =
+    {
+      (slideInHorizontally{ width -> width } with
+              slideOutHorizontally { width -> -width } + fadeOut(animationSpec = tween(500))).using(
+        SizeTransform(clip = false)
+      )
+    }, modifier = modifier
+  ) { items ->
+
+      GridSelection(
+        images = items.map { it.drawable },
+        rows = 2,
+        columns = model.items.size / 2,
+        onSelect = {
+          model.items[it].let { item ->
+            iface.select(item)
+          }
+        },
+        tag = { model.items[it].helpTag },
+        border = false,
+        itemBorder = true,
+        size = block(1.15f)
+      )
+    }
 }
 
 @Composable

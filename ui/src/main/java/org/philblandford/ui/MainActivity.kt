@@ -16,14 +16,16 @@ import com.github.zsoltk.compose.backpress.LocalBackPressHandler
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
 import org.philblandford.ui.main.outer.compose.OuterPage
 import org.philblandford.ui.theme.AscoreTheme
+import timber.log.Timber
 
 val LocalActivity = compositionLocalOf<Activity?> { null }
 
 class MainActivity : ComponentActivity() {
   private val backPressHandler = BackPressHandler()
 
-
   override fun onCreate(savedInstanceState: Bundle?) {
+    Timber.e("onCreate $this")
+
     super.onCreate(savedInstanceState)
     setContent {
 

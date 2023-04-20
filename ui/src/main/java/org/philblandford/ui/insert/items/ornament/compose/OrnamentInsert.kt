@@ -8,9 +8,12 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import com.philblandford.kscore.engine.types.Accidental
+import com.philblandford.kscore.engine.types.ArpeggioType
 import com.philblandford.kscore.engine.types.EventParam
+import com.philblandford.kscore.engine.types.EventType
 import com.philblandford.kscore.engine.types.OrnamentType
 import org.philblandford.ascore2.features.ui.model.InsertItem
+import org.philblandford.ui.R
 import org.philblandford.ui.insert.row.compose.RowInsert
 import org.philblandford.ui.insert.row.viewmodel.RowInsertInterface
 import org.philblandford.ui.insert.row.viewmodel.RowInsertModel
@@ -20,7 +23,7 @@ import org.philblandford.ui.util.ornamentIds
 
 @Composable
 fun OrnamentInsert() {
-  RowInsert(ornamentIds) { model, item, iface ->
+  RowInsert(ornamentIds + (R.drawable.arpeggio to ArpeggioType.NORMAL)) { model, item, iface ->
     OrnamentInsertInternal(item, model, iface)
   }
 }
@@ -28,8 +31,8 @@ fun OrnamentInsert() {
 @Composable
 private fun OrnamentInsertInternal(
   insertItem: InsertItem,
-  model: RowInsertModel<OrnamentType>,
-  iface: RowInsertInterface<OrnamentType>
+  model: RowInsertModel<Enum<*>>,
+  iface: RowInsertInterface<Enum<*>>
 ) {
   Column {
     Grid(model, iface)
@@ -40,8 +43,8 @@ private fun OrnamentInsertInternal(
 
 @Composable
 private fun Grid(
-  model: RowInsertModel<OrnamentType>,
-  iface: RowInsertInterface<OrnamentType>
+  model: RowInsertModel<Enum<*>>,
+  iface: RowInsertInterface<Enum<*>>
 ) {
   val ornamentIds = model.ids
   GridSelection(images = ornamentIds.map { it.first },
@@ -54,13 +57,13 @@ private fun Grid(
 }
 
 @Composable
-private fun CheckBoxRow(item: InsertItem, iface: RowInsertInterface<OrnamentType>) {
-  val type = item.getParam<OrnamentType>(EventParam.TYPE) ?: OrnamentType.TRILL
+private fun CheckBoxRow(item: InsertItem, iface: RowInsertInterface<Enum<*>>) {
+  val type = item.getParam<Enum<*>>(EventParam.TYPE) ?: OrnamentType.TRILL
   Row() {
-    if (type.accidentalAbove()) {
+    if ((type as? OrnamentType)?.accidentalAbove() == true) {
       AccidentalCheckbox(true, iface)
     }
-    if (type.accidentalBelow()) {
+    if ((type as? OrnamentType)?.accidentalBelow() == true) {
       AccidentalCheckbox(false, iface)
     }
   }
@@ -70,7 +73,7 @@ private fun CheckBoxRow(item: InsertItem, iface: RowInsertInterface<OrnamentType
 @Composable
 private fun AccidentalCheckbox(
   above: Boolean,
-  iface: RowInsertInterface<OrnamentType>
+  iface: RowInsertInterface<Enum<*>>
 ) {
   val param = if (above) EventParam.ACCIDENTAL_ABOVE else EventParam.ACCIDENTAL_BELOW
 

@@ -2,6 +2,7 @@ package org.philblandford.ascore2.features.ui.repository
 
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.collectLatest
@@ -23,6 +24,7 @@ class UiStateRepository(
   private val _voice = MutableStateFlow(1)
   private var _uiState = MutableStateFlow<UIState>(UIState.Input)
   private var _drag = MutableStateFlow(0f to 0f)
+  private var _helpKey = MutableStateFlow<String?>(null)
 
   init {
     coroutineScope.launch {
@@ -88,4 +90,12 @@ class UiStateRepository(
   }
 
   fun getDrag(): StateFlow<Pair<Float, Float>> = _drag
+
+  fun getHelpKey(): StateFlow<String?> = _helpKey
+
+  fun setHelpKey(key:String?) {
+    coroutineScope.launch {
+      _helpKey.value = key
+    }
+  }
 }

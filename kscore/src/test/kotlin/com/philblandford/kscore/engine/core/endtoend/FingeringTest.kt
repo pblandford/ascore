@@ -2,7 +2,7 @@ package com.philblandford.kscore.engine.core.endtoend
 
 import assertEqual
 import com.philblandford.kscore.engine.types.*
-import core.representation.RepTest
+import com.philblandford.kscore.engine.core.representation.RepTest
 import org.junit.Test
 
 class FingeringTest : RepTest() {

@@ -108,7 +108,7 @@ class RepeatBarTest : ScoreTest() {
   fun testDeleteRepeatBar() {
     SMV()
     SAE(EventType.REPEAT_BAR, ea(2), params = paramMapOf(EventParam.NUMBER to 1))
-    SDE(EventType.REPEAT_BAR, ea(2), params = paramMapOf(EventParam.NUMBER to 1))
+    SDE(EventType.REPEAT_BAR, ea(2))
     SVNE(EventType.REPEAT_BAR, ea(2))
   }
 

@@ -23,7 +23,7 @@ class MidiPlayLookupTest : ScoreTest() {
   fun testCreateMidiPlayLookup() {
     SMV()
     val builder = midiBuilder(EG(), instrumentGetter)
-    val lookup = createMidiPlayLookup(builder, instrumentGetter)
+    val lookup = createMidiPlayLookup(builder, instrumentGetter, EG())
     assertEqual(2, lookup.getEvents(0)?.count())
   }
 
@@ -32,7 +32,7 @@ class MidiPlayLookupTest : ScoreTest() {
     SMV()
     SMV(60, eventAddress = eav(2))
     val builder = midiBuilder(EG(), instrumentGetter)
-    val lookup = createMidiPlayLookup(builder, instrumentGetter)
+    val lookup = createMidiPlayLookup(builder, instrumentGetter, EG())
     assertEqual(2, lookup.getEvents(0)?.count())
     assertEqual(1, lookup.getEvents(barMsAt120)?.count())
   }
@@ -41,7 +41,7 @@ class MidiPlayLookupTest : ScoreTest() {
   fun testCreateMidiPlayLookupNote() {
     SMV(62)
     val builder = midiBuilder(EG(), instrumentGetter)
-    val lookup = createMidiPlayLookup(builder, instrumentGetter)
+    val lookup = createMidiPlayLookup(builder, instrumentGetter, EG())
     assertEqual(
       NoteOnEvent(62, 100, 0),
       lookup.getEvents(0)?.filterIsInstance<NoteOnEvent>()?.first()
@@ -54,7 +54,7 @@ class MidiPlayLookupTest : ScoreTest() {
       SMV(62, eventAddress = eav(1, crotchet().multiply(it)))
     }
     val builder = midiBuilder(EG(), instrumentGetter)
-    val lookup = createMidiPlayLookup(builder, instrumentGetter)
+    val lookup = createMidiPlayLookup(builder, instrumentGetter, EG())
     repeat(4) {
       assertEqual(
         NoteOnEvent(62, 100, 0),
@@ -95,7 +95,7 @@ class MidiPlayLookupTest : ScoreTest() {
     SCDT()
     SMV(62)
     val builder = midiBuilder(EG(), instrumentGetter)
-    val lookup = createMidiPlayLookup(builder, instrumentGetter)
+    val lookup = createMidiPlayLookup(builder, instrumentGetter, EG())
     assertEqual(NoteOnEvent(60, 100, 0), lookup.getNote())
   }
 
@@ -104,7 +104,7 @@ class MidiPlayLookupTest : ScoreTest() {
     SAE(EventType.DYNAMIC, ea(1), paramMapOf(EventParam.TYPE to DynamicType.FORTISSIMO))
     SMV(62)
     val builder = midiBuilder(EG(), instrumentGetter)
-    val lookup = createMidiPlayLookup(builder, instrumentGetter)
+    val lookup = createMidiPlayLookup(builder, instrumentGetter, EG())
 
     assertEqual(NoteOnEvent(62, velocities[DynamicType.FORTISSIMO]!!, 0), lookup.getNote())
   }
@@ -113,7 +113,7 @@ class MidiPlayLookupTest : ScoreTest() {
   fun testCreateMidiPlayLookupTempoChange() {
     SMV(62)
     val builder = midiBuilder(EG(), instrumentGetter)
-    val lookup = createMidiPlayLookup(builder, instrumentGetter)
+    val lookup = createMidiPlayLookup(builder, instrumentGetter, EG())
     assertEqual(
       NoteOnEvent(62, 100, 0),
       lookup.getEvents(0)?.filterIsInstance<NoteOnEvent>()?.first()
@@ -125,7 +125,7 @@ class MidiPlayLookupTest : ScoreTest() {
     SCD(instruments = listOf("Bass Drum 1"))
     SMV(35)
     val builder = midiBuilder(EG(), instrumentGetter)
-    val lookup = createMidiPlayLookup(builder, instrumentGetter)
+    val lookup = createMidiPlayLookup(builder, instrumentGetter, EG())
     assertEqual(9, lookup.getNote()?.channel)
   }
 
@@ -134,7 +134,7 @@ class MidiPlayLookupTest : ScoreTest() {
     SCD(instruments = listOf("Bass Drum 1"))
     SMV(35)
     val builder = midiBuilder(EG(), instrumentGetter)
-    val lookup = createMidiPlayLookup(builder, instrumentGetter)
+    val lookup = createMidiPlayLookup(builder, instrumentGetter, EG())
     assertEqual(35, lookup.getNote()?.midiVal)
   }
 
@@ -332,7 +332,7 @@ class MidiPlayLookupTest : ScoreTest() {
     SMV()
     SAE(EventType.REPEAT_BAR, ea(2), paramMapOf(EventParam.NUMBER to 1))
     val builder = midiBuilder(EG(), instrumentGetter)
-    val lookup = createMidiPlayLookup(builder, instrumentGetter)
+    val lookup = createMidiPlayLookup(builder, instrumentGetter, EG())
     assertEqual(1, lookup.getEvents(barMsAt120)?.count())
   }
 
@@ -341,7 +341,7 @@ class MidiPlayLookupTest : ScoreTest() {
     SMV()
     SAE(EventType.REPEAT_BAR, ea(2), paramMapOf(EventParam.NUMBER to 1))
     val builder = midiBuilder(EG(), instrumentGetter, ea(1), ea(4))
-    val lookup = createMidiPlayLookup(builder, instrumentGetter)
+    val lookup = createMidiPlayLookup(builder, instrumentGetter, EG())
     assertEqual(1, lookup.getEvents(barMsAt120)?.count())
   }
 
@@ -381,7 +381,7 @@ class MidiPlayLookupTest : ScoreTest() {
   fun testNotesCreatedGraceBeforeRest() {
     SMV(eventAddress = eagv(1))
     val builder = midiBuilder(EG(), instrumentGetter)
-    val lookup = createMidiPlayLookup(builder, instrumentGetter)
+    val lookup = createMidiPlayLookup(builder, instrumentGetter, EG())
     assert(lookup.getNote(0) != null)
   }
 
@@ -390,13 +390,13 @@ class MidiPlayLookupTest : ScoreTest() {
     SMV()
     SMV(eventAddress = eagv(1))
     val builder = midiBuilder(EG(), instrumentGetter)
-    val lookup = createMidiPlayLookup(builder, instrumentGetter)
+    val lookup = createMidiPlayLookup(builder, instrumentGetter, EG())
     assert(lookup.getNote(0) != null)
   }
 
   private fun MPL(start: EventAddress? = null, end: EventAddress? = null): MidiPlayLookup {
     val builder = midiBuilder(EG(), instrumentGetter, start, end)
-    return createMidiPlayLookup(builder, instrumentGetter)
+    return createMidiPlayLookup(builder, instrumentGetter, EG())
   }
 
   private fun MidiPlayLookup.getNote(ms: Int = 0): NoteOnEvent? {

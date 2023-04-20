@@ -3,7 +3,7 @@ package com.philblandford.kscore.engine.core.endtoend
 import com.philblandford.kscore.engine.types.EventType
 import com.philblandford.kscore.engine.types.ea
 import com.philblandford.kscore.engine.types.ez
-import core.representation.RepTest
+import com.philblandford.kscore.engine.core.representation.RepTest
 import org.junit.Test
 
 class RepeatTest : RepTest() {

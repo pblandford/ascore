@@ -8,6 +8,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import com.philblandford.kscore.engine.time.TimeSignature
 import com.philblandford.kscore.engine.types.EventParam
+import com.philblandford.kscore.engine.types.EventType
 import org.philblandford.ascore2.features.ui.model.InsertItem
 import org.philblandford.ui.R
 import org.philblandford.ui.common.block
@@ -37,10 +38,10 @@ private fun TimeSignatureInsertInternal(
     TimeSignatureSelector(
       TimeSignature.fromParams(insertItem.params),
       { iface.updateParams(it.toEvent().params) })
-    val hidden = insertItem.getParam<Boolean>(EventParam.HIDDEN) ?: false
+    val hidden = insertItem.eventType == EventType.HIDDEN_TIME_SIGNATURE
     Gap(0.5f)
     SquareButton(R.drawable.hidden,  Modifier.size(block()), selected(hidden)) {
-      iface.setParam(EventParam.HIDDEN, !hidden)
+      iface.setEventType(if (hidden) EventType.TIME_SIGNATURE else EventType.HIDDEN_TIME_SIGNATURE)
     }
   }
 }

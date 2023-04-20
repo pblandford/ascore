@@ -20,6 +20,8 @@ data class TimeSignature(
   val irregular = numerator != 1 && numerator % 2 != 0 && numerator % 3 != 0
   val compound = numerator > 3 && numerator % 3 == 0
 
+  fun toHiddenEvent():Event = toEvent().copy(eventType = EventType.HIDDEN_TIME_SIGNATURE)
+
   fun toEvent(): Event {
     val num = when (type) {
       TimeSignatureType.COMMON -> 4

@@ -2,8 +2,10 @@ package org.philblandford.ui.save.compose
 
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.Button
+import androidx.compose.material.MaterialTheme
 import androidx.compose.material.OutlinedTextField
 import androidx.compose.material.RadioButton
+import androidx.compose.material.RadioButtonDefaults
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
@@ -70,9 +72,11 @@ private fun SaveFileInternal(modifier: Modifier, model: SaveModel, iface: SaveIn
 private fun SourceSelect(current:FileSource, set:(FileSource)->Unit) {
 
   Row(Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
-    RadioButton(current == FileSource.SAVE, onClick = { set(FileSource.SAVE) })
+    RadioButton(current == FileSource.SAVE, onClick = { set(FileSource.SAVE) },
+      colors = RadioButtonDefaults.colors(selectedColor = MaterialTheme.colors.onSurface))
     Text(stringResource(R.string.files_in_storage))
-    RadioButton(current == FileSource.EXTERNAL, onClick = { set(FileSource.EXTERNAL) })
+    RadioButton(current == FileSource.EXTERNAL, onClick = { set(FileSource.EXTERNAL) },
+      colors = RadioButtonDefaults.colors(selectedColor = MaterialTheme.colors.onSurface))
     Text(stringResource(R.string.files_in_external_storage))
   }
 }

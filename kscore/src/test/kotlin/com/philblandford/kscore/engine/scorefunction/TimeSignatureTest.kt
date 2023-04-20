@@ -140,7 +140,7 @@ class TimeSignatureTest : ScoreTest() {
       ez(1)
     )
     SAE(
-      TimeSignature(3, 8, hidden = true).toEvent(),
+      TimeSignature(3, 8, hidden = true).toHiddenEvent(),
       ez(1)
     )
     assertEqual(
@@ -148,7 +148,7 @@ class TimeSignatureTest : ScoreTest() {
       EG().getVoiceMap(eav(1))?.timeSignature
     )
     assertEqual(
-      original?.addParam(EventParam.HIDDEN, true),
+      original,
       EG().getEventAt(
         EventType.TIME_SIGNATURE,
         ez(2)
@@ -159,7 +159,7 @@ class TimeSignatureTest : ScoreTest() {
   @Test
   fun testAddHiddenTimeSignatureRest() {
     SAE(
-      TimeSignature(3, 8, hidden = true).toEvent(),
+      TimeSignature(3, 8, hidden = true).toHiddenEvent(),
       ez(2)
     )
     SVP(
@@ -171,7 +171,7 @@ class TimeSignatureTest : ScoreTest() {
   @Test
   fun testAddHiddenTimeSignatureRestIrregular() {
     SAE(
-      TimeSignature(5, 8, hidden = true).toEvent(),
+      TimeSignature(5, 8, hidden = true).toHiddenEvent(),
       ez(2)
     )
     SVP(
@@ -200,7 +200,7 @@ class TimeSignatureTest : ScoreTest() {
   @Test
   fun testAddUpbeatTimeSignatureRestIsNotWhole() {
     SAE(
-      TimeSignature(1, 8, hidden = true).toEvent(),
+      TimeSignature(1, 8, hidden = true).toHiddenEvent(),
       ez(1)
     )
     SVP(
@@ -212,7 +212,7 @@ class TimeSignatureTest : ScoreTest() {
   @Test
   fun testAddHiddenTimeSignatureNoteInputSuccessful() {
     SAE(
-      TimeSignature(1, 4, hidden = true).toEvent(),
+      TimeSignature(1, 4, hidden = true).toHiddenEvent(),
       ez(1)
     )
     repeat(4) { bar ->
@@ -606,10 +606,32 @@ class TimeSignatureTest : ScoreTest() {
     assertEqual(TimeSignature(2, 2, TimeSignatureType.CUT_COMMON), EG().getTimeSignature(ez(2)))
   }
 
+  @Test
+  fun testChangeTimeSignatureWithUpbeatBar() {
+    SAE(TimeSignature(1, 4, hidden = true).toHiddenEvent(), ez(1))
+    SAE(TimeSignature(3,4).toEvent(), ez(1))
+    SVPA(EventType.TIME_SIGNATURE, EventParam.NUMERATOR, 3, ez(2))
+  }
+
+  @Test
+  fun testSetTimeSignatureWithUpbeatBar() {
+    SAE(TimeSignature(1, 4, hidden = true).toHiddenEvent(), ez(1))
+    SSP(EventType.TIME_SIGNATURE, EventParam.NUMERATOR, 3, ez(1))
+    SVPA(EventType.TIME_SIGNATURE, EventParam.NUMERATOR, 3, ez(2))
+  }
+
+  @Test
+  fun testSetTimeSignatureWithUpbeatBarAffectsWholeScore() {
+    SAE(TimeSignature(1, 4, hidden = true).toHiddenEvent(), ez(1))
+    SSP(EventType.TIME_SIGNATURE, EventParam.NUMERATOR, 3, ez(1))
+    SVPA(EventType.TIME_SIGNATURE, EventParam.NUMERATOR, 3, ez(5))
+  }
 
   private fun addTs(num: Int, den: Int, bar: Int, hidden: Boolean = false) {
+    val ts = TimeSignature(num, den, hidden = hidden)
+
     SAE(
-      TimeSignature(num, den, hidden = hidden).toEvent(),
+      if (hidden) ts.toHiddenEvent() else ts.toEvent(),
       ez(bar)
     )
   }

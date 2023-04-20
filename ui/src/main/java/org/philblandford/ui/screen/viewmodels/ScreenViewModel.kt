@@ -8,6 +8,7 @@ import org.philblandford.ascore2.features.drawing.DrawPage
 import org.philblandford.ascore2.features.drawing.ScoreChanged
 import org.philblandford.ascore2.features.gesture.HandleDrag
 import org.philblandford.ascore2.features.gesture.HandleLongPress
+import org.philblandford.ascore2.features.gesture.HandleLongPressRelease
 import org.philblandford.ascore2.features.gesture.HandleTap
 import org.philblandford.ascore2.features.scorelayout.usecases.GetScoreLayout
 import org.philblandford.ascore2.features.scorelayout.usecases.ScoreLayout
@@ -32,6 +33,8 @@ interface ScreenInterface : VMInterface {
   fun drawPage(page: Int, drawScope: DrawScope)
   fun handleTap(page: Int, x: Int, y: Int)
   fun handleLongPress(page: Int, x: Int, y: Int)
+
+  fun handleLongPressRelease()
   fun handleDrag(x:Float, y:Float)
 }
 
@@ -47,6 +50,7 @@ class ScreenViewModel(
   private val drawPageUC: DrawPage,
   private val handleTapUC: HandleTap,
   private val handleLongPressUC : HandleLongPress,
+  private val handleLongPressReleaseUC: HandleLongPressRelease,
   private val handleDragUC: HandleDrag,
   getUIState: GetUIState
 ) : BaseViewModel<ScreenModel, ScreenInterface, ScreenEffect>(),
@@ -101,5 +105,9 @@ class ScreenViewModel(
 
   override fun handleDrag(x: Float, y: Float) {
     handleDragUC(x, y)
+  }
+
+  override fun handleLongPressRelease() {
+    handleLongPressReleaseUC()
   }
 }

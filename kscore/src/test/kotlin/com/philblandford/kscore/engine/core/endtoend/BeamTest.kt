@@ -4,11 +4,11 @@ import assertEqual
 import com.philblandford.kscore.engine.types.*
 import com.philblandford.kscore.engine.core.representation.BEAM_MAX_GRADIENT
 import com.philblandford.kscore.engine.core.representation.LINE_THICKNESS
+import com.philblandford.kscore.engine.core.representation.RepTest
 
 
 import com.philblandford.kscore.engine.duration.*
 import com.philblandford.kscore.engine.time.TimeSignature
-import core.representation.*
 import grace
 import org.junit.Test
 import kotlin.math.abs

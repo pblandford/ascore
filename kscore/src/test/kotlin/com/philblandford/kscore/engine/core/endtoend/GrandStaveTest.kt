@@ -7,7 +7,7 @@ import com.philblandford.kscore.engine.types.ea
 import com.philblandford.kscore.engine.core.representation.STAVE_MARGIN
 
 import com.philblandford.kscore.engine.types.EventParam
-import core.representation.RepTest
+import com.philblandford.kscore.engine.core.representation.RepTest
 import org.junit.Test
 
 class GrandStaveTest : RepTest() {

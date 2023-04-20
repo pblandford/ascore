@@ -21,7 +21,7 @@ fun GridSelection(
   columns: Int,
   modifier: Modifier = Modifier,
   size: Dp = block(),
-  gap:Dp = 2.dp,
+  gap: Dp = 2.dp,
   border: Boolean = false,
   itemBorder: Boolean = false,
   tag: (Int) -> String = { "" },
@@ -38,13 +38,11 @@ fun GridSelection(
         Row {
           (0 until columns).forEach { column ->
             val idx = (row * columns) + column
-            Card(elevation = 2.dp) {
-              SquareButton(resource = images[idx], size = size,
-                tag = tag(idx),
-                border = itemBorder,
-                state = ButtonState.selected(selected() != null && selected() == idx),
-                onClick = { onSelect(idx) })
-            }
+            SquareButton(resource = images[idx], size = size,
+              tag = tag(idx),
+              border = itemBorder,
+              state = ButtonState.selected(selected() != null && selected() == idx),
+              onClick = { onSelect(idx) })
             Gap(gap)
           }
         }

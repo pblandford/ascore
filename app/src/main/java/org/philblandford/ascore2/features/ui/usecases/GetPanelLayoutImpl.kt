@@ -9,6 +9,7 @@ import kotlinx.coroutines.launch
 import org.philblandford.ascore2.features.ui.model.LayoutID
 import org.philblandford.ascore2.features.ui.model.UIState
 import org.philblandford.ascore2.features.ui.repository.UiStateRepository
+import timber.log.Timber
 
 class GetPanelLayoutImpl(
   private val kScore: KScore,
@@ -27,6 +28,7 @@ class GetPanelLayoutImpl(
       kScore.scoreUpdate().collectLatest {
         if (uiStateRepository.getUIState().value == UIState.Input) {
           kScore.getInstrumentAtMarker()?.let {
+            Timber.e("instrument at marker $it")
             if (it.percussion) {
               layoutFlow.emit(LayoutID.PERCUSSION)
             } else {
@@ -51,6 +53,9 @@ class GetPanelLayoutImpl(
             }
           }
           is UIState.Insert -> {
+            it.insertItem.layoutID
+          }
+          is UIState.InsertDelete -> {
             it.insertItem.layoutID
           }
           UIState.InsertChoose -> LayoutID.INSERT_CHOOSE

@@ -3,8 +3,9 @@ package org.philblandford.ui.edit.items.text.viewmodel
 import org.philblandford.ascore2.features.edit.MoveSelectedArea
 import org.philblandford.ascore2.features.input.usecases.DeleteSelectedEvent
 import org.philblandford.ascore2.features.insert.GetDefaultTextSize
-import org.philblandford.ascore2.features.insert.GetFonts
-import org.philblandford.ascore2.features.insert.UpdateEvent
+import org.philblandford.ascore2.features.insert.InsertEvent
+import org.philblandford.ascore2.features.insert.UpdateEventParam
+import org.philblandford.ascore2.features.settings.usecases.GetAvailableFonts
 import org.philblandford.ascore2.features.ui.usecases.GetUIState
 import org.philblandford.ui.edit.viewmodel.EditInterface
 import org.philblandford.ui.edit.viewmodel.EditViewModel
@@ -17,12 +18,13 @@ interface TextEditInterface : EditInterface {
 
 class TextEditViewModel(
   getUIState: GetUIState,
-  updateEvent: UpdateEvent,
+  updateEvent: UpdateEventParam,
+  insertEvent: InsertEvent,
   deleteSelectedEvent: DeleteSelectedEvent,
   moveSelectedArea: MoveSelectedArea,
-  private val getFonts: GetFonts,
+  private val getFonts: GetAvailableFonts,
   private val getDefaultTextSize: GetDefaultTextSize
-) : EditViewModel(getUIState, updateEvent, deleteSelectedEvent, moveSelectedArea), TextEditInterface {
+) : EditViewModel(getUIState, updateEvent, insertEvent, deleteSelectedEvent, moveSelectedArea), TextEditInterface {
 
   override fun getInterface(): EditInterface = this
 

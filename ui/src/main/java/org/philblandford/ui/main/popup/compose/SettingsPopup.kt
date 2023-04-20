@@ -14,11 +14,13 @@ import com.github.zsoltk.compose.backpress.BackPressHandler
 import com.github.zsoltk.compose.backpress.LocalBackPressHandler
 import com.philblandford.kscore.engine.types.ExportType
 import org.philblandford.ascore2.features.ui.model.LayoutID
+import org.philblandford.ui.about.compose.About
 import org.philblandford.ui.create.compose.CreateScore
 import org.philblandford.ui.export.PrintFile
 import org.philblandford.ui.export.compose.ExportFile
 import org.philblandford.ui.layout.compose.LayoutOptions
 import org.philblandford.ui.load.compose.LoadScore
+import org.philblandford.ui.manual.compose.Manual
 import org.philblandford.ui.play.compose.Mixer
 import org.philblandford.ui.quickscore.compose.QuickScore
 import org.philblandford.ui.save.compose.SaveScore
@@ -36,7 +38,10 @@ fun SettingsDialog(layoutID: LayoutID, dismiss: () -> Unit) {
   ) {
     CompositionLocalProvider(LocalBackPressHandler provides backPressHandler) {
       Box(Modifier.fillMaxSize()) {
-        Box(Modifier.fillMaxSize().clickable { dismiss() })
+        Box(
+          Modifier
+            .fillMaxSize()
+            .clickable { dismiss() })
         Layout(layoutID, dismiss)
       }
     }
@@ -82,6 +87,12 @@ private fun Layout(layoutID: LayoutID, dismiss: () -> Unit) {
     }
     LayoutID.LAYOUT_OPTIONS -> {
       LayoutOptions()
+    }
+    LayoutID.ABOUT -> {
+      About()
+    }
+    LayoutID.MANUAL -> {
+      Manual()
     }
     LayoutID.MIXER -> {
       Mixer()

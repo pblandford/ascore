@@ -76,7 +76,7 @@ interface KScore {
   fun getSelectedArea(): AreaToShow?
   fun moveSelection(left: Boolean)
   fun cycleArea()
-  fun moveSelectedArea(x: Int, y: Int)
+  fun moveSelectedArea(x: Int, y: Int, eventParam: EventParam = EventParam.HARD_START)
 
   fun copy()
   fun cut()
@@ -89,7 +89,7 @@ interface KScore {
   fun getNumBars(): Int
 
   fun getEventAddress(location: Location): EventAddress?
-  fun getEvent(location: Location, fuzz: Int = 100): Pair<EventAddress, Event>?
+  fun getEvent(location: Location, fuzz: Int = 30): Pair<EventAddress, Event>?
   fun getEvent(eventType: EventType, eventAddress: EventAddress): Event?
   fun getEventAtMarker(eventType: EventType): Event?
   fun getMeta(metaType: EventType): String?
@@ -497,7 +497,6 @@ class KScoreImpl(
       scoreContainer.deleteEvent(
         ats.event.eventType,
         ats.eventAddress,
-        params = params
       )
       refreshAts()
     }
@@ -649,13 +648,11 @@ class KScoreImpl(
     selectionManager.cycleArea { rep()?.getAreasAtAddress(it.voiceless())?.toList() ?: listOf() }
   }
 
-  override fun moveSelectedArea(x: Int, y: Int) {
+  override fun moveSelectedArea(x: Int, y: Int, eventParam: EventParam) {
     selectionManager.getSelectedArea()?.let { area ->
       getEvent(area.event.eventType, area.eventAddress)?.let { scoreEvent ->
-        val coord = scoreEvent.getParam<Coord>(EventParam.HARD_START) ?: Coord()
-        val newEvent = scoreEvent.addParam(EventParam.HARD_START, coord + Coord(x, y))
-        ksLoge("COORD move area ${coord + Coord(x, y)} old ${area.scoreArea.rectangle} $x $y")
-        addEvent(newEvent.eventType, area.eventAddress, newEvent.params)
+        val coord = scoreEvent.getParam<Coord>(eventParam) ?: Coord()
+        setParam(area.event.eventType, eventParam, coord + Coord(x, y), area.eventAddress)
       }
     }
   }
@@ -763,10 +760,10 @@ class KScoreImpl(
 
     eventType?.let { et ->
       getEventAddress(location)?.let { ea ->
-        scoreContainer.deleteEvent(et, ea.copy(voice = voice), params = params)
+        scoreContainer.deleteEvent(et, ea.copy(voice = voice))
       }
     } ?: getEvent(location)?.let { (ea, ev) ->
-      scoreContainer.deleteEvent(eventType ?: ev.eventType, ea, params = params)
+      scoreContainer.deleteEvent(eventType ?: ev.eventType, ea)
     }
     return true
   }
@@ -775,7 +772,7 @@ class KScoreImpl(
     eventType: EventType, eventAddress: EventAddress,
     endAddress: EventAddress?, params: ParamMap
   ) {
-    scoreContainer.deleteEvent(eventType, eventAddress, endAddress, params)
+    scoreContainer.deleteEvent(eventType, eventAddress, endAddress)
   }
 
   override fun deleteEventAtMarker(eventType: EventType, voice: Int, id: Int) {
@@ -1128,8 +1125,10 @@ class KScoreImpl(
 
   override fun getInstrumentAtMarker(): Instrument? {
     return getMarker()?.let { marker ->
+      ksLogt("marker $marker")
       score()?.getEventAt(EventType.INSTRUMENT, marker)?.let { (_, event) ->
-        instrument(event)
+        val instrument = instrument(event)
+        instrument
       }
     }
   }
@@ -1161,12 +1160,16 @@ class KScoreImpl(
   }
 
   override fun setSelectedPart(part: Int) {
-    scoreContainer.setSelectedPart(part)
-    if (part != 0) {
-      getMarker()?.let { marker ->
-        setMarker(marker.copy(staveId = StaveId(part, 1)))
+    batch (
+      { scoreContainer.setSelectedPart(part) },
+      {
+        if (part != 0) {
+          getMarker()?.let { marker ->
+            setMarker(marker.copy(staveId = StaveId(part, 1)))
+          }
+        }
       }
-    }
+    )
   }
 
   override fun getSelectedPart(): Int {

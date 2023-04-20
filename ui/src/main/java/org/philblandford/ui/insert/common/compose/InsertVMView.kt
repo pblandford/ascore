@@ -58,7 +58,7 @@ inline fun <M : InsertModel, I : InsertInterface<M>,
             if (insertItem.string > 0) {
               Text(stringResource(insertItem.string), color = MaterialTheme.colors.onSurface)
             }
-            SquareButton(R.drawable.help)
+            SquareButton(R.drawable.help) { viewModel.toggleHelp() }
           }
           state?.let { state ->
             contents(state, insertItem, viewModel.getInterface())

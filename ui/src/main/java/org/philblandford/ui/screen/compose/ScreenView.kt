@@ -70,12 +70,13 @@ private fun ScreenViewInternal(model: ScreenModel, iface: ScreenInterface) {
                 Timber.e("detect getScale $scale $defaultScale")
                 scale.value
               },
-              defaultScale, 20f, width, height, viewPortWith, scrollX, lazyListState,
+              defaultScale, 1.5f, width, height, viewPortWith, scrollX, lazyListState,
               { scale.value = it },
               { offset -> iface.handleTap(page, offset.x.toInt(), offset.y.toInt()) },
               { offset -> iface.handleLongPress(page, offset.x.toInt(), offset.y.toInt()) },
               { scale.value = defaultScale; },
-              { offset -> iface.handleDrag(offset.x, offset.y) }
+              { offset -> iface.handleDrag(offset.x, offset.y) },
+              iface::handleLongPressRelease
             )
           } else {
             Box(Modifier.size(width, height))
@@ -106,6 +107,7 @@ private fun ScreenPage(
   onLongPress: (Offset) -> Unit = {},
   onDoubleTap: () -> Unit = {},
   onDrag: (Offset) -> Unit = {},
+  onLongPressRelease:()->Unit = {}
 ) {
   Timber.e("RECO ScreenPage $num")
 
@@ -153,6 +155,10 @@ private fun ScreenPage(
                   scrollX.scrollTo(0)
                   lazyListState.scrollToItem(num - 1)
                 }
+              },
+              onPress = {
+                awaitRelease()
+                onLongPressRelease()
               }
             )
           }
@@ -207,7 +213,7 @@ private fun ScreenPage(
         val offset = Offset(
           (editItem.rectangle.x.toFloat() * getScale() / density)
             .coerceAtMost(rightEdge - editSize.value.width),
-          (editItem.rectangle.y + editItem.rectangle.height + 50).toFloat() * getScale() / density
+          (editItem.rectangle.y + editItem.rectangle.height + 150).toFloat() * getScale() / density
         )
         Timber.e("SV offset $offset $viewPortWidth")
         EditPanel(

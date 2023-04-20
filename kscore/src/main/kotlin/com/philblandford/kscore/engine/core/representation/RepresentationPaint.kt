@@ -87,7 +87,7 @@ internal fun DrawableFactory.paintPlayBackMarker(
   playbackMarker: EventAddress?
 ): Area {
   return playbackMarker?.let { marker ->
-    pageGeography.getSlicePosition(marker)?.let { coord ->
+    pageGeography.getSlicePositionAt(marker)?.let { coord ->
       getBottomSystem(marker, pageGeography)?.let { bottom ->
         getDrawableArea(LineArgs(bottom - coord.y, false, LINE_THICKNESS, blue()))?.let { line ->
           page.addArea(line, Coord(coord.x, coord.y - STAVE_HEIGHT))

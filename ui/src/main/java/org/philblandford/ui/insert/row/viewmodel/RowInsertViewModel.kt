@@ -1,6 +1,7 @@
 package org.philblandford.ui.insert.row.viewmodel
 
 import com.philblandford.kscore.engine.types.EventParam
+import com.philblandford.kscore.engine.types.EventType
 import org.koin.core.component.inject
 import org.philblandford.ascore2.features.ui.usecases.UpdateInsertItem
 import org.philblandford.ascore2.util.ok

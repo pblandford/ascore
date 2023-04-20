@@ -120,28 +120,28 @@ class BarTest : ScoreTest() {
   @Test
   fun testDeleteBar() {
     sc.setNewScore(scoreAllCrotchets(4))
-    SDE(EventType.BAR, ea(3), params = paramMapOf(EventParam.NUMBER to 1))
+    SDE(EventType.BAR, ea(3))
     assertEqual(3, EG().numBars)
   }
 
   @Test
   fun testDeleteBar1() {
     sc.setNewScore(scoreAllCrotchets(4))
-    SDE(EventType.BAR, ea(1), params = paramMapOf(EventParam.NUMBER to 1))
+    SDE(EventType.BAR, ea(1))
     assertEqual(3, EG().numBars)
   }
 
   @Test
   fun testDeleteBarTooMany() {
     sc.setNewScore(scoreAllCrotchets(4))
-    SDE(EventType.BAR, ea(3), params = paramMapOf(EventParam.NUMBER to 3))
+    SDE(EventType.BAR, ea(3), endAddress = ea(5))
     assertEqual(2, EG().numBars)
   }
 
   @Test
   fun testDeleteBarEventsMove() {
     sc.setNewScore(scoreAllCrotchets(4))
-    SDE(EventType.BAR, ea(3), paramMapOf(EventParam.NUMBER to 1))
+    SDE(EventType.BAR, ea(3))
     SVNE(EventType.DURATION, eav(4))
     SVE(EventType.DURATION, eav(3))
   }
@@ -149,7 +149,7 @@ class BarTest : ScoreTest() {
   @Test
   fun testDeleteBarScoreEventsMove() {
     SAE(EventType.KEY_SIGNATURE, ea(4), paramMapOf(EventParam.SHARPS to 2))
-    SDE(EventType.BAR, ea(3), paramMapOf(EventParam.NUMBER to 1))
+    SDE(EventType.BAR, ea(3))
     SVNE(EventType.KEY_SIGNATURE, ez(4))
     SVE(EventType.KEY_SIGNATURE, ez(3))
   }
@@ -158,35 +158,35 @@ class BarTest : ScoreTest() {
   fun testDeleteBarStaveEventsMove() {
     SAE(EventType.DYNAMIC, ea(3), paramMapOf(EventParam.TYPE to DynamicType.FORTISSIMO,
       EventParam.IS_UP to true))
-    SDE(EventType.BAR, ea(2), paramMapOf(EventParam.NUMBER to 1))
+    SDE(EventType.BAR, ea(2))
     SVNE(EventType.DYNAMIC, eav(3))
     SVE(EventType.DYNAMIC, eav(2))
   }
 
   @Test
   fun testDeleteBarScoreEventsMoveNotBar1() {
-    SDE(EventType.BAR, ea(1), paramMapOf(EventParam.NUMBER to 1))
+    SDE(EventType.BAR, ea(1))
     SVE(EventType.KEY_SIGNATURE, ez(1))
   }
 
   @Test
   fun testDeleteBarScoreEventsGone() {
     SAE(EventType.KEY_SIGNATURE, ea(4), paramMapOf(EventParam.SHARPS to 2))
-    SDE(EventType.BAR, ea(4), paramMapOf(EventParam.NUMBER to 1))
+    SDE(EventType.BAR, ea(4))
     assertEqual(1, EG().getEvents(EventType.KEY_SIGNATURE)?.size)
   }
   
   @Test
   fun testDeleteBarEndAddress() {
     SCD(bars = 32)
-    SDE(EventType.BAR, ea(1), paramMapOf(), ea(4))
+    SDE(EventType.BAR, ea(1), ea(4))
     assertEqual(28, EG().numBars)
   }
 
   @Test
   fun testDeleteLastBar() {
     SCD(bars = 1)
-    SDE(EventType.BAR, ea(1), params = paramMapOf(EventParam.NUMBER to 1))
+    SDE(EventType.BAR, ea(1))
     assertEqual(1, EG().numBars)
   }
 

@@ -5,7 +5,7 @@ import com.philblandford.kscore.engine.core.areadirectory.areaDirectory
 import com.philblandford.kscore.engine.core.geographyX.geographyXDirectory
 import com.philblandford.kscore.engine.core.representation.PAGE_WIDTH
 import com.philblandford.kscore.engine.dsl.createScoreOneNote
-import core.representation.RepTest
+import com.philblandford.kscore.engine.core.representation.RepTest
 import org.junit.Test
 
 class GeographyXTest : RepTest() {

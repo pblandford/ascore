@@ -202,10 +202,10 @@ class Clipboard {
 
   private fun Score.removeSelection(selection: Selection): ScoreResult {
     return fold(selection.range.toList()) { (offset, events) ->
+      selection.range
       addDuration(selection.startAddress, offset)?.let { target ->
         fold(events.toList()) { (emk, ev) ->
-          val addr = target.copy(voice = emk.eventAddress.voice)
-          NewEventAdder.deleteEvent(this, ev.eventType, paramMapOf(), addr)
+          NewEventAdder.deleteEvent(this, ev.eventType, paramMapOf(), emk.eventAddress)
         }
       } ?: Warning(Error("Could not add offset $offset to ${selection.startAddress}"), this)
     }

@@ -1,4 +1,4 @@
-package core.representation
+package com.philblandford.kscore.engine.core.representation
 
 import TestInstrumentGetter
 import assertEqual
@@ -6,9 +6,6 @@ import com.philblandford.kscore.api.DrawableGetter
 import com.philblandford.kscore.engine.types.*
 import com.philblandford.kscore.engine.core.area.*
 import com.philblandford.kscore.engine.core.area.factory.*
-import com.philblandford.kscore.engine.core.representation.BLOCK_HEIGHT
-import com.philblandford.kscore.engine.core.representation.LINE_THICKNESS
-import com.philblandford.kscore.engine.core.representation.SHARP_WIDTH
 import com.philblandford.kscore.engine.core.score.Score
 import com.philblandford.kscore.engine.scorefunction.ScoreTest
 import org.junit.After
@@ -147,5 +144,5 @@ open class RepTest : ScoreTest() {
 
   }
 
-  protected fun REP() = sc.currentRepresentation.value!!
+  protected fun REP() = sc.currentScoreState.value.representation!!
 }

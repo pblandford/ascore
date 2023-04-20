@@ -7,7 +7,7 @@ import com.philblandford.kscore.engine.core.representation.REHEARSAL_MARK_SIZE
 
 
 
-import core.representation.RepTest
+import com.philblandford.kscore.engine.core.representation.RepTest
 import org.junit.Test
 
 class RehearsalMarkTest : RepTest() {

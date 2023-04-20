@@ -2,12 +2,12 @@ package com.philblandford.kscore.engine.core.endtoend
 
 import assertEqual
 import com.philblandford.kscore.engine.core.area.Coord
+import com.philblandford.kscore.engine.core.representation.RepTest
 import com.philblandford.kscore.engine.types.*
 
 
 import com.philblandford.kscore.engine.duration.crotchet
 import com.philblandford.kscore.engine.duration.semiquaver
-import core.representation.*
 import grace
 import org.junit.Test
 

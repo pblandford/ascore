@@ -4,7 +4,7 @@ import com.philblandford.kscore.engine.core.area.Coord
 import com.philblandford.kscore.engine.core.representation.LYRIC_SIZE
 import com.philblandford.kscore.engine.duration.crotchet
 import com.philblandford.kscore.engine.types.*
-import core.representation.RepTest
+import com.philblandford.kscore.engine.core.representation.RepTest
 import org.junit.Test
 
 class LyricTest : RepTest() {

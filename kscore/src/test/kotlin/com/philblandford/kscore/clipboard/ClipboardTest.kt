@@ -153,8 +153,6 @@ class ClipboardTest : ScoreTest() {
     )
   }
 
-
-
   @Test
   fun testCutPaste() {
     val score = score {
@@ -169,6 +167,30 @@ class ClipboardTest : ScoreTest() {
     val newScore = Clipboard.paste(eav(2), score).rightOrThrow()
     assertEqual("C4:C4:R4:R4", newScore.getVoiceMap(eav(2))?.eventString())
     assertEqual("", newScore.getVoiceMap(eav(1))?.eventString())
+  }
+
+  @Test
+  fun testCutPasteMultiStave() {
+    val score = score {
+      part {
+        stave {
+          bar { voiceMap { chord(); chord(); rest(); rest() } }
+          bar { voiceMap { } }
+        }
+      }
+      part {
+        stave {
+          bar { voiceMap { chord(); chord(); rest(); rest() } }
+          bar { voiceMap { } }
+        }
+      }
+    }
+    Clipboard.cut(eav(1), easv(1, Duration(3, 4), StaveId(2,1)), score)
+    val newScore = Clipboard.paste(eav(2), score).rightOrThrow()
+    assertEqual("C4:C4:R4:R4", newScore.getVoiceMap(eav(2))?.eventString())
+    assertEqual("C4:C4:R4:R4", newScore.getVoiceMap(easv(2, staveId = StaveId(2,1)))?.eventString())
+    assertEqual("", newScore.getVoiceMap(eav(1))?.eventString())
+    assertEqual("", newScore.getVoiceMap(easv(1, staveId = StaveId(2,1)))?.eventString())
   }
 
   @Test

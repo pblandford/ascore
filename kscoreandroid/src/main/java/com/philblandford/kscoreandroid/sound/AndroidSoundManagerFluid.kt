@@ -120,6 +120,11 @@ class AndroidSoundManagerFluid(
       .find { it.name == name }
   }
 
+  override fun getInstrument(programId: Int): Instrument? {
+    return instrumentGetter.getInstrumentGroups().flatMap { it.instruments }
+      .find { it.program == programId }
+  }
+
   override fun createGroup(name: String, instruments: List<Instrument>) {
     instrumentGetter.createGroup(name, instruments)
   }

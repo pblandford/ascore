@@ -5,7 +5,8 @@ import org.philblandford.ascore2.features.ui.model.LayoutID
 import org.philblandford.ascore2.features.ui.model.UIState
 import org.philblandford.ascore2.features.ui.repository.UiStateRepository
 
-class TogglePanelLayoutImpl(private val uiStateRepository: UiStateRepository) : TogglePanelLayout {
+class TogglePanelLayoutImpl(private val uiStateRepository: UiStateRepository,
+val kScore: KScore) : TogglePanelLayout {
   override operator fun invoke() {
     val current = uiStateRepository.getUIState().value
     val state = when (current) {
@@ -14,5 +15,6 @@ class TogglePanelLayoutImpl(private val uiStateRepository: UiStateRepository) : 
     }
 
     uiStateRepository.setUiState(state)
+    kScore.clearSelection()
   }
 }

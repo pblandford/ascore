@@ -29,6 +29,8 @@ fun ClipboardView(modifier:Modifier) {
 @Composable
 fun ClipboardViewInternal(modifier: Modifier, iface:ClipboardInterface) {
   Row(modifier.border(1.dp, Color.Black).background(MaterialTheme.colors.onSurface).padding(2.dp)) {
+    Item(R.drawable.up, {iface.noteUp(true)}) { iface.noteUp(false)  }
+    Item(R.drawable.down, {iface.noteDown(true)}) { iface.noteDown(false)  }
     Item(R.drawable.left_arrow) { iface.selectionLeft()  }
     Item(R.drawable.right_arrow) { iface.selectionRight()  }
     Item(R.drawable.copy) { iface.copy() }
@@ -38,7 +40,10 @@ fun ClipboardViewInternal(modifier: Modifier, iface:ClipboardInterface) {
 }
 
 @Composable
-private fun Item(id: Int,  cmd: () -> Unit) {
+private fun Item(id: Int, longCmd:()->Unit = {},  cmd: () -> Unit) {
   SquareButton(id, size = block(),
-    foregroundColor = MaterialTheme.colors.surface, backgroundColor = MaterialTheme.colors.onSurface) { cmd() }
+    foregroundColor = MaterialTheme.colors.surface,
+    backgroundColor = MaterialTheme.colors.onSurface,
+
+    onLongPress = longCmd) { cmd() }
 }

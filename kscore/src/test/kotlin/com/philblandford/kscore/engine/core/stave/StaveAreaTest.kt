@@ -6,7 +6,6 @@ import com.philblandford.kscore.engine.core.areadirectory.segment.SegmentArea
 import com.philblandford.kscore.engine.core.areadirectory.segment.segmentArea
 import com.philblandford.kscore.engine.core.representation.BLOCK_HEIGHT
 import com.philblandford.kscore.engine.duration.crotchet
-import com.philblandford.kscore.engine.duration.dZero
 import com.philblandford.kscore.engine.map.EventMapKey
 import org.junit.Test
 import com.philblandford.kscore.engine.types.*
@@ -16,7 +15,7 @@ import com.philblandford.kscore.engine.core.areadirectory.barstartend.BarStartAr
 import com.philblandford.kscore.engine.core.stave.StaveArea
 import com.philblandford.kscore.engine.core.stave.createStave
 import com.philblandford.kscore.engine.dsl.dslChord
-import core.representation.RepTest
+import com.philblandford.kscore.engine.core.representation.RepTest
 
 class StaveAreaTest : RepTest() {
 

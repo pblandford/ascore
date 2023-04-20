@@ -8,7 +8,7 @@ import com.philblandford.kscore.engine.duration.dZero
 import com.philblandford.kscore.engine.duration.quaver
 import com.philblandford.kscore.engine.duration.semiquaver
 
-import core.representation.RepTest
+import com.philblandford.kscore.engine.core.representation.RepTest
 import grace
 import org.junit.Test
 

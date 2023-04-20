@@ -117,6 +117,7 @@ data class BarGeography(
   val segmentWidth = last?.let {
     it.start + it.width
   } ?: BAR_EMPTY_WIDTH
+  val slicePositionsList = slicePositions.toList().sortedBy { it.first.offset }
 
   fun width(first: Boolean, last: Boolean): Int {
     return start(first) + end(last) + segmentWidth

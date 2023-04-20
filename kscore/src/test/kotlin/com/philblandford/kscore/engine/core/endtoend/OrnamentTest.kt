@@ -1,13 +1,12 @@
 package com.philblandford.kscore.engine.core.endtoend
 
 import assertEqual
-import com.philblandford.kscore.engine.core.area.Coord
 import com.philblandford.kscore.engine.types.*
 
 
 import com.philblandford.kscore.engine.duration.dZero
 
-import core.representation.RepTest
+import com.philblandford.kscore.engine.core.representation.RepTest
 import org.junit.Test
 
 class OrnamentTest : RepTest() {

@@ -7,6 +7,7 @@ import com.philblandford.kscore.engine.types.Accidental
 import com.philblandford.kscore.engine.types.GraceInputMode
 import com.philblandford.kscore.engine.types.GraceType
 import com.philblandford.kscore.engine.types.NoteHeadType
+import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import org.philblandford.ascore2.features.input.usecases.*
 import org.philblandford.ascore2.features.sound.usecases.SoundNote
@@ -39,7 +40,7 @@ class InputViewModel(
 
   init {
     viewModelScope.launch {
-      noteInputState().collect { nd ->
+      noteInputState().collectLatest { nd ->
         update { copy(noteInputDescriptor = nd) }
       }
     }
@@ -69,10 +70,7 @@ class InputViewModel(
   }
 
   private fun updateState(func: NoteInputDescriptor.() -> NoteInputDescriptor) {
-    receiveAction {
       updateInputState(func)
-      it.ok()
-    }
   }
 
   override fun toggleOctaveShift() {
@@ -100,7 +98,7 @@ class InputViewModel(
   }
 
   override fun setDuration(duration: Duration) {
-    updateState { copy(duration = duration) }
+    updateState { copy(duration = duration, dots = 0) }
   }
 
   override fun setNumDots(dots: Int) {

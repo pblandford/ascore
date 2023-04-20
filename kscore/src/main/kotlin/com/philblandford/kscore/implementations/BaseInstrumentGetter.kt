@@ -46,6 +46,12 @@ open class BaseInstrumentGetter(
     }
   }
 
+  override fun getInstrument(programId: Int): Instrument? {
+    return groups.flatMap { it.instruments }.find {
+      it.program == programId
+    }
+  }
+
   fun getGroupForInstrument(name: String): String? {
     return groups.find { it.instruments.any { it.name == name } }?.name
   }

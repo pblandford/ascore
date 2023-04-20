@@ -2,11 +2,9 @@ package com.philblandford.kscore.engine.core.endtoend
 
 import assertEqual
 import com.philblandford.kscore.engine.types.*
-import com.philblandford.kscore.engine.core.score.Marker
 
 
-
-import core.representation.RepTest
+import com.philblandford.kscore.engine.core.representation.RepTest
 import org.junit.Test
 
 class SystemBreakTest : RepTest() {

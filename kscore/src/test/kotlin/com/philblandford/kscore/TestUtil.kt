@@ -421,6 +421,10 @@ class TestInstrumentGetter : InstrumentGetter {
 
   }
 
+  override fun getInstrument(programId: Int): Instrument? {
+    return groups.flatMap { it.instruments }.find { it.program == programId }
+  }
+
   private fun i(name: String): Instrument {
     return defaultInstrument().copy(name = name)
   }

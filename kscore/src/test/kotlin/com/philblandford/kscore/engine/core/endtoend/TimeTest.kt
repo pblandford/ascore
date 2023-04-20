@@ -8,7 +8,7 @@ import com.philblandford.kscore.engine.types.*
 import com.philblandford.kscore.engine.duration.breve
 import com.philblandford.kscore.engine.time.TimeSignature
 import com.philblandford.kscore.engine.time.timeSignature
-import core.representation.RepTest
+import com.philblandford.kscore.engine.core.representation.RepTest
 
 
 import org.junit.Test

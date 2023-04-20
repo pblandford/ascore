@@ -12,7 +12,9 @@ import org.philblandford.ascore2.features.crosscutting.model.ErrorDescr
 import org.philblandford.ascore2.features.crosscutting.usecases.GetError
 import org.philblandford.ascore2.features.error.GetErrorFlow
 import org.philblandford.ascore2.features.ui.model.UIState
+import org.philblandford.ascore2.features.ui.usecases.GetHelpKey
 import org.philblandford.ascore2.features.ui.usecases.GetUIState
+import org.philblandford.ascore2.features.ui.usecases.SetHelpKey
 import org.philblandford.ascore2.util.ok
 import org.philblandford.ui.base.viewmodel.BaseViewModel
 import org.philblandford.ui.base.viewmodel.VMInterface
@@ -20,10 +22,16 @@ import org.philblandford.ui.base.viewmodel.VMModel
 import org.philblandford.ui.base.viewmodel.VMSideEffect
 import timber.log.Timber
 
+interface MainPageInterface : VMInterface {
+  fun dismissHelp()
+}
+
 data class MainPageModel(
   val showClipboard: Boolean = false,
+  val showNoteZoom:Boolean = false,
   val showEdit: Boolean = false,
-  val selectedArea: Location? = null
+  val selectedArea: Location? = null,
+  val helpKey:String? = null
 ) : VMModel()
 
 sealed class MainPageSideEffect : VMSideEffect() {
@@ -33,15 +41,18 @@ sealed class MainPageSideEffect : VMSideEffect() {
 class MainPageViewModel(
   getUIState: GetUIState,
   private val getError: GetErrorFlow,
-  getSelection: GetSelection
+  getSelection: GetSelection,
+  private val getHelpKey: GetHelpKey,
+  private val setHelpKey: SetHelpKey
 ) :
-  BaseViewModel<MainPageModel, VMInterface, MainPageSideEffect>(), VMInterface {
+  BaseViewModel<MainPageModel, MainPageInterface, MainPageSideEffect>(), MainPageInterface {
 
   init {
     getSelection().combine(getUIState()) { selection, uiState ->
       update {
         copy(
           showClipboard = uiState == UIState.Clipboard,
+          showNoteZoom = uiState is UIState.MoveNote,
           showEdit = uiState is UIState.Edit,
           selectedArea = selection?.startLocation
         )
@@ -61,6 +72,12 @@ class MainPageViewModel(
         )
       }
     }
+
+    viewModelScope.launch {
+      getHelpKey().collectLatest { key ->
+        update { copy(helpKey = key) }
+      }
+    }
   }
 
   override suspend fun initState(): Result<MainPageModel> {
@@ -68,4 +85,8 @@ class MainPageViewModel(
   }
 
   override fun getInterface() = this
+
+  override fun dismissHelp() {
+    setHelpKey(null)
+  }
 }

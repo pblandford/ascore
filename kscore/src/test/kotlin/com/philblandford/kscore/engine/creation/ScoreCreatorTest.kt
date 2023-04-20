@@ -5,10 +5,13 @@ import com.philblandford.kscore.api.defaultInstrument
 import com.philblandford.kscore.engine.core.representation.TITLE_TEXT_SIZE
 import com.philblandford.kscore.engine.core.score.Meta
 import com.philblandford.kscore.engine.scorefunction.ScoreTest
+import com.philblandford.kscore.engine.time.TimeSignature
 import com.philblandford.kscore.engine.types.EventParam
 import com.philblandford.kscore.engine.types.EventType
 import com.philblandford.kscore.engine.types.MetaType
 import com.philblandford.kscore.engine.types.eZero
+import com.philblandford.kscore.engine.types.ea
+import com.philblandford.kscore.engine.types.eav
 import org.hamcrest.CoreMatchers.`is`
 import org.junit.Assert.*
 import org.junit.Test
@@ -40,5 +43,12 @@ class ScoreCreatorTest : ScoreTest() {
   fun testCreateScoreZeroBars() {
     val score = creator.createScore(NewScoreDescriptor(listOf(defaultInstrument()), numBars = 0))
     assertThat(score.numBars, `is`(0))
+  }
+
+  @Test
+  fun testCreateScoreUpbeatBar() {
+    val score = creator.createScore(NewScoreDescriptor(listOf(defaultInstrument()), numBars = 4,
+      upBeat = TimeSignature(1,4), upbeatEnabled = true))
+    assertEquals(TimeSignature(1,4, hidden = true), score.getVoiceMap(eav(1))?.timeSignature)
   }
 }

@@ -11,6 +11,7 @@ import androidx.compose.material.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
@@ -49,11 +50,20 @@ internal fun CreateTempo(
         Label(R.string.upbeatbar)
         UpbeatRow(upbeatEnabled, iface::setUpbeatEnabled, upBeat) { iface.setUpbeatBar { it } }
         Gap(0.5f)
-        Label(R.string.page_size)
-        PageSizeRow(pageSize) { iface.setPageSize(it) }
-        Gap(0.5f)
-        Label(R.string.num_bars)
-        BarsRow(numBars) { iface.setNumBars(it) }
+        Row(
+          Modifier.fillMaxWidth(),
+          verticalAlignment = Alignment.CenterVertically,
+          horizontalArrangement = Arrangement.SpaceBetween
+        ) {
+          Column {
+            Label(R.string.page_size)
+            PageSizeRow(pageSize) { iface.setPageSize(it) }
+          }
+          Column {
+            Label(R.string.num_bars)
+            BarsRow(numBars) { iface.setNumBars(it) }
+          }
+        }
       }
     }
   }

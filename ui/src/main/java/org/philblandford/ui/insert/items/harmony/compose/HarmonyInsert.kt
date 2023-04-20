@@ -34,7 +34,7 @@ fun HarmonyInsert() {
 
 @Composable
 fun HarmonyInsertInternal(model: HarmonyInsertModel, iface: HarmonyInsertInterface) {
-  ConstraintLayout(Modifier.padding(top = 15.dp)) {
+  ConstraintLayout(Modifier.padding(10.dp)) {
     val (select, common, recent, leftRight, split) = createRefs()
     SelectRow(model, iface, Modifier.constrainAs(select) {})
     CommonChords(model, iface, Modifier.constrainAs(common) { top.linkTo(select.bottom, 10.dp) })

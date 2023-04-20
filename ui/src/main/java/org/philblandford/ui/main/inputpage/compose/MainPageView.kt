@@ -1,5 +1,6 @@
 package org.philblandford.ui.main.inputpage.compose
 
+import Help
 import androidx.activity.compose.BackHandler
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.slideInVertically
@@ -15,6 +16,8 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.unit.IntOffset
+import androidx.compose.ui.window.Dialog
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
@@ -39,7 +42,7 @@ import timber.log.Timber
 fun MainPageView(openDrawer: () -> Unit, setPopupLayout: (LayoutID) -> Unit, toggleMixer:()->Unit) {
   Timber.e("RECO MainPageView")
 
-  VMView(MainPageViewModel::class.java) { state, _, effect ->
+  VMView(MainPageViewModel::class.java) { state, iface, effect ->
 
     val coroutineScope = rememberCoroutineScope()
     val alertText = remember { mutableStateOf<ErrorDescr?>(null) }
@@ -64,8 +67,13 @@ fun MainPageView(openDrawer: () -> Unit, setPopupLayout: (LayoutID) -> Unit, tog
         title = { Text(errorDescr.headline) })
     }
 
+    state.helpKey?.let {
+      Dialog({ iface.dismissHelp()}) {
+        Help(it) { iface.dismissHelp() }
+      }
+    }
+
     Box(Modifier.fillMaxSize()) {
-      val showConsole = remember { mutableStateOf(false) }
       val showPanel = remember { mutableStateOf(true) }
       val fullScreen = remember { mutableStateOf(false) }
       val uiController = rememberSystemUiController()
@@ -93,16 +101,13 @@ fun MainPageView(openDrawer: () -> Unit, setPopupLayout: (LayoutID) -> Unit, tog
             toggleMixer()
           }
 
-          Timber.e("show clip ${state.showClipboard}")
-
-
           Box(Modifier.fillMaxWidth()) {
 
             ScreenBox(Modifier.fillMaxSize(), state)
 
             Column(Modifier.align(Alignment.BottomCenter)) {
-              AnimatedVisibility(showPanel.value, enter = slideInVertically() { it },
-                exit = slideOutVertically() { it }
+              AnimatedVisibility(showPanel.value, enter = slideInVertically { it },
+                exit = slideOutVertically { it }
               ) {
                 Panel()
               }
@@ -121,7 +126,7 @@ private fun ScreenBox(modifier: Modifier, state: MainPageModel) {
 
 
   val clipboardOffset = remember { mutableStateOf(Offset(0f, 10f)) }
-  val zoomOffset = remember { mutableStateOf(Offset(-10f, 50f)) }
+  val zoomOffset = remember { mutableStateOf(Offset(0f, 0f)) }
 
   Box(modifier) {
     ScreenView()
@@ -130,7 +135,9 @@ private fun ScreenBox(modifier: Modifier, state: MainPageModel) {
       DraggableItem(Modifier.align(Alignment.TopCenter), clipboardOffset) {
         ClipboardView(Modifier)
       }
+    }
 
+    if (state.showNoteZoom) {
       state.selectedArea?.let { location ->
         DraggableItem(Modifier.align(Alignment.TopEnd), zoomOffset) {
           ScreenZoom(

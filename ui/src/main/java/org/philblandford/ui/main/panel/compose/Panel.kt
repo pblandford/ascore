@@ -47,6 +47,7 @@ import org.philblandford.ui.keyboard.compose.KeyboardPanel
 import org.philblandford.ui.main.panel.viewmodels.PanelModel
 import org.philblandford.ui.main.panel.viewmodels.PanelViewModel
 import org.philblandford.ui.util.ThemeBox
+import timber.log.Timber
 
 @Composable
 fun Panel() {
@@ -62,16 +63,13 @@ private fun PanelInternal(model: PanelModel) {
 
   currentLayout = model.layoutID
 
+  Timber.e("Panel currentLayout $currentLayout")
+
   AnimatedContent(currentLayout,
   transitionSpec =
   {
-    if (targetState > initialState) {
-      slideInHorizontally { height -> height } + fadeIn() with
-          slideOutHorizontally { height -> -height } + fadeOut()
-    } else {
-      slideInHorizontally { height -> -height } + fadeIn() with
-          slideOutHorizontally { height -> height } + fadeOut()
-    }.using(
+    (slideInVertically { height -> height } + fadeIn() with
+          slideOutHorizontally { height -> -height } + fadeOut()).using(
       SizeTransform(clip = false)
     )
   }

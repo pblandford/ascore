@@ -92,6 +92,11 @@ class OffsetLookupTest {
     assertEqual(ez(4), ol.addDuration(ez(2), breve()))
   }
 
+  @Test
+  fun testOffsetLookupFromLastDuration() {
+    val ol = offsetLookup(tsMap, Duration(2))
+    assertEqual(Duration(1), ol.addressToOffset(ez(2)))
+  }
 
   private val tsMap = mapOf(1 to TimeSignature(4, 4))
 }

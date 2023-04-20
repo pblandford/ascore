@@ -86,7 +86,6 @@ class DrawableFactory(private val drawableGetter: DrawableGetter) {
   private var useCache: Boolean = true
 
   fun getDrawable(drawableArgs: DrawableArgs): KDrawable? {
-    ksLogt("getDrawable cache size ${cache.size}")
     if (useCache) {
       cache[drawableArgs to drawableGetter]?.let {
         return it

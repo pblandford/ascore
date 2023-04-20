@@ -7,7 +7,7 @@ import com.philblandford.kscore.engine.core.areadirectory.segment.segmentArea
 import com.philblandford.kscore.engine.dsl.dslChord
 import com.philblandford.kscore.engine.duration.crotchet
 import com.philblandford.kscore.engine.map.EventMapKey
-import core.representation.RepTest
+import com.philblandford.kscore.engine.core.representation.RepTest
 import org.junit.Test
 
 class SegmentAreaTest : RepTest() {

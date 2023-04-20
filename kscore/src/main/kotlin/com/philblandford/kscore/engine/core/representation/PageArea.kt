@@ -190,6 +190,24 @@ internal fun PageGeography.getSlicePosition(eventAddress: EventAddress): Coord? 
   }
 }
 
+internal fun PageGeography.getSlicePositionAt(eventAddress: EventAddress): Coord? {
+  return getSystemPosition(eventAddress, this)?.let { sysPos ->
+    sysPos.second.systemYGeography.xGeog.barPositions[eventAddress.barNum]?.let { barPos ->
+      val startBar =
+        layoutDescriptor.leftMargin + sysPos.second.systemYGeography.xGeog.startMain + barPos.pos
+      val y = sysPos.second.pos
+      barPos.geog.original.slicePositionsList.lastOrNull { it.first.offset <= eventAddress.offset }?.let { (_, slicePos) ->
+        val x = startBar + slicePos.start
+        Coord(x, y)
+      } ?: run {
+        if (barPos.geog.original.slicePositions.isEmpty()) {
+          Coord(startBar, y)
+        } else null
+      }
+    }
+  }
+}
+
 internal fun getBottomSystem(eventAddress: EventAddress, pageGeography: PageGeography): Int? {
   return getSystemPosition(eventAddress, pageGeography)?.let { sysPos ->
     sysPos.second.systemYGeography.partPositions.toList().maxByOrNull { it.first }

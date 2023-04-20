@@ -28,13 +28,7 @@ class DeleteTest : ScoreTest() {
     SVVM("C4:C4:C4:R4", eav(1))
   }
 
-  @Test
-  fun testDeleteDurationEventHoldMarker() {
-    SMV()
-    SSP(EventType.UISTATE, EventParam.MARKER_POSITION, ea(3))
-    SDE(EventType.DURATION, eav(1), paramMapOf(EventParam.HOLD to true))
-    assertEqual(ea(3), EG().getParam(EventType.UISTATE, EventParam.MARKER_POSITION))
-  }
+
 
   @Test
   fun testDeleteDurationEventRange() {

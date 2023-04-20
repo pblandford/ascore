@@ -5,7 +5,7 @@ package com.philblandford.kscore.engine.core.endtoend
 import com.philblandford.kscore.engine.duration.quaver
 import com.philblandford.kscore.engine.duration.times
 import com.philblandford.kscore.engine.types.*
-import core.representation.RepTest
+import com.philblandford.kscore.engine.core.representation.RepTest
 import org.junit.Test
 
 class RepeatBarTest : RepTest() {

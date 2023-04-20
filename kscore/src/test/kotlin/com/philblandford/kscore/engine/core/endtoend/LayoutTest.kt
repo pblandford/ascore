@@ -3,9 +3,8 @@ package com.philblandford.kscore.engine.core.endtoend
 import assertEqual
 import com.philblandford.kscore.engine.types.EventParam
 import com.philblandford.kscore.engine.core.representation.BLOCK_HEIGHT
-import com.philblandford.kscore.engine.core.score.ScoreContainer
 import com.philblandford.kscore.engine.types.EventType
-import core.representation.RepTest
+import com.philblandford.kscore.engine.core.representation.RepTest
 import org.junit.Test
 
 class LayoutTest : RepTest() {

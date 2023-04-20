@@ -5,6 +5,7 @@ import com.philblandford.kscore.engine.core.getLayoutDescriptor
 import com.philblandford.kscore.engine.core.representation.*
 import com.philblandford.kscore.engine.newadder.*
 import com.philblandford.kscore.engine.types.*
+import com.philblandford.kscore.log.ksLoge
 import com.philblandford.kscore.log.ksLogt
 import com.philblandford.kscore.option.getOptionDefault
 import com.philblandford.kscore.option.isLayoutOption
@@ -13,6 +14,7 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
+import org.jetbrains.annotations.TestOnly
 
 enum class CommandType {
   ADD, DELETE, SET
@@ -57,6 +59,7 @@ class ScoreContainer(private val drawableFactory: DrawableFactory) {
   val currentScoreState = MutableStateFlow(ScoreState(null, null))
   var currentScore = currentScoreState.map { it.score }.stateIn(coroutineScope, SharingStarted.Eagerly, null)
   var currentRepresentation = currentScoreState.map { it.representation }.stateIn(coroutineScope, SharingStarted.Eagerly, null)
+  private var exceptionHandler:(Exception)->Unit  = {}
   private val errorFlow = MutableSharedFlow<ScoreError>()
   private val undoStack = UndoStack()
   private val commandHistory = mutableListOf<Command>()
@@ -64,9 +67,14 @@ class ScoreContainer(private val drawableFactory: DrawableFactory) {
   private var allowUndo = true
   private val commandQueue = MutableSharedFlow<Command>()
   private val batchQueue = mutableListOf<Command>()
+  var synchronous = false
 
   init {
     listenForCommands()
+  }
+
+  fun setExceptionHandler(handler:(Exception)->Unit) {
+    exceptionHandler = handler
   }
 
   fun setNewScore(score: Score, progress: (String, Float) -> Boolean = { _, _ -> false }) {
@@ -100,8 +108,7 @@ class ScoreContainer(private val drawableFactory: DrawableFactory) {
   }
 
   fun deleteEvent(
-    eventType: EventType, eventAddress: EventAddress = eZero(), endAddress: EventAddress? = null,
-    params: ParamMap = paramMapOf()
+    eventType: EventType, eventAddress: EventAddress = eZero(), endAddress: EventAddress? = null
   ) {
     addCommand(DeleteCommand(eventType, eventAddress, endAddress))
   }
@@ -146,13 +153,13 @@ class ScoreContainer(private val drawableFactory: DrawableFactory) {
     addCommand(BatchCommand(batchQueue))
   }
 
-  fun ScoreState.runBatch(commands:List<Command>):ScoreState {
-    return commands.fold(this) { score, cmd ->
+  private fun ScoreState.runBatch(commands:List<Command>):ScoreState {
+    return commands.toList().fold(this) { score, cmd ->
       score.applyCommand(cmd)
     }
   }
 
-  fun startBatch() {
+  private fun startBatch() {
     batchStarted = true
     batchQueue.clear()
   }
@@ -161,7 +168,7 @@ class ScoreContainer(private val drawableFactory: DrawableFactory) {
     allowUndo = !yes
   }
 
-  fun endBatch() {
+  private fun endBatch() {
     batchStarted = false
   }
 
@@ -178,12 +185,17 @@ class ScoreContainer(private val drawableFactory: DrawableFactory) {
   private fun addCommand(
     command: Command
   ) {
-    if (batchStarted) {
-      batchQueue.add(command)
+    if (synchronous) {
+      val newScoreState = currentScoreState.value.applyCommand(command)
+      currentScoreState.value = newScoreState
     } else {
-      commandHistory.add(command)
-      coroutineScope.launch {
-        commandQueue.emit(command)
+      if (batchStarted) {
+        batchQueue.add(command)
+      } else {
+        commandHistory.add(command)
+        coroutineScope.launch {
+          commandQueue.emit(command)
+        }
       }
     }
   }
@@ -202,23 +214,28 @@ class ScoreContainer(private val drawableFactory: DrawableFactory) {
   }
 
   private fun ScoreState.applyCommand(command: Command):ScoreState {
-      return when (command) {
+    return try {
+      when (command) {
         is AddCommand -> {
           push()
           addOrDelete(command.event, command.eventAddress, true, command.endAddress)
         }
+
         is BatchCommand -> {
           push()
           runBatch(command.commands)
         }
+
         is DeleteCommand -> {
           push()
           addOrDelete(Event(command.eventType), command.eventAddress, false, command.endAddress)
         }
+
         is DeleteRangeCommand -> {
           push()
           doDeleteRange(command.eventAddress, command.endAddress)
         }
+
         is SetCommand<*> -> {
           push()
           doSetParam(
@@ -230,10 +247,16 @@ class ScoreContainer(private val drawableFactory: DrawableFactory) {
             command.repUpdate
           )
         }
+
         is UndoCommand -> {
           if (command.undo) doUndo() else doRedo()
         }
       }
+    } catch (e:Exception) {
+      ksLoge("Failed applying $command", e)
+      exceptionHandler(e)
+      this
+    }
   }
 
 
@@ -371,8 +394,12 @@ class ScoreContainer(private val drawableFactory: DrawableFactory) {
   }
 
   private fun setScoreState(score: Score?, representation: Representation?) {
-    coroutineScope.launch {
-      currentScoreState.emit(ScoreState(score, representation))
+    if (synchronous) {
+      currentScoreState.value = ScoreState(score, representation)
+    } else {
+      coroutineScope.launch {
+        currentScoreState.emit(ScoreState(score, representation))
+      }
     }
   }
 

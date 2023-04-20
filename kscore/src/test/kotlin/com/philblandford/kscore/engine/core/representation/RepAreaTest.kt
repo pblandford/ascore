@@ -1,7 +1,6 @@
 package com.philblandford.kscore.engine.core.representation
 
 import assertEqual
-import com.philblandford.kscore.api.Location
 import com.philblandford.kscore.api.Rectangle
 import com.philblandford.kscore.api.ScoreArea
 import com.philblandford.kscore.engine.core.area.AddressRequirement
@@ -12,7 +11,6 @@ import com.philblandford.kscore.engine.duration.crotchet
 import com.philblandford.kscore.engine.duration.dZero
 import com.philblandford.kscore.engine.types.*
 import com.philblandford.kscore.select.AreaToShow
-import core.representation.RepTest
 import grace
 import org.hamcrest.CoreMatchers.`is`
 import org.hamcrest.MatcherAssert.assertThat

@@ -6,7 +6,7 @@ import com.philblandford.kscore.engine.types.ea
 import com.philblandford.kscore.engine.types.paramMapOf
 
 
-import core.representation.RepTest
+import com.philblandford.kscore.engine.core.representation.RepTest
 import org.junit.Test
 
 class ExpressionDashTest : RepTest() {

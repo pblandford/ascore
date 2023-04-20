@@ -4,7 +4,7 @@ import assertEqual
 import com.philblandford.kscore.engine.types.EventType
 import com.philblandford.kscore.engine.types.eav
 import com.philblandford.kscore.engine.core.representation.BLOCK_HEIGHT
-import core.representation.RepTest
+import com.philblandford.kscore.engine.core.representation.RepTest
 import org.junit.Test
 
 class ArpeggioTest : RepTest() {

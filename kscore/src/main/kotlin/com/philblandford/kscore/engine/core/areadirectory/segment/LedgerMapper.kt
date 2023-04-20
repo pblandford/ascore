@@ -26,7 +26,7 @@ private fun doGetLedgerPositions(
     yPositions.map { yPos ->
       val tadpoleExtent =
         firstCluster?.let {
-          if ((up && yPos >= it) || (!up && yPos <= it)) tadpoleWidth * 2 else tadpoleWidth
+          if ((up && yPos > it) || (!up && yPos < it)) tadpoleWidth * 2 else tadpoleWidth
         } ?: tadpoleWidth
       val x = if (!positiveCluster) tadpoleWidth - tadpoleExtent - LEDGER_OFFSET else -LEDGER_OFFSET
       LedgerDescr(Coord(x, yPos * BLOCK_HEIGHT), tadpoleExtent + LEDGER_OFFSET * 2)

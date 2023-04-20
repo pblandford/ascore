@@ -5,6 +5,7 @@ import com.philblandford.kscore.api.Location
 import org.philblandford.ascore2.features.ui.model.EditItem
 import org.philblandford.ascore2.features.ui.model.UIState
 import org.philblandford.ascore2.features.ui.repository.UiStateRepository
+import timber.log.Timber
 
 class HandleLongPressImpl(
   private val uiStateRepository: UiStateRepository,
@@ -14,15 +15,17 @@ class HandleLongPressImpl(
     uiStateRepository.dragStart()
     val location = Location(page, x, y)
     when (val state = uiStateRepository.getUIState().value) {
-      UIState.Input, UIState.Clipboard -> {
+      UIState.Input, UIState.Clipboard, UIState.InsertChoose, is UIState.Edit -> {
         kScore.getEvent(location)?.let { (address, event) ->
+          Timber.e("TS got event $address $event")
           kScore.setStartSelectionOrEvent(location)
           kScore.getSelectedArea()?.let { area ->
+            Timber.e("TS got selected $area")
             uiStateRepository.setUiState(
               UIState.Edit(
                 EditItem(
-                  event,
-                  address,
+                  area.event,
+                  area.eventAddress,
                   location.page,
                   area.scoreArea.rectangle
                 )
@@ -31,7 +34,7 @@ class HandleLongPressImpl(
           }
         } ?: run {
           kScore.getEventAddress(location)?.let { eventAddress ->
-            uiStateRepository.setUiState(UIState.Clipboard)
+            uiStateRepository.setUiState(UIState.MoveNote(location))
             kScore.setStartSelection(eventAddress)
           }
         }

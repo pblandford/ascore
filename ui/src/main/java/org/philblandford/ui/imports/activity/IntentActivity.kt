@@ -18,6 +18,7 @@ import androidx.compose.material.LinearProgressIndicator
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.runtime.*
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -52,6 +53,8 @@ class IntentActivity : ComponentActivity(), KoinComponent {
 
   override fun onCreate(savedInstanceState: Bundle?) {
 
+    Timber.e("onCreate $this")
+
     super.onCreate(savedInstanceState)
 
     setContent {
@@ -66,6 +69,7 @@ class IntentActivity : ComponentActivity(), KoinComponent {
 
           val exception: MutableState<Exception?> = remember { mutableStateOf(null) }
           val coroutineScope = rememberCoroutineScope()
+          val intentData by rememberSaveable { mutableStateOf(intent.data) }
 
           LaunchedEffect(Unit) {
             coroutineScope.launch {
@@ -87,8 +91,9 @@ class IntentActivity : ComponentActivity(), KoinComponent {
             }
           }
 
-          LaunchedEffect(intent.data) {
-            intent.data?.let {
+          LaunchedEffect(intentData) {
+            Timber.e("Launching $intentData")
+            intentData?.let {
               iface.import(it)
             } ?: run {
               iface.start()
@@ -106,14 +111,18 @@ private fun Activity.loadMain() {
     Intent(
       this,
       MainActivity::class.java
-    )
+    )//.apply { flags = Intent.FLAG_ACTIVITY_CLEAR_TOP }
   )
+  finish()
 }
 
 @Composable
 private fun IntentLayout(model: ImportModel) {
 
-  Box(Modifier.fillMaxSize().background(MaterialTheme.colors.surface)) {
+  Box(
+    Modifier
+      .fillMaxSize()
+      .background(MaterialTheme.colors.surface)) {
     Column(
       Modifier
         .fillMaxSize()

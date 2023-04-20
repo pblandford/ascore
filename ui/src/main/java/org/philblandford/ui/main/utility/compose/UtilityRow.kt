@@ -130,6 +130,7 @@ private fun TogglePanelButton(visible: Boolean, toggle: () -> Unit) {
 
 @Composable
 private fun ToggleInsertButton(panelType: LayoutID, toggle: () -> Unit) {
-  val res = if (panelType == LayoutID.INSERT) R.drawable.keyboard_icon else R.drawable.plus
+  val res = if (panelType == LayoutID.KEYBOARD ||
+          panelType == LayoutID.PERCUSSION) R.drawable.plus else R.drawable.keyboard_icon
   SquareButton(res) { toggle() }
 }

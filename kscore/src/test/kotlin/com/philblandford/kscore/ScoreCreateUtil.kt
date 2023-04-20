@@ -16,6 +16,9 @@ open class MockScoreQuery(
   vararg events: Pair<EventAddress, Event>
 ) : MockEventGetter(*events), ScoreQuery {
 
+  override val lastOffset: Duration
+    get() = TODO("Not yet implemented")
+
   override fun haveStaveSegment(eventAddress: EventAddress): Boolean {
     return false
   }

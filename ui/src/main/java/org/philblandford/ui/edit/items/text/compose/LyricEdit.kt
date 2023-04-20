@@ -36,7 +36,7 @@ private fun LyricEditInternal(model: EditModel, iface: TextEditInterface) {
 
   val text by remember { mutableStateOf(model.editItem.event.getParam<String>(EventParam.TEXT) ?: "") }
 
-  Column() {
+  Column {
     FreeKeyboard(initValue = text,
       onValueChanged = {
         Timber.e("onValueChanges")

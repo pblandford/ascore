@@ -6,7 +6,7 @@ import com.philblandford.kscore.engine.types.eav
 import com.philblandford.kscore.engine.dsl.rest
 import com.philblandford.kscore.engine.duration.crotchet
 import com.philblandford.kscore.engine.duration.minim
-import core.representation.RepTest
+import com.philblandford.kscore.engine.core.representation.RepTest
 import org.junit.Test
 
 class RestTest : RepTest() {

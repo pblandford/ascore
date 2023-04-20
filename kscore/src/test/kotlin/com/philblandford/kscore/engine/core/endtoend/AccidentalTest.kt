@@ -5,7 +5,7 @@ import com.philblandford.kscore.engine.types.eav
 import com.philblandford.kscore.engine.duration.dZero
 import com.philblandford.kscore.engine.pitch.KeySignature
 import com.philblandford.kscore.engine.types.ez
-import core.representation.RepTest
+import com.philblandford.kscore.engine.core.representation.RepTest
 import org.junit.Test
 
 class AccidentalTest : RepTest() {

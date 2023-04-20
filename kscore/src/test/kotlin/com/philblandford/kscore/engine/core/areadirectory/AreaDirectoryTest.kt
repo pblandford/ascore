@@ -4,7 +4,7 @@ import assertEqual
 import com.philblandford.kscore.engine.core.areadirectory.areaDirectory
 import com.philblandford.kscore.engine.dsl.createScoreOneNote
 import org.junit.Test
-import core.representation.RepTest
+import com.philblandford.kscore.engine.core.representation.RepTest
 
 class AreaDirectoryTest : RepTest() {
 

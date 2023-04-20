@@ -2,9 +2,8 @@ package com.philblandford.kscore.engine.core.endtoend
 
 import assertEqual
 import com.philblandford.kscore.engine.core.area.Coord
-import com.philblandford.kscore.engine.core.score.ScoreContainer
 import com.philblandford.kscore.engine.types.*
-import core.representation.RepTest
+import com.philblandford.kscore.engine.core.representation.RepTest
 import org.junit.Test
 
 class MetaTest : RepTest() {
@@ -65,7 +64,7 @@ class MetaTest : RepTest() {
   @Test
   fun testDeleteTitle() {
     setMeta(MetaType.TITLE, "Wibble")
-    SDE(EventType.TITLE, eZero(), paramMapOf(EventParam.TYPE to MetaType.TITLE))
+    SDE(EventType.TITLE, eZero())
     assert(getArea("Title", eZero()) == null)
   }
 
@@ -74,7 +73,7 @@ class MetaTest : RepTest() {
     setMeta(MetaType.TITLE, "Wibble")
     setMeta(MetaType.SUBTITLE, "Wobble")
     val subTitleWidth = getArea("Subtitle", eZero())?.area?.width!!
-    SDE(EventType.TITLE, eZero(), paramMapOf(EventParam.TYPE to MetaType.TITLE))
+    SDE(EventType.TITLE, eZero())
     assert(getArea("Title", eZero()) == null)
     assertEqual(subTitleWidth, getArea("Subtitle", eZero())?.area?.width)
   }

@@ -23,6 +23,8 @@ import com.philblandford.kscore.log.ksLogt
 import org.philblandford.ui.base.compose.VMView
 import org.philblandford.ui.common.Gap
 import org.philblandford.ui.common.block
+import org.philblandford.ui.input.compose.keyboard.NoteInputButtonsColumn
+import org.philblandford.ui.input.compose.keyboard.NoteInputButtonsRow
 import org.philblandford.ui.input.model.InputModel
 import org.philblandford.ui.input.viewmodel.InputInterface
 import org.philblandford.ui.input.viewmodel.InputViewModel
@@ -40,16 +42,16 @@ fun PercussionInputPanel() {
 
 @Composable
 private fun PercussionInputPanelInternal(model: InputModel, iface: InputInterface) {
-  ksLogt("Percussion panel")
+  ksLogt("Percussion panel ${model.percussionDescrs}")
 
   val maxPerRow = if (isCompact()) 4 else 10
-  val height = block(1.5) * (model.percussionDescrs.size / (maxPerRow + 1) + 1)
   Column(
     Modifier
       .testTag("PercussionInputPanel")
       .fillMaxWidth()
-      .height(height)
+      .wrapContentHeight()
   ) {
+    NoteInputButtonsColumn(model, iface)
     PercussionButtons(maxPerRow, model, iface)
   }
 }
@@ -106,7 +108,8 @@ private fun InstrumentButton(descr: PercussionDescr, iface: InputInterface) {
           descr.name,
           Modifier
             .clickable(onClick = { showPopup.value = false })
-            .background(MaterialTheme.colors.onSurface).border(1.dp, MaterialTheme.colors.surface)
+            .background(MaterialTheme.colors.onSurface)
+            .border(1.dp, MaterialTheme.colors.surface)
             .padding(5.dp),
           color = MaterialTheme.colors.surface
         )

@@ -4,7 +4,7 @@ import com.philblandford.kscore.engine.types.BarNumbering
 import com.philblandford.kscore.engine.types.EventParam
 import com.philblandford.kscore.engine.types.ea
 
-import core.representation.RepTest
+import com.philblandford.kscore.engine.core.representation.RepTest
 import org.junit.Test
 
 class BarNumberingTest : RepTest() {

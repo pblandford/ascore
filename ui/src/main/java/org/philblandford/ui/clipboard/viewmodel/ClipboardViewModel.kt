@@ -4,6 +4,7 @@ import org.philblandford.ascore2.features.clipboard.usecases.Copy
 import org.philblandford.ascore2.features.clipboard.usecases.Cut
 import org.philblandford.ascore2.features.clipboard.usecases.MoveSelection
 import org.philblandford.ascore2.features.clipboard.usecases.Paste
+import org.philblandford.ascore2.features.edit.MoveSelectedNote
 import org.philblandford.ascore2.util.ok
 import org.philblandford.ui.base.viewmodel.BaseViewModel
 import org.philblandford.ui.base.viewmodel.VMInterface
@@ -15,6 +16,8 @@ data class ClipboardModel(
 ) : VMModel()
 
 interface ClipboardInterface : VMInterface {
+  fun noteUp(octave:Boolean)
+  fun noteDown(octave: Boolean)
   fun selectionLeft()
   fun selectionRight()
   fun copy()
@@ -26,7 +29,8 @@ class ClipboardViewModel(
   private val copyUC: Copy,
   private val cutUC: Cut,
   private val pasteUC: Paste,
-  private val moveSelection: MoveSelection
+  private val moveSelection: MoveSelection,
+  private val moveSelectedNote: MoveSelectedNote
   ) : BaseViewModel<ClipboardModel, ClipboardInterface, VMSideEffect>(), ClipboardInterface {
 
   override suspend fun initState(): Result<ClipboardModel> {
@@ -53,5 +57,15 @@ class ClipboardViewModel(
 
   override fun paste() {
     pasteUC()
+  }
+
+  override fun noteUp(octave: Boolean) {
+    val amount = if (octave) 12 else 1
+    moveSelectedNote(amount)
+  }
+
+  override fun noteDown(octave: Boolean) {
+    val amount = if (octave) -12 else -1
+    moveSelectedNote(amount)
   }
 }

@@ -11,7 +11,7 @@ import com.philblandford.kscore.engine.duration.demisemiquaver
 import com.philblandford.kscore.engine.duration.hemidemisemiquaver
 import com.philblandford.kscore.engine.duration.quaver
 import com.philblandford.kscore.engine.duration.semiquaver
-import core.representation.RepTest
+import com.philblandford.kscore.engine.core.representation.RepTest
 import org.junit.Test
 
 class TremoloTest : RepTest() {

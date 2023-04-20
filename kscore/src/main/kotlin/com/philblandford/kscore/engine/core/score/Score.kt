@@ -296,6 +296,8 @@ Score(
     }?.toMap() ?: mapOf(), numBars
   )
 
+  override val lastOffset:Duration = oLookup.lastOffset
+
   override fun getAllStaves(selected: Boolean): Iterable<StaveId> {
     return (allParts(selected)).flatMap { main ->
       (1..numStaves(main)).map {
@@ -426,11 +428,9 @@ Score(
   }
 
   override fun getTimeSignature(eventAddress: EventAddress): TimeSignature? {
-    return getEvent(TIME_SIGNATURE, ez(eventAddress.barNum))?.let { timeSignature(it) } ?: run {
-      eventMap.getEvents(TIME_SIGNATURE)?.filterNot { it.value.isTrue(HIDDEN) }?.toList()
-        ?.takeWhile { it.first.eventAddress.barNum < eventAddress.barNum }?.lastOrNull()
-        ?.let { timeSignature(it.second) }
-    } ?: getTimeSignature(ez(2))?.copy(hidden = false)
+    return getEvent(HIDDEN_TIME_SIGNATURE, ez(eventAddress.barNum))?.let { timeSignature(it) } ?: run {
+      getEventAt(TIME_SIGNATURE, ez(eventAddress.barNum))?.let { timeSignature(it.second) }
+    }
   }
 
   override fun getKeySignature(eventAddress: EventAddress, concert: Boolean): Int? {

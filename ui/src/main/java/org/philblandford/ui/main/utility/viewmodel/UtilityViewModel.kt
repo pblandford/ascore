@@ -70,7 +70,7 @@ class UtilityViewModel(
     }
     viewModelScope.launch {
       getUIState().collect { state ->
-        update { copy(deleteSelected = state == UIState.Delete) }
+        update { copy(deleteSelected = state == UIState.Delete || state is UIState.InsertDelete) }
       }
     }
   }

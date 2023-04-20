@@ -35,6 +35,8 @@ import org.philblandford.ascore2.features.crosscutting.usecases.SetError
 import org.philblandford.ascore2.features.drawing.*
 import org.philblandford.ascore2.features.edit.MoveSelectedArea
 import org.philblandford.ascore2.features.edit.MoveSelectedAreaImpl
+import org.philblandford.ascore2.features.edit.MoveSelectedNote
+import org.philblandford.ascore2.features.edit.MoveSelectedNoteImpl
 import org.philblandford.ascore2.features.error.GetErrorFlow
 import org.philblandford.ascore2.features.error.GetErrorFlowImpl
 import org.philblandford.ascore2.features.export.ExportScore
@@ -56,6 +58,8 @@ import org.philblandford.ascore2.features.scorelayout.usecases.GetScoreLayoutImp
 import org.philblandford.ascore2.features.settings.SettingsDataSource
 import org.philblandford.ascore2.features.settings.repository.SettingsRepository
 import org.philblandford.ascore2.features.settings.usecases.*
+import org.philblandford.ascore2.features.settings.usecases.GetAssignedFonts
+import org.philblandford.ascore2.features.settings.usecases.GetAssignedFontsImpl
 import org.philblandford.ascore2.features.sound.usecases.*
 import org.philblandford.ascore2.features.startup.StartupManager
 import org.philblandford.ascore2.features.ui.repository.UiStateRepository
@@ -63,6 +67,7 @@ import org.philblandford.ascore2.features.ui.usecases.*
 import org.philblandford.ui.base.log.AndroidLogger
 import org.philblandford.ui.clipboard.viewmodel.ClipboardViewModel
 import org.philblandford.ui.create.viewmodel.CreateViewModel
+import org.philblandford.ui.edit.items.instrumentedit.viewmodel.InstrumentEditViewModel
 import org.philblandford.ui.edit.items.text.viewmodel.TextEditViewModel
 import org.philblandford.ui.edit.viewmodel.EditViewModel
 import org.philblandford.ui.export.viewmodel.ExportViewModel
@@ -139,7 +144,7 @@ object Dependencies {
     single<LoadScore> { LoadScoreImpl(get(), get(), get()) }
     single<GetSavedScores> { GetSavedScoresImpl(get()) }
     single<DeleteScore> { DeleteScoreImpl(get()) }
-    single<ImportScore> { ImportScoreImpl(get(), get()) }
+    single<ImportScore> { ImportScoreImpl(get(), get(), get(), get()) }
     viewModel { LoadViewModel(get(), get(), get()) }
     viewModel { ImportViewModel(get(), get()) }
   }
@@ -182,7 +187,8 @@ object Dependencies {
     single<ClearSelection> { ClearSelectionImpl(get(), get()) }
     single<MoveSelection> { MoveSelectionImpl(get()) }
     single<HandleDeletePress> { HandleDeletePressImpl(get(), get(), get()) }
-    single<HandleDeleteLongPress> { HandleDeleteLongPressImpl(get()) }
+    single<HandleDeleteLongPress> { HandleDeleteLongPressImpl(get(), get()) }
+    single<HandleLongPressRelease> { HandleLongPressReleaseImpl(get(), get()) }
     viewModel {
       UtilityViewModel(
         get(),
@@ -203,7 +209,7 @@ object Dependencies {
 
   private val panelModule = module {
     single<GetPanelLayout> { GetPanelLayoutImpl(get(), get()) }
-    single<TogglePanelLayout> { TogglePanelLayoutImpl(get()) }
+    single<TogglePanelLayout> { TogglePanelLayoutImpl(get(), get()) }
     viewModel { PanelViewModel(get()) }
   }
 
@@ -250,8 +256,10 @@ object Dependencies {
     single<GetHarmoniesForKey> { GetHarmoniesForKeyImpl(get()) }
     single<SplitBar> { SplitBarImpl(get()) }
     single<RemoveBarSplit> { RemoveBarSplitImpl(get()) }
-    single<GetFonts> { GetFontsImpl(get()) }
+    single<GetAssignedFonts> { GetAssignedFontsImpl(get()) }
     single<GetDefaultTextSize> { GetDefaultTextSizeImpl(get()) }
+    single<GetHelpKey> { GetHelpKeyImpl(get()) }
+    single<SetHelpKey> { SetHelpKeyImpl(get()) }
     viewModel { InsertChooseViewModel(get()) }
     viewModel { DefaultInsertViewModel() }
     viewModel { BarNumberingViewModel(get(), get()) }
@@ -274,12 +282,16 @@ object Dependencies {
   }
 
   private val editModule = module {
-    single<UpdateEvent> { UpdateEventImpl(get()) }
+    single<UpdateEventParam> { UpdateEventParamImpl(get()) }
     single<DeleteSelectedEvent> { DeleteSelectedEventImpl(get(), get()) }
     single<GetSelectedArea> { GetSelectedAreaImpl(get()) }
     single<MoveSelectedArea> { MoveSelectedAreaImpl(get()) }
-    viewModel { EditViewModel(get(), get(), get(), get()) }
-    viewModel { TextEditViewModel(get(), get(), get(), get(), get(), get()) }
+    single<GetInstrumentAtSelection> { GetInstrumentAtSelectionImpl(get())}
+    single<SetInstrumentAtSelection> { SetInstrumentAtSelectionImpl(get())}
+    single<MoveSelectedNote> { MoveSelectedNoteImpl(get()) }
+    viewModel { EditViewModel(get(), get(), get(), get(), get()) }
+    viewModel { TextEditViewModel(get(), get(), get(), get(), get(), get(), get()) }
+    viewModel { InstrumentEditViewModel(get(), get(), get(), get(), get(), get(), get(), get())}
   }
 
   private val screenModule = module {
@@ -292,9 +304,9 @@ object Dependencies {
     single<HandleTap> { HandleTapImpl(get(), get()) }
     single<HandleLongPress> { HandleLongPressImpl(get(), get()) }
     single<HandleDrag> { HandleDragImpl(get(), get()) }
-    viewModel { ScreenViewModel(get(), get(), get(), get(), get(), get(), get(), get()) }
+    viewModel { ScreenViewModel(get(), get(), get(), get(), get(), get(), get(), get(), get()) }
     viewModel { ScreenZoomViewModel(get(), get(), get(), get()) }
-    viewModel { MainPageViewModel(get(), get(), get()) }
+    viewModel { MainPageViewModel(get(), get(), get(), get(), get()) }
   }
 
   private val soundModule = module {
@@ -323,17 +335,20 @@ object Dependencies {
     single<SetEndSelection> { SetEndSelectionImpl(get()) }
     single<GetSelection> { GetSelectionImpl(get()) }
     single<SelectionUpdate> { SelectionUpdateImpl(get()) }
-    viewModel { ClipboardViewModel(get(), get(), get(), get()) }
+    viewModel { ClipboardViewModel(get(), get(), get(), get(), get()) }
   }
 
   private val settingsModule = module {
     single<GetColors> { GetColorsImpl(get()) }
     single<SetColors> { SetColorsImpl(get()) }
+    single<GetAssignedFonts> { GetAssignedFontsImpl(get())}
+    single<SetFont> { SetFontImpl(get()) }
+    single<GetAvailableFonts> { GetAvailableFontsImpl(get()) }
     single { SettingsDataSource(get()) }
     single { SettingsRepository(get()) }
     single<GetOption> { GetOptionImpl(get()) }
     single<SetOption> { SetOptionImpl(get()) }
-    viewModel { SettingsViewModel(get(), get()) }
+    viewModel { SettingsViewModel(get(), get(), get(), get(), get()) }
     viewModel { LayoutOptionViewModel(get(), get()) }
   }
 

@@ -17,6 +17,8 @@ interface InsertInterface<M> : VMInterface {
 
   fun getInsertState(): StateFlow<InsertCombinedState<M>>
   fun back()
+
+  fun toggleHelp()
 }
 
 interface DefaultInsertInterface : InsertInterface<InsertModel>

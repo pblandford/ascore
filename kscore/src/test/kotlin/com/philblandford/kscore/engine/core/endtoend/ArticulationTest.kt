@@ -3,7 +3,7 @@ package com.philblandford.kscore.engine.core.endtoend
 import com.philblandford.kscore.engine.types.*
 import com.philblandford.kscore.engine.duration.dZero
 import com.philblandford.kscore.engine.duration.quaver
-import core.representation.RepTest
+import com.philblandford.kscore.engine.core.representation.RepTest
 import org.junit.Test
 
 class ArticulationTest : RepTest() {

@@ -40,7 +40,13 @@ internal val insertItems = listOf(
       EventParam.ACCIDENTAL_ABOVE to null,
       EventParam.ACCIDENTAL_BELOW to null
     ),
-    rangeCapable = true
+    rangeCapable = true,
+    getEventType  = {
+      when (it) {
+        is OrnamentType -> EventType.ORNAMENT
+        else -> EventType.ARPEGGIO
+      }
+    }
   ),
   InsertItem(R.drawable.treble_clef, R.string.clef, "insert_clef", LayoutID.CLEF, EventType.CLEF),
   InsertItem(
@@ -67,7 +73,7 @@ internal val insertItems = listOf(
       EventParam.NUMERATOR to 4,
       EventParam.DENOMINATOR to 4,
       EventParam.HIDDEN to false
-    )
+    ),
   ),
   InsertItem(R.drawable.key_c, R.string.bars, "insert_bars", LayoutID.BAR, EventType.BAR),
   InsertItem(

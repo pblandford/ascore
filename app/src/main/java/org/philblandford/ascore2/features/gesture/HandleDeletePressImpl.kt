@@ -29,8 +29,13 @@ class HandleDeletePressImpl(
             kScore.deleteEventAtMarker(EventType.LYRIC, voice, id)
             kScore.moveMarker()
           }
-          else -> {}
+          else -> {
+            uiStateRepository.setUiState(UIState.InsertDelete(state.insertItem))
+          }
         }
+      }
+      is UIState.InsertDelete -> {
+        uiStateRepository.setUiState(UIState.Insert(state.insertItem))
       }
       is UIState.Clipboard -> {
         kScore.getStartSelect()?.let {

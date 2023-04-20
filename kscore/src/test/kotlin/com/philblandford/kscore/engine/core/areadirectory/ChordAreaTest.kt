@@ -8,7 +8,6 @@ import com.philblandford.kscore.engine.types.OrnamentType.*
 import com.philblandford.kscore.engine.core.area.Area
 import com.philblandford.kscore.engine.core.area.Coord
 import com.philblandford.kscore.engine.core.area.endEntry
-import com.philblandford.kscore.engine.core.area.width
 import com.philblandford.kscore.engine.core.areadirectory.segment.addDecorations
 import com.philblandford.kscore.engine.core.areadirectory.segment.chordArea
 import com.philblandford.kscore.engine.core.areadirectory.segment.chordBaseArea
@@ -23,7 +22,7 @@ import com.philblandford.kscore.engine.duration.Note
 import com.philblandford.kscore.engine.duration.crotchet
 import com.philblandford.kscore.engine.newadder.subadders.ChordDecoration
 import org.junit.Test
-import core.representation.RepTest
+import com.philblandford.kscore.engine.core.representation.RepTest
 
 class ChordAreaTest : RepTest() {
 

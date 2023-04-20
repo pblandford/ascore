@@ -28,6 +28,8 @@ class OffsetLookupImpl(
     }
   }
 
+  override val lastOffset: Duration = offsetMap.lastKey()
+
   override fun addDuration(address: EventAddress, duration: Duration): EventAddress? {
     return fromCache(address, duration) ?: run {
       addressMap[address.barNum]?.let {
@@ -110,17 +112,15 @@ fun offsetLookup(timeSignatures: Map<Int, TimeSignature>, numBars: Int): OffsetL
 }
 
 fun offsetLookup(
-  timeSignatures: Map<Duration, TimeSignature>, lastOffset: Duration,
+  timeSignatures: Map<Int, TimeSignature>, lastOffset: Duration,
   discardLast: Boolean = false
 ): OffsetLookup {
-  var offsetMap = createOffsetMapFromOffsets(timeSignatures, lastOffset)
+  var offsetMap = createOffsetMapFromLastOffset(timeSignatures, lastOffset)
   if (discardLast) {
     offsetMap = TreeMap(offsetMap.toList().dropLast(1).toMap())
   }
   val addressMap = TreeMap(offsetMap.map { it.value to it.key }.toMap().toSortedMap())
-  val tsIntMap =
-    timeSignatures.mapNotNull { ts -> offsetMap[ts.key]?.let { it to ts.value } }.toMap()
-  return OffsetLookupImpl(offsetMap, addressMap, tsIntMap)
+  return OffsetLookupImpl(offsetMap, addressMap, timeSignatures)
 }
 
 private fun createOffsetMap(timeSignatures: Map<Int, TimeSignature>, numBars: Int): OffsetMap {
@@ -136,8 +136,8 @@ private fun createOffsetMap(timeSignatures: Map<Int, TimeSignature>, numBars: In
   return TreeMap(map.toSortedMap())
 }
 
-private fun createOffsetMapFromOffsets(
-  timeSignatures: Map<Duration, TimeSignature>,
+private fun createOffsetMapFromLastOffset(
+  timeSignatures: Map<Int, TimeSignature>,
   lastOffset: Duration
 ): OffsetMap {
   var total = dZero()
@@ -148,7 +148,7 @@ private fun createOffsetMapFromOffsets(
   while (total < lastOffset) {
     val thisTs = currentTs
     bar++
-    currentTs = timeSignatures[total] ?: currentTs
+    currentTs = timeSignatures[bar] ?: currentTs
     total = total.addC(thisTs.duration)
     map.put(total, bar)
   }

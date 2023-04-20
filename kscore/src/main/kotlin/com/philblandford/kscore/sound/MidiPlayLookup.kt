@@ -44,16 +44,17 @@ fun midiPlayLookup(
   val midiBuilder = midiBuilder(scoreQuery, instrumentGetter, start, end)
   ksLogv("Creating play lookup")
 
-  return createMidiPlayLookup(midiBuilder, instrumentGetter)
+  return createMidiPlayLookup(midiBuilder, instrumentGetter, scoreQuery)
 }
 
-internal fun createMidiPlayLookup(midiBuilder: MidiBuilder, instrumentGetter: InstrumentGetter): MidiPlayLookup {
+internal fun createMidiPlayLookup(midiBuilder: MidiBuilder, instrumentGetter: InstrumentGetter,
+scoreQuery: ScoreQuery): MidiPlayLookup {
 
   val msLookup = midiBuilder.msLookup()
 
   val map = mutableMapOf<Int, MutableList<MidiEvent>>()
   msLookup.forEach {
-    it.key to putEventsAtAddress(it.key, it.value, midiBuilder, map, instrumentGetter)
+    it.key to putEventsAtAddress(it.key, it.value, midiBuilder, map, instrumentGetter, scoreQuery)
   }
 
   val sorted = map.map { (ms, events) ->
@@ -127,10 +128,11 @@ private fun putEventsAtAddress(
   offset: Offset,
   midiBuilder: MidiBuilder,
   msEventMap: MsEventMapM,
-  instrumentGetter: InstrumentGetter
+  instrumentGetter: InstrumentGetter,
+  scoreQuery: ScoreQuery
 ) {
   midiBuilder.getEvents(offset).forEach { event ->
-    putMidiEventsForScoreEvent(event, ms, offset, midiBuilder, msEventMap, instrumentGetter)
+    putMidiEventsForScoreEvent(event, ms, offset, midiBuilder, msEventMap, instrumentGetter, scoreQuery)
   }
 }
 
@@ -140,13 +142,15 @@ private fun putMidiEventsForScoreEvent(
   offset: Offset,
   midiBuilder: MidiBuilder,
   msEventMap: MsEventMapM,
-  instrumentGetter: InstrumentGetter
+  instrumentGetter: InstrumentGetter,
+  scoreQuery: ScoreQuery
+
 ) {
   when (event.event.eventType) {
     EventType.DURATION -> putDurationEvents(event, ms, offset, midiBuilder, msEventMap)
     EventType.INSTRUMENT -> putInstrumentEvent(event, ms, msEventMap)
     EventType.PEDAL -> putPedalEvent(event, ms, msEventMap)
-    EventType.EXPRESSION_TEXT -> putExpressionEvent(event, ms, msEventMap, instrumentGetter)
+    EventType.EXPRESSION_TEXT -> putExpressionEvent(event, ms, msEventMap, instrumentGetter, scoreQuery)
     else -> {
     }
   }
@@ -170,10 +174,12 @@ private fun putInstrumentEvent(
 
 private fun putExpressionEvent(
   event: ChannelEvent, ms: Int, msEventMap: MsEventMapM,
-  instrumentGetter: InstrumentGetter
+  instrumentGetter: InstrumentGetter, scoreQuery: ScoreQuery
 ) {
+  val firstInstrument = scoreQuery.getInstrument(EventAddress(1, staveId = StaveId(getPart(event.channel), 0)))
+
   event.event.getParam<String>(EventParam.TEXT)?.let { text ->
-    findInstrument(text, instrumentGetter)?.let { instrument ->
+    findInstrument(text, instrumentGetter, firstInstrument)?.let { instrument ->
       addToMap(
         ms, ProgramChangeEvent(
           instrument.program, event.channel,
@@ -185,14 +191,15 @@ private fun putExpressionEvent(
 
 private fun findInstrument(
   text: String,
-  instrumentGetter: InstrumentGetter
+  instrumentGetter: InstrumentGetter,
+  firstInstrument:Instrument?
 ): Instrument? {
   return when (text.toLowerCase(Locale.getDefault()).dropLastWhile { !it.isLetter() }) {
     "pizz" -> instrumentGetter.getInstrument("Pizzicato Strings")
-    "arco" -> null
+    "arco" -> firstInstrument
     "mute" -> instrumentGetter.getInstrument("Muted Trumpet")
     "muted" -> instrumentGetter.getInstrument("Muted Trumpet")
-    "open" -> instrumentGetter.getInstrument("Trumpet")
+    "open" -> firstInstrument
     else -> instrumentGetter.getInstrument(text)
   }
 }

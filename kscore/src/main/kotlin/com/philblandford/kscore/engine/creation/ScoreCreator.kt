@@ -7,6 +7,7 @@ import com.philblandford.kscore.engine.dsl.score
 import com.philblandford.kscore.engine.newadder.NewEventAdder
 import com.philblandford.kscore.engine.newadder.rightOrThrow
 import com.philblandford.kscore.engine.types.*
+import com.philblandford.kscore.engine.types.EventType.HIDDEN_TIME_SIGNATURE
 import com.philblandford.kscore.engine.types.EventType.TIME_SIGNATURE
 import com.philblandford.kscore.engine.types.EventType.UISTATE
 
@@ -35,7 +36,7 @@ class ScoreCreator(private val instrumentGetter: InstrumentGetter) {
     if (nsd.upbeatEnabled) {
       score =
         NewEventAdder.addEvent(
-          score, TIME_SIGNATURE,
+          score, HIDDEN_TIME_SIGNATURE,
           nsd.upBeat.copy(hidden = true).toEvent().params,
           ez(1)
         ).rightOrThrow()
