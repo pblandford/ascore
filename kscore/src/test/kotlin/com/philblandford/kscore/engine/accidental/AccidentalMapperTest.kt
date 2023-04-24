@@ -38,6 +38,17 @@ class AccidentalMapperTest {
   }
 
   @Test
+  fun testMapNotKs2Octaves() {
+    val thisBar = dslVoiceMap { chord { pitch(A, SHARP); pitch(A, SHARP, 5) };
+      chord { pitch(A, SHARP); pitch(A, SHARP, 5) }}.getAllEvents()
+    val res = mapAccidentals(eventHashOf(), thisBar, 0, false)
+    assertEqual(true, show(res, noteIdx = 0))
+    assertEqual(true, show(res, noteIdx = 1))
+    assertEqual(false, show(res,  crotchet(), noteIdx = 0))
+    assertEqual(false, show(res, crotchet(), noteIdx = 1))
+  }
+
+  @Test
   fun testMapNKsPreviousDifferentOctave() {
     val thisBar =
       dslVoiceMap { chord { pitch(A, SHARP) }; chord { pitch(A, NATURAL, 5) } }.getAllEvents()
@@ -135,7 +146,6 @@ class AccidentalMapperTest {
     assertEqual(true, show(res, voice = 1))
     assertEqual(true, show(res, voice = 2))
   }
-
 
   @Test
   fun testMapAccidentalSameChordAfterGrace() {

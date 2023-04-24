@@ -13,8 +13,9 @@ import androidx.compose.animation.slideOutHorizontally
 import androidx.compose.animation.with
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.*
-import androidx.compose.material.MaterialTheme
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -25,9 +26,14 @@ import androidx.compose.ui.unit.dp
 import org.philblandford.ui.R
 import org.philblandford.ui.base.compose.VMView
 import org.philblandford.ui.common.block
+import org.philblandford.ui.insert.choose.viewmodel.GroupSize
 import org.philblandford.ui.insert.choose.viewmodel.InsertChooseInterface
 import org.philblandford.ui.insert.choose.viewmodel.InsertChooseModel
 import org.philblandford.ui.insert.choose.viewmodel.InsertChooseViewModel
+import org.philblandford.ui.main.window.LocalWindowSizeClass
+import org.philblandford.ui.main.window.compact
+import org.philblandford.ui.main.window.expanded
+import org.philblandford.ui.main.window.medium
 import org.philblandford.ui.util.SquareButton
 import org.philblandford.ui.util.ThemeBox
 import timber.log.Timber
@@ -41,11 +47,22 @@ fun InsertChoosePanel() {
 
 @Composable
 fun InsertChoosePanel(model: InsertChooseModel, iface: InsertChooseInterface) {
+
+  val windowSize = LocalWindowSizeClass.current
+  LaunchedEffect(Unit) {
+    val groupSize = when {
+      windowSize.compact() -> GroupSize.COMPACT
+      windowSize.medium() -> GroupSize.MEDIUM
+      else -> GroupSize.EXPANDED
+    }
+    iface.setGroupSize(groupSize)
+  }
+
   ThemeBox(
     Modifier
       .fillMaxWidth()
       .wrapContentHeight()
-      .border(1.dp, MaterialTheme.colors.onSurface)
+      .border(1.dp, MaterialTheme.colorScheme.onSurface)
   ) {
     Column(Modifier.fillMaxWidth()) {
       SearchBox(model, iface)
@@ -76,31 +93,32 @@ private fun SelectionGrid(
   var items by remember { mutableStateOf(model.items) }
   items = model.items
 
-  AnimatedContent(items,
+  AnimatedContent(
+    items,
     transitionSpec =
     {
-      (slideInHorizontally{ width -> width } with
-              slideOutHorizontally { width -> -width } + fadeOut(animationSpec = tween(500))).using(
+      (slideInHorizontally { width -> width } with
+          slideOutHorizontally { width -> -width } + fadeOut(animationSpec = tween(500))).using(
         SizeTransform(clip = false)
       )
     }, modifier = modifier
   ) { items ->
 
-      GridSelection(
-        images = items.map { it.drawable },
-        rows = 2,
-        columns = model.items.size / 2,
-        onSelect = {
-          model.items[it].let { item ->
-            iface.select(item)
-          }
-        },
-        tag = { model.items[it].helpTag },
-        border = false,
-        itemBorder = true,
-        size = block(1.15f)
-      )
-    }
+    GridSelection(
+      images = items.map { it.drawable },
+      rows = 2,
+      columns = items.size / 2,
+      onSelect = {
+        items[it].let { item ->
+          iface.select(item)
+        }
+      },
+      tag = { items[it].helpTag },
+      border = false,
+      itemBorder = true,
+      size = block(1.15f)
+    )
+  }
 }
 
 @Composable

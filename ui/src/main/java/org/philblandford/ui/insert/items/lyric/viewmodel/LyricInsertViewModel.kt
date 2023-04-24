@@ -29,7 +29,7 @@ interface LyricInsertInterface : InsertInterface<LyricInsertModel> {
 }
 
 sealed class LyricInsertSideEffect : VMSideEffect() {
-  data class UpdateText(val text:String) : VMSideEffect()
+  data class UpdateText(val text: String) : VMSideEffect()
 }
 
 class LyricInsertViewModel(
@@ -62,6 +62,12 @@ class LyricInsertViewModel(
     Timber.e("insertLyric $text")
 
     receiveAction { model ->
+      getInsertItem()?.getParam<String>(EventParam.TEXT)?.let { existing ->
+        if (existing.lastOrNull() == '-') {
+          insertLyricAtMarker(existing.dropLast(2), model.number)
+          return@receiveAction model.ok()
+        }
+      }
       if (text.lastOrNull() == ' ') {
         moveMarker(false)
       } else {

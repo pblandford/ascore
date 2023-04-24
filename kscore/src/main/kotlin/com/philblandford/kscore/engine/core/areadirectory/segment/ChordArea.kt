@@ -235,8 +235,8 @@ private fun DrawableFactory.addLedgers(
   small: Boolean
 ): Area? {
 
-  val tadpoleWidth = baseArea.childMap.filter { it.value.event?.eventType == EventType.NOTE }
-    .maxByOrNull { it.value.width }?.value?.width ?: TADPOLE_WIDTH
+  val tadpoleWidth = baseArea.childMap.filter { it.second.event?.eventType == EventType.NOTE }
+    .maxByOrNull { it.second.width }?.second?.width ?: TADPOLE_WIDTH
 
   val ledgerPositions = getLedgerPositions(notePositions.toList(), tadpoleWidth)
 
@@ -252,13 +252,13 @@ private fun DrawableFactory.addSlash(
   chord: Event,
   stemGeography: StemGeography,
   area: Area
-): Area? {
+): Area {
   return if (chord.isTrue(EventParam.IS_SLASH)) {
     getDrawableArea(DiagonalArgs(SLASH_WIDTH, SLASH_HEIGHT, LINE_THICKNESS, true))?.let { slash ->
       val x = stemGeography.xPos - slash.width / 2
       val y =
         if (stemGeography.up) stemGeography.yPos + BLOCK_HEIGHT
-        else stemGeography.yPos + (BLOCK_HEIGHT * 1.5).toInt()
+        else stemGeography.yPos + stemGeography.height - (BLOCK_HEIGHT * 3).toInt()
       area.addArea(slash.copy(tag = "Slash"), Coord(x, y))
     } ?: area
   } else area
@@ -284,11 +284,14 @@ internal fun VoiceArea.replaceStem(
   numVoice: Int = 1,
   drawableFactory: DrawableFactory
 ): VoiceArea {
+  if (this.voiceGeography.stemGeography == stemGeography) {
+    return this
+  }
 
   var newArea = this.base
   return newArea.event?.let { event ->
     newArea = newArea.copy(childMap = newArea.childMap.filterNot {
-      it.value.tag == "Stem" || it.value.tag == "Decoration"
+      it.second.tag == "Stem" || it.second.tag == "Decoration"
     })
     newArea = drawableFactory.addStem(newArea, event, stemGeography) ?: newArea
     val newGeog = voiceGeography.copy(stemGeography = stemGeography)

@@ -1,7 +1,9 @@
 package com.philblandford.kscoreandroid.drawingcompose
 
+import android.graphics.DashPathEffect
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.PathEffect
 import androidx.compose.ui.graphics.drawscope.DrawScope
 import com.philblandford.kscore.engine.core.area.factory.LineArgs
 
@@ -22,15 +24,15 @@ class ComposeLineDrawable(
     } else {
       Offset(x.toFloat(), y.toFloat() + height)
     }
-//    val dashEffect = dashSize?.let { ds ->
-//      dashGap?.let { dg ->
-//        DashPathEffect(floatArrayOf(ds.toFloat(), dg.toFloat()), 0f)
-//      }
-//    }
+    val dashEffect = dashSize?.let { ds ->
+      dashGap?.let { dg ->
+        PathEffect.dashPathEffect(floatArrayOf(ds.toFloat(), dg.toFloat()), 0f)
+      }
+    }
     val thickness = if (horizontal) height else width
     drawLine(
       color, Offset(x.toFloat(), y.toFloat()), end, thickness.toFloat(),
-      //   pathEffect = dashEffect
+      pathEffect = dashEffect
     )
   }
 }

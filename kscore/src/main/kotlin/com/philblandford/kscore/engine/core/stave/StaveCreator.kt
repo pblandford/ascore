@@ -39,7 +39,7 @@ fun DrawableFactory.createStave(
   systemXGeography: SystemXGeography,
   scoreQuery: ScoreQuery,
   eventAddress: EventAddress,
-  isTopPart:Boolean
+  isTopPart: Boolean
 ): StaveArea {
 
   /* A stave position finder provides a convenient interface to get stave measurements */
@@ -154,11 +154,12 @@ private fun DrawableFactory.addStaveLineArea(
   eventAddress: EventAddress,
   instrument: Instrument
 ): Area? {
-  val staveLines = staveLinesArea(systemXGeography.width - systemXGeography.preHeaderLen, instrument.staveLines)
+  val staveLines =
+    staveLinesArea(systemXGeography.width - systemXGeography.preHeaderLen, instrument.staveLines)
   return staveLines?.let { area.addArea(it, Coord(systemXGeography.preHeaderLen, 0), eventAddress) }
 }
 
-fun DrawableFactory.staveLinesArea(width:Int, numLines: Int = 5):Area? {
+fun DrawableFactory.staveLinesArea(width: Int, numLines: Int = 5): Area? {
   return lineArea(width)?.let {
     (getStaveLines(numLines)).fold(Area(tag = "StaveLines")) { area, num ->
       area.addArea(it, Coord(0, num * BLOCK_HEIGHT))
@@ -212,14 +213,16 @@ private fun DrawableFactory.getNewSegments(
   stemLookup.forEach { (eventAddress, stemGeography) ->
     mutable[eventAddress.voiceIdless()]?.let { segmentArea ->
 
-      val newArea = segmentArea.replaceVoiceArea(
-        eventAddress.voice
-      ) { k, v ->
-        v.replaceStem(
-          stemGeography.copy(xPos = stemGeography.xPos - k.coord.x),
-          scoreQuery.numVoicesAt(eventAddress), this
-        )
-      }
+      val newArea =
+        if (segmentArea.voiceGeographies[eventAddress.voice]?.stemGeography == stemGeography) segmentArea
+        else segmentArea.replaceVoiceArea(
+          eventAddress.voice
+        ) { k, v ->
+          v.replaceStem(
+            stemGeography.copy(xPos = stemGeography.xPos - k.coord.x),
+            scoreQuery.numVoicesAt(eventAddress), this
+          )
+        }
       mutable[eventAddress.voiceIdless()] = newArea
       if (eventAddress.isGrace) {
         replacedGrace[eventAddress.voiceIdless()] = newArea

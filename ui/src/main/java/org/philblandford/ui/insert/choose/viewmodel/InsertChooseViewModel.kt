@@ -15,15 +15,22 @@ data class InsertChooseModel(
   val showNext: Boolean
 ) : VMModel()
 
+enum class GroupSize {
+  COMPACT,
+  MEDIUM,
+  EXPANDED
+}
+
 interface InsertChooseInterface : VMInterface {
   fun select(item: InsertItem)
   fun nextPage()
   fun helpText(string: String)
+  fun setGroupSize(groupSize: GroupSize)
 }
 
 class InsertChooseViewModel(private val selectInsertItem: SelectInsertItem) :
   BaseViewModel<InsertChooseModel, InsertChooseInterface, VMSideEffect>(), InsertChooseInterface {
-  private val grouped = groupItems()
+  private var grouped = groupItems(GroupSize.COMPACT)
 
   override val resetOnLoad = false
 
@@ -48,19 +55,16 @@ class InsertChooseViewModel(private val selectInsertItem: SelectInsertItem) :
     }
   }
 
-  private fun groupItems(): List<List<InsertItem>> {
-    val perPage = if (true) {
-      if (false) {
-        24
-      } else {
-        12
-      }
-    } else {
-      if (false) {
-        36
-      } else {
-        28
-      }
+  override fun setGroupSize(groupSize: GroupSize) {
+    grouped = groupItems(groupSize)
+    update { copy(items = grouped[0], showNext = grouped.size > 1) }
+  }
+
+  private fun groupItems(groupSize: GroupSize): List<List<InsertItem>> {
+    val perPage = when (groupSize) {
+      GroupSize.COMPACT -> 12
+      GroupSize.MEDIUM -> 18
+      GroupSize.EXPANDED -> 36
     }
     return insertItems.chunked(perPage)
   }

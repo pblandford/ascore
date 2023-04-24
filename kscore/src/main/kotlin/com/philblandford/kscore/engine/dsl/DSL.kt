@@ -6,11 +6,11 @@ import com.philblandford.kscore.engine.core.area.Coord
 import com.philblandford.kscore.engine.core.score.*
 import com.philblandford.kscore.engine.duration.*
 import com.philblandford.kscore.engine.map.*
-import com.philblandford.kscore.engine.newadder.NewEventAdder
-import com.philblandford.kscore.engine.newadder.rightOrThrow
-import com.philblandford.kscore.engine.newadder.util.getStemDirection
-import com.philblandford.kscore.engine.newadder.util.getYPosition
-import com.philblandford.kscore.engine.newadder.util.setXPositions
+import com.philblandford.kscore.engine.eventadder.NewEventAdder
+import com.philblandford.kscore.engine.eventadder.rightOrThrow
+import com.philblandford.kscore.engine.eventadder.util.getStemDirection
+import com.philblandford.kscore.engine.eventadder.util.getYPosition
+import com.philblandford.kscore.engine.eventadder.util.setXPositions
 import com.philblandford.kscore.engine.tempo.Tempo
 import com.philblandford.kscore.engine.time.TimeSignature
 import com.philblandford.kscore.engine.types.*

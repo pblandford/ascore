@@ -7,7 +7,8 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.*
+import androidx.compose.material.ExperimentalMaterialApi
+import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -96,9 +97,9 @@ private fun ColumnScope.ScorePager(
   TabRow(pagerState.currentPage) {
     fileSourceTypes.forEachIndexed { index, fileSourceType ->
       Tab(index == pagerState.currentPage,
-        selectedContentColor = MaterialTheme.colors.onSurface,
-        unselectedContentColor = MaterialTheme.colors.onSurface.copy(alpha = 0.5f),
-        modifier = Modifier.background(MaterialTheme.colors.surface),
+        selectedContentColor = MaterialTheme.colorScheme.onSurface,
+        unselectedContentColor = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.5f),
+        modifier = Modifier.background(MaterialTheme.colorScheme.surface),
         onClick = {
           coroutineScope.launch {
             pagerState.animateScrollToPage(index)
@@ -160,7 +161,7 @@ private fun ConfirmDialog(fileInfo: FileInfo, action: () -> Unit, dismiss: () ->
   }
 }
 
-@OptIn(ExperimentalMaterialApi::class)
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun ScoreDetailCard(
   fileInfo: FileInfo, select: (FileInfo) -> Unit,
@@ -169,8 +170,8 @@ private fun ScoreDetailCard(
   Card(
     { select(fileInfo) },
     Modifier.fillMaxWidth(),
-    backgroundColor = MaterialTheme.colors.secondary,
-    contentColor = MaterialTheme.colors.onSurface,
+    colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.secondary,
+    contentColor = MaterialTheme.colorScheme.onSurface),
     shape = RoundedCornerShape(10)
   ) {
     Column(
@@ -184,7 +185,7 @@ private fun ScoreDetailCard(
           Modifier
             .size(30.dp)
             .padding(5.dp)
-            .clickable { delete(fileInfo) }, tint = MaterialTheme.colors.onSurface
+            .clickable { delete(fileInfo) }, tint = MaterialTheme.colorScheme.onSurface
         )
       }
       Gap(0.5f)

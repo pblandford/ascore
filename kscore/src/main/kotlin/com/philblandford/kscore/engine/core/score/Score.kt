@@ -26,8 +26,7 @@ import com.philblandford.kscore.option.getAllDefaults
 
 object AllParts : EventGetterOption()
 
-data class
-Score(
+data class Score(
   val parts: List<Part> = listOf(Part()),
   override val eventMap: EventMap = initEvents(),
 ) : ScoreLevelImpl(), ScoreQuery {
@@ -46,8 +45,12 @@ Score(
     return getParam(COMPOSER, TEXT)
   }
 
-  override fun getFilename():String? {
+  override fun getFilename(): String? {
     return getParam(FILENAME, TEXT)
+  }
+
+  override fun getMarker(): EventAddress? {
+    return getParam(UISTATE, MARKER_POSITION)
   }
 
   override fun getBeams(start: EventAddress?, end: EventAddress?): BeamMap {
@@ -76,6 +79,7 @@ Score(
   private val acceptedTypes = setOf(
     KEY_SIGNATURE,
     TIME_SIGNATURE,
+    HIDDEN_TIME_SIGNATURE,
     UISTATE,
     TITLE,
     SUBTITLE,
@@ -105,6 +109,7 @@ Score(
       KEY_SIGNATURE -> eventMap.getEvent(eventType, eventAddress.staveless())?.let {
         processKeySignature(it, eventAddress, showConcert())
       }
+
       BREAK -> {
         if (selectedPart == 0) {
           eventMap.getEvent(BREAK, eventAddress)
@@ -112,6 +117,7 @@ Score(
           null
         }
       }
+
       BARLINE -> getBarLine(eventAddress)
       else -> null
     }
@@ -125,6 +131,7 @@ Score(
       KEY_SIGNATURE -> eventMap.getEventAt(eventType, eventAddress.staveless())?.let {
         it.first to processKeySignature(it.second, eventAddress, showConcert())
       }
+
       else -> null
     }
   }
@@ -164,7 +171,9 @@ Score(
       return eventAddress.copy(staveId = StaveId(selectedPart, 0))
     }
     return when (eventType) {
-      KEY_SIGNATURE, TIME_SIGNATURE, TEMPO, TEMPO_TEXT -> eventAddress.startBar().staveless()
+      KEY_SIGNATURE, TIME_SIGNATURE, HIDDEN_TIME_SIGNATURE, TEMPO, TEMPO_TEXT -> eventAddress.startBar()
+        .staveless()
+
       BREAK -> if (singlePartMode()) eventAddress.startBar().copy(
         staveId = StaveId(
           selectedPart,
@@ -172,6 +181,7 @@ Score(
         )
       )
       else eventAddress.startBar().staveless()
+
       UISTATE, OPTION -> eZero()
       PART -> eventAddress.copy(staveId = eventAddress.staveId.copy(sub = 0))
       else -> super.prepareAddress(eventAddress, eventType)
@@ -219,6 +229,7 @@ Score(
         ) to
             Event(PART, paramMapOf())
       }.toMap()
+
       BREAK -> {
         /* If not in single part mode, use the breaks stored at Score level */
         if (selectedPart == 0) {
@@ -228,6 +239,7 @@ Score(
           parts.getOrNull(selectedPart - 1)?.getEvents(BREAK)
         }
       }
+
       else -> null
     }
   }
@@ -288,15 +300,18 @@ Score(
 
   private val selectedPart = getParam<Int>(UISTATE, SELECTED_PART, eZero()) ?: 0
 
-  private val oLookup = offsetLookup(
-    getEvents(TIME_SIGNATURE)?.mapNotNull { (k, v) ->
-      timeSignature(v)?.let {
-        k.eventAddress.barNum to it
+  private val oLookup:OffsetLookup
+    get() {
+      val timeSignatures = (1..(numBars.coerceAtLeast(1))).mapNotNull { bar ->
+        getEventAt(TIME_SIGNATURE, ez(bar))?.let { (_, ev) -> bar to TimeSignature.fromParams(ev.params) }
       }
-    }?.toMap() ?: mapOf(), numBars
-  )
+      val hidden = (getEvents(HIDDEN_TIME_SIGNATURE) ?: eventHashOf()).map { it.key.eventAddress.barNum to TimeSignature.fromParams(it.value.params) }
+      val map = (timeSignatures + hidden).toMap()
 
-  override val lastOffset:Duration = oLookup.lastOffset
+      return offsetLookup(map, numBars)
+    }
+
+  override val lastOffset: Duration = oLookup.lastOffset
 
   override fun getAllStaves(selected: Boolean): Iterable<StaveId> {
     return (allParts(selected)).flatMap { main ->
@@ -340,7 +355,7 @@ Score(
     eventType: EventType,
     eventAddress: EventAddress?,
     endAddress: EventAddress?,
-    options:List<EventGetterOption>
+    options: List<EventGetterOption>
   ): EventHash? {
 
     return if (eventAddress == null) {
@@ -352,7 +367,9 @@ Score(
 
         val mutable = eventHashOfM()
         parcelRange(eventAddress, endAddress).forEach { (start, end) ->
-          val evs = super.getEvents(eventType, start, end, options)
+          val evs = super.getEvents(eventType, start, end, options)?.map {
+            it.key.copy(eventAddress = stripAddress(it.key.eventAddress, eventType)) to it.value
+          }?.toMap()
           evs?.let { mutable.putAll(it) }
         }
         getEventsCache.put(key, mutable)
@@ -428,9 +445,10 @@ Score(
   }
 
   override fun getTimeSignature(eventAddress: EventAddress): TimeSignature? {
-    return getEvent(HIDDEN_TIME_SIGNATURE, ez(eventAddress.barNum))?.let { timeSignature(it) } ?: run {
-      getEventAt(TIME_SIGNATURE, ez(eventAddress.barNum))?.let { timeSignature(it.second) }
-    }
+    return getEvent(HIDDEN_TIME_SIGNATURE, ez(eventAddress.barNum))?.let { timeSignature(it) }
+      ?: run {
+        getEventAt(TIME_SIGNATURE, ez(eventAddress.barNum))?.let { timeSignature(it.second) }
+      }
   }
 
   override fun getKeySignature(eventAddress: EventAddress, concert: Boolean): Int? {

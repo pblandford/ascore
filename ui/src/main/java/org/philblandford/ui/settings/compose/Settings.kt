@@ -10,10 +10,10 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Tab
-import androidx.compose.material.TabRow
-import androidx.compose.material.Text
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Tab
+import androidx.compose.material3.TabRow
+import androidx.compose.material3.Text
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -123,7 +123,7 @@ private fun FontRow(
 @Preview
 private fun Preview() {
     AscoreTheme() {
-        val model = SettingsModel(MaterialTheme.colors, listOf("default", "cursive", "gothic"),
+        val model = SettingsModel(MaterialTheme.colorScheme, listOf("default", "cursive", "gothic"),
             TextType.values().associateWith { "default" }, "default"
         )
 

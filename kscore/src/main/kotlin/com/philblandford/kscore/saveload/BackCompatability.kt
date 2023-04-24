@@ -3,11 +3,11 @@ package com.philblandford.kscore.saveload
 import com.philblandford.kscore.engine.core.area.Coord
 import com.philblandford.kscore.engine.core.area.cZero
 import com.philblandford.kscore.engine.core.score.Score
-import com.philblandford.kscore.engine.newadder.GenericSubAdder
-import com.philblandford.kscore.engine.newadder.rightOrThrow
-import com.philblandford.kscore.engine.newadder.scoreDestination
-import com.philblandford.kscore.engine.newadder.subadders.MetaSubAdder
-import com.philblandford.kscore.engine.newadder.then
+import com.philblandford.kscore.engine.eventadder.GenericSubAdder
+import com.philblandford.kscore.engine.eventadder.rightOrThrow
+import com.philblandford.kscore.engine.eventadder.scoreDestination
+import com.philblandford.kscore.engine.eventadder.subadders.MetaSubAdder
+import com.philblandford.kscore.engine.eventadder.then
 import com.philblandford.kscore.engine.types.EventParam
 import com.philblandford.kscore.engine.types.EventType
 import com.philblandford.kscore.engine.types.eZero

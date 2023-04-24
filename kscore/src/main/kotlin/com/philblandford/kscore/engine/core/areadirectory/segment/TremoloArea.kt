@@ -7,7 +7,7 @@ import com.philblandford.kscore.engine.core.area.factory.DrawableFactory
 import com.philblandford.kscore.engine.core.representation.BLOCK_HEIGHT
 import com.philblandford.kscore.engine.core.representation.LINE_THICKNESS
 import com.philblandford.kscore.engine.duration.Duration
-import com.philblandford.kscore.engine.newadder.subadders.ChordDecoration
+import com.philblandford.kscore.engine.eventadder.subadders.ChordDecoration
 import com.philblandford.kscore.engine.types.Event
 import com.philblandford.kscore.engine.types.EventParam
 import com.philblandford.kscore.util.highestBit

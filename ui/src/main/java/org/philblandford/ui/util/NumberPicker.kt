@@ -7,9 +7,8 @@ import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.gestures.draggable
 import androidx.compose.foundation.gestures.rememberDraggableState
 import androidx.compose.foundation.layout.*
-import androidx.compose.material.ContentAlpha
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Text
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Text
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -84,10 +83,6 @@ fun NumberPicker(
       )
   ) {
     val spacing = 4.dp
-
-    val arrowColor = MaterialTheme.colors.onSecondary.copy(alpha = ContentAlpha.disabled)
-
-   // Arrow(direction = ArrowDirection.UP, tint = arrowColor)
 
     Spacer(modifier = Modifier.height(spacing))
 

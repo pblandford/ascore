@@ -12,7 +12,7 @@ import com.philblandford.kscore.engine.types.*
 
 data class PartArea(val base: Area, val geog: PartGeography)
 
-fun DrawableFactory.createPart(
+fun DrawableFactory.createPartArea(
   partMap: PartMap,
   areaDirectoryQuery: AreaDirectoryQuery,
   mainId: Int,
@@ -56,7 +56,7 @@ fun DrawableFactory.createPart(
     }
   }
 
-  val positions = area.childMap.toList().sortedBy { it.first.coord.y }.withIndex().map {
+  val positions = area.childMap.sortedBy { it.first.coord.y }.withIndex().map {
     it.index + 1 to StavePosition(it.value.first.coord.y, staves[it.index].geog)
   }
   val geog = PartGeography(area.height, area.yMargin, positions.toMap().toSortedMap(), numSegments,
@@ -116,7 +116,7 @@ private fun DrawableFactory.paintEndBarLine(
 ): Area {
   val barLine = getBarLine(barNum, height, pos.geog.numBars, scoreQuery)
   val xPos = pos.pos + pos.geog.width + systemXGeography.startMain -
-      pos.geog.barEndGeography.keyWidth - pos.geog.barEndGeography.timeWidth
+       pos.geog.barEndGeography.barLineWidth - pos.geog.barEndGeography.keyWidth - pos.geog.barEndGeography.timeWidth
   return area.addArea(barLine, Coord(xPos, start), eas(barNum + pos.geog.numBars-1, part, 0))
 }
 

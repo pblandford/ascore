@@ -3,8 +3,8 @@ package org.philblandford.ui.export.compose
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Text
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -72,7 +72,7 @@ private fun ButtonRow(text: Int, helpText: Int, onClick: () -> Unit) {
   Box(
     Modifier
       .fillMaxWidth()
-      .border(1.dp, MaterialTheme.colors.onSurface)
+      .border(1.dp, MaterialTheme.colorScheme.onSurface)
       .padding(10.dp)) {
     Text(stringResource(text),
       Modifier

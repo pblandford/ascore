@@ -5,8 +5,8 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Text
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -31,7 +31,7 @@ fun DrawerItems(
   selected: (DrawerItem) -> Unit,
   close:()->Unit
 ) {
-  Column(Modifier.wrapContentWidth().fillMaxHeight().background(MaterialTheme.colors.surface)) {
+  Column(Modifier.wrapContentWidth().fillMaxHeight().background(MaterialTheme.colorScheme.surface)) {
     Column(
       Modifier
         .width(200.dp)
@@ -84,7 +84,7 @@ private fun TextItem(
         .offset(offset)
         .testTag(tag)
         .align(Alignment.CenterStart),
-      color = MaterialTheme.colors.onSurface
+      color = MaterialTheme.colorScheme.onSurface
     )
   }
 }
@@ -97,7 +97,7 @@ private fun Preview() {
       Modifier
         .width(200.dp)
         .fillMaxHeight()
-        .background(MaterialTheme.colors.primary)) {
+        .background(MaterialTheme.colorScheme.primary)) {
       DrawerItems(drawerItems, {}) {}
     }
   }

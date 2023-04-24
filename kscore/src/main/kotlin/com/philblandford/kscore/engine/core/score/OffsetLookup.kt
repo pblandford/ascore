@@ -126,11 +126,11 @@ fun offsetLookup(
 private fun createOffsetMap(timeSignatures: Map<Int, TimeSignature>, numBars: Int): OffsetMap {
   var total = dZero()
   val map = mutableMapOf(dZero() to 1)
-  var currentTs = timeSignatures.toList().minByOrNull { it.first }!!.second
+  var currentTs = timeSignatures.toList().minByOrNull { it.first }?.second
   (2..numBars).forEach { bar ->
     val thisTs = currentTs
     currentTs = timeSignatures[bar] ?: currentTs
-    total = total.addC(thisTs.duration)
+    total = thisTs?.duration?.let { total.addC(it) } ?: total
     map.put(total, bar)
   }
   return TreeMap(map.toSortedMap())

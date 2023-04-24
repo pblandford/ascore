@@ -38,7 +38,7 @@ class SettingsViewModel(
         setColors {
             copy(
                 surface = color.toColor(), secondary = secondary.toColor(),
-                secondaryVariant = secondaryVariant.toColor()
+                secondaryContainer = secondaryVariant.toColor()
             )
         }
         update{ updateFromSource() }

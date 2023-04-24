@@ -5,7 +5,7 @@ import com.philblandford.kscore.engine.types.*
 import com.philblandford.kscore.engine.dsl.scoreAllCrotchets
 import com.philblandford.kscore.engine.duration.crotchet
 import com.philblandford.kscore.engine.duration.minim
-import com.philblandford.kscore.engine.newadder.subadders.ChordDecoration
+import com.philblandford.kscore.engine.eventadder.subadders.ChordDecoration
 import org.junit.Test
 
 class ArticulationTest : ScoreTest() {

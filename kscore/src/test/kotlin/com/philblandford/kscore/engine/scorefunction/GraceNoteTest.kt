@@ -135,6 +135,14 @@ class GraceNoteTest : ScoreTest() {
   }
 
   @Test
+  fun testAddNoteGraceHoldMarkerCorrect() {
+    grace(params = paramMapOf(EventParam.HOLD to true))
+    SVP(
+      EventType.UISTATE, EventParam.MARKER_POSITION, eag(1), eZero()
+    )
+  }
+
+  @Test
   fun testAddNoteGraceShiftBeforeNoteMarkerCorrect() {
     grace()
     grace()

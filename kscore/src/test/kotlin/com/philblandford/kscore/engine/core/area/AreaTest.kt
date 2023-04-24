@@ -18,8 +18,8 @@ class AreaTest {
     var parent = Area(20, 20)
     val child = Area(10, 10)
     parent = parent.addArea(child, Coord(0, 0))
-    assertEqual(10, parent.childMap.values.first().width)
-    assertEqual(10, parent.childMap.values.first().height)
+    assertEqual(10, parent.childMap.first().second.width)
+    assertEqual(10, parent.childMap.first().second.height)
   }
 
   @Test

@@ -67,6 +67,7 @@ import org.philblandford.ascore2.features.ui.usecases.*
 import org.philblandford.ui.base.log.AndroidLogger
 import org.philblandford.ui.clipboard.viewmodel.ClipboardViewModel
 import org.philblandford.ui.create.viewmodel.CreateViewModel
+import org.philblandford.ui.edit.items.harmony.viewmodel.HarmonyEditViewModel
 import org.philblandford.ui.edit.items.instrumentedit.viewmodel.InstrumentEditViewModel
 import org.philblandford.ui.edit.items.text.viewmodel.TextEditViewModel
 import org.philblandford.ui.edit.viewmodel.EditViewModel
@@ -87,6 +88,7 @@ import org.philblandford.ui.insert.items.transposeby.viewmodel.TransposeViewMode
 import org.philblandford.ui.insert.items.tuplet.viewmodel.TupletInsertViewModel
 import org.philblandford.ui.insert.row.viewmodel.RowInsertViewModel
 import org.philblandford.ui.input.viewmodel.InputViewModel
+import org.philblandford.ui.insert.items.text.viewmodel.TextInsertViewModel
 import org.philblandford.ui.layout.viewmodel.LayoutOptionViewModel
 import org.philblandford.ui.load.viewmodels.LoadViewModel
 import org.philblandford.ui.main.inputpage.viewmodel.MainPageViewModel
@@ -102,6 +104,7 @@ import org.philblandford.ui.save.viewmodel.SaveViewModel
 import org.philblandford.ui.screen.viewmodels.ScreenViewModel
 import org.philblandford.ui.screen.viewmodels.ScreenZoomViewModel
 import org.philblandford.ui.settings.viewmodel.SettingsViewModel
+import org.philblandford.ui.theme.viewmodel.ThemeViewModel
 
 object Dependencies {
 
@@ -224,8 +227,9 @@ object Dependencies {
     single<InsertNote> { InsertNoteImpl(get(), get(), get(), get()) }
     single<InsertRest> { InsertRestImpl(get(), get(), get()) }
     single<GetInstrumentAtMarker>  { GetInstrumentAtMarkerImpl(get()) }
+    single<GetKeySignatureAtMarker> { GetKeySignatureAtMarkerImpl(get()) }
     single { UpdateInputStateImpl() }.binds(arrayOf(UpdateInputState::class, NoteInputState::class))
-    viewModel { InputViewModel(get(), get(), get(), get(), get(), get(), get()) }
+    viewModel { InputViewModel(get(), get(), get(), get(), get(), get(), get(), get()) }
   }
 
   private val insertModule = module {
@@ -266,9 +270,10 @@ object Dependencies {
     viewModel { LyricInsertViewModel(get(), get(), get(), get()) }
     viewModel { HarmonyInsertViewModel(get(), get(), get(), get(), get()) }
     viewModel { InstrumentInsertViewModel(get()) }
-    viewModel { MetaInsertViewModel(get(), get(), get(), get(), get()) }
+    viewModel { MetaInsertViewModel(get(), get(), get(), get(), get(), get()) }
     viewModel { OrnamentInsertViewModel() }
     viewModel { PageMarginsViewModel(get(), get()) }
+    viewModel { TextInsertViewModel(get(), get()) }
     viewModel { parameters ->
       RowInsertViewModel<ArticulationType>(
         parameters.get(),
@@ -290,6 +295,7 @@ object Dependencies {
     single<SetInstrumentAtSelection> { SetInstrumentAtSelectionImpl(get())}
     single<MoveSelectedNote> { MoveSelectedNoteImpl(get()) }
     viewModel { EditViewModel(get(), get(), get(), get(), get()) }
+    viewModel { HarmonyEditViewModel(get(), get(), get(), get(), get()) }
     viewModel { TextEditViewModel(get(), get(), get(), get(), get(), get(), get()) }
     viewModel { InstrumentEditViewModel(get(), get(), get(), get(), get(), get(), get(), get())}
   }
@@ -304,9 +310,11 @@ object Dependencies {
     single<HandleTap> { HandleTapImpl(get(), get()) }
     single<HandleLongPress> { HandleLongPressImpl(get(), get()) }
     single<HandleDrag> { HandleDragImpl(get(), get()) }
-    viewModel { ScreenViewModel(get(), get(), get(), get(), get(), get(), get(), get(), get()) }
+    single<CheckForScore> { CheckForScoreImpl(get()) }
+    viewModel { ScreenViewModel(get(), get(), get(), get(), get(), get(), get(), get(), get(), get(), get()) }
     viewModel { ScreenZoomViewModel(get(), get(), get(), get()) }
-    viewModel { MainPageViewModel(get(), get(), get(), get(), get()) }
+    viewModel { MainPageViewModel(get(), get(), get(), get(), get(), get()) }
+    viewModel { ThemeViewModel(get()) }
   }
 
   private val soundModule = module {
@@ -324,8 +332,10 @@ object Dependencies {
     single<ToggleHarmonies> { ToggleHarmoniesImpl(get()) }
     single<ToggleLoop> { ToggleLoopImpl(get()) }
     single<GetPlaybackState> { GetPlaybackStateImpl(get()) }
+    single<ToggleMute> { ToggleMuteImpl(get()) }
+    single<ToggleSolo> { ToggleSoloImpl(get()) }
     viewModel { PlayViewModel(get(), get(), get(), get()) }
-    viewModel { MixerViewModel(get(), get(), get(), get(), get(), get(), get()) }
+    viewModel { MixerViewModel(get(), get(), get(), get(), get(), get(), get(), get(), get()) }
   }
 
   private val clipboardModule = module {
@@ -335,7 +345,8 @@ object Dependencies {
     single<SetEndSelection> { SetEndSelectionImpl(get()) }
     single<GetSelection> { GetSelectionImpl(get()) }
     single<SelectionUpdate> { SelectionUpdateImpl(get()) }
-    viewModel { ClipboardViewModel(get(), get(), get(), get(), get()) }
+    single<DeleteSelection> { DeleteSelectionImpl(get(), get()) }
+    viewModel { ClipboardViewModel(get(), get(), get(), get(), get(), get()) }
   }
 
   private val settingsModule = module {

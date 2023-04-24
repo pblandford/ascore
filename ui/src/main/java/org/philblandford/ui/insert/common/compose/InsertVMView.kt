@@ -2,8 +2,8 @@ package org.philblandford.ui.insert.common.compose
 
 import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.layout.*
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Text
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
@@ -56,7 +56,7 @@ inline fun <M : InsertModel, I : InsertInterface<M>,
             horizontalArrangement = Arrangement.SpaceBetween
           ) {
             if (insertItem.string > 0) {
-              Text(stringResource(insertItem.string), color = MaterialTheme.colors.onSurface)
+              Text(stringResource(insertItem.string), color = MaterialTheme.colorScheme.onSurface)
             }
             SquareButton(R.drawable.help) { viewModel.toggleHelp() }
           }

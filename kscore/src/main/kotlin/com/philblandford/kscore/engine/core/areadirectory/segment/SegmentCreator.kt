@@ -19,7 +19,7 @@ internal fun DrawableFactory.createSegments(
 ): SegmentCreatorReturn? {
 
   val segments = createSegmentAreas(scoreQuery, existing, changedBars)
-  val geogs = segments.map { it.key to it.value.geography }.toMap()
+  val geogs = segments.map { Pair(it.key, it.value.geography) }.toMap()
 
   val segmentStaveLookup = createStaveLookup(segments)
   val segmentGeogBarLookup = createBarLookup(geogs, scoreQuery.numBars)

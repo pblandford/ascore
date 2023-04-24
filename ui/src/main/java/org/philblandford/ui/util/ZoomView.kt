@@ -5,8 +5,10 @@ import androidx.compose.foundation.gestures.*
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
-import androidx.compose.material.Card
-import androidx.compose.material.Text
+import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults.cardElevation
+import androidx.compose.material3.CardElevation
+import androidx.compose.material3.Text
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -110,7 +112,7 @@ private fun Preview() {
               .fillMaxWidth(0.9f)
               .height(300.dp)
               .background(Color(0xffaabbff)),
-            elevation = 4.dp
+            elevation = cardElevation(defaultElevation = 4.dp)
           ) {
             Box(Modifier.fillMaxSize()) {
               Text("Box No $item", Modifier.align(Alignment.Center))

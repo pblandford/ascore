@@ -13,7 +13,9 @@ class UpdateInputStateImpl : UpdateInputState, NoteInputState {
 
   override operator fun invoke(func:NoteInputDescriptor.()->NoteInputDescriptor) {
     coroutineScope.launch {
-      descriptor.emit(descriptor.value.func())
+      val newValue = descriptor.value.func()
+      descriptor.value = newValue
+      descriptor.emit(newValue)
     }
   }
 

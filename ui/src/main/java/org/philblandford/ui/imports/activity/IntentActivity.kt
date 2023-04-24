@@ -14,9 +14,9 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
-import androidx.compose.material.LinearProgressIndicator
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Text
+import androidx.compose.material3.LinearProgressIndicator
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Text
 import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
@@ -62,8 +62,8 @@ class IntentActivity : ComponentActivity(), KoinComponent {
       AscoreTheme {
         val uiController = rememberSystemUiController()
 
-        uiController.setStatusBarColor(MaterialTheme.colors.surface)
-        uiController.setNavigationBarColor(MaterialTheme.colors.surface)
+        uiController.setStatusBarColor(MaterialTheme.colorScheme.surface)
+        uiController.setNavigationBarColor(MaterialTheme.colorScheme.surface)
 
         VMView(ImportViewModel::class.java) { model, iface, effects ->
 
@@ -122,7 +122,7 @@ private fun IntentLayout(model: ImportModel) {
   Box(
     Modifier
       .fillMaxSize()
-      .background(MaterialTheme.colors.surface)) {
+      .background(MaterialTheme.colorScheme.surface)) {
     Column(
       Modifier
         .fillMaxSize()
@@ -131,7 +131,7 @@ private fun IntentLayout(model: ImportModel) {
     ) {
       Image(
         painterResource(id = R.drawable.logo), "",
-        Modifier.width(block(3)), colorFilter = ColorFilter.tint(MaterialTheme.colors.onSurface)
+        Modifier.width(block(3)), colorFilter = ColorFilter.tint(MaterialTheme.colorScheme.onSurface)
       )
       Gap(1f)
       if (model.name.isNotEmpty()) {
@@ -149,7 +149,7 @@ private fun IntentLayout(model: ImportModel) {
 
 @Composable
 private fun Label(text: String, modifier: Modifier = Modifier) {
-  Text(text, modifier, fontSize = 16.sp, maxLines = 1,color = MaterialTheme.colors.onSurface)
+  Text(text, modifier, fontSize = 16.sp, maxLines = 1,color = MaterialTheme.colorScheme.onSurface)
 }
 
 

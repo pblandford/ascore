@@ -1,6 +1,6 @@
 package com.philblandford.kscore.engine.core.score
 
-import com.philblandford.kscore.engine.newadder.*
+import com.philblandford.kscore.engine.eventadder.*
 import com.philblandford.kscore.engine.types.*
 
 

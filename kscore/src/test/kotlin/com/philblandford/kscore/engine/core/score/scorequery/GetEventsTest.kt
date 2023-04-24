@@ -9,8 +9,8 @@ import com.philblandford.kscore.engine.dsl.scoreBar2
 import com.philblandford.kscore.engine.duration.*
 import com.philblandford.kscore.engine.map.EMK
 import com.philblandford.kscore.engine.map.EventMapKey
-import com.philblandford.kscore.engine.newadder.NewEventAdder
-import com.philblandford.kscore.engine.newadder.rightOrThrow
+import com.philblandford.kscore.engine.eventadder.NewEventAdder
+import com.philblandford.kscore.engine.eventadder.rightOrThrow
 import com.philblandford.kscore.engine.pitch.harmony
 import com.philblandford.kscore.engine.time.TimeSignature
 import com.philblandford.kscore.engine.time.timeSignature

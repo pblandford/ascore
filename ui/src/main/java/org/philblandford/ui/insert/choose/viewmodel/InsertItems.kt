@@ -41,11 +41,15 @@ internal val insertItems = listOf(
       EventParam.ACCIDENTAL_BELOW to null
     ),
     rangeCapable = true,
-    getEventType  = {
+    getEventType = {
       when (it) {
         is OrnamentType -> EventType.ORNAMENT
-        else -> EventType.ARPEGGIO
+        ArpeggioType.NORMAL -> EventType.ARPEGGIO
+        else -> EventType.LONG_TRILL
       }
+    },
+    isLine = {
+      it == EventType.LONG_TRILL
     }
   ),
   InsertItem(R.drawable.treble_clef, R.string.clef, "insert_clef", LayoutID.CLEF, EventType.CLEF),
@@ -57,11 +61,14 @@ internal val insertItems = listOf(
     EventType.KEY_SIGNATURE,
     typeParam = EventParam.SHARPS
   ),
-  InsertItem(R.drawable.tempo, R.string.tempo, "insert_tempo", LayoutID.TEMPO, EventType.TEMPO,
+  InsertItem(
+    R.drawable.tempo, R.string.tempo, "insert_tempo", LayoutID.TEMPO, EventType.TEMPO,
     paramMapOf(
       EventParam.BPM to 120,
       EventParam.DURATION to crotchet(),
-      EventParam.HIDDEN to false)),
+      EventParam.HIDDEN to false
+    )
+  ),
   InsertItem(
     R.drawable.common,
     R.string.time_signature,
@@ -98,11 +105,14 @@ internal val insertItems = listOf(
     tapInsertBehaviour = TapInsertBehaviour.SET_MARKER,
     deleteBehaviour = DeleteBehaviour.DELETE_AT_MARKER
   ),
-  InsertItem(R.drawable.text, R.string.text, "insert_text", LayoutID.TEXT, EventType.TEMPO_TEXT,
+  InsertItem(
+    R.drawable.text, R.string.text, "insert_text", LayoutID.TEXT, EventType.TEMPO_TEXT,
     paramMapOf(
       EventParam.TEXT to "",
       EventParam.IS_UP to true
-    )),
+    ),
+    isRangeCapable = { it == EventType.EXPRESSION_TEXT || it == EventType.EXPRESSION_DASH }
+  ),
   InsertItem(
     R.drawable.forte,
     R.string.dynamic,
@@ -127,16 +137,18 @@ internal val insertItems = listOf(
     R.drawable.title, R.string.meta_data, "insert_title", LayoutID.METADATA, EventType.TITLE,
     tapInsertBehaviour = TapInsertBehaviour.NONE
   ),
-  InsertItem(R.drawable.slur, R.string.slur, "insert_slur", LayoutID.SLUR, EventType.SLUR,
+  InsertItem(
+    R.drawable.slur, R.string.slur, "insert_slur", LayoutID.SLUR, EventType.SLUR,
     params = paramMapOf(EventParam.IS_UP to true),
-    line = true),
+    line = true
+  ),
   InsertItem(
     R.drawable.hairpin_crescendo,
     R.string.wedge,
     "insert_wedge",
     LayoutID.WEDGE,
     EventType.WEDGE,
-    params = paramMapOf(EventParam.IS_UP to true, EventParam.TYPE to WedgeType.CRESCENDO),
+    params = paramMapOf(EventParam.IS_UP to false, EventParam.TYPE to WedgeType.CRESCENDO),
     line = true
   ),
   InsertItem(
@@ -221,6 +233,7 @@ internal val insertItems = listOf(
     "transpose_by",
     LayoutID.TRANSPOSE_BY,
     EventType.TRANSPOSE,
+    paramMapOf(EventParam.ACCIDENTAL to Accidental.SHARP),
     rangeCapable = true
   ),
   InsertItem(
@@ -231,7 +244,13 @@ internal val insertItems = listOf(
     EventType.TRANSPOSE,
     rangeCapable = true
   ),
-  InsertItem(R.drawable.page, R.string.page_size, "page_size", LayoutID.PAGE_SIZE, EventType.LAYOUT),
+  InsertItem(
+    R.drawable.page,
+    R.string.page_size,
+    "page_size",
+    LayoutID.PAGE_SIZE,
+    EventType.LAYOUT
+  ),
   InsertItem(
     R.drawable.system_break,
     R.string.system_break,
@@ -247,8 +266,10 @@ internal val insertItems = listOf(
     EventType.BREAK,
     tapInsertBehaviour = TapInsertBehaviour.SET_MARKER
   ),
-  InsertItem(R.drawable.indent, R.string.page_margins, "page_margin", LayoutID.MARGIN,
-  EventType.LAYOUT),
+  InsertItem(
+    R.drawable.indent, R.string.page_margins, "page_margin", LayoutID.MARGIN,
+    EventType.LAYOUT
+  ),
   InsertItem(
     R.drawable.bracket_part,
     R.string.group_staves,

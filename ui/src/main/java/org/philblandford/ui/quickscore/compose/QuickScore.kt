@@ -2,8 +2,8 @@ package org.philblandford.ui.quickscore.compose
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Text
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -21,7 +21,7 @@ fun QuickScore(done:()->Unit) {
 
     DialogTheme { modifier ->
       Column(modifier.fillMaxWidth()) {
-        Text(stringResource(R.string.quick_score_text), style = MaterialTheme.typography.h2)
+        Text(stringResource(R.string.quick_score_text), style = MaterialTheme.typography.bodyLarge)
         Gap(1f)
         DialogButton(stringResource(R.string.ok), Modifier.align(Alignment.End)) {
           iface.create()

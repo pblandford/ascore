@@ -104,7 +104,7 @@ class DeleteTest : ScoreTest() {
     SMV()
     SMV(eventAddress = eav(2))
     SDE(EventType.DURATION, eav(1), endAddress = eav(2))
-    SVNE(EventType.DURATION, eav(1))
+    SVP(EventType.DURATION, EventParam.DURATION, crotchet(), eav(1))
   }
 
   @Test
@@ -284,6 +284,32 @@ class DeleteTest : ScoreTest() {
     }
     SDR(ea(1), ea(5))
     assertEqual(true,  EG().getOption(EventParam.OPTION_SHOW_TRANSPOSE_CONCERT))
+  }
+
+  @Test
+  fun testDeleteRangeSparesHiddenTS() {
+    SAE(TimeSignature(1,4).toHiddenEvent(), ez(1))
+    SMV(eventAddress = eav(1))
+    repeat(2) { bar ->
+      repeat(4) { offset ->
+        SMV(eventAddress = eav(bar + 2, crotchet().multiply(offset)))
+      }
+    }
+    SDR(ea(1), ea(5))
+    assertEqual(1,  EG().getTimeSignature(ez(1))?.numerator)
+  }
+
+  @Test
+  fun testDeleteRangeRestoresUpbeatRest() {
+    SAE(TimeSignature(1,4).toHiddenEvent(), ez(1))
+    SMV(eventAddress = eav(1))
+    repeat(2) { bar ->
+      repeat(4) { offset ->
+        SMV(eventAddress = eav(bar + 2, crotchet().multiply(offset)))
+      }
+    }
+    SDR(ea(1), ea(5))
+    assertEqual(crotchet(),  EG().getParam(EventType.DURATION, EventParam.DURATION, eav(1)))
   }
 
   @Test

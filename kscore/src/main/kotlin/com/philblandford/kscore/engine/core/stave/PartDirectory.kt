@@ -43,6 +43,7 @@ internal fun PartDirectory.update(
 ): PartDirectory {
 
   val geogs = getGeogs(geographyXQuery, full, barsChanged)
+
   val newParts = drawableFactory.createParts(scoreQuery, areaDirectoryQuery, geogs, layoutDescriptor)?.
     getParts() ?: mapOf()
   val oldParts = if (full) mapOf() else
@@ -87,7 +88,7 @@ private fun DrawableFactory.createParts(
 
         ksLogv("system ${sysx.startBar} part $idx")
 
-        val part = createPart(
+        val part = createPartArea(
           partMap,
           areaDirectoryQuery,
           idx,
@@ -133,9 +134,9 @@ private fun createPartMap(
 ): PartMap {
 
   return scoreQuery.getAllStaves(true).flatMap { staveId ->
-    areaDirectoryQuery.getSegmentsForStave(staveId).toList().groupBy { (key, _) ->
+    areaDirectoryQuery.getSegmentsForStave(staveId).entries.groupBy { (key, _) ->
       sysGeogs.find { it.contains(key.barNum) }?.startBar ?: 0
-    }.map { (bar, list) -> Pair(staveId, bar) to list.toMap() }
+    }.map { (bar, list) -> Pair(staveId, bar) to list.associate { Pair(it.key, it.value) } }
   }.toMap()
 }
 

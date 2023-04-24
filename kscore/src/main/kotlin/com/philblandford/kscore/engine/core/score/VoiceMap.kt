@@ -9,7 +9,7 @@ import com.philblandford.kscore.engine.dsl.rest
 import com.philblandford.kscore.engine.dsl.tupletMarker
 import com.philblandford.kscore.engine.duration.*
 import com.philblandford.kscore.engine.map.*
-import com.philblandford.kscore.engine.newadder.subadders.ChordDecoration
+import com.philblandford.kscore.engine.eventadder.subadders.ChordDecoration
 import com.philblandford.kscore.engine.time.TimeSignature
 import com.philblandford.kscore.engine.time.timeSignature
 import com.philblandford.kscore.engine.types.*
@@ -486,4 +486,6 @@ fun toVoiceEvents(eventHash: EventHash): VoiceEventMap {
     entry.key.eventAddress.offset to entry.value
   }.toMap().toSortedMap()
 }
+
+
 

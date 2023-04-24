@@ -25,8 +25,10 @@ import androidx.compose.foundation.gestures.detectDragGesturesAfterLongPress
 import androidx.compose.foundation.gestures.scrollBy
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.*
-import androidx.compose.material.Card
-import androidx.compose.material.Text
+import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults.cardElevation
+import androidx.compose.material3.CardElevation
+import androidx.compose.material3.Text
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
@@ -66,7 +68,7 @@ fun <T : Any> DraggableList(
       itemsIndexed(items, key = key) { index, item ->
         DraggableItem(dragDropState, index) { isDragging ->
           val elevation by animateDpAsState(if (isDragging) 4.dp else 1.dp)
-          Card(elevation = elevation) {
+          Card(elevation = cardElevation(defaultElevation = elevation)) {
             itemContent(item)
           }
         }
@@ -82,7 +84,7 @@ fun <T : Any> DraggableList(
       itemsIndexed(items, key = key) { index, item ->
         DraggableItem(dragDropState, index, false) { isDragging ->
           val elevation by animateDpAsState(if (isDragging) 4.dp else 1.dp)
-          Card(elevation = elevation) {
+          Card(elevation = cardElevation(defaultElevation = elevation)) {
             itemContent(item)
           }
         }

@@ -47,22 +47,22 @@ data class AreaMapKey(
     UID++
   }
 }
-typealias AreaMap = Map<AreaMapKey, Area>
+typealias AreaMap = List<Pair<AreaMapKey, Area>>
 
-fun areaMapOf(vararg args: Pair<AreaMapKey, Area>) = mapOf(*args)
+fun areaMapOf(vararg args: Pair<AreaMapKey, Area>) = listOf(*args)
 fun AreaMap.get(tag: String) = toList().find { it.second.tag == tag }
 
 fun AreaMap.width(): Int {
-  val left = minByOrNull { it.key.coord.x }?.key?.coord?.x ?: 0
+  val left = minByOrNull { it.first.coord.x }?.first?.coord?.x ?: 0
   val right =
-    maxByOrNull { it.key.coord.x + it.value.width }?.let { it.key.coord.x + it.value.width } ?: 0
+    maxByOrNull { it.first.coord.x + it.second.width }?.let { it.first.coord.x + it.second.width } ?: 0
   return right - left
 }
 
 fun AreaMap.height(): Int {
-  val top = minByOrNull { it.key.coord.y }?.key?.coord?.y ?: 0
+  val top = minByOrNull { it.first.coord.y }?.first?.coord?.y ?: 0
   val bottom =
-    maxByOrNull { it.key.coord.y + it.value.height }?.let { it.key.coord.y + it.value.height } ?: 0
+    maxByOrNull { it.first.coord.y + it.second.height }?.let { it.first.coord.y + it.second.height } ?: 0
   return bottom - top
 }
 
@@ -101,20 +101,20 @@ data class Area(
   }
 
   private fun calculateWidth(childMap: AreaMap, newXMargin: Int): Int {
-    val childLeft = childMap.minByOrNull { it.key.coord.x }?.key?.coord?.x ?: 0
+    val childLeft = childMap.minByOrNull { it.first.coord.x }?.first?.coord?.x ?: 0
     val left = min(childLeft, -newXMargin)
-    val childRight = childMap.maxByOrNull { it.key.coord.x + it.value.width - it.value.xMargin }?.let {
-      it.key.coord.x + it.value.width - it.value.xMargin
+    val childRight = childMap.maxByOrNull { it.first.coord.x + it.second.width - it.second.xMargin }?.let {
+      it.first.coord.x + it.second.width - it.second.xMargin
     } ?: 0
     val right = max(childRight, right)
     return right - left
   }
 
   private fun calculateHeight(childMap: AreaMap, newYMargin: Int): Int {
-    val childTop = childMap.minByOrNull { it.key.coord.y }?.key?.coord?.y ?: 0
+    val childTop = childMap.minByOrNull { it.first.coord.y }?.first?.coord?.y ?: 0
     val top = min(childTop, -newYMargin)
-    val childBottom = childMap.maxByOrNull { it.key.coord.y + it.value.bottom }?.let {
-      it.key.coord.y + it.value.bottom
+    val childBottom = childMap.maxByOrNull { it.first.coord.y + it.second.bottom }?.let {
+      it.first.coord.y + it.second.bottom
     } ?: 0
     val bottom = max(childBottom, bottom)
     return bottom - top
@@ -139,8 +139,7 @@ data class Area(
   ): Area {
     return if (shiftDown) {
       val newMap =
-        childMap.map { it.key.copy(coord = it.key.coord.plusY(child.height + gap)) to it.value }
-          .toMap()
+        childMap.map { it.first.copy(coord = it.first.coord.plusY(child.height + gap)) to it.second }
       val newArea = copy(childMap = newMap)
       newArea.addArea(child, Coord(x, 0), eventAddress = eventAddress)
     } else {
@@ -182,8 +181,8 @@ data class Area(
 
   fun extendLeft(amount: Int): Area {
     val children = childMap.map {
-      it.key.copy(coord = it.key.coord.plusX(amount)) to it.value
-    }.toMap()
+      it.first.copy(coord = it.first.coord.plusX(amount)) to it.second
+    }
     return copy(width = this.width + amount, childMap = children)
   }
 
@@ -191,7 +190,7 @@ data class Area(
     val children = childMap.map { (key, value) ->
       val newY = key.coord.y + yMargin
       key.copy(coord = Coord(key.coord.x, newY)) to value
-    }.toMap()
+    }
     return copy(yMargin = 0, childMap = children)
   }
 
@@ -208,11 +207,11 @@ data class Area(
     soFar: HashMap<AreaMapKey, Area> = hashMapOf(),
     offset: Coord = Coord()
   ): Map<AreaMapKey, Area> {
-    soFar.putAll(childMap.filter { it.value.tag == tag }.map {
-      it.key.copy(coord = it.key.coord + offset) to it.value
+    soFar.putAll(childMap.filter { it.second.tag == tag }.map {
+      it.first.copy(coord = it.first.coord + offset) to it.second
     })
     for (entry in childMap) {
-      entry.value.findByTag(tag, soFar, offset + entry.key.coord)
+      entry.second.findByTag(tag, soFar, offset + entry.first.coord)
     }
     return soFar
   }
@@ -235,10 +234,10 @@ data class Area(
       return it.first.copy(coord = coord.plus(it.first.coord)) to it.second
     }
     childMap.forEach {
-      if (matches(it.toPair(), x, y, fuzz, false)) {
-        it.value.findFromCoord(
-          x - it.key.coord.x, y - it.key.coord.y, matchFunc, fuzz,
-          coord.plus(it.key.coord)
+      if (matches(it, x, y, fuzz, false)) {
+        it.second.findFromCoord(
+          x - it.first.coord.x, y - it.first.coord.y, matchFunc, fuzz,
+          coord.plus(it.first.coord)
         )?.let {
           return it
         }
@@ -271,7 +270,7 @@ data class Area(
       return it.first.copy(coord = Coord(it.first.coord.x + x, it.first.coord.y + y)) to it.second
     }
     childMap.forEach {
-      it.value.getArea(eventAddress, x + it.key.coord.x, y + it.key.coord.y, match)
+      it.second.getArea(eventAddress, x + it.first.coord.x, y + it.first.coord.y, match)
         ?.let { return it }
     }
     return null
@@ -283,13 +282,13 @@ data class Area(
 
   fun transformEventAddress(func: (EventAddress, Event?) -> EventAddress): Area {
     val newMap = childMap.map {
-      it.key.copy(
+      it.first.copy(
         eventAddress = func(
-          it.key.eventAddress,
-          it.value.event
+          it.first.eventAddress,
+          it.second.event
         )
-      ) to it.value.transformEventAddress(func)
-    }.toMap()
+      ) to it.second.transformEventAddress(func)
+    }
     return copy(childMap = newMap)
   }
 
@@ -322,9 +321,9 @@ data class Area(
   ): Map<AreaMapKey, KDrawable> {
     val filtered =
       childMap.filterNot {
-        filter(it.value) ||
-            (it.key.coord.x - it.value.xMargin + offset.x + it.value.right < start ||
-                it.key.coord.x - it.value.xMargin + offset.x > end)
+        filter(it.second) ||
+            (it.first.coord.x - it.second.xMargin + offset.x + it.second.right < start ||
+                it.first.coord.x - it.second.xMargin + offset.x > end)
       }
     val drawables = filtered.mapNotNull { (k, v) ->
       v.drawable?.let {

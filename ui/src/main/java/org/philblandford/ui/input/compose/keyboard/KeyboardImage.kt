@@ -20,13 +20,15 @@ import androidx.compose.ui.res.painterResource
 import org.philblandford.ui.R
 import org.philblandford.ui.common.ScrollableRow
 import org.philblandford.ui.common.block
+import org.philblandford.ui.main.window.LocalWindowSizeClass
+import org.philblandford.ui.main.window.compact
+import org.philblandford.ui.main.window.expanded
 import java.util.*
 
 @Composable
 fun KeyboardImage(modifier:Modifier = Modifier, insertNote: (Int, Boolean) -> Unit) {
-  val orientation = with(LocalConfiguration.current) {orientation}
 
-  val imageHeight = if (orientation == ORIENTATION_LANDSCAPE) block(2) else block(3)
+  val imageHeight = if (LocalWindowSizeClass.current.expanded()) block(2) else  block(3)
   val imageWidth = imageHeight * 20
 
   val virtualHeight = imageHeight.value * LocalDensity.current.density

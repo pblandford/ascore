@@ -5,12 +5,15 @@ import com.philblandford.kscore.api.Location
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.distinctUntilChanged
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import org.philblandford.ascore2.features.clipboard.usecases.GetSelection
 import org.philblandford.ascore2.features.crosscutting.model.ErrorDescr
 import org.philblandford.ascore2.features.crosscutting.usecases.GetError
 import org.philblandford.ascore2.features.error.GetErrorFlow
+import org.philblandford.ascore2.features.instruments.GetInstruments
 import org.philblandford.ascore2.features.ui.model.UIState
 import org.philblandford.ascore2.features.ui.usecases.GetHelpKey
 import org.philblandford.ascore2.features.ui.usecases.GetUIState
@@ -24,12 +27,15 @@ import timber.log.Timber
 
 interface MainPageInterface : VMInterface {
   fun dismissHelp()
+  fun toggleVertical()
 }
 
 data class MainPageModel(
   val showClipboard: Boolean = false,
   val showNoteZoom:Boolean = false,
   val showEdit: Boolean = false,
+  val vertical:Boolean = true,
+  val canShowTabs:Boolean = false,
   val selectedArea: Location? = null,
   val helpKey:String? = null
 ) : VMModel()
@@ -43,7 +49,8 @@ class MainPageViewModel(
   private val getError: GetErrorFlow,
   getSelection: GetSelection,
   private val getHelpKey: GetHelpKey,
-  private val setHelpKey: SetHelpKey
+  private val setHelpKey: SetHelpKey,
+  private val getInstruments: GetInstruments
 ) :
   BaseViewModel<MainPageModel, MainPageInterface, MainPageSideEffect>(), MainPageInterface {
 
@@ -78,15 +85,26 @@ class MainPageViewModel(
         update { copy(helpKey = key) }
       }
     }
+
+    viewModelScope.launch {
+      scoreUpdate().map { getInstruments().size }.distinctUntilChanged().collectLatest { numInstruments ->
+        Timber.e("HEY! $numInstruments ${numInstruments > 1}")
+        update { copy(canShowTabs = numInstruments > 1) }
+      }
+    }
   }
 
   override suspend fun initState(): Result<MainPageModel> {
-    return MainPageModel().ok()
+    return MainPageModel(canShowTabs = getInstruments().size > 1).ok()
   }
 
   override fun getInterface() = this
 
   override fun dismissHelp() {
     setHelpKey(null)
+  }
+
+  override fun toggleVertical() {
+    update { copy(vertical = !vertical) }
   }
 }

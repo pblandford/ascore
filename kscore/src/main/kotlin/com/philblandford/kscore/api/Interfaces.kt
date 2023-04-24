@@ -44,6 +44,6 @@ interface DrawableGetter {
   fun drawTree(area: Area, x:Int = 0, y:Int = 0,
                export: Boolean = false) {
     area.drawable?.draw(x, y, export, *getDrawArgs())
-    area.childMap.forEach { drawTree(it.value, it.key.coord.x + x, it.key.coord.y + y, export) }
+    area.childMap.forEach { drawTree(it.second, it.first.coord.x + x, it.first.coord.y + y, export) }
   }
 }

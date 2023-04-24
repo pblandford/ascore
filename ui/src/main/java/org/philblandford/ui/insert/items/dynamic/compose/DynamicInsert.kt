@@ -10,6 +10,8 @@ import com.philblandford.kscore.engine.types.EventParam
 import org.philblandford.ui.common.block
 import org.philblandford.ui.insert.row.compose.RowInsert
 import org.philblandford.ui.insert.row.compose.RowInsertInternal
+import org.philblandford.ui.main.window.LocalWindowSizeClass
+import org.philblandford.ui.main.window.compact
 import org.philblandford.ui.util.UpDownDependent
 import org.philblandford.ui.util.dynamicIds
 
@@ -17,7 +19,7 @@ import org.philblandford.ui.util.dynamicIds
 fun DynamicInsert() {
   RowInsert(dynamicIds, selected = 2) { model, item, iface ->
     Row {
-      RowInsertInternal(model, iface, rows = 2)
+      RowInsertInternal(model, iface, rows = if (LocalWindowSizeClass.current.compact()) 2 else 1)
       Spacer(Modifier.width(block(0.5)))
       UpDownDependent(
         Modifier.align(Alignment.CenterVertically),

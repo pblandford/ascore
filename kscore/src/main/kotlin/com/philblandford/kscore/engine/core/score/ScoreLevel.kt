@@ -275,6 +275,8 @@ abstract class ScoreLevelImpl : ScoreLevel {
   ): EventHash? {
     val key = CacheKey(eventType, eventAddress, endAddress)
 
+    SCORELEVEL_CACHE_ENABLE = true
+
     if (!SCORELEVEL_CACHE_ENABLE) {
       ksLoge("Cache has been turned off - this had better be a test..")
     }
@@ -341,7 +343,7 @@ abstract class ScoreLevelImpl : ScoreLevel {
     return collatedEventCache[key] ?: run {
       val res = super.collateEvents(eventTypes, eventAddress, endAddress)
       collatedEventCache.put(key, res)
-      res
+     return res
     }
   }
 

@@ -4,7 +4,7 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.material.MaterialTheme
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
@@ -36,7 +36,7 @@ fun <T> RowEdit(
       EditFrame(iface, actions, scale) {
         IdRow(
           Modifier
-            .background(MaterialTheme.colors.surface),
+            .background(MaterialTheme.colorScheme.surface),
           ids,
           rows = rows,
           selected = -1, onSelect = {

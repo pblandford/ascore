@@ -7,7 +7,7 @@ import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.material.*
+import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -74,7 +74,7 @@ private fun Label(textId: Int) {
   Text(
     stringResource(textId),
     Modifier.padding(vertical = 5.dp),
-    style = MaterialTheme.typography.h1
+    style = MaterialTheme.typography.bodyLarge
   )
 }
 
@@ -86,8 +86,8 @@ private fun UpbeatRow(
   Row {
     Checkbox(
       upbeatEnabled, { setEnabled(it) },
-      colors = CheckboxDefaults.colors(//checkedColor = MaterialTheme.colors.onSurface,
-        checkmarkColor = MaterialTheme.colors.onSurface
+      colors = CheckboxDefaults.colors(//checkedColor = MaterialTheme.colorScheme.onSurface,
+        checkmarkColor = MaterialTheme.colorScheme.onSurface
       )
     )
     DimmableBox(!upbeatEnabled, Modifier.wrapContentWidth()) {
@@ -105,17 +105,18 @@ private fun PageSizeRow(selected: PageSize, select: (PageSize) -> Unit) {
         pageSize.toString(),
         Modifier
           .background(
-            if (isSelected) MaterialTheme.colors.onSurface
-            else MaterialTheme.colors.surface
+            if (isSelected) MaterialTheme.colorScheme.onSurface
+            else MaterialTheme.colorScheme.surface
           )
           .padding(5.dp)
-          .clickable { select(pageSize) }, color = if (isSelected) MaterialTheme.colors.surface
-        else MaterialTheme.colors.onSurface, fontSize = 20.sp
+          .clickable { select(pageSize) }, color = if (isSelected) MaterialTheme.colorScheme.surface
+        else MaterialTheme.colorScheme.onSurface, fontSize = 20.sp
       )
     }
   }
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun BarsRow(numBars: Int, set: (Int) -> Unit) {
   val text = remember { mutableStateOf(numBars.toString()) }

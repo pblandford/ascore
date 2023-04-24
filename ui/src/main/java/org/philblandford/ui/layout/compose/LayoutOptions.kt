@@ -6,10 +6,10 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.material.Checkbox
-import androidx.compose.material.CheckboxDefaults
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Text
+import androidx.compose.material3.Checkbox
+import androidx.compose.material3.CheckboxDefaults
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -43,7 +43,7 @@ private fun LayoutOptionsInternal(model: LayoutOptionModel, iface: LayoutOptionI
     Column(
       modifier
         .fillMaxWidth().clickable {  }
-        .background(MaterialTheme.colors.surface)) {
+        .background(MaterialTheme.colorScheme.surface)) {
       model.options.forEach { layoutOption ->
         if (layoutOption.param == EventParam.OPTION_BARS_PER_LINE) {
           FixedBarsLine(layoutOption as LayoutOption<Int>, model, iface)
@@ -72,7 +72,7 @@ private fun FixedBarsLine(
         iface.setNumBars(num)
       },
       colors = CheckboxDefaults.colors(
-        checkmarkColor = MaterialTheme.colors.onSurface),
+        checkmarkColor = MaterialTheme.colorScheme.onSurface),
       modifier = Modifier.testTag(text)
     )
     Gap(0.2f)
@@ -100,7 +100,7 @@ private fun CBLine(textId: Int, param: EventParam, value: Boolean, update: () ->
         checked = value,
         onCheckedChange = { update() },
         colors = CheckboxDefaults.colors(
-        checkmarkColor = MaterialTheme.colors.onSurface)
+        checkmarkColor = MaterialTheme.colorScheme.onSurface)
       )
       Gap(0.2f)
       Text(text, fontSize = 15.sp)

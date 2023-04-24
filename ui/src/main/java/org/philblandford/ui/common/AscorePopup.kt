@@ -5,8 +5,8 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.wrapContentSize
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Text
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -16,8 +16,8 @@ import org.philblandford.ui.theme.AscoreTheme
 
 @Composable
 fun AscorePopup(modifier: Modifier = Modifier, content:@Composable ()->Unit) {
-  Box(modifier.border(3.dp, MaterialTheme.colors.background).wrapContentSize()) {
-    Box(modifier.padding(3.dp).border(3.dp, MaterialTheme.colors.primary).
+  Box(modifier.border(3.dp, MaterialTheme.colorScheme.background).wrapContentSize()) {
+    Box(modifier.padding(3.dp).border(3.dp, MaterialTheme.colorScheme.primary).
     wrapContentSize()) {
         content()
     }

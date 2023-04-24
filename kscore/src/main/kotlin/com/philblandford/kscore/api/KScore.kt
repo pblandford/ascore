@@ -11,7 +11,7 @@ import com.philblandford.kscore.engine.creation.ScoreCreator
 import com.philblandford.kscore.engine.dsl.rest
 import com.philblandford.kscore.engine.duration.Duration
 import com.philblandford.kscore.engine.duration.dZero
-import com.philblandford.kscore.engine.newadder.rightOrThrow
+import com.philblandford.kscore.engine.eventadder.rightOrThrow
 import com.philblandford.kscore.engine.pitch.Harmony
 import com.philblandford.kscore.engine.pitch.getCommonChords
 import com.philblandford.kscore.engine.types.*
@@ -651,8 +651,7 @@ class KScoreImpl(
   override fun moveSelectedArea(x: Int, y: Int, eventParam: EventParam) {
     selectionManager.getSelectedArea()?.let { area ->
       getEvent(area.event.eventType, area.eventAddress)?.let { scoreEvent ->
-        val coord = scoreEvent.getParam<Coord>(eventParam) ?: Coord()
-        setParam(area.event.eventType, eventParam, coord + Coord(x, y), area.eventAddress)
+        setParam(area.event.eventType, eventParam, Coord(x, y), area.eventAddress)
       }
     }
   }
@@ -687,9 +686,7 @@ class KScoreImpl(
 
 
   override fun addNoteAtMarker(nsd: NoteInputDescriptor, voice: Int) {
-    getMarker()?.let { marker ->
-      scoreContainer.addEvent(nsd.toEvent(), marker.copy(voice = voice))
-    }
+      scoreContainer.addEvent(nsd.toEvent(), eWild().copy(voice = voice))
   }
 
   override fun addRestAtMarker(duration: Duration, voice: Int, graceInputMode: GraceInputMode) {
@@ -758,12 +755,17 @@ class KScoreImpl(
     params: ParamMap, voice: Voice
   ): Boolean {
 
+    getEvent(location)?.let { ev ->
+      if (ev.second.eventType == eventType || eventType == null) {
+        scoreContainer.deleteEvent(ev.second.eventType, ev.first)
+        return true
+      }
+    }
+
     eventType?.let { et ->
       getEventAddress(location)?.let { ea ->
         scoreContainer.deleteEvent(et, ea.copy(voice = voice))
       }
-    } ?: getEvent(location)?.let { (ea, ev) ->
-      scoreContainer.deleteEvent(eventType ?: ev.eventType, ea)
     }
     return true
   }
@@ -1168,7 +1170,8 @@ class KScoreImpl(
             setMarker(marker.copy(staveId = StaveId(part, 1)))
           }
         }
-      }
+      },
+      { scoreContainer.resetUndo()}
     )
   }
 

@@ -403,13 +403,13 @@ class ScoreQueryTest : ScoreTest() {
 
   @Test
   fun testGetTimeSignatureAtExcludesHidden() {
-    SAE(TimeSignature(3,4, hidden = true).toEvent(), ez(2))
+    SAE(TimeSignature(3,4).toHiddenEvent(), ez(2))
     assertEqual(TimeSignature(4,4), EG().getTimeSignature(ez(4)))
   }
 
   @Test
   fun testGetTimeSignatureAfterTwoHiddenAtStart() {
-    SAE(TimeSignature(3,4, hidden = true).toEvent(), ez(1))
+    SAE(TimeSignature(3,4).toHiddenEvent(), ez(1))
     assertEqual(TimeSignature(4,4), EG().getTimeSignature(ez(4)))
   }
 

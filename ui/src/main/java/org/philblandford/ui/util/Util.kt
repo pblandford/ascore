@@ -9,10 +9,11 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.material.Button
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.OutlinedTextField
-import androidx.compose.material.Text
+import androidx.compose.material3.Button
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -36,15 +37,7 @@ import org.philblandford.ui.util.ButtonState.Companion.selected
 
 @Composable
 fun styledBorder(): BorderStroke {
-    return BorderStroke(1.dp, MaterialTheme.colors.onSurface)
-}
-
-
-@Composable
-fun BorderBox(modifier: Modifier = Modifier, children: @Composable() () -> Unit) {
-    Box(modifier.border(2.dp, MaterialTheme.colors.onSurface)) {
-        children()
-    }
+    return BorderStroke(1.dp, MaterialTheme.colorScheme.onSurface)
 }
 
 @Composable
@@ -67,7 +60,7 @@ fun ToggleButton(
 fun ThemeBox(
     modifier: Modifier = Modifier,
     shape: Shape = RectangleShape,
-    backgroundColor: Color = MaterialTheme.colors.surface,
+    backgroundColor: Color = MaterialTheme.colorScheme.surface,
     border: BorderStroke? = null,
     padding: Dp = border?.width ?: 0.dp,
     children: @Composable() () -> Unit = {}
@@ -194,7 +187,7 @@ fun LeftRight(left: () -> Unit, right: () -> Unit, modifier: Modifier = Modifier
 @Composable
 fun ThemeButton(id: Int, modifier: Modifier = Modifier, onClick: () -> Unit) {
     Button(onClick = onClick, modifier = modifier) {
-        Text(stringResource(id = id), color = MaterialTheme.colors.onPrimary)
+        Text(stringResource(id = id), color = MaterialTheme.colorScheme.onPrimary)
     }
 }
 
@@ -206,14 +199,14 @@ fun StyledBox(
 ) {
     Box(
         modifier
-            .border(1.dp, MaterialTheme.colors.onSurface, RoundedCornerShape(7.dp))
-            .background(MaterialTheme.colors.surface)
+            .border(1.dp, MaterialTheme.colorScheme.onSurface, RoundedCornerShape(7.dp))
+            .background(MaterialTheme.colorScheme.surface)
             .padding(2.dp)
     ) {
         Box(
             Modifier
                 .padding(1.dp)
-                .border(1.dp, MaterialTheme.colors.onSurface, RoundedCornerShape(7.dp))
+                .border(1.dp, MaterialTheme.colorScheme.onSurface, RoundedCornerShape(7.dp))
                 .padding(5.dp),
         ) {
             content()
@@ -221,40 +214,9 @@ fun StyledBox(
     }
 }
 
-@Composable
-fun FakePopup(onDismiss: () -> Unit, width: Dp = block(10), content: @Composable () -> Unit) {
-    val screenWidth = LocalConfiguration.current.screenWidthDp.dp
-    val screenHeight = LocalConfiguration.current.screenHeightDp.dp
-    Box(
-        Modifier
-            .size(screenWidth, screenHeight)
-            .clickable(onClick = {
-                onDismiss()
-            })
-            .background(backgroundGray)
-    ) {
-        Box(
-            Modifier
-                .align(Alignment.Center)
-                .width(width)
-                .background(MaterialTheme.colors.surface, RoundedCornerShape(5.dp))
-                .border(1.dp, MaterialTheme.colors.onSurface)
-                .clickable(onClick = {})
-        ) {
-            content()
-        }
-    }
-}
 
 fun String.nullIfEmpty() = if (isEmpty()) null else this
 
-fun String.getAbbreviation(): String {
-    val filtered = filter { it.isLetterOrDigit() }
-    val split = filtered.split(" ").toList()
-    return if (split.isNotEmpty()) {
-        String(split.map { it.firstOrNull() ?: ' ' }.toCharArray())
-    } else ""
-}
 
 val NoBorder = BorderStroke(0.dp, Color.Transparent)
 
@@ -268,33 +230,4 @@ fun ScrollableColumn(
     Column(modifier.verticalScroll(scrollState), horizontalAlignment = alignment) {
         content()
     }
-}
-
-@Composable
-fun ScrollableRow(
-    modifier: Modifier,
-    scrollState: ScrollState = rememberScrollState(),
-    content: @Composable () -> Unit
-) {
-    Row(modifier.horizontalScroll(scrollState)) {
-        content()
-    }
-}
-
-@Composable
-fun DefocusableTextField(
-    value: String, onValueChange: (String) -> Unit,
-    modifier: Modifier = Modifier,
-    keyboardType: KeyboardType = KeyboardType.Text
-) {
-    val focusManager = LocalFocusManager.current
-
-    OutlinedTextField(
-        value = value,
-        onValueChange = onValueChange,
-        modifier = modifier,
-        maxLines = 1,
-        keyboardOptions = KeyboardOptions(keyboardType = keyboardType, imeAction = ImeAction.Done),
-        keyboardActions = KeyboardActions(onDone = { focusManager.clearFocus() })
-    )
 }

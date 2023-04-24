@@ -2,8 +2,8 @@ import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.size
-import androidx.compose.material.Card
-import androidx.compose.material.MaterialTheme
+import androidx.compose.material3.Card
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.Dp
@@ -29,7 +29,7 @@ fun GridSelection(
   onSelect: (Int) -> Unit
 ) {
   val sizeMod = modifier.size((size + gap) * columns, (size + gap) * rows)
-  val borderMod = if (border) sizeMod.border(2.dp, MaterialTheme.colors.onSurface) else sizeMod
+  val borderMod = if (border) sizeMod.border(2.dp, MaterialTheme.colorScheme.onSurface) else sizeMod
   ThemeBox(
     modifier = borderMod
   ) {

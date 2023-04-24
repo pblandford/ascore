@@ -49,7 +49,7 @@ fun <T> RowInsertInternal(
   Box(
     modifier
       .height(100.dp)
-      .padding(start = 10.dp)
+      .padding(10.dp)
   ) {
     IdRow(
       Modifier.align(Alignment.CenterStart),

@@ -74,13 +74,13 @@ private val unchangedMap = mapOf(1 to 0, 2 to 0)
 internal fun adjustRests(segmentArea: SegmentArea, restShifts: Map<Int, Int>): SegmentArea {
   val unchanged = unchangedMap
   if (restShifts != unchanged) {
-    val newChildMap = segmentArea.base.childMap.toMutableMap()
+    val newChildMap = segmentArea.base.childMap.toMutableList()
 
     segmentArea.base.childMap.forEach { (k, v) ->
       if (v.event?.subType == DurationType.REST) {
         restShifts[k.eventAddress.voice]?.let { shift ->
-          newChildMap.remove(k)
-          newChildMap.put(k.copy(coord = Coord(k.coord.x, shift)), v)
+          newChildMap.remove(k to v)
+          newChildMap.add(k.copy(coord = Coord(k.coord.x, shift)) to v)
         }
       }
     }
@@ -89,7 +89,7 @@ internal fun adjustRests(segmentArea: SegmentArea, restShifts: Map<Int, Int>): S
         restShifts[voice]?.let { shift ->
           voice to voiceGeog.copy(restPos = voiceGeog.restPos + shift)
         }
-      } ?: voice to voiceGeog
+      } ?: (voice to voiceGeog)
     }.toMap()
     val newBase = segmentArea.base.copy(childMap = newChildMap)
     return SegmentArea(

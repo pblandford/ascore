@@ -40,7 +40,7 @@ class HandleLongPressImpl(
         }
       }
       is UIState.Insert -> {
-        if (state.insertItem.rangeCapable) {
+        if (state.insertItem.isRangeCapable(state.insertItem.eventType)) {
           kScore.setStartSelection(location)
         }
       }

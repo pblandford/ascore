@@ -2,7 +2,7 @@ package org.philblandford.ui.util
 
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.*
-import androidx.compose.material.MaterialTheme
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -46,7 +46,7 @@ fun ToggleRow(
   onSelect: (Int?) -> Unit
 ) {
 
-  Box(modifier.border(if (border) 1.dp else 0.dp, MaterialTheme.colors.onSurface)) {
+  Box(modifier.border(if (border) 1.dp else 0.dp, MaterialTheme.colorScheme.onSurface)) {
     Column {
       (0 until rows).forEach { row ->
         Row(verticalAlignment = Alignment.CenterVertically) {

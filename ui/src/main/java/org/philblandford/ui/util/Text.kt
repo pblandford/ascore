@@ -7,7 +7,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.material.*
+import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -40,6 +40,7 @@ fun LabelText(string: String) {
 }
 
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun OutlinedTextField2(
   value: String,
@@ -66,32 +67,7 @@ fun OutlinedTextField2(
 }
 
 
-@Composable
-fun TextField2(
-  value: String, onValueChange: (String) -> Unit,
-  modifier: Modifier = Modifier.size(block(5), block(2)),
-  tag: String = "", refresh: Boolean = false,
-  id: Int = -1, keyboardType: KeyboardType = KeyboardType.Text,
-) {
-  val text = remember { mutableStateOf(value) }
-  if (refresh) {
-    text.value = value
-  }
 
-  ThemeBox(modifier) {
-    TextField(value = text.value,
-      onValueChange = {
-        text.value = it
-        onValueChange(it)
-      },
-      keyboardOptions = KeyboardOptions(keyboardType = keyboardType),
-      modifier = Modifier
-        .fillMaxSize()
-        .testTag(tag),
-      label = { if (id != -1) Text(stringResource(id = id)) }
-    )
-  }
-}
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
@@ -126,7 +102,7 @@ fun BaseTextField2(
 @Composable
 fun StyledText(
   id: Int, modifier: Modifier = Modifier,
-  fontSize: TextUnit = MaterialTheme.typography.body1.fontSize
+  fontSize: TextUnit = MaterialTheme.typography.bodyLarge.fontSize
 ) {
   StyledText(stringResource(id), modifier, fontSize)
 }
@@ -135,7 +111,7 @@ fun StyledText(
 fun StyledText(
   text: String,
   modifier: Modifier = Modifier,
-  fontSize: TextUnit = MaterialTheme.typography.body1.fontSize
+  fontSize: TextUnit = MaterialTheme.typography.bodyLarge.fontSize
 ) {
   StyledBox(modifier) {
     Text(text, fontSize = fontSize)

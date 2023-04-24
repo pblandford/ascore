@@ -1,10 +1,10 @@
 package com.philblandford.kscore.engine.duration
 
 import com.philblandford.kscore.engine.core.area.Coord
-import com.philblandford.kscore.engine.newadder.AnyResult
-import com.philblandford.kscore.engine.newadder.ok
-import com.philblandford.kscore.engine.newadder.subadders.ChordDecoration
-import com.philblandford.kscore.engine.newadder.then
+import com.philblandford.kscore.engine.eventadder.AnyResult
+import com.philblandford.kscore.engine.eventadder.ok
+import com.philblandford.kscore.engine.eventadder.subadders.ChordDecoration
+import com.philblandford.kscore.engine.eventadder.then
 import com.philblandford.kscore.engine.types.*
 import com.philblandford.kscore.engine.types.EventParam.*
 import com.philblandford.kscore.engine.util.removeAt

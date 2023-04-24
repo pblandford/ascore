@@ -9,7 +9,7 @@ import com.philblandford.kscore.engine.map.EventHash
 import com.philblandford.kscore.engine.map.EventMapKey
 import com.philblandford.kscore.engine.map.eventHashOf
 import com.philblandford.kscore.engine.map.eventMapOf
-import com.philblandford.kscore.engine.newadder.subadders.ChordDecoration
+import com.philblandford.kscore.engine.eventadder.subadders.ChordDecoration
 import com.philblandford.kscore.engine.time.TimeSignature
 import com.philblandford.kscore.engine.types.*
 import com.philblandford.kscore.log.ksLoge

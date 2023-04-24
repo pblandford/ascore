@@ -2,10 +2,11 @@ package org.philblandford.ui.create.compose
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
-import androidx.compose.material.Button
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.OutlinedTextField
-import androidx.compose.material.Text
+import androidx.compose.material3.Button
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.Text
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -28,7 +29,7 @@ import org.philblandford.ui.util.NumberSelector
 import org.philblandford.ui.util.SquareButton
 
 @Composable
-fun EditPartDialog(instrument: Instrument, onUpdate: (Instrument) -> Unit, dismiss:()->Unit) {
+fun EditPartDialog(instrument: Instrument, onUpdate: (Instrument) -> Unit, dismiss: () -> Unit) {
   Dialog(dismiss) {
     DialogTheme { modifier ->
       Box(modifier) {
@@ -39,12 +40,14 @@ fun EditPartDialog(instrument: Instrument, onUpdate: (Instrument) -> Unit, dismi
 }
 
 @Composable
-private fun EditPartDialogInternal(instrument: Instrument, onUpdate: (Instrument) -> Unit,
-dismiss: () -> Unit) {
+private fun EditPartDialogInternal(
+  instrument: Instrument, onUpdate: (Instrument) -> Unit,
+  dismiss: () -> Unit
+) {
 
   Column(
     Modifier
-      .background(MaterialTheme.colors.surface)
+      .background(MaterialTheme.colorScheme.surface)
       .padding(10.dp)
       .testTag("InstrumentEdit ${instrument.label}")
   ) {
@@ -60,7 +63,7 @@ dismiss: () -> Unit) {
       ClefRow(instrument, onUpdate)
     }
     Gap(0.5f)
-    Button({dismiss()}, Modifier.align(Alignment.End)) {
+    Button({ dismiss() }, Modifier.align(Alignment.End)) {
       Text(stringResource(R.string.done))
     }
   }
@@ -101,6 +104,7 @@ private fun Title(instrument: Instrument) {
   )
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun Label(instrument: Instrument, onUpdate: (Instrument) -> Unit) {
   OutlinedTextField(
@@ -113,6 +117,7 @@ private fun Label(instrument: Instrument, onUpdate: (Instrument) -> Unit) {
   )
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun Abbreviation(instrument: Instrument, onUpdate: (Instrument) -> Unit) {
   OutlinedTextField(
@@ -128,8 +133,10 @@ private fun Abbreviation(instrument: Instrument, onUpdate: (Instrument) -> Unit)
 @Composable
 private fun Transposition(instrument: Instrument, onUpdate: (Instrument) -> Unit) {
   Row(verticalAlignment = Alignment.CenterVertically) {
-    Text(stringResource(id = R.string.transposition) + ": ", style = typographyContrast.body1,
-    color = MaterialTheme.colors.onSurface)
+    Text(
+      stringResource(id = R.string.transposition) + ": ", style = typographyContrast.bodyLarge,
+      color = MaterialTheme.colorScheme.onSurface
+    )
     Gap(1f)
     NumberSelector(min = -7, max = 7, num = instrument.transposition, setNum = {
       onUpdate(instrument.copy(transposition = it))
@@ -151,10 +158,15 @@ fun ClefRow(instrument: Instrument, onUpdate: (Instrument) -> Unit) {
     horizontalArrangement = Arrangement.SpaceBetween
   ) {
 
-    DraggableList(instrument.clefs.withIndex().toList(), { clefItem ->
-      ClefSpinner({ clefItem.value }, border = true, tag = "Clef", setClef = { type ->
-        onUpdate(instrument.setClef(clefItem.index, type))
-      })
+    DraggableList(instrument.clefs.withIndex().toList(), { (idx, clef) ->
+      Row {
+        ClefSpinner({ clef }, border = false, tag = "Clef", setClef = { type ->
+          onUpdate(instrument.setClef(idx, type))
+        })
+        SquareButton(R.drawable.eraser, size = 15.dp) {
+          onUpdate(instrument.removeClef(idx))
+        }
+      }
     }, vertical = false, reorder = { fromIndex, toIndex ->
       val newItems = instrument.clefs.toMutableList().apply {
         add(toIndex, removeAt(fromIndex))
@@ -162,13 +174,9 @@ fun ClefRow(instrument: Instrument, onUpdate: (Instrument) -> Unit) {
       onUpdate(instrument.copy(clefs = newItems))
     }, key = { _, iv -> "${iv.index} ${iv.value}" })
 
-    Box(Modifier) {
-      SquareButton(resource = R.drawable.plus,
-        tag = "AddClefButton",
-        onClick = {
-          onUpdate(instrument.addClef())
-        })
-    }
+    SquareButton(R.drawable.plus) { onUpdate(instrument.addClef()) }
+
+
   }
 }
 

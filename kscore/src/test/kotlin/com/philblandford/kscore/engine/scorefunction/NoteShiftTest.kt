@@ -6,7 +6,7 @@ import com.philblandford.kscore.engine.core.area.Coord
 
 
 import com.philblandford.kscore.engine.duration.*
-import com.philblandford.kscore.engine.newadder.subadders.ChordDecoration
+import com.philblandford.kscore.engine.eventadder.subadders.ChordDecoration
 import org.junit.Test
 
 class NoteShiftTest : ScoreTest() {

@@ -4,7 +4,7 @@ import com.philblandford.kscore.engine.types.ArpeggioType
 import com.philblandford.kscore.engine.types.EventParam
 import com.philblandford.kscore.engine.types.EventType
 import com.philblandford.kscore.engine.types.eav
-import com.philblandford.kscore.engine.newadder.subadders.ChordDecoration
+import com.philblandford.kscore.engine.eventadder.subadders.ChordDecoration
 import org.junit.Test
 
 class ArpeggioTest : ScoreTest() {

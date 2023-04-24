@@ -7,7 +7,7 @@ import com.philblandford.kscore.engine.core.areadirectory.header.numberArea
 import com.philblandford.kscore.engine.core.representation.ARTICULATION_GAP
 import com.philblandford.kscore.engine.core.representation.FINGERING_HEIGHT
 import com.philblandford.kscore.engine.core.representation.FINGERING_OFFSET
-import com.philblandford.kscore.engine.newadder.subadders.ChordDecoration
+import com.philblandford.kscore.engine.eventadder.subadders.ChordDecoration
 import com.philblandford.kscore.engine.types.Event
 import com.philblandford.kscore.engine.types.EventParam
 import com.philblandford.kscore.engine.types.EventType

@@ -1,12 +1,13 @@
 package org.philblandford.ui.save.compose
 
 import androidx.compose.foundation.layout.*
-import androidx.compose.material.Button
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.OutlinedTextField
-import androidx.compose.material.RadioButton
-import androidx.compose.material.RadioButtonDefaults
-import androidx.compose.material.Text
+import androidx.compose.material3.Button
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.RadioButton
+import androidx.compose.material3.RadioButtonDefaults
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -37,6 +38,7 @@ fun SaveScore(dismiss: () -> Unit) {
   }
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun SaveFileInternal(modifier: Modifier, model: SaveModel, iface: SaveInterface, dismiss: () -> Unit) {
 
@@ -73,10 +75,10 @@ private fun SourceSelect(current:FileSource, set:(FileSource)->Unit) {
 
   Row(Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
     RadioButton(current == FileSource.SAVE, onClick = { set(FileSource.SAVE) },
-      colors = RadioButtonDefaults.colors(selectedColor = MaterialTheme.colors.onSurface))
+      colors = RadioButtonDefaults.colors(selectedColor = MaterialTheme.colorScheme.onSurface))
     Text(stringResource(R.string.files_in_storage))
     RadioButton(current == FileSource.EXTERNAL, onClick = { set(FileSource.EXTERNAL) },
-      colors = RadioButtonDefaults.colors(selectedColor = MaterialTheme.colors.onSurface))
+      colors = RadioButtonDefaults.colors(selectedColor = MaterialTheme.colorScheme.onSurface))
     Text(stringResource(R.string.files_in_external_storage))
   }
 }

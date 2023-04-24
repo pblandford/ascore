@@ -12,6 +12,7 @@ class HandleTapImpl(
   private val kScore:KScore
 ) : HandleTap {
   override operator fun invoke(page: Int, x: Int, y: Int) {
+
     val location = Location(page, x, y)
     when (val state = uiStateRepository.getUIState().value) {
       UIState.Input, UIState.InsertChoose -> kScore.setMarker(location)
@@ -34,7 +35,7 @@ class HandleTapImpl(
   private fun handleInsert(insertItem: InsertItem, location:Location, voice:Int) {
 
     kScore.getStartSelect()?.let { start ->
-      if (insertItem.rangeCapable || insertItem.line) {
+      if (insertItem.isRangeCapable(insertItem.eventType) || insertItem.isLine(insertItem.eventType)) {
         kScore.getEventAddress(location)?.let { end ->
           kScore.addEvent(insertItem.eventType, start.copy(voice = voice), insertItem.params, end.copy(voice = voice))
           kScore.clearSelection()
@@ -44,7 +45,7 @@ class HandleTapImpl(
       kScore.getEventAddress(location)?.let { address ->
         when (insertItem.tapInsertBehaviour) {
           TapInsertBehaviour.INSERT -> {
-            if (insertItem.line) {
+            if (insertItem.isLine(insertItem.eventType)) {
               kScore.setStartSelection(address)
             } else {
               kScore.addEvent(insertItem.eventType, address.copy(voice = voice), insertItem.params)

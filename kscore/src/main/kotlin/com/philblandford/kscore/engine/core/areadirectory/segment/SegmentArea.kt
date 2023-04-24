@@ -31,7 +31,6 @@ data class SegmentArea(
       base.width, base.xMargin, duration, voiceGeographies, voicePositions,
       graceSlicePositions, placeHolder
     )
-  val hash = hashCode()
 }
 
 internal fun DrawableFactory.segmentArea(
@@ -91,7 +90,7 @@ internal fun SegmentArea.replaceVoiceArea(
   voice: Int,
   transform: (AreaMapKey, VoiceArea) -> VoiceArea
 ): SegmentArea {
-  return base.childMap.toList().find {
+  return base.childMap.find {
     it.second.tag == "Chord" &&
         it.first.eventAddress.voice == voice
   }?.let { (voiceKey, voiceArea) ->
@@ -103,13 +102,13 @@ internal fun SegmentArea.replaceVoiceArea(
             id = ea.id
           )
         })
-      val newBase = base.copy(childMap = base.childMap.minus(voiceKey)).addArea(
+      val newBase = base.copy(childMap = base.childMap.filterNot { it.first == voiceKey }).addArea(
         newVoiceArea.base,
         voiceKey.coord, voiceKey.eventAddress.copy()
       )
       return copy(
         base = newBase,
-        voiceGeographies = voiceGeographies.plus(voice to newVoiceArea.voiceGeography)
+        voiceGeographies = voiceGeographies.plus(Pair(voice, newVoiceArea.voiceGeography))
       )
     }
   } ?: this
@@ -126,8 +125,12 @@ internal fun SegmentArea.replaceGraceArea(
     val newGraceChildMap =
       oldGrace.childMap.toList().fold(oldGrace.childMap) { childMap, (oldKey, oldSegment) ->
         graceSegments[oldKey.eventAddress]?.let { gs ->
-          childMap.plus(oldKey to gs.base.copy(width = oldSegment.width,
-          addressRequirement = oldSegment.addressRequirement, tag = oldSegment.tag))
+          childMap.plus(
+            oldKey to gs.base.copy(
+              width = oldSegment.width,
+              addressRequirement = oldSegment.addressRequirement, tag = oldSegment.tag
+            )
+          )
         } ?: childMap
       }
     val graceArea = oldGrace.copy(childMap = newGraceChildMap)
@@ -143,7 +146,7 @@ internal fun SegmentArea.replaceGraceArea(
         )
       }
 
-     copy(base = newBase)
+    copy(base = newBase)
   } ?: this
 }
 
@@ -188,7 +191,7 @@ private fun createGraceArea(
 ): Pair<Area, Map<Offset, SlicePosition>> {
   val graceArea = graceArea(segments)
   val slicePositions =
-    graceArea.childMap.filter { it.value.tag == "Segment" }
+    graceArea.childMap.filter { it.second.tag == "Segment" }
       .map { (key, area) ->
         (key.eventAddress.graceOffset ?: dZero()) to SlicePosition(
           key.coord.x - area.xMargin,

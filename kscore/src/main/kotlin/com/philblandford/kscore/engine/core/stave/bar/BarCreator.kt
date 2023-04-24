@@ -54,7 +54,7 @@ private fun DrawableFactory.getBar(
   val barStartArea = barStartLookup[address] ?: BarStartAreaPair()
   val barEndArea = barEndLookup[address.inc(barPosition.geog.numBars - 1)] ?: BarEndAreaPair()
   val segmentOffsets = segments.filterNot { it.key.isGrace }.map { it.key.offset to it.value }
-    .toMap()
+
   return createBar(
     segmentOffsets,
     barPosition.geog,

@@ -7,7 +7,7 @@ import com.philblandford.kscore.engine.core.area.factory.ImageArgs
 import com.philblandford.kscore.engine.core.areadirectory.header.getAccSize
 import com.philblandford.kscore.engine.core.representation.ORNAMENT_ACCIDENTAL_GAP
 import com.philblandford.kscore.engine.core.representation.ORNAMENT_HEIGHT
-import com.philblandford.kscore.engine.newadder.subadders.ChordDecoration
+import com.philblandford.kscore.engine.eventadder.subadders.ChordDecoration
 import com.philblandford.kscore.engine.types.*
 
 fun DrawableFactory.ornamentArea(ornamentType: ChordDecoration<Ornament>, event: Event): Area? {

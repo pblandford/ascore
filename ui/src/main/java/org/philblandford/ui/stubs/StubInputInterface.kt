@@ -1,13 +1,16 @@
 package org.philblandford.ui.stubs
 
+import com.philblandford.kscore.api.NoteInputDescriptor
 import com.philblandford.kscore.engine.duration.Duration
 import com.philblandford.kscore.engine.types.Accidental
 import com.philblandford.kscore.engine.types.GraceType
 import com.philblandford.kscore.engine.types.NoteHeadType
 import kotlinx.coroutines.flow.Flow
 import org.philblandford.ui.base.viewmodel.VMSideEffect
+import org.philblandford.ui.input.model.InputModel
 import org.philblandford.ui.input.viewmodel.InputInterface
 
+val stubInputModel = InputModel(NoteInputDescriptor(), accidentals = Accidental.values().toList())
 class StubInputInterface : InputInterface {
   override fun reset() {
     TODO("Not yet implemented")

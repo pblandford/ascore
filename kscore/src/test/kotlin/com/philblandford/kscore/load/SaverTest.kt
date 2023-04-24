@@ -11,7 +11,7 @@ import com.philblandford.kscore.engine.dsl.*
 import com.philblandford.kscore.engine.duration.*
 import com.philblandford.kscore.engine.map.EventMapKey
 import com.philblandford.kscore.engine.map.eventHashOf
-import com.philblandford.kscore.engine.newadder.subadders.ChordDecoration
+import com.philblandford.kscore.engine.eventadder.subadders.ChordDecoration
 import com.philblandford.kscore.engine.scorefunction.ScoreTest
 
 import com.philblandford.kscore.engine.time.TimeSignature

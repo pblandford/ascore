@@ -29,7 +29,7 @@ fun DrawableFactory.decorateStave(
   val grouped = groupEvents(newHash)
   var areaCopy = staveArea
 
-  decorators.map { it.second }.distinct().forEach { decorator ->
+  decoratorValues.forEach { decorator ->
     grouped[decorator]?.let { events ->
       areaCopy = decorator.decorate(events, stavePositionFinder, areaCopy, this)
     }
@@ -88,3 +88,4 @@ private val decorators = listOf(
 )
 
 val decoratorTypes = decorators.map { it.first }
+val decoratorValues = decorators.map { it.second }.distinct()

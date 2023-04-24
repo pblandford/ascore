@@ -46,6 +46,10 @@ data class Representation(
   fun getPage(page: Int): PageArea? {
     return pagesAsIndexedList.getOrNull(page - 1)?.value
   }
+
+  override fun toString(): String {
+    return "Representation ${pages.size} pages ${hashCode()}"
+  }
 }
 
 internal fun representation(

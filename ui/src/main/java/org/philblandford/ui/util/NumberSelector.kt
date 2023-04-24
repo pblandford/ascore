@@ -6,9 +6,10 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Text
-import androidx.compose.material.TextField
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Text
+import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.testTag
@@ -17,6 +18,7 @@ import androidx.compose.ui.text.style.TextAlign
 import org.philblandford.ui.common.block
 
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun NumberSelector(
   min: Int, max: Int, num:Int, setNum: (Int) -> Unit,
@@ -48,7 +50,7 @@ fun NumberSelector(
             setNum(str.toInt())
           },
           label = {},
-          textStyle = MaterialTheme.typography.body1.copy(textAlign = TextAlign.Center),
+          textStyle = MaterialTheme.typography.bodyLarge.copy(textAlign = TextAlign.Center),
           keyboardOptions = KeyboardOptions.Default.copy(keyboardType = KeyboardType.Number)
         )
       } else {

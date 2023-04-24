@@ -6,9 +6,11 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.OutlinedTextField
-import androidx.compose.material.Text
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.Text
+import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -77,6 +79,7 @@ private fun CreateModel.text(metaType: MetaType): String =
   newScoreDescriptor.meta.getSection(metaType).text
 
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun TextLine(
   value: String, cmd: (String) -> Unit, resource: Int,
@@ -90,7 +93,8 @@ private fun TextLine(
     keyboardActions = KeyboardActions(
       onNext = { next() },
     ),
-    textStyle = MaterialTheme.typography.body1
+    colors = TextFieldDefaults.outlinedTextFieldColors(),
+    textStyle = MaterialTheme.typography.bodyMedium
   )
 }
 

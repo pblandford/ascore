@@ -1,8 +1,9 @@
 package org.philblandford.ui.main.outer.compose
 
-import androidx.compose.material.DrawerValue
-import androidx.compose.material.ModalDrawer
-import androidx.compose.material.rememberDrawerState
+import androidx.compose.material3.DrawerValue
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.ModalNavigationDrawer
+import androidx.compose.material3.rememberDrawerState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -22,8 +23,9 @@ import org.philblandford.ui.main.popup.compose.SettingsDialog
 import timber.log.Timber
 
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun OuterPage() {
+fun OuterPage(onScoreEmpty:()->Unit) {
 
   Timber.e("RECO OuterPage")
 
@@ -32,9 +34,7 @@ fun OuterPage() {
   val popupLayout = remember { mutableStateOf<LayoutID?>(null) }
   val showMixer = remember{ mutableStateOf(false) }
 
-  ModalDrawer(drawerState = drawerState,
-    drawerShape = customShape(),
-    drawerBackgroundColor = Color.Transparent,
+  ModalNavigationDrawer(drawerState = drawerState,
     drawerContent = {
       DrawerItems(
         drawerItems, { drawerItem ->
@@ -44,9 +44,9 @@ fun OuterPage() {
           }
         }) { scope.launch { drawerState.close() } }
     }) {
-    MainPageView( { scope.launch { drawerState.open() } }, { popupLayout.value = it }) {
+    MainPageView( { scope.launch { drawerState.open() } }, { popupLayout.value = it }, {
       showMixer.value = !showMixer.value
-    }
+    }, onScoreEmpty)
     popupLayout.value?.let { popup ->
       SettingsDialog(popup) {
         popupLayout.value = null

@@ -2,9 +2,9 @@ package org.philblandford.ui.util
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
-import androidx.compose.material.Checkbox
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Text
+import androidx.compose.material3.Checkbox
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Text
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -52,7 +52,7 @@ fun CustomTimeSelector(
   set: (TimeSignature) -> Unit,
   enabled: Boolean = true
 ) {
-  val color = if (enabled) MaterialTheme.colors.onSurface else disabledColor
+  val color = if (enabled) MaterialTheme.colorScheme.onSurface else disabledColor
 
   Row {
       TimeNumberPicker(Modifier.size(50.dp, 30.dp), (1..32).toList(), timeSignature.numerator)
@@ -80,7 +80,7 @@ fun UpbeatSelector(
   isEnabled: () -> Boolean,
   enable: (Boolean) -> Unit
 ) {
-  val color = if (isEnabled()) MaterialTheme.colors.onSurface else disabledColor
+  val color = if (isEnabled()) MaterialTheme.colorScheme.onSurface else disabledColor
   Row(verticalAlignment = Alignment.CenterVertically) {
     Checkbox(
       checked = isEnabled(),
@@ -208,7 +208,7 @@ fun TimeNumberPicker(
                 .fillMaxHeight()
                 .padding(3.dp),
               contentScale = ContentScale.FillHeight,
-              colorFilter = ColorFilter.tint(MaterialTheme.colors.onSurface)
+              colorFilter = ColorFilter.tint(MaterialTheme.colorScheme.onSurface)
             )
           }
         }

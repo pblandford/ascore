@@ -2,9 +2,9 @@ package org.philblandford.ui.create.compose
 
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Surface
-import androidx.compose.material.Text
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Surface
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -39,7 +39,7 @@ fun WizardFrame(
           .fillMaxWidth()
           .fillMaxHeight(0.8f)
           .align(Alignment.Center),
-        color = MaterialTheme.colors.surface,
+        color = MaterialTheme.colorScheme.surface,
         shape = RoundedCornerShape(10)
       ) {
         Column(
@@ -47,7 +47,7 @@ fun WizardFrame(
             .fillMaxSize()
             .padding(20.dp)
         ) {
-          Text(title, Modifier.fillMaxWidth(), style = MaterialTheme.typography.h1)
+          Text(title, Modifier.fillMaxWidth(), style = MaterialTheme.typography.titleMedium)
           Box(
             Modifier
               .fillMaxWidth()
@@ -56,11 +56,11 @@ fun WizardFrame(
             content()
           }
           Row(Modifier.align(Alignment.CenterHorizontally)) {
-            DialogButton(stringResource(R.string.cancel), Modifier.width(100.dp)) {
+            DialogButton(stringResource(R.string.cancel), Modifier.widthIn(100.dp)) {
               cancel()
             }
             Gap(1f)
-            DialogButton(stringResource(R.string.next), Modifier.width(100.dp)) {
+            DialogButton(stringResource(R.string.next), Modifier.widthIn(100.dp)) {
               next()
             }
           }

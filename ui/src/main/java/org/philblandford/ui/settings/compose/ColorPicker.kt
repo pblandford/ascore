@@ -5,11 +5,11 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.material.Colors
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Tab
-import androidx.compose.material.TabRow
-import androidx.compose.material.Text
+import androidx.compose.material3.ColorScheme
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Tab
+import androidx.compose.material3.TabRow
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -27,19 +27,19 @@ import org.philblandford.ui.R
 import org.philblandford.ui.common.Gap
 
 @Composable
-fun ColorPicker(modifier: Modifier, colors:Colors, setBackground:(HsvColor)->Unit,
+fun ColorPicker(modifier: Modifier, colors:ColorScheme, setBackground:(HsvColor)->Unit,
 setForeground:(HsvColor)->Unit) {
     var idx by remember { mutableStateOf(0) }
 
     Column(
         modifier
             .fillMaxWidth()
-            .background(MaterialTheme.colors.surface)
+            .background(MaterialTheme.colorScheme.surface)
             .padding(10.dp),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
 
-        TabRow(idx, backgroundColor = MaterialTheme.colors.surface) {
+        TabRow(idx, containerColor = MaterialTheme.colorScheme.surface) {
             Tab(
                 idx == 0,
                 onClick = { idx = 0 },
@@ -47,7 +47,7 @@ setForeground:(HsvColor)->Unit) {
                 Text(
                     stringResource(R.string.settings_background_color),
                     fontSize = 15.sp,
-                    color = MaterialTheme.colors.onSurface
+                    color = MaterialTheme.colorScheme.onSurface
                 )
             }
             Tab(
@@ -57,7 +57,7 @@ setForeground:(HsvColor)->Unit) {
                 Text(
                     stringResource(R.string.settings_foreground_color),
                     fontSize = 15.sp,
-                    color = MaterialTheme.colors.onSurface
+                    color = MaterialTheme.colorScheme.onSurface
                 )
             }
         }

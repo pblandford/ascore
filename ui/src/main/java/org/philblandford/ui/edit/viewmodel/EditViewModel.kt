@@ -1,6 +1,7 @@
 package org.philblandford.ui.edit.viewmodel
 
 import androidx.lifecycle.viewModelScope
+import com.philblandford.kscore.engine.core.area.Coord
 import com.philblandford.kscore.engine.types.EventParam
 import com.philblandford.kscore.engine.types.ParamMap
 import com.philblandford.kscore.engine.types.paramMapOf
@@ -34,7 +35,8 @@ open class EditViewModel(
   private val updateEvent: UpdateEventParam,
   private val insertEvent: InsertEvent,
   private val deleteSelectedEvent: DeleteSelectedEvent,
-  private val moveSelectedArea: MoveSelectedArea
+  private val moveSelectedArea: MoveSelectedArea,
+
 ) : BaseViewModel<EditModel, EditInterface, VMSideEffect>(), EditInterface {
 
   private var typeParam = EventParam.TYPE

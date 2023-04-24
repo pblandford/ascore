@@ -3,7 +3,7 @@ package com.philblandford.kscore.sound.transform
 import assertEqual
 import com.philblandford.kscore.engine.dsl.dslChord
 import com.philblandford.kscore.engine.duration.*
-import com.philblandford.kscore.engine.newadder.subadders.ChordDecoration
+import com.philblandford.kscore.engine.eventadder.subadders.ChordDecoration
 import com.philblandford.kscore.engine.types.*
 import com.philblandford.kscore.sound.transform.Transformer.transform
 import org.junit.Test

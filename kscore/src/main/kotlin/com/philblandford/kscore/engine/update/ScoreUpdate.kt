@@ -25,7 +25,7 @@ internal fun Score.diff(other: Score): ScoreDiff {
 
   val createHeaders = createHeaders(other)
 
-  if (bars.isEmpty() && lines.toList() == listOf(0)) {
+  if (bars.isEmpty() && (lines.isEmpty()  || lines.toList() == listOf(0))) {
     return getOptionDiff(other).copy(createHeaders = createHeaders)
   }
 
@@ -47,8 +47,6 @@ private fun compareOption(old: Score, new: Score, option: EventParam): Boolean {
 private fun Score.getOptionDiff(oldScore: Score): ScoreDiff {
   val noRecreate = ScoreDiff(listOf(), listOf(), false, false, false)
   val createParts = ScoreDiff(listOf(), listOf(), false, false, true)
-
-
 
 
   if (getParam<PartNum>(EventType.UISTATE, EventParam.SELECTED_PART)
@@ -75,6 +73,10 @@ private fun Score.getOptionDiff(oldScore: Score): ScoreDiff {
         return noRecreate
       }
     }
+  }
+
+  if (eventMap.eventChanged(oldScore.eventMap, EventType.STAVE_JOIN)) {
+    return createParts
   }
 
   return ScoreDiff(listOf(), listOf(), false)
@@ -144,8 +146,8 @@ private fun EventMap.eventChanged(new: EventMap, eventType: EventType): Boolean 
 }
 
 private fun Score.getChangedBars(new: Score): List<EventAddress> {
-  val topLevel = eventMap.diff(new.eventMap).map { EventAddress(it) }
-  return topLevel + getChangedSubLevels(new).flatMap { partChange ->
+  val topLevel = eventMap.diff(new.eventMap).map { EventAddress(it) }.filterNot { it.barNum == 0 }
+  return getChangedSubLevels(new).flatMap { partChange ->
     partChange.old.getChangedSubLevels(partChange.new).flatMap { staveChange ->
       staveChange.old.getChangedSubLevels(staveChange.new).map { barChange ->
         EventAddress(barChange.num + 1, staveId = StaveId(partChange.num + 1, staveChange.num + 1))

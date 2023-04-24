@@ -12,7 +12,7 @@ import com.philblandford.kscore.engine.types.RepeatBarType
 
 
 internal fun DrawableFactory.createBar(
-  segments: Map<Offset, SegmentArea>,
+  segments: List<Pair<Offset, SegmentArea>>,
   barGeography: ResolvedBarGeography,
   barStartArea: BarStartAreaPair,
   barEndArea: BarEndAreaPair,

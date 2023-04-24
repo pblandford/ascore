@@ -1,5 +1,6 @@
 package org.philblandford.ui.insert.items.meta.viewmodel
 
+import com.philblandford.kscore.engine.core.area.factory.TextType
 import com.philblandford.kscore.engine.types.Event
 import com.philblandford.kscore.engine.types.EventParam
 import com.philblandford.kscore.engine.types.EventType
@@ -7,12 +8,14 @@ import com.philblandford.kscore.engine.types.paramMapOf
 import org.philblandford.ascore2.features.insert.GetDefaultTextSize
 import org.philblandford.ascore2.features.insert.GetMetaEvent
 import org.philblandford.ascore2.features.insert.InsertMetaEvent
+import org.philblandford.ascore2.features.settings.repository.SettingsRepository
 import org.philblandford.ascore2.features.settings.usecases.GetAvailableFonts
 import org.philblandford.ascore2.features.ui.usecases.UpdateInsertItem
 import org.philblandford.ascore2.util.ok
 import org.philblandford.ui.insert.common.viewmodel.ScoreInsertViewModel
 import org.philblandford.ui.insert.items.meta.model.MetaInsertModel
 import org.philblandford.ui.insert.model.InsertInterface
+import org.philblandford.ui.util.nullIfEmpty
 import timber.log.Timber
 
 interface MetaInsertInterface : InsertInterface<MetaInsertModel> {
@@ -25,7 +28,8 @@ class MetaInsertViewModel(
   private val getMetaEvent: GetMetaEvent,
   private val updateInsertItem: UpdateInsertItem,
   private val getFonts: GetAvailableFonts,
-  private val getDefaultTextSize: GetDefaultTextSize
+  private val getDefaultTextSize: GetDefaultTextSize,
+  private val settingsRepository: SettingsRepository
 ) :
   ScoreInsertViewModel<MetaInsertModel, MetaInsertInterface>(),
   MetaInsertInterface {
@@ -41,8 +45,15 @@ class MetaInsertViewModel(
 
   override fun setEventType(eventType: EventType) {
     val event = getMetaEvent(eventType)
+
+    val font = event?.getParam<String>(EventParam.FONT)?.nullIfEmpty() ?: run {
+      val textType = TextType.fromEventType(eventType)
+      settingsRepository.getFonts()[textType]
+    }  ?: "default"
+
+
     updateInsertItem{
-      copy(eventType = eventType, params = event?.params ?: paramMapOf())
+      copy(eventType = eventType, params = (event?.params ?: paramMapOf()) + (EventParam.FONT to font))
     }
   }
 

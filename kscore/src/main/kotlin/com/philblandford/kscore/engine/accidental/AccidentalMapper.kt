@@ -60,7 +60,9 @@ fun mapAccidentals(
 
 private fun groupNotes(chords: EventHash): NoteLetterMap {
   val l = chords.flatMap { chord ->
-    chord.value.getParam<Iterable<Event>>(EventParam.NOTES)?.map { chord.key to it } ?: listOf()
+    chord.value.getParam<Iterable<Event>>(EventParam.NOTES)?.withIndex()
+      ?.map { (idx, note) -> chord.key.copy(eventAddress = chord.key.eventAddress.copy(id = idx + 1)) to note }
+      ?: listOf()
   }
   return l.groupBy {
     (it.second.getParam<Pitch>(EventParam.PITCH) ?: Pitch(NoteLetter.C)).noteLetter

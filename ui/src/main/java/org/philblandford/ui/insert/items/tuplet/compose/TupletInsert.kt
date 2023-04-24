@@ -4,9 +4,11 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.unit.dp
 import com.philblandford.kscore.engine.types.EventParam
 import org.philblandford.ascore2.features.ui.model.InsertItem
 import org.philblandford.ui.R
@@ -33,11 +35,8 @@ private fun TupletInsertInternal(
   insertItem: InsertItem,
   iface: TupletInsertInterface
 ) {
-  Box(Modifier.fillMaxWidth().height(panelHeight/2)) {
-    Row(
-      Modifier
-        .align(Alignment.Center)
-    ) {
+  Box(Modifier.fillMaxWidth().height(panelHeight/2).padding(10.dp)) {
+    Row {
       NumberSelector(min = model.minNumerator,
         max = model.maxNumerator, editable = false, num =
           insertItem.getParam(EventParam.NUMERATOR) ?: 3

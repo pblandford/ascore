@@ -5,9 +5,9 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
-import androidx.compose.material.DropdownMenu
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Text
+import androidx.compose.material3.DropdownMenu
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -52,7 +52,7 @@ fun TextSpinner(
     {
       Text(
         text = selected(),
-        style = textStyle() ?: MaterialTheme.typography.body1,
+        style = textStyle() ?: MaterialTheme.typography.bodyLarge,
         modifier = Modifier
           .align(
             if (textAlign == TextAlign.Start) Alignment.CenterStart else Alignment.Center
@@ -80,7 +80,7 @@ private fun SpinnerBase(
   val showDropdown = remember { mutableStateOf(false) }
   val borderMod = if (buttonBorder) modifier.border(
     1.dp,
-    MaterialTheme.colors.onSurface
+    MaterialTheme.colorScheme.onSurface
   ) else modifier
   val localX = remember { mutableStateOf(0) }
   val globalY = remember { mutableStateOf(0) }
@@ -97,39 +97,42 @@ private fun SpinnerBase(
         localX.value = lc.positionInParent().x.toInt()
       }) {
     child()
-  }
 
-  if (showDropdown.value) {
-    val screenHeight = LocalConfiguration.current.screenHeightDp
-    val bottom = globalY.value + height
-    val overlap = bottom - screenHeight
-    val density = LocalDensity.current.density
-    val y = if (overlap > 0) (-(overlap) * density) else 0f
 
-    ksLogt("height ${block().value} $density $y ${globalY.value} $bottom $height $screenHeight $overlap")
+    if (showDropdown.value) {
+      val screenHeight = LocalConfiguration.current.screenHeightDp
+      val bottom = globalY.value + height
+      val overlap = bottom - screenHeight
+      val density = LocalDensity.current.density
+      val y = if (overlap > 0) (-(overlap) * density) else 0f
 
-    DropdownMenu(expanded = showDropdown.value, onDismissRequest = { showDropdown.value = false }) {
-      if (grid) {
-        TextGrid(
-          strings = strings,
-          rows = gridRows,
-          columns = gridColumns,
-          tag = tag,
-          textStyle = textStyle() ?: MaterialTheme.typography.body1,
-          itemModifier = itemModifier
-        ) {
-          onSelect(it)
-          showDropdown.value = false
-        }
-      } else {
-        TextSpinnerDropdown(strings = strings, tag = tag) {
-          onSelect(it)
-          showDropdown.value = false
+      ksLogt("height ${block().value} $density $y ${globalY.value} $bottom $height $screenHeight $overlap")
+
+      DropdownMenu(
+        expanded = showDropdown.value,
+        onDismissRequest = { showDropdown.value = false }) {
+        if (grid) {
+          TextGrid(
+            strings = strings,
+            rows = gridRows,
+            columns = gridColumns,
+            tag = tag,
+            textStyle = textStyle() ?: MaterialTheme.typography.bodyLarge,
+            itemModifier = itemModifier
+          ) {
+            onSelect(it)
+            showDropdown.value = false
+          }
+        } else {
+          TextSpinnerDropdown(strings = strings, tag = tag) {
+            onSelect(it)
+            showDropdown.value = false
+          }
         }
       }
     }
-  }
 
+  }
 }
 
 @Composable
@@ -140,8 +143,8 @@ private fun TextSpinnerDropdown(
 ) {
   Box(
     Modifier
-      .background(MaterialTheme.colors.surface)
-      .border(2.dp, MaterialTheme.colors.onSurface)
+      .background(MaterialTheme.colorScheme.surface)
+      .border(2.dp, MaterialTheme.colorScheme.onSurface)
       .padding(5.dp)
   ) {
     val itemHeight = block(0.8)
@@ -171,14 +174,14 @@ fun TextGrid(
   rows: Int = strings.size, columns: Int = 1,
   tag: String = "",
   border: Boolean = true,
-  textStyle: TextStyle = MaterialTheme.typography.body1,
+  textStyle: TextStyle = MaterialTheme.typography.bodyLarge,
   itemModifier: Modifier = Modifier,
   onSelect: (Int) -> Unit,
 ) {
   Box(
     modifier = modifier
-      .background(MaterialTheme.colors.surface)
-      .border(if (border) BorderStroke(2.dp, MaterialTheme.colors.onSurface) else NoBorder)
+      .background(MaterialTheme.colorScheme.surface)
+      .border(if (border) BorderStroke(2.dp, MaterialTheme.colorScheme.onSurface) else NoBorder)
   ) {
 
     Column {
@@ -207,7 +210,7 @@ fun TextGrid(
 @Composable
 fun NumberSpinner(
   numbers: List<Int>, selected: Int, onSelect: (Int) -> Unit,
-  color: Color = MaterialTheme.colors.onSurface,
+  color: Color = MaterialTheme.colorScheme.onSurface,
   tag: String = ""
 ) {
   SpinnerBase(numbers.map { it.toString() }, tag = "Number", child = {
@@ -218,7 +221,7 @@ fun NumberSpinner(
 }
 
 @Composable
-fun NumberImage(number: Int, color: Color = MaterialTheme.colors.onBackground) {
+fun NumberImage(number: Int, color: Color = MaterialTheme.colorScheme.onBackground) {
   if (number == 0) {
     SquareImage(R.drawable.zero, modifier = Modifier.testTag("0"))
   } else {

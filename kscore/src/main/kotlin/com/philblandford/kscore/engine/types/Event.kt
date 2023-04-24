@@ -90,7 +90,7 @@ data class Event(val eventType: EventType, val params: ParamMap = paramMapOf()) 
     return isTrue(EventParam.IS_UP)
   }
 
-  fun isLine():Boolean {
+  fun isLine(): Boolean {
     return getParam<Duration>(EventParam.DURATION) != null
   }
 
@@ -124,7 +124,7 @@ data class StaveId(val main: Int, val sub: Int) : Comparable<StaveId> {
   }
 }
 
-data class Horizontal (
+data class Horizontal(
   val barNum: Int = 1,
   val offset: Offset = dZero(),
   val graceOffset: Offset? = null
@@ -197,7 +197,7 @@ data class EventAddress(
     return barNum == 1 && offset == dZero() && graceOffset == null
   }
 
-  fun isWild() = this == EWILD
+  fun isWild() = this.voiceIdless() == EWILD
 
   val horizontal = Horizontal(barNum, offset, graceOffset)
 
@@ -393,8 +393,6 @@ private val lineTypes = setOf(
   EventType.VOLTA
 )
 
-internal fun EventType.isDecorator() = decoratorTypes.contains(this)
-internal fun EventType.isXGeog() = xGeogTypes.contains(this)
 internal fun EventType.isLine() = lineTypes.contains(this)
 
 enum class
@@ -583,6 +581,10 @@ enum class ArpeggioType {
   NORMAL, UP, DOWN
 }
 
+enum class LongTrillType {
+  NORMAL
+}
+
 enum class ArticulationType {
   ACCENT, STACCATO, TENUTO, STACCATISSIMO, MARCATO
 }
@@ -667,7 +669,6 @@ enum class GraceInputMode {
 enum class FileSource {
   SAVE, TEMPLATE, AUTOSAVE, EXTERNAL, SOUNDFONT, THUMBNAIL
 }
-
 
 enum class RepeatBarType {
   ONE,

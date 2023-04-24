@@ -3,7 +3,7 @@ package com.philblandford.kscore.engine.core.score
 import com.philblandford.kscore.engine.core.area.factory.DrawableFactory
 import com.philblandford.kscore.engine.core.getLayoutDescriptor
 import com.philblandford.kscore.engine.core.representation.*
-import com.philblandford.kscore.engine.newadder.*
+import com.philblandford.kscore.engine.eventadder.*
 import com.philblandford.kscore.engine.types.*
 import com.philblandford.kscore.log.ksLoge
 import com.philblandford.kscore.log.ksLogt
@@ -14,7 +14,6 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
-import org.jetbrains.annotations.TestOnly
 
 enum class CommandType {
   ADD, DELETE, SET
@@ -200,16 +199,14 @@ class ScoreContainer(private val drawableFactory: DrawableFactory) {
     }
   }
 
-  private fun receiveCommand(command: Command) {
+  private suspend fun receiveCommand(command: Command) {
+    ksLoge("Double note SC dequeue $command")
+
     try {
-      coroutineScope.launch {
         val newScoreState = currentScoreState.value.applyCommand(command)
         currentScoreState.emit(newScoreState)
-      }
     } catch (e:Exception) {
-      coroutineScope.launch {
         errorFlow.emit(ScoreError(e, command))
-      }
     }
   }
 
@@ -265,17 +262,20 @@ class ScoreContainer(private val drawableFactory: DrawableFactory) {
     endAddress: EventAddress? = null,
   ): ScoreState {
     return score?.let { score ->
-      val sr = if (add) {
-        score.addEvent(event, eventAddress, endAddress)
-      } else {
-        score.deleteEvent(event.eventType, event.params, eventAddress, endAddress)
-      }?.let { ScoreReturn(it) }
-
-      sr?.let {
-        if (sr.scoreLevel != score) {
-          updateScore(sr.scoreLevel as Score, sr.repUpdate)
+      val address = if (eventAddress.isWild()) score.getMarker()?.copy(voice = eventAddress.voice) else eventAddress
+      address?.let {
+        val sr = if (add) {
+          score.addEvent(event, address, endAddress)
         } else {
-          this
+          score.deleteEvent(event.eventType, event.params, address, endAddress)
+        }?.let { ScoreReturn(it) }
+
+        sr?.let {
+          if (sr.scoreLevel != score) {
+            updateScore(sr.scoreLevel as Score, sr.repUpdate)
+          } else {
+            this
+          }
         }
       }
     } ?: this

@@ -20,7 +20,7 @@ import com.philblandford.kscore.engine.dsl.dslChord
 import com.philblandford.kscore.engine.duration.Chord
 import com.philblandford.kscore.engine.duration.Note
 import com.philblandford.kscore.engine.duration.crotchet
-import com.philblandford.kscore.engine.newadder.subadders.ChordDecoration
+import com.philblandford.kscore.engine.eventadder.subadders.ChordDecoration
 import org.junit.Test
 import com.philblandford.kscore.engine.core.representation.RepTest
 

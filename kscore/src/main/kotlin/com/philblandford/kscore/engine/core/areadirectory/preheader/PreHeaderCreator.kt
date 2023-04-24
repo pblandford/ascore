@@ -8,7 +8,7 @@ import com.philblandford.kscore.option.getOption
 fun DrawableFactory.createPreHeaders(scoreQuery: ScoreQuery): Pair<Lookup<PreHeaderGeography>, Lookup<PreHeaderArea>>? {
 
   val events = (scoreQuery.allParts(true)).map {
-    it to getEventsForBar(ea(1).copy(staveId = StaveId(it, 0)), scoreQuery)
+    Pair(it, getEventsForBar(ea(1).copy(staveId = StaveId(it, 0)), scoreQuery))
   }.toMap()
 
   val firstHeaders = getHeaders(events, LabelType.FULL, showFullPartName(scoreQuery))

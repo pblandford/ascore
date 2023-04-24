@@ -1,16 +1,22 @@
 package org.philblandford.ui.insert.items.ornament.compose
 
 import GridSelection
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.material.Checkbox
+import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.Checkbox
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.unit.dp
+import com.philblandford.kscore.engine.core.area.factory.TextType
 import com.philblandford.kscore.engine.types.Accidental
 import com.philblandford.kscore.engine.types.ArpeggioType
 import com.philblandford.kscore.engine.types.EventParam
 import com.philblandford.kscore.engine.types.EventType
+import com.philblandford.kscore.engine.types.LongTrillType
 import com.philblandford.kscore.engine.types.OrnamentType
 import org.philblandford.ascore2.features.ui.model.InsertItem
 import org.philblandford.ui.R
@@ -18,37 +24,50 @@ import org.philblandford.ui.insert.row.compose.RowInsert
 import org.philblandford.ui.insert.row.viewmodel.RowInsertInterface
 import org.philblandford.ui.insert.row.viewmodel.RowInsertModel
 import org.philblandford.ui.input.compose.selectors.AccidentalSpinner
+import org.philblandford.ui.main.window.LocalWindowSizeClass
+import org.philblandford.ui.main.window.compact
 import org.philblandford.ui.util.Gap
 import org.philblandford.ui.util.ornamentIds
 
 @Composable
 fun OrnamentInsert() {
-  RowInsert(ornamentIds + (R.drawable.arpeggio to ArpeggioType.NORMAL)) { model, item, iface ->
+  RowInsert(
+    (ornamentIds + (R.drawable.arpeggio to ArpeggioType.NORMAL)) +
+        (R.drawable.trill_part to LongTrillType.NORMAL)
+  ) { model, item, iface ->
     OrnamentInsertInternal(item, model, iface)
   }
 }
 
 @Composable
 private fun OrnamentInsertInternal(
-  insertItem: InsertItem,
-  model: RowInsertModel<Enum<*>>,
-  iface: RowInsertInterface<Enum<*>>
+  insertItem: InsertItem, model: RowInsertModel<Enum<*>>, iface: RowInsertInterface<Enum<*>>
 ) {
-  Column {
-    Grid(model, iface)
-    Gap(0.5f)
-    CheckBoxRow(insertItem, iface)
+  Box(Modifier.padding(10.dp)) {
+    if (LocalWindowSizeClass.current.compact()) {
+      Column {
+        Grid(model, iface)
+        Gap(0.5f)
+        CheckBoxRow(insertItem, iface)
+      }
+    } else {
+      Row {
+        Grid(model, iface)
+        Gap(0.5f)
+        CheckBoxRow(insertItem, iface)
+      }
+    }
   }
 }
 
 @Composable
 private fun Grid(
-  model: RowInsertModel<Enum<*>>,
-  iface: RowInsertInterface<Enum<*>>
+  model: RowInsertModel<Enum<*>>, iface: RowInsertInterface<Enum<*>>
 ) {
   val ornamentIds = model.ids
   GridSelection(images = ornamentIds.map { it.first },
-    rows = 1, columns = ornamentIds.size,
+    rows = 1,
+    columns = ornamentIds.size,
     itemBorder = true,
     selected = { model.selected },
     onSelect = {
@@ -72,23 +91,21 @@ private fun CheckBoxRow(item: InsertItem, iface: RowInsertInterface<Enum<*>>) {
 
 @Composable
 private fun AccidentalCheckbox(
-  above: Boolean,
-  iface: RowInsertInterface<Enum<*>>
+  above: Boolean, iface: RowInsertInterface<Enum<*>>
 ) {
   val param = if (above) EventParam.ACCIDENTAL_ABOVE else EventParam.ACCIDENTAL_BELOW
 
   val enabled = remember { mutableStateOf(false) }
   val selectedAccidental = remember { mutableStateOf(Accidental.SHARP) }
 
-  Checkbox(checked = enabled.value,
-    onCheckedChange = { yes ->
-      enabled.value = yes
-      if (yes) {
-        iface.setParam(param, selectedAccidental.value)
-      } else {
-        iface.setParam(param, null)
-      }
-    })
+  Checkbox(checked = enabled.value, onCheckedChange = { yes ->
+    enabled.value = yes
+    if (yes) {
+      iface.setParam(param, selectedAccidental.value)
+    } else {
+      iface.setParam(param, null)
+    }
+  })
 
   AccidentalChooser(selectedAccidental.value) {
     selectedAccidental.value = it
@@ -100,15 +117,13 @@ private fun AccidentalCheckbox(
 
 @Composable
 fun AccidentalChooser(
-  selectedAccidental: Accidental,
-  select: (Accidental) -> Unit
+  selectedAccidental: Accidental, select: (Accidental) -> Unit
 ) {
 
   val accidentals = Accidental.values().toList().minus(Accidental.FORCE_FLAT)
   AccidentalSpinner(
     selectedAccidental = selectedAccidental,
-    accidentals = accidentals
-      .minus(Accidental.FORCE_SHARP),
+    accidentals = accidentals.minus(Accidental.FORCE_SHARP),
     setAccidental = select
   )
 }

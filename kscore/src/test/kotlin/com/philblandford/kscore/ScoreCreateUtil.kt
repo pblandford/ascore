@@ -47,6 +47,10 @@ open class MockScoreQuery(
     TODO("Not yet implemented")
   }
 
+  override fun getMarker(): EventAddress? {
+    TODO("Not yet implemented")
+  }
+
   override fun <T> getOption(option: EventParam): T? {
     TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
   }

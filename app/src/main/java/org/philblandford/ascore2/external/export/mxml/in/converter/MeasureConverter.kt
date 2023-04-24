@@ -8,8 +8,8 @@ import com.philblandford.kscore.engine.core.score.Bar
 import com.philblandford.kscore.engine.core.score.tuplet
 import com.philblandford.kscore.engine.duration.*
 import com.philblandford.kscore.engine.map.emptyEventMap
-import com.philblandford.kscore.engine.newadder.subadders.ChordDecoration
-import com.philblandford.kscore.engine.newadder.util.getYPosition
+import com.philblandford.kscore.engine.eventadder.subadders.ChordDecoration
+import com.philblandford.kscore.engine.eventadder.util.getYPosition
 import com.philblandford.kscore.engine.time.TimeSignature
 import com.philblandford.kscore.engine.types.*
 import com.philblandford.kscore.log.ksLoge

@@ -8,8 +8,13 @@ import com.philblandford.kscore.engine.types.GraceInputMode
 import com.philblandford.kscore.engine.types.GraceType
 import com.philblandford.kscore.engine.types.NoteHeadType
 import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.flow.distinctUntilChanged
+import kotlinx.coroutines.flow.distinctUntilChangedBy
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 import org.philblandford.ascore2.features.input.usecases.*
+import org.philblandford.ascore2.features.insert.GetKeySignatureAtMarker
+import org.philblandford.ascore2.features.score.ScoreUpdate
 import org.philblandford.ascore2.features.sound.usecases.SoundNote
 import org.philblandford.ascore2.util.ok
 import org.philblandford.ui.base.viewmodel.BaseViewModel
@@ -17,6 +22,7 @@ import org.philblandford.ui.base.viewmodel.VMInterface
 import org.philblandford.ui.base.viewmodel.VMSideEffect
 import org.philblandford.ui.input.compose.keyboard.NoteInputButtonsInterface
 import org.philblandford.ui.input.model.InputModel
+import timber.log.Timber
 
 
 interface InputInterface : VMInterface, NoteInputButtonsInterface {
@@ -34,7 +40,8 @@ class InputViewModel(
   private val updateInputState: UpdateInputState,
   private val moveMarkerUC: MoveMarker,
   private val soundNote: SoundNote,
-  private val getInstrumentAtMarker:GetInstrumentAtMarker
+  private val getInstrumentAtMarker:GetInstrumentAtMarker,
+  private val getKeySignature:GetKeySignatureAtMarker,
 ) :
   BaseViewModel<InputModel, InputInterface, InputEffect>(), InputInterface {
 
@@ -44,6 +51,12 @@ class InputViewModel(
         update { copy(noteInputDescriptor = nd) }
       }
     }
+    viewModelScope.launch {
+      scoreUpdate().map { getKeySignature() }.distinctUntilChanged().collectLatest { key ->
+        val accidental = if (key >= 0) Accidental.SHARP else Accidental.FLAT
+        updateInputState{ copy(accidental = accidental)}
+      }
+    }
   }
 
   override suspend fun initState(): Result<InputModel> {
@@ -51,7 +64,7 @@ class InputViewModel(
     return InputModel(
       noteInputState().value,
       Accidental.values().toList() - Accidental.NATURAL,
-      descrs
+      descrs,
     ).ok()
   }
 
@@ -62,7 +75,7 @@ class InputViewModel(
       insertNoteUC(midiVal, hold)
       soundNote(midiVal)
       if (it.noteInputDescriptor.isPlusOctave) {
-        soundNote(midiVal-12)
+        soundNote(midiVal - 12)
       }
       launchEffect(InputEffect.Redraw)
       it.ok()

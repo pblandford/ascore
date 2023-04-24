@@ -1,8 +1,8 @@
 package org.philblandford.ui.create.compose
 
 import androidx.compose.foundation.layout.*
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Text
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment.Companion.CenterHorizontally
 import androidx.compose.ui.Modifier
@@ -31,7 +31,7 @@ internal fun CreateKeyTimeSignature(
         modifier = Modifier.align(CenterHorizontally)
       )
       Text(stringResource(R.string.create_score_time_signature), Modifier.padding(vertical = 5.dp),
-        style = MaterialTheme.typography.h1)
+        style = MaterialTheme.typography.bodyLarge)
       TimeSelector(Modifier.align(CenterHorizontally), model.newScoreDescriptor.timeSignature) {
         iface.setTimeSignature { it }
       }

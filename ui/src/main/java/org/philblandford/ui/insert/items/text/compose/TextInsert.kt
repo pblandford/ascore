@@ -2,9 +2,10 @@ package org.philblandford.ui.insert.items.text.compose
 
 import GridSelection
 import androidx.compose.foundation.layout.*
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.OutlinedTextField
-import androidx.compose.material.TextFieldDefaults
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -18,14 +19,17 @@ import org.philblandford.ui.R
 import org.philblandford.ui.common.block
 import org.philblandford.ui.insert.common.compose.InsertVMView
 import org.philblandford.ui.insert.common.viewmodel.DefaultInsertViewModel
+import org.philblandford.ui.insert.items.text.viewmodel.TextInsertViewModel
 import org.philblandford.ui.insert.model.InsertInterface
 import org.philblandford.ui.insert.model.InsertModel
+import org.philblandford.ui.main.window.LocalWindowSizeClass
+import org.philblandford.ui.main.window.compact
 import org.philblandford.ui.util.Gap
 import org.philblandford.ui.util.ToggleRow
 
 @Composable
 fun TextInsert() {
-  InsertVMView<InsertModel, InsertInterface<InsertModel>, DefaultInsertViewModel> { _, insertItem, iface ->
+  InsertVMView<InsertModel, InsertInterface<InsertModel>, TextInsertViewModel> { _, insertItem, iface ->
     TextInsertInternal(insertItem, iface)
   }
 }
@@ -33,6 +37,18 @@ fun TextInsert() {
 
 @Composable
 private fun TextInsertInternal(
+  insertItem: InsertItem,
+  iface: InsertInterface<InsertModel>
+) {
+  if (LocalWindowSizeClass.current.compact()) {
+    TextInsertCompact(insertItem, iface)
+  } else {
+    TextInsertExpanded(insertItem, iface)
+  }
+}
+
+@Composable
+private fun TextInsertCompact(
   insertItem: InsertItem,
   iface: InsertInterface<InsertModel>
 ) {
@@ -50,18 +66,41 @@ private fun TextInsertInternal(
 }
 
 @Composable
+private fun TextInsertExpanded(
+  insertItem: InsertItem,
+  iface: InsertInterface<InsertModel>
+) {
+  Row(Modifier.padding(10.dp)) {
+    Insert(insertItem, iface)
+    Gap(0.5f)
+      Select(insertItem, iface)
+      if (insertItem.eventType == EventType.EXPRESSION_TEXT) {
+        Gap(block())
+        UpDown(insertItem, iface)
+    }
+  }
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
 private fun Insert(insertItem: InsertItem, iface: InsertInterface<InsertModel>) {
-  val text = remember(insertItem.eventType) { mutableStateOf(insertItem.getParam(EventParam.TEXT) ?: "") }
+  val text =
+    remember(insertItem.eventType) { mutableStateOf(insertItem.getParam(EventParam.TEXT) ?: "") }
 
   OutlinedTextField(
     value = text.value,
     onValueChange = {
       text.value = it
-      iface.setParam(EventParam.TEXT, it) },
+      iface.setParam(EventParam.TEXT, it)
+    },
     modifier = Modifier
       .size(block(7), block(2))
       .testTag("MainText"),
-    colors = TextFieldDefaults.textFieldColors(cursorColor = MaterialTheme.colors.onSurface)
+    colors = TextFieldDefaults.textFieldColors(
+      textColor = MaterialTheme.colorScheme.surface,
+      containerColor = MaterialTheme.colorScheme.onSurface,
+      cursorColor = MaterialTheme.colorScheme.surface
+    )
   )
 }
 

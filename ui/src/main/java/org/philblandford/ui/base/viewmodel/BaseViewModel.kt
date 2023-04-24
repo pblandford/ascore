@@ -15,6 +15,7 @@ import org.philblandford.ascore2.features.crosscutting.usecases.SetProgress
 import org.philblandford.ascore2.features.score.ScoreUpdate
 import org.philblandford.ascore2.util.andThen
 import org.philblandford.ascore2.util.ok
+import org.philblandford.ui.input.viewmodel.InputViewModel
 import timber.log.Timber
 
 
@@ -185,10 +186,11 @@ abstract class BaseViewModel<M : VMModel, I : VMInterface, S : VMSideEffect> : V
   private fun listen() {
     viewModelScope.launch {
       _actions.consumeAsFlow().collect { action ->
-        Timber.e("OI got action ${_viewState.value}")
+        if (this@BaseViewModel is InputViewModel) {
+          Timber.e("UNDO got action ${_viewState.value}")
+        }
         _viewState.value?.let { value ->
           emitOrFail {
-            Timber.e("OI emitting ${action.func(value)}")
             action.func(value) }
         }
       }

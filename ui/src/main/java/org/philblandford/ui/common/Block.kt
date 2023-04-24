@@ -7,6 +7,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import org.philblandford.ui.main.window.LocalWindowSizeClass
+import org.philblandford.ui.main.window.compact
 
 
 @Composable
@@ -17,7 +19,8 @@ fun block(num:Float):Dp = block(num.toDouble())
 
 @Composable
 fun block(num:Double = 1.0):Dp {
-  val size = LocalConfiguration.current.screenWidthDp / 10
+  val size = if (LocalWindowSizeClass.current.compact()) LocalConfiguration.current.screenWidthDp / 10
+  else LocalConfiguration.current.screenWidthDp / 20
   return (num * size).dp
 }
 

@@ -2,7 +2,7 @@ package org.philblandford.ui.main.utility.compose
 
 import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
-import androidx.compose.material.MaterialTheme
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -39,8 +39,8 @@ fun UtilityRowInternal(
     Modifier
       .height(block())
       .fillMaxWidth()
-      .background(MaterialTheme.colors.surface)
-      .border(1.dp, MaterialTheme.colors.onSurface)
+      .background(MaterialTheme.colorScheme.surface)
+      .border(1.dp, MaterialTheme.colorScheme.onSurface)
   ) {
     val (left, right) = createRefs()
     Row(Modifier.constrainAs(left) { start.linkTo(parent.start) }) {
@@ -76,7 +76,7 @@ private fun DeleteButton(
   selected:Boolean, delete: () -> Unit,
   deleteLong: () -> Unit
 ) {
-  val colors = with(MaterialTheme.colors) {
+  val colors = with(MaterialTheme.colorScheme) {
     if (selected) {
       onSurface to surface
     } else {

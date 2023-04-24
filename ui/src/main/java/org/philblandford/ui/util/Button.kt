@@ -2,7 +2,7 @@ package org.philblandford.ui.util
 
 import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
-import androidx.compose.material.MaterialTheme
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -60,18 +60,18 @@ fun SquareImage(
 ) {
 
   val foreground = if (state == ButtonState.SELECTED) {
-    backgroundColor ?: MaterialTheme.colors.surface
+    backgroundColor ?: MaterialTheme.colorScheme.surface
   } else {
-    foregroundColor ?: MaterialTheme.colors.onSurface
+    foregroundColor ?: MaterialTheme.colorScheme.onSurface
   }
   val background = if (state == ButtonState.SELECTED) {
-    foregroundColor ?: MaterialTheme.colors.onSurface
+    foregroundColor ?: MaterialTheme.colorScheme.onSurface
   } else {
-    backgroundColor ?: MaterialTheme.colors.surface
+    backgroundColor ?: MaterialTheme.colorScheme.surface
   }
 
   var sizeMod = modifier.background(background).size(size)
-  if (border) sizeMod = sizeMod.border(1.dp, MaterialTheme.colors.onSurface)
+  if (border) sizeMod = sizeMod.border(1.dp, MaterialTheme.colorScheme.onSurface)
 
   val colorFilter = when (state) {
     ButtonState.DIMMED -> ColorFilter.tint(foreground.copy(alpha = 0.25f))

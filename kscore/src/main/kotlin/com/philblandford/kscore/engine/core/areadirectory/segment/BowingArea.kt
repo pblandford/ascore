@@ -4,7 +4,7 @@ import com.philblandford.kscore.engine.core.area.Area
 import com.philblandford.kscore.engine.core.area.factory.DrawableFactory
 import com.philblandford.kscore.engine.core.area.factory.ImageArgs
 import com.philblandford.kscore.engine.core.representation.*
-import com.philblandford.kscore.engine.newadder.subadders.ChordDecoration
+import com.philblandford.kscore.engine.eventadder.subadders.ChordDecoration
 import com.philblandford.kscore.engine.types.BowingType
 import com.philblandford.kscore.engine.types.BowingType.*
 import com.philblandford.kscore.engine.types.INT_WILD

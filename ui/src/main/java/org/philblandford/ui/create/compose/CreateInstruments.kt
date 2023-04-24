@@ -5,9 +5,17 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.rememberLazyListState
-import androidx.compose.material.*
+import androidx.compose.material.DismissDirection
+import androidx.compose.material.DismissState
+import androidx.compose.material.DismissValue
+import androidx.compose.material.ExperimentalMaterialApi
+import androidx.compose.material.FractionalThreshold
+import androidx.compose.material.SwipeToDismiss
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Delete
+import androidx.compose.material.rememberDismissState
+import androidx.compose.material3.*
+import androidx.compose.material3.Icon
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -165,7 +173,7 @@ private fun SelectedInstrument(
   Box(
     Modifier
       .fillMaxWidth()
-      .background(MaterialTheme.colors.surface)
+      .background(MaterialTheme.colorScheme.surface)
   ) {
     Row(
       Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween,
@@ -175,6 +183,7 @@ private fun SelectedInstrument(
         instrument.label, modifier = Modifier
           .height(block())
           .padding(5.dp),
+        color = MaterialTheme.colorScheme.onSurface,
         fontSize = 17.sp
       )
       SquareButton(resource = android.R.drawable.ic_menu_edit, tag = "${instrument.label} edit",

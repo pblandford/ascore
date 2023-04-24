@@ -3,13 +3,15 @@ package org.philblandford.ui.util
 import GridSelection
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
-import androidx.compose.material.DropdownMenu
-import androidx.compose.material.MaterialTheme
+import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.DropdownMenu
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.Dp
+import androidx.compose.ui.unit.dp
 import org.philblandford.ui.common.block
 
 
@@ -24,7 +26,7 @@ fun ImageGridDropdown(
 ) {
   val showDropdown = remember { mutableStateOf(false) }
 
-  Box(modifier) {
+  Box(modifier.padding(5.dp)) {
     SquareButton(
       resource = images[selected()],
       size = size,
@@ -35,7 +37,7 @@ fun ImageGridDropdown(
 
       DropdownMenu(
         expanded = showDropdown.value,
-        modifier = Modifier.background(MaterialTheme.colors.surface),
+        modifier = Modifier.background(MaterialTheme.colorScheme.surface),
         onDismissRequest = { showDropdown.value = false }) {
 
           GridSelection(

@@ -1,6 +1,8 @@
 package com.philblandford.kscore.engine.time
 
 import com.philblandford.kscore.engine.duration.Duration
+import com.philblandford.kscore.engine.duration.Offset
+import com.philblandford.kscore.engine.duration.dZero
 import com.philblandford.kscore.engine.types.*
 import com.philblandford.kscore.log.ksLoge
 import com.philblandford.kscore.util.isPower2
@@ -82,4 +84,14 @@ fun timeSignature(event: Event): TimeSignature? {
   val type = event.subType as TimeSignatureType
   val hidden = event.params.get(EventParam.HIDDEN) as Boolean? ?: false
   return TimeSignature(num, den, type, hidden)
+}
+
+
+fun TimeSignature.getRegularDivisions(): List<Pair<Offset, Duration>> {
+  if (numerator ==1 || numerator % 2 == 0 || numerator % 3 == 0) {
+    return listOf(dZero() to duration)
+  }
+  val first = dZero() to Duration(numerator / 2 + 1, denominator)
+  val second = first.second to Duration(numerator / 2, denominator)
+  return listOf(first, second)
 }

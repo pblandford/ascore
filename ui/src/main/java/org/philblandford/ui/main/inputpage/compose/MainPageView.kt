@@ -9,9 +9,9 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.material.AlertDialog
-import androidx.compose.material.Button
-import androidx.compose.material.Text
+import androidx.compose.material3.AlertDialog
+import androidx.compose.material3.Button
+import androidx.compose.material3.Text
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -39,10 +39,13 @@ import timber.log.Timber
 
 
 @Composable
-fun MainPageView(openDrawer: () -> Unit, setPopupLayout: (LayoutID) -> Unit, toggleMixer:()->Unit) {
+fun MainPageView(openDrawer: () -> Unit, setPopupLayout: (LayoutID) -> Unit, toggleMixer:()->Unit,
+onScoreEmpty: () -> Unit) {
   Timber.e("RECO MainPageView")
 
   VMView(MainPageViewModel::class.java) { state, iface, effect ->
+
+    Timber.e("HEY YOU $state")
 
     val coroutineScope = rememberCoroutineScope()
     val alertText = remember { mutableStateOf<ErrorDescr?>(null) }
@@ -76,17 +79,13 @@ fun MainPageView(openDrawer: () -> Unit, setPopupLayout: (LayoutID) -> Unit, tog
     Box(Modifier.fillMaxSize()) {
       val showPanel = remember { mutableStateOf(true) }
       val fullScreen = remember { mutableStateOf(false) }
-      val uiController = rememberSystemUiController()
 
       BackHandler(fullScreen.value) {
         fullScreen.value = false
       }
 
-      uiController.isStatusBarVisible = !fullScreen.value
-
-
       if (fullScreen.value) {
-        ScreenBox(Modifier.fillMaxSize(), state)
+        ScreenBox(Modifier.fillMaxSize(), true, state, onScoreEmpty, iface::toggleVertical)
       } else {
         Column(
           Modifier
@@ -95,15 +94,17 @@ fun MainPageView(openDrawer: () -> Unit, setPopupLayout: (LayoutID) -> Unit, tog
         ) {
           TopRow(
             Modifier,
+            state.canShowTabs,
+            state.vertical,
             openDrawer,
             { setPopupLayout(LayoutID.LAYOUT_OPTIONS) },
-            { fullScreen.value = true }) {
-            toggleMixer()
-          }
+            { fullScreen.value = true },
+            { toggleMixer() },
+            { iface.toggleVertical() })
 
           Box(Modifier.fillMaxWidth()) {
 
-            ScreenBox(Modifier.fillMaxSize(), state)
+            ScreenBox(Modifier.fillMaxSize(), false, state, onScoreEmpty, iface::toggleVertical)
 
             Column(Modifier.align(Alignment.BottomCenter)) {
               AnimatedVisibility(showPanel.value, enter = slideInVertically { it },
@@ -121,15 +122,14 @@ fun MainPageView(openDrawer: () -> Unit, setPopupLayout: (LayoutID) -> Unit, tog
 }
 
 @Composable
-private fun ScreenBox(modifier: Modifier, state: MainPageModel) {
-  Timber.e("RECO ScreenBox")
-
+private fun ScreenBox(modifier: Modifier, center:Boolean, state: MainPageModel, onScoreEmpty:()->Unit,
+changeMethod:()->Unit) {
 
   val clipboardOffset = remember { mutableStateOf(Offset(0f, 10f)) }
   val zoomOffset = remember { mutableStateOf(Offset(0f, 0f)) }
 
   Box(modifier) {
-    ScreenView()
+    ScreenView(state.vertical, center, onScoreEmpty, changeMethod)
 
     if (state.showClipboard) {
       DraggableItem(Modifier.align(Alignment.TopCenter), clipboardOffset) {

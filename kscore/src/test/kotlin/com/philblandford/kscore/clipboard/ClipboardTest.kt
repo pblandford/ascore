@@ -7,7 +7,7 @@ import com.philblandford.kscore.engine.core.area.Coord
 import com.philblandford.kscore.engine.core.score.*
 import com.philblandford.kscore.engine.dsl.score
 import com.philblandford.kscore.engine.duration.*
-import com.philblandford.kscore.engine.newadder.rightOrThrow
+import com.philblandford.kscore.engine.eventadder.rightOrThrow
 import com.philblandford.kscore.engine.time.TimeSignature
 import createCrotchets
 import org.junit.Test
@@ -460,6 +460,26 @@ class ClipboardTest : ScoreTest() {
     paste(ea(3))
     SVE(EventType.REPEAT_BAR, ea(4))
   }
+
+  @Test
+  fun testPasteUpbeatBar() {
+    var score = score {
+      part {
+        stave {
+          bar { voiceMap { chord() } }
+          bar { voiceMap { chord(); chord(); chord(); chord() } }
+          bar { voiceMap { } }
+          bar { voiceMap { } }
+        }
+      }
+    }
+    score = score.addEvent(TimeSignature(1,4).toHiddenEvent(), ez(1))!!
+    Clipboard.copy(ea(1), ea(2, minim(1)), score)
+    val newScore = Clipboard.paste(ea(3), score).rightOrThrow()
+    assertEqual("C4:C4:C4:C4", newScore.getVoiceMap(eav(3))?.eventString())
+    assertEqual("C4:R4:R2", newScore.getVoiceMap(eav(4))?.eventString())
+  }
+
 
 
   private fun copy(start: EventAddress, end: EventAddress) {

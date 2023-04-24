@@ -8,7 +8,7 @@ import com.philblandford.kscore.engine.dsl.rest
 import com.philblandford.kscore.engine.dsl.scoreAllCrotchets
 import com.philblandford.kscore.engine.dsl.scoreGrandStave
 import com.philblandford.kscore.engine.duration.*
-import com.philblandford.kscore.engine.newadder.util.getNote
+import com.philblandford.kscore.engine.eventadder.util.getNote
 import com.philblandford.kscore.engine.time.TimeSignature
 import org.junit.Test
 
@@ -738,6 +738,35 @@ class NoteAddTest : ScoreTest() {
   fun testAddNoteHoldMarkerRemains() {
     SMV(extraParams = paramMapOf(EventParam.HOLD to true))
     SVP(EventType.UISTATE, EventParam.MARKER_POSITION, ea(1), eZero())
+  }
+
+  @Test
+  fun testAddNoteWildcard() {
+    SMV(eventAddress = eWild())
+    SVP(
+      EventType.NOTE, EventParam.PITCH, Pitch(NoteLetter.C, Accidental.NATURAL, 5),
+      eventAddress = eav(1).copy(id = 1)
+    )
+  }
+
+  @Test
+  fun testAddNoteWildcardBar2() {
+    setMarker(ea(2))
+    SMV(eventAddress = eWild())
+    SVP(
+      EventType.NOTE, EventParam.PITCH, Pitch(NoteLetter.C, Accidental.NATURAL, 5),
+      eventAddress = eav(2).copy(id = 1)
+    )
+  }
+
+
+  @Test
+  fun testAddNoteWildcardVoice2() {
+    SMV(eventAddress = eWild().copy(voice = 2))
+    SVP(
+      EventType.NOTE, EventParam.PITCH, Pitch(NoteLetter.C, Accidental.NATURAL, 5),
+      eventAddress = eav(1, voice = 2).copy(id = 1)
+    )
   }
 
 }

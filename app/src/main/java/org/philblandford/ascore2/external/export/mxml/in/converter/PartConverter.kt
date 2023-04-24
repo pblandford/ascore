@@ -8,8 +8,8 @@ import com.philblandford.kscore.engine.duration.dZero
 import com.philblandford.kscore.engine.duration.minim
 import com.philblandford.kscore.engine.map.emptyEventMap
 import com.philblandford.kscore.engine.map.eventHashOf
-import com.philblandford.kscore.engine.newadder.util.setStemDirection
-import com.philblandford.kscore.engine.newadder.util.setXPositions
+import com.philblandford.kscore.engine.eventadder.util.setStemDirection
+import com.philblandford.kscore.engine.eventadder.util.setXPositions
 import com.philblandford.kscore.engine.types.*
 import kotlin.math.min
 

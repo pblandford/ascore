@@ -2,7 +2,7 @@ package org.philblandford.ui.create.compose
 
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.*
-import androidx.compose.material.MaterialTheme
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -70,7 +70,7 @@ fun TimeSelector(modifier:Modifier, timeSignature: TimeSignature, set:(TimeSigna
         }
       }
       Gap(0.5)
-      Box(Modifier.border(1.dp, MaterialTheme.colors.onSurface).padding(5.dp)) {
+      Box(Modifier.border(1.dp, MaterialTheme.colorScheme.onSurface).padding(5.dp)) {
         CustomTimeSelector(timeSignature, set)
       }
       Gap(0.5)

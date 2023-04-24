@@ -3,8 +3,8 @@ package org.philblandford.ui.input.compose.percussion
 import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Text
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -84,7 +84,7 @@ private fun InstrumentButton(descr: PercussionDescr, iface: InputInterface) {
     Modifier
       .size(getButtonWidth(), block())
       .background(Color.Transparent, RoundedCornerShape(10))
-      .border(2.dp, MaterialTheme.colors.onSurface)
+      .border(2.dp, MaterialTheme.colorScheme.onSurface)
   ) {
     val showPopup = remember { mutableStateOf(false) }
 
@@ -108,10 +108,10 @@ private fun InstrumentButton(descr: PercussionDescr, iface: InputInterface) {
           descr.name,
           Modifier
             .clickable(onClick = { showPopup.value = false })
-            .background(MaterialTheme.colors.onSurface)
-            .border(1.dp, MaterialTheme.colors.surface)
+            .background(MaterialTheme.colorScheme.onSurface)
+            .border(1.dp, MaterialTheme.colorScheme.surface)
             .padding(5.dp),
-          color = MaterialTheme.colors.surface
+          color = MaterialTheme.colorScheme.surface
         )
       }
     }

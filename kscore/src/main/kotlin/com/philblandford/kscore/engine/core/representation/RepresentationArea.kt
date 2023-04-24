@@ -146,9 +146,9 @@ internal fun Representation.getAreasAtAddress(eventAddress: EventAddress): List<
       page.base.getAreasAtAddress(address, ez(page.geography.startBar), Coord(), areaMapOf())
 
     map.mapNotNull { (k, v) ->
-      val childStart = v.childMap.minByOrNull { it.key.coord.y }?.key?.coord?.y ?: 0
-      val childEnd = v.childMap.maxByOrNull { it.key.coord.y + it.value.height }?.let {
-        it.key.coord.y + it.value.height
+      val childStart = v.childMap.minByOrNull { it.first.coord.y }?.first?.coord?.y ?: 0
+      val childEnd = v.childMap.maxByOrNull { it.first.coord.y + it.second.height }?.let {
+        it.first.coord.y + it.second.height
       } ?: v.height
 
       v.event?.let { ev ->
@@ -191,7 +191,7 @@ private fun Area.getAreasAtAddress(
   var newMap = mapSoFar
   if (inRange(eventAddress, areaAddress, this)) {
     childMap.forEach { (k, v) ->
-      newMap = newMap.plus(getEvents(k, v, eventAddress, offset))
+      newMap = newMap.plus(getEvents(k, v, eventAddress, offset)).distinctBy { it.first }
       newMap =
         newMap.plus(v.getAreasAtAddress(eventAddress, k.eventAddress, k.coord.plus(offset), newMap))
     }

@@ -1,6 +1,7 @@
 package com.philblandford.kscore.engine.core.score
 
 import com.philblandford.kscore.engine.core.representation.Representation
+import com.philblandford.kscore.log.ksLoge
 
 data class ScoreRep(val score:Score, val representation: Representation)
 
@@ -43,4 +44,5 @@ class UndoStack {
       it
     }
   }
+
 }

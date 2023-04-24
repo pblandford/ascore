@@ -2,8 +2,8 @@ package org.philblandford.ui.insert.items.pagemargins.compose
 
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.*
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Text
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -59,7 +59,7 @@ private fun MarginRow(
   Row {
     Text(text, androidx.compose.ui.Modifier.width(block(width)))
     Gap(block(0.5f))
-    Box(Modifier.border(1.dp, MaterialTheme.colors.onSurface)) {
+    Box(Modifier.border(1.dp, MaterialTheme.colorScheme.onSurface)) {
       NumberSelector(min = model.min, max = model.max,
         num = marginDescriptor.current, setNum = {
           iface.setMargin(marginDescriptor.param, it)

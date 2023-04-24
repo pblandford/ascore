@@ -33,7 +33,7 @@ class UiStateRepository(
         when (val state = _uiState.value) {
           is UIState.Edit -> {
             getSelectedArea()?.let { area ->
-              Timber.e("COORD SelectionUpdate area ${area.scoreArea.rectangle}")
+              Timber.e("MOVEITEM SelectionUpdate area ${area.scoreArea.rectangle}")
 
               val item = state.editItem.copy(
                 event = area.event,
@@ -43,6 +43,7 @@ class UiStateRepository(
               setUiState(state.copy(editItem = item))
             }
           }
+
           else -> {}
         }
       }
@@ -50,9 +51,13 @@ class UiStateRepository(
   }
 
   fun setInsertItem(insertItem: InsertItem) {
-    coroutineScope.launch {
-      (_uiState.value as? UIState.Insert)?.let { insertState ->
-        _uiState.emit(insertState.copy(insertItem = insertItem))
+    (_uiState.value as? UIState.Insert)?.let { insertState ->
+
+      val newState = insertState.copy(insertItem = insertItem)
+      _uiState.value = newState
+
+      coroutineScope.launch {
+        _uiState.emit(newState)
       }
     }
   }
@@ -93,7 +98,7 @@ class UiStateRepository(
 
   fun getHelpKey(): StateFlow<String?> = _helpKey
 
-  fun setHelpKey(key:String?) {
+  fun setHelpKey(key: String?) {
     coroutineScope.launch {
       _helpKey.value = key
     }

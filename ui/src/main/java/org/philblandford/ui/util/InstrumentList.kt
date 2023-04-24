@@ -9,8 +9,8 @@ import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Text
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Text
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -33,7 +33,7 @@ fun InstrumentList(
   LazyColumn(
     modifier
       .padding(5.dp)
-      .border(1.dp, MaterialTheme.colors.onSurface)
+      .border(1.dp, MaterialTheme.colorScheme.onSurface)
   ) {
     items(instrumentGroups.withIndex().toList()) { (idx, group) ->
       Column(Modifier.padding(horizontal = 5.dp)) {
@@ -46,7 +46,7 @@ fun InstrumentList(
         }
         if (expandedMap[idx] == true) {
           group.instruments.forEach {
-            val background = if (selected == it) MaterialTheme.colors.onSurface else MaterialTheme.colors.surface
+            val background = if (selected == it) MaterialTheme.colorScheme.onSurface else MaterialTheme.colorScheme.surface
             Text(
               it.name,
               Modifier
@@ -56,7 +56,7 @@ fun InstrumentList(
                 .clickable {
                   select(it)
                 }, fontSize = 16.sp,
-              color = if (selected == it) MaterialTheme.colors.surface else MaterialTheme.colors.onSurface
+              color = if (selected == it) MaterialTheme.colorScheme.surface else MaterialTheme.colorScheme.onSurface
             )
           }
         }

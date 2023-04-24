@@ -6,7 +6,7 @@ import com.philblandford.kscore.engine.duration.Offset
 import com.philblandford.kscore.engine.duration.dZero
 import com.philblandford.kscore.engine.map.EMK
 import com.philblandford.kscore.engine.map.EventHash
-import com.philblandford.kscore.engine.newadder.*
+import com.philblandford.kscore.engine.eventadder.*
 import com.philblandford.kscore.engine.pitch.Transposition
 import com.philblandford.kscore.engine.pitch.keyDistance
 import com.philblandford.kscore.engine.pitch.transpose

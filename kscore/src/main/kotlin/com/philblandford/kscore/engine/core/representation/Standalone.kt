@@ -1,19 +1,16 @@
 package com.philblandford.kscore.engine.core.representation
 
 import com.philblandford.kscore.api.DrawableGetter
-import com.philblandford.kscore.engine.accidental.mapAccidentals
 import com.philblandford.kscore.engine.core.area.Area
 import com.philblandford.kscore.engine.core.area.factory.DrawableFactory
 import com.philblandford.kscore.engine.core.area.factory.TextArgs
 import com.philblandford.kscore.engine.core.areadirectory.header.clefArea
 import com.philblandford.kscore.engine.core.areadirectory.header.headerArea
-import com.philblandford.kscore.engine.core.areadirectory.segment.SegmentArea
 import com.philblandford.kscore.engine.core.areadirectory.segment.segmentArea
 import com.philblandford.kscore.engine.core.stave.staveLinesArea
 import com.philblandford.kscore.engine.duration.Chord
 import com.philblandford.kscore.engine.map.EMK
-import com.philblandford.kscore.engine.map.eventHashOf
-import com.philblandford.kscore.engine.newadder.util.setAllPositions
+import com.philblandford.kscore.engine.eventadder.util.setAllPositions
 import com.philblandford.kscore.engine.time.TimeSignature
 import com.philblandford.kscore.engine.types.*
 

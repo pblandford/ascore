@@ -10,7 +10,7 @@ import com.philblandford.ascore.external.interfaces.ExporterIf
 import com.philblandford.ascore.external.interfaces.ExternalSaver
 import com.philblandford.kscore.api.InstrumentGetter
 import com.philblandford.kscore.engine.core.score.Score
-import com.philblandford.kscore.engine.newadder.util.addEventToMap
+import com.philblandford.kscore.engine.eventadder.util.addEventToMap
 import com.philblandford.kscore.engine.types.*
 import com.philblandford.kscore.saveload.Saver
 import org.apache.commons.io.IOUtils

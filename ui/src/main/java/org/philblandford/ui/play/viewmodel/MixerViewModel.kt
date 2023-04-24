@@ -1,25 +1,27 @@
 package org.philblandford.ui.play.viewmodel
 
 import androidx.lifecycle.viewModelScope
+import com.philblandford.kscore.engine.util.replace
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import org.philblandford.ascore2.features.instruments.GetInstruments
 import org.philblandford.ascore2.features.instruments.GetVolume
 import org.philblandford.ascore2.features.instruments.SetVolume
+import org.philblandford.ascore2.features.playback.entities.MixerInstrument
 import org.philblandford.ascore2.features.playback.entities.PlaybackState
 import org.philblandford.ascore2.features.playback.usecases.GetPlaybackState
 import org.philblandford.ascore2.features.playback.usecases.ToggleHarmonies
 import org.philblandford.ascore2.features.playback.usecases.ToggleLoop
+import org.philblandford.ascore2.features.playback.usecases.ToggleMute
 import org.philblandford.ascore2.features.playback.usecases.ToggleShuffle
+import org.philblandford.ascore2.features.playback.usecases.ToggleSolo
 import org.philblandford.ascore2.util.ok
 import org.philblandford.ui.base.viewmodel.BaseViewModel
 import org.philblandford.ui.base.viewmodel.VMInterface
 import org.philblandford.ui.base.viewmodel.VMModel
 import org.philblandford.ui.base.viewmodel.VMSideEffect
-import org.philblandford.ui.play.compose.MixerInstrument
 
 data class MixerModel(
-  val instruments: List<MixerInstrument>,
   val playbackState: PlaybackState
 ) : VMModel()
 
@@ -28,6 +30,8 @@ interface MixerInterface : VMInterface {
   fun toggleLoop()
   fun toggleShuffle()
   fun toggleHarmonies()
+  fun toggleSolo(idx:Int)
+  fun toggleMute(idx:Int)
 }
 
 class MixerViewModel(
@@ -37,10 +41,11 @@ class MixerViewModel(
   private val toggleLoopUC: ToggleLoop,
   private val toggleShuffleUC: ToggleShuffle,
   private val toggleHarmoniesUC: ToggleHarmonies,
-  private val getPlaybackState: GetPlaybackState
+  private val getPlaybackState: GetPlaybackState,
+  private val toggleSoloUC:ToggleSolo,
+  private val toggleMuteUC: ToggleMute,
 ) :
   BaseViewModel<MixerModel, MixerInterface, VMSideEffect>(), MixerInterface {
-
   init {
     viewModelScope.launch {
       getPlaybackState().collectLatest {
@@ -50,25 +55,13 @@ class MixerViewModel(
   }
 
   override suspend fun initState(): Result<MixerModel> {
-    val instruments = getInstruments().withIndex().map { (idx, instrument) ->
-      MixerInstrument(
-        instrument.name.split(" ").joinToString("") { it.first().uppercase() },
-        instrument.name,
-        getVolume(idx + 1)
-      )
-    }
-    return MixerModel(instruments, getPlaybackState().value).ok()
+    return MixerModel(getPlaybackState().value).ok()
   }
 
   override fun getInterface() = this
 
   override fun setVolume(idx: Int, volume: Int) {
     setVolumeUC(idx + 1, volume).ok()
-    update {
-      val newInstrument = instruments[idx].copy(level = volume)
-      val newList = instruments.take(idx) + newInstrument + instruments.drop(idx + 1)
-      copy(instruments = newList)
-    }
   }
 
   override fun toggleLoop() {
@@ -82,4 +75,13 @@ class MixerViewModel(
   override fun toggleHarmonies() {
     toggleHarmoniesUC()
   }
+
+  override fun toggleSolo(idx:Int) {
+    toggleSoloUC(idx + 1)
+  }
+
+  override fun toggleMute(idx:Int) {
+    toggleMuteUC(idx + 1)
+  }
+
 }

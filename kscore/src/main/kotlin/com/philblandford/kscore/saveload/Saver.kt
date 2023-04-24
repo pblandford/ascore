@@ -6,7 +6,7 @@ import com.philblandford.kscore.engine.core.score.*
 import com.philblandford.kscore.engine.duration.Duration
 import com.philblandford.kscore.engine.map.EventHash
 import com.philblandford.kscore.engine.map.EventMapKey
-import com.philblandford.kscore.engine.newadder.subadders.ChordDecoration
+import com.philblandford.kscore.engine.eventadder.subadders.ChordDecoration
 import com.philblandford.kscore.engine.types.*
 import java.util.*
 

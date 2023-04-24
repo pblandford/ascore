@@ -15,6 +15,7 @@ import com.philblandford.kscore.engine.types.EventType
 import com.philblandford.kscore.engine.types.ScoreQuery
 import com.philblandford.kscore.engine.update.ScoreDiff
 import com.philblandford.kscore.engine.update.diff
+import com.philblandford.kscore.log.ksLoge
 
 private val noopDiff = ScoreDiff(listOf(), listOf(), false, false, false)
 
@@ -28,6 +29,8 @@ internal fun Representation.update(
 
   /* get a descriptor of what's changed in the score */
   val scoreDiff = oldScore.diff(score)
+
+  ksLoge("RU $scoreDiff")
 
   /* nothing has changed except maybe top-layer stuff like the marker position */
   if (scoreDiff == noopDiff) {

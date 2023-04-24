@@ -8,7 +8,7 @@ import com.philblandford.kscore.engine.types.*
 import com.philblandford.kscore.engine.duration.dZero
 import com.philblandford.kscore.engine.duration.minim
 import com.philblandford.kscore.engine.duration.quaver
-import com.philblandford.kscore.engine.newadder.subadders.ChordDecoration
+import com.philblandford.kscore.engine.eventadder.subadders.ChordDecoration
 import org.junit.Test
 
 class OrnamentTest : ScoreTest() {

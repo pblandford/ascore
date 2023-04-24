@@ -6,7 +6,7 @@ import com.philblandford.kscore.engine.core.area.factory.DrawableFactory
 import com.philblandford.kscore.engine.core.area.factory.ImageArgs
 import com.philblandford.kscore.engine.core.area.factory.LineArgs
 import com.philblandford.kscore.engine.core.representation.*
-import com.philblandford.kscore.engine.newadder.subadders.ChordDecoration
+import com.philblandford.kscore.engine.eventadder.subadders.ChordDecoration
 import com.philblandford.kscore.engine.types.*
 import com.philblandford.kscore.engine.types.ArticulationType.*
 

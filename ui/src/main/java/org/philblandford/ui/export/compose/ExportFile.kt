@@ -2,7 +2,7 @@ package org.philblandford.ui.export.compose
 
 import android.net.Uri
 import androidx.compose.foundation.layout.*
-import androidx.compose.material.*
+import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
@@ -63,6 +63,7 @@ private fun ExportFileInternal(modifier: Modifier, model: ExportModel, iface: Ex
   }
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun Main(model: ExportModel, iface: ExportInterface) {
   Column(Modifier.padding(10.dp), horizontalAlignment = Alignment.CenterHorizontally) {
@@ -81,7 +82,7 @@ private fun Main(model: ExportModel, iface: ExportInterface) {
         Text(
           stringResource(R.string.export_all_parts),
           modifier = Modifier.padding(horizontal = block(0.5f)),
-          style = MaterialTheme.typography.body2
+          style = MaterialTheme.typography.bodyMedium
         )
         Checkbox(
           checked = model.allParts,

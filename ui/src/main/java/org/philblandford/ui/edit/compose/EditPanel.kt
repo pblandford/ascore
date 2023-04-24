@@ -4,8 +4,8 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.wrapContentSize
-import androidx.compose.material.LocalContentColor
-import androidx.compose.material.MaterialTheme
+import androidx.compose.material3.LocalContentColor
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.ui.Modifier
@@ -17,6 +17,7 @@ import org.philblandford.ui.edit.items.dynamics.compose.DynamicsEdit
 import org.philblandford.ui.edit.items.fermata.compose.FermataEdit
 import org.philblandford.ui.edit.items.fingering.compose.FingeringEdit
 import org.philblandford.ui.edit.items.glissando.compose.GlissandoEdit
+import org.philblandford.ui.edit.items.harmony.compose.HarmonyEdit
 import org.philblandford.ui.edit.items.instrumentedit.compose.InstrumentEdit
 import org.philblandford.ui.edit.items.keysignature.compose.KeySignatureEdit
 import org.philblandford.ui.edit.items.navigation.compose.NavigationEdit
@@ -34,8 +35,8 @@ import org.philblandford.ui.edit.items.wedge.compose.WedgeEdit
 
 @Composable
 fun EditPanel(modifier: Modifier, type: EventType, scale: Float) {
-    Box(modifier.background(MaterialTheme.colors.surface)) {
-      CompositionLocalProvider(LocalContentColor provides MaterialTheme.colors.onSurface) {
+    Box(modifier.background(MaterialTheme.colorScheme.surface)) {
+      CompositionLocalProvider(LocalContentColor provides MaterialTheme.colorScheme.onSurface) {
 
       when (type) {
         EventType.ARTICULATION -> DeleteOnlyEdit()
@@ -49,6 +50,7 @@ fun EditPanel(modifier: Modifier, type: EventType, scale: Float) {
         EventType.FERMATA -> FermataEdit(scale)
         EventType.FINGERING -> FingeringEdit(scale)
         EventType.GLISSANDO -> GlissandoEdit(scale)
+        EventType.HARMONY -> HarmonyEdit(scale)
         EventType.KEY_SIGNATURE -> KeySignatureEdit()
         EventType.LYRICIST -> TextEdit(scale)
         EventType.LYRIC -> LyricEdit(scale)
@@ -63,6 +65,7 @@ fun EditPanel(modifier: Modifier, type: EventType, scale: Float) {
         EventType.SUBTITLE -> TextEdit(scale)
         EventType.TEMPO -> TempoEdit(scale)
         EventType.TEMPO_TEXT -> TextEdit(scale)
+        EventType.TIE -> DeleteOnlyEdit()
         EventType.TIME_SIGNATURE -> TimeSignatureEdit()
         EventType.TITLE -> TextEdit(scale)
         EventType.WEDGE -> WedgeEdit(scale)

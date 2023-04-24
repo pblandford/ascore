@@ -2,10 +2,11 @@ package org.philblandford.ui.insert.items.meta.compose
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Text
-import androidx.compose.material.TextField
-import androidx.compose.material.TextFieldDefaults
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Text
+import androidx.compose.material3.TextField
+import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -37,6 +38,7 @@ fun MetaInsert() {
   }
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun MetaInsertInternal(
   model: MetaInsertModel,
@@ -67,10 +69,11 @@ private fun MetaInsertInternal(
           modifier = Modifier
             .wrapContentHeight()
             .width(block(5))
-            .background(MaterialTheme.colors.onSurface),
+            .background(MaterialTheme.colorScheme.onSurface),
           value = text.value,
-          colors = TextFieldDefaults.textFieldColors(textColor = MaterialTheme.colors.surface,
-          backgroundColor = MaterialTheme.colors.onSurface
+          colors = TextFieldDefaults.textFieldColors(textColor = MaterialTheme.colorScheme.surface,
+            containerColor = MaterialTheme.colorScheme.onSurface,
+            cursorColor = MaterialTheme.colorScheme.surface
             ),
           onValueChange = {
             text.value = it

@@ -61,6 +61,7 @@ interface ScoreQuery : EventGetter, BeamQuery, OffsetLookup {
   fun getSubtitle(): String?
   fun getComposer(): String?
   fun getFilename(): String?
+  fun getMarker():EventAddress?
   fun numStaves(part: Int): Int
   fun allParts(selected: Boolean): Iterable<PartNum>
   fun singlePartMode(): Boolean

@@ -7,6 +7,7 @@ import com.philblandford.kscore.engine.core.area.KDrawable
 import com.philblandford.kscore.engine.core.representation.BLOCK_HEIGHT
 import com.philblandford.kscore.engine.core.representation.LINE_THICKNESS
 import com.philblandford.kscore.engine.core.representation.TEXT_SIZE
+import com.philblandford.kscore.engine.types.EventType
 import com.philblandford.kscore.engine.types.isWild
 import com.philblandford.kscore.engine.util.black
 import com.philblandford.kscore.log.ksLoge
@@ -21,7 +22,25 @@ enum class TextType {
   LYRICIST,
   LYRIC,
   HARMONY,
-  DEFAULT
+  DEFAULT;
+  
+  companion object {
+    fun fromEventType(eventType: EventType):TextType {
+      return  when (eventType) {
+        EventType.TEMPO_TEXT -> SYSTEM
+        EventType.EXPRESSION_TEXT -> EXPRESSION
+        EventType.REHEARSAL_MARK -> SYSTEM
+        EventType.TITLE -> TITLE
+        EventType.SUBTITLE -> SUBTITLE
+        EventType.COMPOSER -> COMPOSER
+        EventType.LYRICIST -> LYRICIST
+        EventType.LYRIC -> LYRIC
+        EventType.HARMONY -> HARMONY
+        else -> SYSTEM
+      }
+    }
+    
+  }
 }
 
 sealed class DrawableArgs()
@@ -110,7 +129,7 @@ class DrawableFactory(private val drawableGetter: DrawableGetter) {
     }
   }
 
-  fun TextType.getFont():String? {
+  fun TextType.getFont():String {
     return when (this) {
       TextType.SYSTEM -> "tempo"
       TextType.EXPRESSION -> "expression"

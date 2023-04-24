@@ -1,8 +1,11 @@
 package org.philblandford.ui.insert.items.tempo.compose
 
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.unit.dp
 import com.philblandford.kscore.engine.duration.Duration
 import com.philblandford.kscore.engine.duration.crotchet
 import com.philblandford.kscore.engine.tempo.Tempo
@@ -29,7 +32,7 @@ fun TempoInsertInternal(insertItem: InsertItem, iface: InsertInterface<InsertMod
   val duration = insertItem.getParam<Duration>(EventParam.DURATION) ?: crotchet()
   val bpm = insertItem.getParam<Int>(EventParam.BPM) ?: 120
   val tempo = Tempo(duration, bpm)
-  Row(verticalAlignment = Alignment.CenterVertically) {
+  Row(Modifier.padding(10.dp), verticalAlignment = Alignment.CenterVertically) {
     TempoSelector(tempo) { tempo ->
       iface.updateParams(
         paramMapOf(

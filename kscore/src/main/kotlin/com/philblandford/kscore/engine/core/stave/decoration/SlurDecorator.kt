@@ -15,6 +15,7 @@ import com.philblandford.kscore.engine.map.EventHash
 import com.philblandford.kscore.engine.types.Event
 import com.philblandford.kscore.engine.types.EventAddress
 import com.philblandford.kscore.engine.types.EventParam
+import com.philblandford.kscore.engine.types.EventType
 import com.philblandford.kscore.engine.types.StavePositionFinder
 import kotlin.math.abs
 import kotlin.math.max
@@ -130,7 +131,7 @@ object SlurDecorator : LineDecorator {
     staveArea: Area
   ): Int {
     val forEvent = if (up) {
-      staveArea.getTopForRangeNullable(start, end) { it.tag == "StaveLines" }?.let { from - it }
+      staveArea.getTopForRangeNullable(start, end) { it.tag == "StaveLines"  || it.event?.eventType == EventType.ORNAMENT }?.let { from - it }
         ?: 0
     } else {
       staveArea.getBottomForRangeNullable(start, end)?.let { it - from } ?: 0
@@ -243,7 +244,7 @@ object SlurDecorator : LineDecorator {
   private fun aboveTop(geog: SegmentGeography, overhang: Boolean): Coord {
     val x = BLOCK_HEIGHT
     var y =
-      (geog.topGeog?.let { it.value.topNote - it.value.articulationHeight } ?: 0) - BLOCK_HEIGHT
+      (geog.topGeog?.let { it.value.topNote } ?: 0) - (BLOCK_HEIGHT * 0.75).toInt()
     if (overhang) {
       y = min(y, -SLUR_OVERHANG_VERTICAL)
     }

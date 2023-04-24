@@ -286,6 +286,9 @@ private fun addSystemEvents(
     scoreQuery.getEventAt(EventType.TEMPO, start)?.let { (_, v) ->
       allEvents = allEvents.plus(EMK(v.eventType, ez(start.barNum)) to v)
     }
+    scoreQuery.getEvent(EventType.HIDDEN_TIME_SIGNATURE, start)?.let { event ->
+      allEvents = allEvents.plus(EMK(event.eventType, ez(start.barNum)) to event)
+    }
     (start.staveId.main..(endExcl?.staveId?.main ?: scoreQuery.numParts)).forEach { part ->
       (1..scoreQuery.numStaves(part)).forEach { stave ->
         scoreQuery.getEventAt(EventType.INSTRUMENT, start.copy(staveId = StaveId(part, stave)))
@@ -365,7 +368,7 @@ internal fun offsetToHorizontalMap(
 
     val address = ez(horizontal.barNum, horizontal.offset)
     currentOffset?.let { map.put(it, horizontal) }
-    currentTs = allEvents[EMK(EventType.TIME_SIGNATURE, address)]?.let { timeSignature(it) }
+    currentTs = (allEvents[EMK(EventType.HIDDEN_TIME_SIGNATURE, address)] ?: allEvents[EMK(EventType.TIME_SIGNATURE, address)])?.let { timeSignature(it) }
       ?: currentTs
   }
 

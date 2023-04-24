@@ -19,13 +19,15 @@ data class InsertItem(
   val helpTag: String,
   val layoutID: LayoutID,
   val eventType: EventType,
-  val params:ParamMap = mapOf(),
+  val params: ParamMap = mapOf(),
   val line: Boolean = false,
   val rangeCapable: Boolean = false,
-  val typeParam:EventParam = EventParam.TYPE,
+  val typeParam: EventParam = EventParam.TYPE,
   val tapInsertBehaviour: TapInsertBehaviour = TapInsertBehaviour.INSERT,
   val deleteBehaviour: DeleteBehaviour = DeleteBehaviour.ENTER_STATE,
-  val getEventType:(Any)->EventType = { eventType }
+  val getEventType: (Any) -> EventType = { eventType },
+  val isLine: (EventType) -> Boolean = { line },
+  val isRangeCapable: (EventType) -> Boolean = {rangeCapable}
 ) {
-  fun <T>getParam(param:EventParam)= params[param] as T?
+  fun <T> getParam(param: EventParam) = params[param] as T?
 }

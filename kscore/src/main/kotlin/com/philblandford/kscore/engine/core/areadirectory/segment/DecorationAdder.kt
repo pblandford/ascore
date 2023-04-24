@@ -10,7 +10,7 @@ import com.philblandford.kscore.engine.core.representation.BLOCK_HEIGHT
 import com.philblandford.kscore.engine.core.representation.STAVE_HEIGHT
 import com.philblandford.kscore.engine.core.representation.TADPOLE_WIDTH
 import com.philblandford.kscore.engine.duration.*
-import com.philblandford.kscore.engine.newadder.subadders.ChordDecoration
+import com.philblandford.kscore.engine.eventadder.subadders.ChordDecoration
 import com.philblandford.kscore.engine.types.*
 import com.philblandford.kscore.engine.types.EventParam.*
 import kotlin.math.max
@@ -93,7 +93,9 @@ private fun getY(desc: DecorationDesc, geog: VoiceGeography, area: Area): Int {
     } else {
       val top = if (desc.clearStave) min(0, geog.stemGeography?.yPos ?: 0) else
         geog.stemGeography?.yPos ?: 0
-      top - area.height - ARTICULATION_OFFSET - geog.articulationHeight
+      val articulationOffset =
+        if (geog.stemGeography?.up == true) 0 else ARTICULATION_OFFSET - geog.articulationHeight
+      top - area.height - articulationOffset
     }
   } else {
     if (desc.chordPart == ChordPart.NOTE) {
@@ -125,6 +127,7 @@ private fun DrawableFactory.getArea(
         }
       }
     }
+
     ORNAMENT -> {
       chord.getParam<ChordDecoration<Ornament>>(eventParam)?.let { dec ->
         getDesc(eventParam, chord, numVoices, dec)?.let { desc ->
@@ -132,6 +135,7 @@ private fun DrawableFactory.getArea(
         }
       }
     }
+
     FINGERING -> {
       chord.getParam<ChordDecoration<Int>>(eventParam)?.let { dec ->
         getDesc(eventParam, chord, numVoices, dec)?.let { desc ->
@@ -139,6 +143,7 @@ private fun DrawableFactory.getArea(
         }
       }
     }
+
     BOWING -> {
       chord.getParam<ChordDecoration<BowingType>>(eventParam)?.let { dec ->
         getDesc(eventParam, chord, numVoices, dec)?.let { desc ->
@@ -146,6 +151,7 @@ private fun DrawableFactory.getArea(
         }
       }
     }
+
     else -> null
   }
 }
@@ -183,7 +189,8 @@ private fun <T> ornamentDesc(
   val chordPart = if (chord.isUpstem()) ChordPart.STEM else {
     if (above) ChordPart.NOTE else ChordPart.STEM
   }
-  return DecorationDesc(chordPart, above, true, shift = chordDecoration.shift)
+  val shift = if (chord.isUpstem()) Coord() else chordDecoration.shift
+  return DecorationDesc(chordPart, above, true, shift = shift)
 }
 
 private fun fingeringDesc(chord: Event, numVoices: Int): DecorationDesc {
