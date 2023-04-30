@@ -1,6 +1,5 @@
 package org.philblandford.ui.screen.compose
 
-import android.icu.number.Scale
 import androidx.compose.animation.AnimatedContent
 import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.animation.SizeTransform
@@ -13,7 +12,7 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.Dp
-import com.philblandford.ascore.android.ui.style.veryLightGray
+import org.philblandford.ui.theme.compose.veryLightGray
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
@@ -85,7 +84,6 @@ internal fun ScreenViewHorizontal(
           ScreenPage(
             page, model.updateCounter, model.editItem, iface,
             {
-              Timber.e("detect getScale $scale $defaultScale")
               scale.value
             },
             defaultScale, 1.5f, width, height, viewPortWidth,

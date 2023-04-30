@@ -3,10 +3,15 @@ package org.philblandford.ui.edit.items.text.compose
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.philblandford.kscore.engine.types.EventParam
@@ -31,17 +36,25 @@ fun LyricEdit(scale:Float) {
   }
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun LyricEditInternal(model: EditModel, iface: TextEditInterface) {
 
-  val text by remember { mutableStateOf(model.editItem.event.getParam<String>(EventParam.TEXT) ?: "") }
+  var text by remember { mutableStateOf(model.editItem.event.getParam<String>(EventParam.TEXT) ?: "") }
 
   Column {
-    FreeKeyboard(initValue = text,
-      onValueChanged = {
-        Timber.e("onValueChanges")
-        iface.updateParam(EventParam.TEXT, it)
-      }, onEnter = {}) {
-    }
+    OutlinedTextField(
+      text,
+      onValueChange = {
+        text = it
+        iface.updateParam(EventParam.TEXT, text)
+      },
+      colors = TextFieldDefaults.textFieldColors(
+        containerColor = MaterialTheme.colorScheme.onSurface,
+        textColor = MaterialTheme.colorScheme.surface,
+        cursorColor = MaterialTheme.colorScheme.surface
+      ),
+    )
+
   }
 }

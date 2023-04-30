@@ -362,8 +362,7 @@ data class Score(
       getAllEvents(eventType, options)
     } else {
       val key = GEKey(eventType, eventAddress, endAddress)
-      // getEventsCache[key]
-      null ?: run {
+       getEventsCache[key] ?: run {
 
         val mutable = eventHashOfM()
         parcelRange(eventAddress, endAddress).forEach { (start, end) ->
@@ -372,8 +371,8 @@ data class Score(
           }?.toMap()
           evs?.let { mutable.putAll(it) }
         }
-        getEventsCache.put(key, mutable)
-        mutable
+         getEventsCache[key] = mutable
+         mutable
       }
     }
   }

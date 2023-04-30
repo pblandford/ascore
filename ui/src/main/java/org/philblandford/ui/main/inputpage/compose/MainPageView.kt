@@ -9,10 +9,13 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.*
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
@@ -24,7 +27,9 @@ import kotlinx.coroutines.launch
 import org.philblandford.ascore2.features.crosscutting.model.ErrorDescr
 import org.philblandford.ascore2.features.ui.model.LayoutID
 import org.philblandford.ui.base.compose.VMView
+import org.philblandford.ui.clipboard.compose.ClipboardExtraView
 import org.philblandford.ui.clipboard.compose.ClipboardView
+import org.philblandford.ui.common.block
 import org.philblandford.ui.main.inputpage.viewmodel.MainPageModel
 import org.philblandford.ui.main.inputpage.viewmodel.MainPageSideEffect
 import org.philblandford.ui.main.inputpage.viewmodel.MainPageViewModel
@@ -45,8 +50,6 @@ onScoreEmpty: () -> Unit) {
 
   VMView(MainPageViewModel::class.java) { state, iface, effect ->
 
-    Timber.e("HEY YOU $state")
-
     val coroutineScope = rememberCoroutineScope()
     val alertText = remember { mutableStateOf<ErrorDescr?>(null) }
 
@@ -63,11 +66,11 @@ onScoreEmpty: () -> Unit) {
     alertText.value?.let { errorDescr ->
       AlertDialog(onDismissRequest = { alertText.value = null },
         confirmButton = { Button({ alertText.value = null }) { Text("OK") } },
-
         text = {
-          Text(errorDescr.message)
+          Text(errorDescr.message, color = MaterialTheme.colorScheme.onSurface)
         },
-        title = { Text(errorDescr.headline) })
+        title = { Text(errorDescr.headline, style = MaterialTheme.typography.bodyLarge,
+        color = MaterialTheme.colorScheme.onSurface) })
     }
 
     state.helpKey?.let {
@@ -77,8 +80,8 @@ onScoreEmpty: () -> Unit) {
     }
 
     Box(Modifier.fillMaxSize()) {
-      val showPanel = remember { mutableStateOf(true) }
-      val fullScreen = remember { mutableStateOf(false) }
+      val showPanel = rememberSaveable { mutableStateOf(true) }
+      val fullScreen = rememberSaveable { mutableStateOf(false) }
 
       BackHandler(fullScreen.value) {
         fullScreen.value = false
@@ -93,7 +96,7 @@ onScoreEmpty: () -> Unit) {
             .align(Alignment.TopCenter)
         ) {
           TopRow(
-            Modifier,
+            Modifier.height(block()),
             state.canShowTabs,
             state.vertical,
             openDrawer,
@@ -105,6 +108,7 @@ onScoreEmpty: () -> Unit) {
           Box(Modifier.fillMaxWidth()) {
 
             ScreenBox(Modifier.fillMaxSize(), false, state, onScoreEmpty, iface::toggleVertical)
+            Timber.e("Panel show ${showPanel.value}")
 
             Column(Modifier.align(Alignment.BottomCenter)) {
               AnimatedVisibility(showPanel.value, enter = slideInVertically { it },
@@ -126,6 +130,7 @@ private fun ScreenBox(modifier: Modifier, center:Boolean, state: MainPageModel, 
 changeMethod:()->Unit) {
 
   val clipboardOffset = remember { mutableStateOf(Offset(0f, 10f)) }
+  val clipboardExtraOffset = remember { mutableStateOf(Offset(0f, -50f)) }
   val zoomOffset = remember { mutableStateOf(Offset(0f, 0f)) }
 
   Box(modifier) {
@@ -134,6 +139,9 @@ changeMethod:()->Unit) {
     if (state.showClipboard) {
       DraggableItem(Modifier.align(Alignment.TopCenter), clipboardOffset) {
         ClipboardView(Modifier)
+      }
+      DraggableItem(Modifier.align(Alignment.BottomCenter), clipboardExtraOffset ) {
+        ClipboardExtraView()
       }
     }
 

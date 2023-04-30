@@ -12,7 +12,6 @@ class InsertNoteImpl(
   private val currentVoice: CurrentVoice
 ) : InsertNote {
   override operator fun invoke(midiVal: Int, hold: Boolean) {
-    Timber.e("UNDO UC $midiVal")
 
     kScore.addNoteAtMarker(
       inputState().value.copy(midiVal = midiVal, isHold = hold),

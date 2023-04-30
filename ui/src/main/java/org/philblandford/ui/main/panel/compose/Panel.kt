@@ -3,7 +3,11 @@ package org.philblandford.ui.main.panel.compose
 import TransposeBy
 import androidx.compose.animation.*
 import androidx.compose.animation.core.tween
+import androidx.compose.foundation.layout.heightIn
+import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.runtime.*
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.unit.dp
 import org.philblandford.ascore2.features.ui.model.LayoutID
 import org.philblandford.ui.base.compose.VMView
 import org.philblandford.ui.input.compose.percussion.PercussionInputPanel

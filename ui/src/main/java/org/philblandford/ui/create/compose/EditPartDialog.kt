@@ -7,6 +7,7 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -113,7 +114,8 @@ private fun Label(instrument: Instrument, onUpdate: (Instrument) -> Unit) {
       onUpdate(instrument.copy(label = it))
     },
     label = { Text(stringResource(R.string.label)) },
-    modifier = Modifier.testTag("LabelTextField")
+    modifier = Modifier.testTag("LabelTextField"),
+    colors = TextFieldDefaults.outlinedTextFieldColors(unfocusedLabelColor = MaterialTheme.colorScheme.onSurface)
   )
 }
 
@@ -126,7 +128,8 @@ private fun Abbreviation(instrument: Instrument, onUpdate: (Instrument) -> Unit)
       onUpdate(instrument.copy(abbreviation = it))
     },
     label = { Text(stringResource(id = R.string.abbreviation)) },
-    modifier = Modifier.testTag("AbbreviationTextField")
+    modifier = Modifier.testTag("AbbreviationTextField"),
+    colors = TextFieldDefaults.outlinedTextFieldColors(unfocusedLabelColor = MaterialTheme.colorScheme.onSurface)
   )
 }
 
@@ -158,7 +161,7 @@ fun ClefRow(instrument: Instrument, onUpdate: (Instrument) -> Unit) {
     horizontalArrangement = Arrangement.SpaceBetween
   ) {
 
-    DraggableList(instrument.clefs.withIndex().toList(), { (idx, clef) ->
+    instrument.clefs.withIndex().toList().forEach { (idx, clef) ->
       Row {
         ClefSpinner({ clef }, border = false, tag = "Clef", setClef = { type ->
           onUpdate(instrument.setClef(idx, type))
@@ -166,13 +169,9 @@ fun ClefRow(instrument: Instrument, onUpdate: (Instrument) -> Unit) {
         SquareButton(R.drawable.eraser, size = 15.dp) {
           onUpdate(instrument.removeClef(idx))
         }
+
       }
-    }, vertical = false, reorder = { fromIndex, toIndex ->
-      val newItems = instrument.clefs.toMutableList().apply {
-        add(toIndex, removeAt(fromIndex))
-      }
-      onUpdate(instrument.copy(clefs = newItems))
-    }, key = { _, iv -> "${iv.index} ${iv.value}" })
+    }
 
     SquareButton(R.drawable.plus) { onUpdate(instrument.addClef()) }
 

@@ -37,6 +37,10 @@ import org.philblandford.ascore2.features.edit.MoveSelectedArea
 import org.philblandford.ascore2.features.edit.MoveSelectedAreaImpl
 import org.philblandford.ascore2.features.edit.MoveSelectedNote
 import org.philblandford.ascore2.features.edit.MoveSelectedNoteImpl
+import org.philblandford.ascore2.features.edit.SetParamForSelected
+import org.philblandford.ascore2.features.edit.SetParamForSelectedImpl
+import org.philblandford.ascore2.features.edit.ToggleBooleanForNotes
+import org.philblandford.ascore2.features.edit.ToggleBooleanForNotesImpl
 import org.philblandford.ascore2.features.error.GetErrorFlow
 import org.philblandford.ascore2.features.error.GetErrorFlowImpl
 import org.philblandford.ascore2.features.export.ExportScore
@@ -66,6 +70,7 @@ import org.philblandford.ascore2.features.ui.repository.UiStateRepository
 import org.philblandford.ascore2.features.ui.usecases.*
 import org.philblandford.ui.base.log.AndroidLogger
 import org.philblandford.ui.clipboard.viewmodel.ClipboardViewModel
+import org.philblandford.ui.crash.CrashHandler
 import org.philblandford.ui.create.viewmodel.CreateViewModel
 import org.philblandford.ui.edit.items.harmony.viewmodel.HarmonyEditViewModel
 import org.philblandford.ui.edit.items.instrumentedit.viewmodel.InstrumentEditViewModel
@@ -103,6 +108,7 @@ import org.philblandford.ui.quickscore.viewmodel.QuickScoreViewModel
 import org.philblandford.ui.save.viewmodel.SaveViewModel
 import org.philblandford.ui.screen.viewmodels.ScreenViewModel
 import org.philblandford.ui.screen.viewmodels.ScreenZoomViewModel
+import org.philblandford.ui.settings.viewmodel.InstrumentManageViewModel
 import org.philblandford.ui.settings.viewmodel.SettingsViewModel
 import org.philblandford.ui.theme.viewmodel.ThemeViewModel
 
@@ -118,6 +124,7 @@ object Dependencies {
     single<DrawableGetter> { ComposeDrawableGetter(androidContext(), get()) }
     single<ScoreLoader> { AndroidScoreLoader(get(), get(), get()) }
     single { AndroidImporter(get()) }
+    single { CrashHandler(get()) }
   }
 
   private val stubModules = module {
@@ -139,7 +146,7 @@ object Dependencies {
     single<ExporterIf> { AndroidExporter(get(), get()) }
     single { Exporter(get(), get(), get(), get()) }
     single<ExportScore> { ExportScoreImpl(get(), get()) }
-    viewModel { ExportViewModel(get(), get()) }
+    viewModel { ExportViewModel(get(), get(), get()) }
   }
 
   private val loadModule = module {
@@ -168,18 +175,19 @@ object Dependencies {
   private val scoreModule = module {
     single<KScore> { KScoreImpl(get(), get(), get()) }
     single<ScoreUpdate> { ScoreUpdateImpl(get()) }
+    single<ScoreLoadUpdate> { ScoreLoadUpdateImpl(get()) }
   }
 
   private val createModule = module {
-    single<CreateScore> { CreateScoreImpl(get()) }
-    single<CreateDefaultScore> { CreateDefaultScoreImpl(get()) }
+    single<CreateScore> { CreateScoreImpl(get(), get()) }
+    single<CreateDefaultScore> { CreateDefaultScoreImpl(get(), get()) }
     viewModel { CreateViewModel(get(), get()) }
     viewModel { QuickScoreViewModel(get()) }
   }
 
 
   private val utilityModule = module {
-    single { UiStateRepository(get(), get()) }
+    single { UiStateRepository(get(), get(), get()) }
     single<Delete> { DeleteImpl(get(), get()) }
     single<CurrentVoice> { CurrentVoiceImpl(get()) }
     single<ToggleVoice> { ToggleVoiceImpl(get()) }
@@ -226,7 +234,7 @@ object Dependencies {
     single<MoveMarker> { MoveMarkerImpl(get()) }
     single<InsertNote> { InsertNoteImpl(get(), get(), get(), get()) }
     single<InsertRest> { InsertRestImpl(get(), get(), get()) }
-    single<GetInstrumentAtMarker>  { GetInstrumentAtMarkerImpl(get()) }
+    single<GetInstrumentAtMarker> { GetInstrumentAtMarkerImpl(get()) }
     single<GetKeySignatureAtMarker> { GetKeySignatureAtMarkerImpl(get()) }
     single { UpdateInputStateImpl() }.binds(arrayOf(UpdateInputState::class, NoteInputState::class))
     viewModel { InputViewModel(get(), get(), get(), get(), get(), get(), get(), get()) }
@@ -248,7 +256,7 @@ object Dependencies {
     single<InsertEvent> { InsertEventImpl(get()) }
     single<InsertMetaEvent> { InsertMetaEventImpl(get()) }
     single<GetMetaEvent> { GetMetaEventImpl(get()) }
-    single<InsertLyricAtMarker> { InsertLyricAtMarkerImpl(get()) }
+    single<InsertLyricAtMarker> { InsertLyricAtMarkerImpl(get(), get()) }
     single<GetLyricAtMarker> { GetLyricAtMarkerImpl(get(), get()) }
     single<GetPageWidth> { GetPageWidthImpl(get()) }
     single<GetPageMinMax> { GetPageMinMaxImpl(get()) }
@@ -264,6 +272,9 @@ object Dependencies {
     single<GetDefaultTextSize> { GetDefaultTextSizeImpl(get()) }
     single<GetHelpKey> { GetHelpKeyImpl(get()) }
     single<SetHelpKey> { SetHelpKeyImpl(get()) }
+    single<InsertTiesAtSelection> { InsertTiesAtSelectionImpl(get(), get()) }
+    single<SetStemsAtSelection> { SetStemsAtSelectionImpl(get(), get()) }
+    single<RemoveStemSettingsAtSelection> { RemoveStemSettingsAtSelectionImpl(get(), get()) }
     viewModel { InsertChooseViewModel(get()) }
     viewModel { DefaultInsertViewModel() }
     viewModel { BarNumberingViewModel(get(), get()) }
@@ -291,17 +302,19 @@ object Dependencies {
     single<DeleteSelectedEvent> { DeleteSelectedEventImpl(get(), get()) }
     single<GetSelectedArea> { GetSelectedAreaImpl(get()) }
     single<MoveSelectedArea> { MoveSelectedAreaImpl(get()) }
-    single<GetInstrumentAtSelection> { GetInstrumentAtSelectionImpl(get())}
-    single<SetInstrumentAtSelection> { SetInstrumentAtSelectionImpl(get())}
+    single<GetInstrumentAtSelection> { GetInstrumentAtSelectionImpl(get()) }
+    single<SetInstrumentAtSelection> { SetInstrumentAtSelectionImpl(get()) }
+    single<SetParamForSelected> { SetParamForSelectedImpl(get()) }
+    single<ToggleBooleanForNotes> { ToggleBooleanForNotesImpl(get()) }
     single<MoveSelectedNote> { MoveSelectedNoteImpl(get()) }
     viewModel { EditViewModel(get(), get(), get(), get(), get()) }
     viewModel { HarmonyEditViewModel(get(), get(), get(), get(), get()) }
     viewModel { TextEditViewModel(get(), get(), get(), get(), get(), get(), get()) }
-    viewModel { InstrumentEditViewModel(get(), get(), get(), get(), get(), get(), get(), get())}
+    viewModel { InstrumentEditViewModel(get(), get(), get(), get(), get(), get(), get(), get()) }
   }
 
   private val screenModule = module {
-    single { GetErrorImpl() }.binds(arrayOf(SetError::class, GetError::class))
+    single { GetErrorImpl(get()) }.binds(arrayOf(SetError::class, GetError::class))
     single<ScoreChanged> { ScoreChangedImpl(get()) }
     single<GetUIState> { GetUIStateImpl(get()) }
     single { RedrawImpl() }.binds(arrayOf(Redraw::class, ListenForRedraw::class))
@@ -311,9 +324,24 @@ object Dependencies {
     single<HandleLongPress> { HandleLongPressImpl(get(), get()) }
     single<HandleDrag> { HandleDragImpl(get(), get()) }
     single<CheckForScore> { CheckForScoreImpl(get()) }
-    viewModel { ScreenViewModel(get(), get(), get(), get(), get(), get(), get(), get(), get(), get(), get()) }
+    viewModel {
+      ScreenViewModel(
+        get(),
+        get(),
+        get(),
+        get(),
+        get(),
+        get(),
+        get(),
+        get(),
+        get(),
+        get(),
+        get(),
+        get()
+      )
+    }
     viewModel { ScreenZoomViewModel(get(), get(), get(), get()) }
-    viewModel { MainPageViewModel(get(), get(), get(), get(), get(), get()) }
+    viewModel { MainPageViewModel(get(), get(), get(), get(), get(), get(), get()) }
     viewModel { ThemeViewModel(get()) }
   }
 
@@ -346,21 +374,25 @@ object Dependencies {
     single<GetSelection> { GetSelectionImpl(get()) }
     single<SelectionUpdate> { SelectionUpdateImpl(get()) }
     single<DeleteSelection> { DeleteSelectionImpl(get(), get()) }
-    viewModel { ClipboardViewModel(get(), get(), get(), get(), get(), get()) }
+    viewModel { ClipboardViewModel(get(), get(), get(), get(), get(), get(), get(), get(), get(), get(), get()) }
   }
 
   private val settingsModule = module {
     single<GetColors> { GetColorsImpl(get()) }
     single<SetColors> { SetColorsImpl(get()) }
-    single<GetAssignedFonts> { GetAssignedFontsImpl(get())}
-    single<SetFont> { SetFontImpl(get()) }
+    single<GetAssignedFonts> { GetAssignedFontsImpl(get()) }
+    single<SetFont> { SetFontImpl(get(), get()) }
     single<GetAvailableFonts> { GetAvailableFontsImpl(get()) }
     single { SettingsDataSource(get()) }
     single { SettingsRepository(get()) }
     single<GetOption> { GetOptionImpl(get()) }
     single<SetOption> { SetOptionImpl(get()) }
+    single<AssignInstrument> { AssignInstrumentImpl(get()) }
+    single<ClearInstrumentAssignments> { ClearInstrumentAssignmentsImpl(get())}
+    single<UpdateFontOptions> { UpdateFontOptionsImpl(get(), get()) }
     viewModel { SettingsViewModel(get(), get(), get(), get(), get()) }
     viewModel { LayoutOptionViewModel(get(), get()) }
+    viewModel { InstrumentManageViewModel(get(), get(), get()) }
   }
 
   private val modules = listOf(

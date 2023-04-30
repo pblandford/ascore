@@ -13,14 +13,14 @@ import java.util.*
 const val VERSION_MARKER = 0x00eebbcc
 internal const val CURRENT_VERSION = 1
 
-
+/* NEVER CHANGE THE ORDER OF THESE!! */
 enum class SaveType {
   CLEF, DURATIONTYPE, EVENTTYPE, NOTELETTER, ACCIDENTAL, ARTICULATION, BOWING, ORNAMENT, ORNAMENT_TYPE, ARPEGGIO,
   DYNAMIC, TSTYPE, STAVEJOINTYPE,
   BREAK, NOTEHEADTYPE, BARLINETYPE, FERMATATYPE, PAUSETYPE, PEDALTYPE, WEDGETYPE, NAVIGATIONTYPE,
   LYRICTYPE, GLISSANDOTYPE, BARNUMBERING,
   PARAM, EVENTADDRESS, DURATION, COORD, META, MODIFIABLE, CHORDDECORATION, PERCUSSIONDESCR, NOTE, NULL, PITCH, TUPLET, VOICEMAP, BAR, STAVE, PART,
-  ITERABLE, BOOL, INT, STRING, PAIR
+  ITERABLE, BOOL, INT, STRING, PAIR, LONGTRILLTYPE,
 }
 
 
@@ -283,6 +283,7 @@ class Saver {
       is PauseType -> SaveType.PAUSETYPE to { a -> saveString(a.toString()) }
       is PedalType -> SaveType.PEDALTYPE to { a -> saveString(a.toString()) }
       is WedgeType -> SaveType.WEDGETYPE to { a -> saveString(a.toString()) }
+      is LongTrillType -> SaveType.LONGTRILLTYPE to { a -> saveString(a.toString()) }
       is NavigationType -> SaveType.NAVIGATIONTYPE to { a -> saveString(a.toString()) }
       is LyricType -> SaveType.LYRICTYPE to { a -> saveString(a.toString()) }
       is GlissandoType -> SaveType.GLISSANDOTYPE to { a -> saveString(a.toString()) }

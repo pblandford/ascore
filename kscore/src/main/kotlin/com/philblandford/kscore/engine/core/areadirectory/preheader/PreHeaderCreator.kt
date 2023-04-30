@@ -4,6 +4,7 @@ import com.philblandford.kscore.engine.core.PreHeaderGeography
 import com.philblandford.kscore.engine.core.area.factory.DrawableFactory
 import com.philblandford.kscore.engine.types.*
 import com.philblandford.kscore.option.getOption
+import com.philblandford.kscore.util.toImmutableMap
 
 fun DrawableFactory.createPreHeaders(scoreQuery: ScoreQuery): Pair<Lookup<PreHeaderGeography>, Lookup<PreHeaderArea>>? {
 
@@ -21,9 +22,9 @@ fun DrawableFactory.createPreHeaders(scoreQuery: ScoreQuery): Pair<Lookup<PreHea
     scoreQuery.allParts(true).map { part ->
       val addr = ea(bar).copy(staveId = StaveId(part, 0))
       if (bar == 1) {
-        firstHeaders[part]?.let { addr to it }
+        firstHeaders[part]?.let { Pair(addr, it) }
       } else {
-        otherHeaders[part]?.let { addr to it }
+        otherHeaders[part]?.let { Pair(addr, it) }
       }
     }
   }.filterNotNull().toMap()

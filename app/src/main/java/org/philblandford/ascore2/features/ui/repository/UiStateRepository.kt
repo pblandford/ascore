@@ -1,5 +1,6 @@
 package org.philblandford.ascore2.features.ui.repository
 
+import com.philblandford.kscore.api.KScore
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
@@ -7,7 +8,9 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
+import org.philblandford.ascore2.features.clipboard.usecases.ClearSelection
 import org.philblandford.ascore2.features.clipboard.usecases.SelectionUpdate
+import org.philblandford.ascore2.features.drawing.ScoreChanged
 import org.philblandford.ascore2.features.input.usecases.GetSelectedArea
 import org.philblandford.ascore2.features.score.ScoreUpdate
 import org.philblandford.ascore2.features.ui.model.InsertItem
@@ -17,7 +20,8 @@ import kotlin.math.sign
 
 class UiStateRepository(
   private val selectionUpdate: SelectionUpdate,
-  private val getSelectedArea: GetSelectedArea
+  private val getSelectedArea: GetSelectedArea,
+  private val kScore: KScore
 ) {
 
   private val coroutineScope = CoroutineScope(Dispatchers.Main)
@@ -33,8 +37,6 @@ class UiStateRepository(
         when (val state = _uiState.value) {
           is UIState.Edit -> {
             getSelectedArea()?.let { area ->
-              Timber.e("MOVEITEM SelectionUpdate area ${area.scoreArea.rectangle}")
-
               val item = state.editItem.copy(
                 event = area.event,
                 address = area.eventAddress,
@@ -43,9 +45,14 @@ class UiStateRepository(
               setUiState(state.copy(editItem = item))
             }
           }
-
           else -> {}
         }
+      }
+    }
+    coroutineScope.launch {
+      kScore.scoreLoadUpdate().collectLatest {
+        kScore.clearSelection()
+        setUiState(UIState.Input)
       }
     }
   }

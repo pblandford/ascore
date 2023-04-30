@@ -6,8 +6,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import org.philblandford.ui.main.window.LocalWindowSizeClass
 import org.philblandford.ui.main.window.tabletWindowSize
-import org.philblandford.ui.stubs.StubGetColors
-import org.philblandford.ui.theme.AscoreTheme
+import org.philblandford.ui.theme.compose.AscoreTheme
 
 @Composable
 fun AScorePreview(size:WindowSizeClass = tabletWindowSize,

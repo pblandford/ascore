@@ -12,6 +12,8 @@ import com.philblandford.kscore.engine.dsl.rest
 import com.philblandford.kscore.engine.duration.Duration
 import com.philblandford.kscore.engine.duration.dZero
 import com.philblandford.kscore.engine.eventadder.rightOrThrow
+import com.philblandford.kscore.engine.map.EventHash
+import com.philblandford.kscore.engine.map.eventHashOf
 import com.philblandford.kscore.engine.pitch.Harmony
 import com.philblandford.kscore.engine.pitch.getCommonChords
 import com.philblandford.kscore.engine.types.*
@@ -31,6 +33,7 @@ import com.philblandford.kscore.sound.PlayState
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.map
@@ -91,6 +94,7 @@ interface KScore {
   fun getEventAddress(location: Location): EventAddress?
   fun getEvent(location: Location, fuzz: Int = 30): Pair<EventAddress, Event>?
   fun getEvent(eventType: EventType, eventAddress: EventAddress): Event?
+  fun getEvents(eventType: EventType, start: EventAddress, end: EventAddress): EventHash
   fun getEventAtMarker(eventType: EventType): Event?
   fun getMeta(metaType: EventType): String?
   fun isAboveStave(location: Location): Boolean
@@ -227,8 +231,8 @@ interface KScore {
 
   fun scoreUpdate(): Flow<Unit>
   fun representationUpdate(): Flow<Unit>
-
   fun selectionUpdate(): Flow<Unit>
+  fun scoreLoadUpdate(): Flow<Unit>
 
   fun printScore()
 
@@ -281,6 +285,7 @@ class KScoreImpl(
   private val scoreContainer = ScoreContainer(drawableFactory)
   private val scoreCreator = ScoreCreator(soundManager)
   private val coroutineScope = CoroutineScope(Dispatchers.Default)
+  private val scoreLoadUpdate = MutableSharedFlow<Unit>()
 
   init {
     registerLogger(logger)
@@ -394,6 +399,10 @@ class KScoreImpl(
 
   override fun getEvent(eventType: EventType, eventAddress: EventAddress): Event? {
     return score()?.getEvent(eventType, eventAddress)
+  }
+
+  override fun getEvents(eventType: EventType, start: EventAddress, end: EventAddress): EventHash {
+    return score()?.getEvents(eventType, start, end) ?: eventHashOf()
   }
 
   override fun getEventAtMarker(eventType: EventType): Event? {
@@ -591,7 +600,8 @@ class KScoreImpl(
   }
 
   override fun setStartSelection(location: Location) {
-    getEventAddress(location)?.let { setStartSelection(it) }
+    val eventAddress = getEventAddress(location)
+    eventAddress?.let { setStartSelection(it) }
   }
 
   override fun setStartSelection(eventAddress: EventAddress) {
@@ -686,7 +696,7 @@ class KScoreImpl(
 
 
   override fun addNoteAtMarker(nsd: NoteInputDescriptor, voice: Int) {
-      scoreContainer.addEvent(nsd.toEvent(), eWild().copy(voice = voice))
+    scoreContainer.addEvent(nsd.toEvent(), eWild().copy(voice = voice))
   }
 
   override fun addRestAtMarker(duration: Duration, voice: Int, graceInputMode: GraceInputMode) {
@@ -694,7 +704,7 @@ class KScoreImpl(
       scoreContainer.addEvent(
         rest(duration).addParam(EventParam.GRACE_MODE, graceInputMode).addParam(
           EventParam.GRACE_TYPE to
-                  if (graceInputMode == GraceInputMode.NONE) GraceType.NONE else GraceType.APPOGGIATURA
+              if (graceInputMode == GraceInputMode.NONE) GraceType.NONE else GraceType.APPOGGIATURA
         ),
         marker.copy(voice = voice)
       )
@@ -1004,6 +1014,9 @@ class KScoreImpl(
     scoreContainer.setNewScore(score) { m: String, p: Float ->
       progressFunc("Creating Representation", m, p)
     }
+    coroutineScope.launch {
+      scoreLoadUpdate.emit(Unit)
+    }
   }
 
   override fun setScore(scoreBytes: ByteArray, progressFunc: ProgressFunc) {
@@ -1097,12 +1110,12 @@ class KScoreImpl(
   }
 
   override fun createDefaultScore(pageSize: PageSize) {
-    scoreContainer.setNewScore(scoreCreator.createDefault(pageSize = pageSize))
+    setScore(scoreCreator.createDefault(pageSize = pageSize))
   }
 
   override fun createScore(newScoreDescriptor: NewScoreDescriptor) {
     val ns = scoreCreator.createScore(newScoreDescriptor)
-    scoreContainer.setNewScore(ns)
+    setScore(ns)
   }
 
   override fun getInstrument(name: String): Instrument? {
@@ -1162,7 +1175,7 @@ class KScoreImpl(
   }
 
   override fun setSelectedPart(part: Int) {
-    batch (
+    batch(
       { scoreContainer.setSelectedPart(part) },
       {
         if (part != 0) {
@@ -1171,7 +1184,7 @@ class KScoreImpl(
           }
         }
       },
-      { scoreContainer.resetUndo()}
+      { scoreContainer.resetUndo() }
     )
   }
 
@@ -1246,10 +1259,12 @@ class KScoreImpl(
   }
 
   override fun setShuffleRhythm(yes: Boolean) {
+    scoreContainer.synchronous = true
     scoreContainer.setParam(
       EventType.OPTION, EventParam.OPTION_SHUFFLE_RHYTHM, yes, eZero()
     )
-    score()?.let { midiPlayer.refresh(it) }
+    scoreContainer.currentScoreState.value.score?.let { midiPlayer.refresh(it) }
+    scoreContainer.synchronous = false
   }
 
   override fun isShuffleRhythm(): Boolean {
@@ -1308,6 +1323,10 @@ class KScoreImpl(
     return selectionManager.getSelectState().map { }
   }
 
+  override fun scoreLoadUpdate(): Flow<Unit> {
+    return scoreLoadUpdate
+  }
+
   override fun getErrorFlow(): Flow<ScoreError> {
     return scoreContainer.getErrorFlow()
   }
@@ -1328,7 +1347,7 @@ class KScoreImpl(
     return getPageHeight().toFloat() / getPageWidth()
   }
 
-  private fun score(): Score? = scoreContainer.currentScore.value
+  private fun score(): Score? = scoreContainer.currentScoreState.value.score
   private fun rep(): Representation? = scoreContainer.currentRepresentation.value
 
   private fun select(cmd: (EventAddress, EventAddress) -> Unit) {

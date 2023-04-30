@@ -22,7 +22,8 @@ data class Selection(val startAddress: EventAddress, val range: SelectionRange)
 private val copiable = listOf(
   EventType.TUPLET, EventType.DURATION, EventType.DYNAMIC,
   EventType.GLISSANDO, EventType.EXPRESSION_TEXT, EventType.LYRIC, EventType.HARMONY,
-  EventType.REPEAT_BAR
+  EventType.REPEAT_BAR, EventType.LONG_TRILL, EventType.SLUR, EventType.OCTAVE, EventType.WEDGE,
+  EventType.EXPRESSION_DASH
 )
 
 val priorities = copiable.withIndex().map { it.value to it.index }.toMap()

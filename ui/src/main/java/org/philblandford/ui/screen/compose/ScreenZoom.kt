@@ -18,11 +18,11 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.philblandford.kscore.api.Location
 import org.philblandford.ui.base.compose.VMView
+import org.philblandford.ui.main.window.LocalWindowSizeClass
+import org.philblandford.ui.main.window.compact
 import org.philblandford.ui.screen.viewmodels.ScreenZoomInterface
 import org.philblandford.ui.screen.viewmodels.ScreenZoomModel
 import org.philblandford.ui.screen.viewmodels.ScreenZoomViewModel
-
-private val SCALE = 0.5f
 
 @Composable
 fun ScreenZoom(modifier: Modifier, location:Location) {
@@ -33,7 +33,11 @@ fun ScreenZoom(modifier: Modifier, location:Location) {
 
 @Composable
 private fun ScreenZoomInternal(state: ScreenZoomModel, iface:ScreenZoomInterface, location: Location) {
-  val offset = Offset(location.x.toFloat() * SCALE - 80f, location.y.toFloat() * SCALE)
+
+  val scale = if (LocalWindowSizeClass.current.compact()) 0.5f else 0.3f
+  val centreOffset = if (LocalWindowSizeClass.current.compact()) 80f else 60f
+
+  val offset = Offset(location.x.toFloat() * scale - centreOffset, location.y.toFloat() * scale)
   BoxWithConstraints(
     Modifier
       .size(100.dp)
@@ -44,7 +48,7 @@ private fun ScreenZoomInternal(state: ScreenZoomModel, iface:ScreenZoomInterface
         .background(Color.White)) {
       inset(-offset.x, -offset.y) {
 
-      scale(SCALE, pivot = Offset(0f, 0f)) {
+      scale(scale, pivot = Offset(0f, 0f)) {
           state.updateCounter.let {
             iface.drawPage(location.page, this)
           }

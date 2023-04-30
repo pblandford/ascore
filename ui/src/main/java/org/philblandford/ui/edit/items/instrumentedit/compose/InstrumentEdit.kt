@@ -19,22 +19,19 @@ import com.philblandford.kscore.api.Instrument
 import com.philblandford.kscore.api.InstrumentGroup
 import com.philblandford.kscore.api.Rectangle
 import com.philblandford.kscore.api.defaultInstrument
-import com.philblandford.kscore.engine.pitch.Clef
 import com.philblandford.kscore.engine.types.EventParam
 import com.philblandford.kscore.engine.types.ea
 import org.philblandford.ascore2.features.ui.model.EditItem
 import org.philblandford.ui.base.compose.VMView
 import org.philblandford.ui.create.compose.ClefRow
-import org.philblandford.ui.create.compose.CreateInstruments
 import org.philblandford.ui.edit.items.instrumentedit.viewmodel.InstrumentEditInterface
 import org.philblandford.ui.edit.items.instrumentedit.viewmodel.InstrumentEditViewModel
 import org.philblandford.ui.edit.model.EditModel
-import org.philblandford.ui.edit.viewmodel.EditInterface
-import org.philblandford.ui.stubs.StubEditInterface
 import org.philblandford.ui.stubs.StubInstrumentEditInterface
-import org.philblandford.ui.theme.AscoreTheme
+import org.philblandford.ui.theme.compose.AscoreTheme
+import org.philblandford.ui.util.Gap
 import org.philblandford.ui.util.InstrumentList
-import org.philblandford.ui.util.InstrumentSelector
+import org.philblandford.ui.util.NumberSelector
 
 @Composable
 fun InstrumentEdit() {
@@ -47,6 +44,7 @@ fun InstrumentEdit() {
 @Composable
 private fun InstrumentEditInternal(editModel: EditModel, iface:InstrumentEditInterface) {
   var instrumentLabel by remember{ mutableStateOf(editModel.editItem.event.getParam<String>(EventParam.LABEL) ?: "") }
+  var abbreviation by remember{ mutableStateOf(editModel.editItem.event.getParam<String>(EventParam.ABBREVIATION) ?: "") }
 
   LaunchedEffect(iface.selectedInstrument()?.name) {
     instrumentLabel = iface.selectedInstrument()?.label ?: ""
@@ -58,11 +56,18 @@ private fun InstrumentEditInternal(editModel: EditModel, iface:InstrumentEditInt
         iface.setInstrument(it.copy(label = label))
       }
     }, Modifier.fillMaxWidth())
+    OutlinedTextField(abbreviation, { abr -> abbreviation = abr;
+      iface.selectedInstrument()?.let {
+        iface.setInstrument(it.copy(abbreviation = abr))
+      }
+    }, Modifier.fillMaxWidth())
     InstrumentList(
       Modifier
         .height(200.dp)
         .fillMaxWidth(), iface.instruments(), iface.selectedInstrument()) { iface.setInstrument(it) }
     iface.selectedInstrument()?.let { instrument ->
+      NumberSelector(-12, 12, instrument.transposition, { iface.setInstrument(instrument.copy(transposition = it)) })
+      Gap(0.3f)
       ClefRow(instrument) { iface.setInstrument(it) }
     }
   }

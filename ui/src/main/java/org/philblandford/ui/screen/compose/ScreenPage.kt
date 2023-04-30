@@ -77,20 +77,15 @@ internal fun ScreenPage(
   onLongPressRelease: () -> Unit = {},
   onVerticalScroll: (Float) -> Unit = {},
   turnPage: (Boolean) -> Unit = {},
-  changeMethod:()->Unit,
-  vertical:Boolean = true,
+  changeMethod: () -> Unit,
+  vertical: Boolean = true,
   lazyListState: LazyListState = rememberLazyListState(),
-  scrollX:ScrollState = rememberScrollState()
-  ) {
-  Timber.e("RECO ScreenPage $num")
-
-  Timber.e("detect recompose ${getScale()}")
+  scrollX: ScrollState = rememberScrollState()
+) {
 
   val density = LocalDensity.current.density
   val coroutineScope = rememberCoroutineScope()
   val scrollY = rememberScrollState()
-
-  Timber.e("detect scroll ${scrollX.value} ${scrollY.value}")
 
   BoxWithConstraints(
     Modifier
@@ -102,10 +97,15 @@ internal fun ScreenPage(
   ) {
     val remHeight = height
 
-    Surface(Modifier.fillMaxSize(), color = Color.White, tonalElevation = 10.dp, shadowElevation = 5.dp) {
+    Surface(
+      Modifier.fillMaxSize(),
+      color = Color.White,
+      tonalElevation = 10.dp,
+      shadowElevation = 5.dp
+    ) {
 
       Image(
-        painterResource(R.drawable.paper), "",
+        painterResource(R.drawable.paper2), "",
         Modifier
           .size(width - 10.dp, height)
           .graphicsLayer { alpha = 0.3f },
@@ -148,7 +148,7 @@ internal fun ScreenPage(
               detectHorizontalDragGestures(
                 onDragStart = { totalDrag = 0f },
                 onDragEnd = {
-                  if (totalDrag.absoluteValue > 80f) {
+                  if (totalDrag.absoluteValue > 50f) {
                     if (vertical) {
                       changeMethod()
                     } else {
@@ -157,7 +157,7 @@ internal fun ScreenPage(
                   }
                 },
                 onHorizontalDrag = { change, dragAmount ->
-                  if (dragAmount.absoluteValue > 80) {
+                  if (dragAmount.absoluteValue > 50) {
                     totalDrag += dragAmount
                   }
                 }
@@ -167,7 +167,7 @@ internal fun ScreenPage(
           .pointerInput(Unit) {
             if (!vertical) {
               detectVerticalDragGestures { change, dragAmount ->
-                if (getScale() == minScale && dragAmount.absoluteValue > 80) {
+                if (getScale() == minScale && dragAmount.absoluteValue > 50) {
                   changeMethod()
                 } else {
                   coroutineScope.launch {
@@ -181,7 +181,6 @@ internal fun ScreenPage(
             detectZoomGestures { centroid, zoom ->
               val scale = getScale()
               val newValue = (scale * zoom).coerceIn(minScale, maxScale)
-              Timber.e("detect transform $centroid $zoom $newValue ${scale}")
 
               if (newValue == scale) return@detectZoomGestures
 
@@ -247,7 +246,7 @@ private fun BoxScope.EditOverlay(
         val offset = Offset(
           (editItem.rectangle.x.toFloat() * getScale() / density)
             .coerceAtMost(rightEdge - editSize.value.width),
-          (editItem.rectangle.y + editItem.rectangle.height + 150).toFloat() * getScale() / density
+          ((editItem.rectangle.y + editItem.rectangle.height + 150).toFloat() * getScale() / density)
         )
         Timber.e("SV offset $offset $viewPortWidth")
         EditPanel(

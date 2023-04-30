@@ -28,14 +28,14 @@ class StaveJoinTest : ScoreTest() {
 
   @Test
   fun testAddStaveJoinOverlap() {
-    sc.setNewScore(scoreMultiInstruments(3,2))
+    sc.setNewScore(scoreMultiInstruments(5,2))
     SAE(EventType.STAVE_JOIN, ez(0).copy(staveId = StaveId(1,0)),
-      paramMapOf(EventParam.TYPE to StaveJoinType.BRACKET, EventParam.END to eZero().copy(staveId = StaveId(2,0))))
-    SVP(EventType.STAVE_JOIN, EventParam.NUMBER, 2, ez(0).copy(staveId = StaveId(1,0)))
-    SAE(EventType.STAVE_JOIN, ez(0).copy(staveId = StaveId(2,0)),
       paramMapOf(EventParam.TYPE to StaveJoinType.BRACKET, EventParam.END to eZero().copy(staveId = StaveId(3,0))))
-    SVP(EventType.STAVE_JOIN, EventParam.NUMBER, 1, ez(0).copy(staveId = StaveId(1,0)))
-    SVP(EventType.STAVE_JOIN, EventParam.NUMBER, 2, ez(0).copy(staveId = StaveId(2,0)))
+    SVP(EventType.STAVE_JOIN, EventParam.NUMBER, 3, ez(0).copy(staveId = StaveId(1,0)))
+    SAE(EventType.STAVE_JOIN, ez(0).copy(staveId = StaveId(3,0)),
+      paramMapOf(EventParam.TYPE to StaveJoinType.BRACKET, EventParam.END to eZero().copy(staveId = StaveId(5,0))))
+    SVP(EventType.STAVE_JOIN, EventParam.NUMBER, 2, ez(0).copy(staveId = StaveId(1,0)))
+    SVP(EventType.STAVE_JOIN, EventParam.NUMBER, 3, ez(0).copy(staveId = StaveId(3,0)))
   }
 
   @Test
@@ -62,6 +62,17 @@ class StaveJoinTest : ScoreTest() {
         EventParam.END to eZero().copy(staveId = StaveId(4,0))))
     SVP(EventType.STAVE_JOIN, EventParam.NUMBER, 2, ez(0).copy(staveId = StaveId(1,0)))
     SVP(EventType.STAVE_JOIN, EventParam.NUMBER, 2, ez(0).copy(staveId = StaveId(3,0)))
+  }
+
+  @Test
+  fun testAddStaveJoinOverlapDisappearsIfOneStave() {
+    sc.setNewScore(scoreMultiInstruments(4,2))
+    SAE(EventType.STAVE_JOIN, ez(0).copy(staveId = StaveId(1,0)),
+      paramMapOf(EventParam.TYPE to StaveJoinType.BRACKET, EventParam.END to eZero().copy(staveId = StaveId(4,0))))
+    SAE(EventType.STAVE_JOIN, ez(0).copy(staveId = StaveId(2,0)),
+      paramMapOf(EventParam.TYPE to StaveJoinType.BRACKET, EventParam.END to eZero().copy(staveId = StaveId(4,0))))
+    SVNE(EventType.STAVE_JOIN, ez(0).copy(staveId = StaveId(1,0)))
+    SVP(EventType.STAVE_JOIN, EventParam.NUMBER, 3, ez(0).copy(staveId = StaveId(2,0)))
   }
 
   @Test
@@ -105,4 +116,29 @@ class StaveJoinTest : ScoreTest() {
         EventParam.END to eZero().copy(staveId = StaveId(1,0))))
     SVP(EventType.STAVE_JOIN, EventParam.NUMBER, 2, ez(0).copy(staveId = StaveId(1,0)))
   }
+
+  @Test
+  fun testChangeStaveJoinType() {
+    sc.setNewScore(scoreMultiInstruments(2,2))
+    SAE(EventType.STAVE_JOIN, ez(0).copy(staveId = StaveId(1,0)),
+      paramMapOf(EventParam.TYPE to StaveJoinType.BRACKET,
+        EventParam.END to eZero().copy(staveId = StaveId(2,0))))
+    SSP(EventType.STAVE_JOIN, EventParam.TYPE, StaveJoinType.GRAND, ez(0).copy(staveId = StaveId(1,0)))
+    SVP(EventType.STAVE_JOIN, EventParam.TYPE, StaveJoinType.GRAND, ez(0).copy(staveId = StaveId(1,0)))
+  }
+
+  @Test
+  fun testChangeStaveJoin5and4() {
+    sc.setNewScore(scoreMultiInstruments(9, 2))
+    SAE(EventType.STAVE_JOIN, ez(0).copy(staveId = StaveId(5,0)),
+      paramMapOf(EventParam.TYPE to StaveJoinType.BRACKET,
+        EventParam.END to eZero().copy(staveId = StaveId(9,0))))
+    SAE(EventType.STAVE_JOIN, ez(0).copy(staveId = StaveId(1,0)),
+      paramMapOf(EventParam.TYPE to StaveJoinType.BRACKET,
+        EventParam.END to eZero().copy(staveId = StaveId(4,0))))
+    SVP(EventType.STAVE_JOIN, EventParam.NUMBER, 4, ez(0).copy(staveId = StaveId(1,0)))
+    SVP(EventType.STAVE_JOIN, EventParam.NUMBER, 5, ez(0).copy(staveId = StaveId(5,0)))
+
+  }
+
 }

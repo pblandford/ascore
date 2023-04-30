@@ -6,7 +6,7 @@ import org.philblandford.ui.util.ImageGridDropdown
 import org.philblandford.ui.util.noteHeadIds
 
 @Composable
-fun NoteHeadSelector(current: NoteHeadType, onSelect: (NoteHeadType) -> Unit) {
+fun NoteHeadSelector(current: NoteHeadType?, onSelect: (NoteHeadType) -> Unit) {
   ImageGridDropdown(
     images = noteHeadIds.map { it.first },
     columns = 1, rows = noteHeadIds.size,

@@ -35,7 +35,7 @@ class InsertChooseViewModel(private val selectInsertItem: SelectInsertItem) :
   override val resetOnLoad = false
 
   override suspend fun initState(): Result<InsertChooseModel> {
-    return InsertChooseModel(0, grouped[0], listOf(), true).ok()
+    return InsertChooseModel(0, grouped[0], insertItems, true).ok()
   }
 
   override fun getInterface() = this

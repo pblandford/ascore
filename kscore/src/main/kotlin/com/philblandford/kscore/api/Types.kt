@@ -8,9 +8,8 @@ import com.philblandford.kscore.engine.tempo.Tempo
 import com.philblandford.kscore.engine.time.TimeSignature
 import com.philblandford.kscore.engine.types.*
 
-private var idCtr = 0
 data class Location(val page: Int, val x: Int, val y: Int)
-data class Rectangle(val x: Int, val y: Int, val width: Int, val height: Int, val id:Int = idCtr++)
+data class Rectangle(val x: Int, val y: Int, val width: Int, val height: Int)
 data class ScoreArea(val page: Int, val rectangle: Rectangle) {
   val x = rectangle.x
   val y = rectangle.y
@@ -74,7 +73,7 @@ data class NewScoreDescriptor(
   var meta: Meta = Meta(),
   var numBars: Int = 32,
   var template: String? = "",
-  var pageSize: PageSize = PageSize.A5
+  var pageSize: PageSize = PageSize.A4
 )
 
 

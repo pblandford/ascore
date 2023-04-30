@@ -197,6 +197,41 @@ class ScoreQueryTest : ScoreTest() {
   }
 
   @Test
+  fun testGetRangeNotesChord() {
+    SMV()
+    SMV(60)
+    val res =     EG().getEvents(
+      EventType.NOTE,
+      ea(1),
+      ea(2)
+    )
+    assertEqual(
+      listOf(eav(1).copy(id=1), eav(1).copy(id = 2)).toList(),
+      EG().getEvents(
+        EventType.NOTE,
+        ea(1),
+        ea(2)
+      )
+        ?.map { it.key.eventAddress }?.toList()
+    )
+  }
+
+
+  @Test
+  fun testGetRangeNotesEventType() {
+    SMV()
+    assertEqual(
+      listOf(EventType.NOTE).toList(),
+      EG().getEvents(
+        EventType.NOTE,
+        ea(1),
+        ea(2)
+      )
+        ?.map { it.value.eventType }?.toList()
+    )
+  }
+
+  @Test
   fun testGetNoteDuration() {
     SMV()
     assertEqual(crotchet(), EG().getNoteDuration(eav(1).copy(id = 1)))

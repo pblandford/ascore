@@ -2,6 +2,7 @@ package com.philblandford.kscore.engine.core.representation
 
 import com.philblandford.kscore.engine.core.PartPosition
 import com.philblandford.kscore.engine.core.SystemYGeography
+import com.philblandford.kscore.engine.core.area.AddressRequirement
 import com.philblandford.kscore.engine.core.area.Area
 import com.philblandford.kscore.engine.core.area.Coord
 import com.philblandford.kscore.engine.core.area.factory.DrawableFactory
@@ -81,13 +82,18 @@ private fun DrawableFactory.doAddJoin(
   systemYGeography: SystemYGeography, area: Area
 ): Area {
   return event.getParam<Int>(EventParam.NUMBER)?.let { num ->
-    systemYGeography.partPositions[eventAddress.staveId.main + num - 1]?.let { bottom ->
-      val bottomStave = bottom.partGeography.stavePositions.toList().last().second
-      val height = bottom.pos + bottomStave.pos + STAVE_HEIGHT - topPos.pos
-      getArea(height, event)?.let { joinArea ->
-        val offset = if (event.subType == StaveJoinType.BRACKET) joinArea.width/2 else joinArea.width
-        val xPos = systemYGeography.xGeog.preHeaderLen - offset - LINE_THICKNESS
-        area.addArea(joinArea, Coord(xPos, topPos.pos), eventAddress)
+    if (num == 1 && systemYGeography.partPositions[eventAddress.staveId.main]?.partGeography?.stavePositions?.size == 1) {
+      area
+    } else {
+      systemYGeography.partPositions[eventAddress.staveId.main + num - 1]?.let { bottom ->
+        val bottomStave = bottom.partGeography.stavePositions.toList().last().second
+        val height = bottom.pos + bottomStave.pos + STAVE_HEIGHT - topPos.pos
+        getArea(height, event)?.let { joinArea ->
+          val offset =
+            if (event.subType == StaveJoinType.BRACKET) joinArea.width / 2 else joinArea.width
+          val xPos = systemYGeography.xGeog.preHeaderLen - offset - LINE_THICKNESS
+          area.addArea(joinArea, Coord(xPos, topPos.pos), eventAddress)
+        }
       }
     }
   } ?: area
@@ -96,8 +102,8 @@ private fun DrawableFactory.doAddJoin(
 private fun DrawableFactory.getArea(height: Int, event: Event): Area? {
   return when (event.subType) {
     StaveJoinType.BRACKET -> staveJoinArea(height, event)
-    StaveJoinType.GRAND -> getDrawableArea(ImageArgs("join_grand", INT_WILD, height))?.copy(
-      tag = "StaveJoin", event = event
+    StaveJoinType.GRAND -> getDrawableArea(ImageArgs("join_grand", STAVE_JOIN_THICKNESS * 3, height))?.copy(
+      tag = "StaveJoin", event = event, addressRequirement = AddressRequirement.EVENT
     )
     else -> null
   }

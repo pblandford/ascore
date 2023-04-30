@@ -21,42 +21,15 @@ import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import org.philblandford.ui.theme.compose.AscoreTheme
 
 
 @Composable
 fun DialogTheme(content: @Composable BoxScope.(Modifier) -> Unit) {
   AscoreTheme {
 
-    val typography = Typography(
-      bodyLarge = TextStyle(
-        fontFamily = FontFamily.Default,
-        fontWeight = FontWeight.Normal,
-        fontSize = 17.sp
-      ),
-      bodyMedium = TextStyle(
-        fontFamily = FontFamily.Default,
-        fontWeight = FontWeight.Normal,
-        fontSize = 15.sp
-      ),
-      labelMedium = TextStyle(
-        fontFamily = FontFamily.Default,
-        fontWeight = FontWeight.W500,
-        fontSize = 14.sp,
-      ),
-      titleLarge = TextStyle(
-        fontWeight = FontWeight.Medium,
-        fontSize = 21.sp
-      ),
-      titleMedium = TextStyle(
-        fontWeight = FontWeight.Medium,
-        fontSize = 19.sp
-      )
-    )
-    val colors = MaterialTheme.colorScheme
-
     val interactionSource = remember { MutableInteractionSource() }
 
-    MaterialTheme(colorScheme = colors, typography = typography) {
       Box(Modifier.fillMaxSize()) {
         CompositionLocalProvider(LocalContentColor provides MaterialTheme.colorScheme.onSurface) {
           content(
@@ -67,7 +40,6 @@ fun DialogTheme(content: @Composable BoxScope.(Modifier) -> Unit) {
               .align(Alignment.Center).clickable(interactionSource, indication = null) {  }
           )
         }
-      }
     }
   }
 }

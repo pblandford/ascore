@@ -197,7 +197,7 @@ internal fun PageGeography.getSlicePositionAt(eventAddress: EventAddress): Coord
         layoutDescriptor.leftMargin + sysPos.second.systemYGeography.xGeog.startMain + barPos.pos
       val y = sysPos.second.pos
       barPos.geog.original.slicePositionsList.lastOrNull { it.first.offset <= eventAddress.offset }?.let { (_, slicePos) ->
-        val x = startBar + slicePos.start
+        val x = startBar + slicePos.start + barPos.geog.barStartGeography.width
         Coord(x, y)
       } ?: run {
         if (barPos.geog.original.slicePositions.isEmpty()) {

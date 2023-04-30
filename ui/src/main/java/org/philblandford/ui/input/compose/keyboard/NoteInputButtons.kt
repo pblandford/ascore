@@ -1,23 +1,17 @@
 package org.philblandford.ui.input.compose.keyboard
 
-import android.app.Activity
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.windowsizeclass.ExperimentalMaterial3WindowSizeClassApi
-import androidx.compose.material3.windowsizeclass.calculateWindowSizeClass
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.constraintlayout.compose.ConstraintLayout
 import com.philblandford.kscore.api.NoteInputDescriptor
 import com.philblandford.kscore.engine.duration.Duration
 import com.philblandford.kscore.engine.types.Accidental
@@ -30,10 +24,7 @@ import org.philblandford.ui.input.compose.selectors.*
 import org.philblandford.ui.input.model.InputModel
 import org.philblandford.ui.main.window.LocalWindowSizeClass
 import org.philblandford.ui.main.window.compact
-import org.philblandford.ui.main.window.tabletWindowSize
-import org.philblandford.ui.stubs.StubGetColors
 import org.philblandford.ui.stubs.StubInputInterface
-import org.philblandford.ui.theme.AscoreTheme
 import org.philblandford.ui.util.*
 
 

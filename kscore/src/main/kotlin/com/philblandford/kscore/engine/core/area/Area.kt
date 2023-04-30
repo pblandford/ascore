@@ -37,15 +37,11 @@ enum class AddressRequirement {
   SYSTEM, PART, STAVE, BAR, SEGMENT, EVENT, NONE
 }
 
-private var UID = 0
 
 data class AreaMapKey(
   val coord: Coord = Coord(0, 0), val eventAddress: EventAddress = eZero(),
-  val uid: Int = UID
 ) {
-  init {
-    UID++
-  }
+
 }
 typealias AreaMap = List<Pair<AreaMapKey, Area>>
 

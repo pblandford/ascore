@@ -14,39 +14,44 @@ import org.philblandford.ui.base.compose.VMView
 import org.philblandford.ui.clipboard.viewmodel.ClipboardInterface
 import org.philblandford.ui.clipboard.viewmodel.ClipboardViewModel
 import org.philblandford.ui.common.block
-import org.philblandford.ui.main.window.LocalWindowSizeClass
-import org.philblandford.ui.main.window.compact
+import org.philblandford.ui.theme.compose.AscoreTheme
 import org.philblandford.ui.util.SquareButton
-import timber.log.Timber
 
 @Composable
-fun ClipboardView(modifier:Modifier) {
-  VMView(ClipboardViewModel::class.java, modifier) { _, iface, _->
-    ClipboardViewInternal(modifier, iface)
-  }
-}
-
-@Composable
-fun ClipboardViewInternal(modifier: Modifier, iface:ClipboardInterface) {
-  Row(modifier.border(1.dp, Color.Black).background(MaterialTheme.colorScheme.onSurface).padding(2.dp)) {
-    Item(R.drawable.up, {iface.noteUp(true)}) { iface.noteUp(false)  }
-    Item(R.drawable.down, {iface.noteDown(true)}) { iface.noteDown(false)  }
-    Item(R.drawable.left_arrow) { iface.selectionLeft()  }
-    Item(R.drawable.right_arrow) { iface.selectionRight()  }
-    Item(R.drawable.copy) { iface.copy() }
-    Item(R.drawable.cut) { iface.cut() }
-    Item(R.drawable.paste) { iface.paste() }
-    if (!LocalWindowSizeClass.current.compact()) {
-      Item(R.drawable.eraser) { iface.delete() }
+fun ClipboardView(modifier: Modifier) {
+  VMView(ClipboardViewModel::class.java, modifier) { _, iface, _ ->
+    AscoreTheme(
+      MaterialTheme.colorScheme.copy(
+        surface = MaterialTheme.colorScheme.onSurface,
+        onSurface = MaterialTheme.colorScheme.surface
+      )
+    ) {
+      ClipboardViewInternal(modifier, iface)
     }
   }
 }
 
 @Composable
-private fun Item(id: Int, longCmd:()->Unit = {},  cmd: () -> Unit) {
-  SquareButton(id, size = block(),
-    foregroundColor = MaterialTheme.colorScheme.surface,
-    backgroundColor = MaterialTheme.colorScheme.onSurface,
+fun ClipboardViewInternal(modifier: Modifier, iface: ClipboardInterface) {
+  Row(
+    modifier
+      .border(1.dp, Color.Black)
+      .background(MaterialTheme.colorScheme.onSurface)
+      .padding(2.dp)
+  ) {
+    Item(R.drawable.left_arrow) { iface.selectionLeft() }
+    Item(R.drawable.right_arrow) { iface.selectionRight() }
+    Item(R.drawable.copy) { iface.copy() }
+    Item(R.drawable.cut) { iface.cut() }
+    Item(R.drawable.paste) { iface.paste() }
+    Item(R.drawable.eraser) { iface.delete() }
+  }
+}
 
-    onLongPress = longCmd) { cmd() }
+@Composable
+internal fun Item(id: Int, longCmd: () -> Unit = {}, cmd: () -> Unit) {
+  SquareButton(
+    id, size = block(),
+    onLongPress = longCmd
+  ) { cmd() }
 }

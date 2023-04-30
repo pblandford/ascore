@@ -29,7 +29,6 @@ inline fun <M : VMModel, I : VMInterface, S : VMSideEffect, reified VM : BaseVie
     viewModel.reset()
   }
   viewModel.getState().collectAsState().value?.let { model ->
-    Timber.e("OI VMView $model")
     Box(modifier.testTag(tag)) {
       contents(model, viewModel.getInterface(), viewModel.effectFlow)
     }

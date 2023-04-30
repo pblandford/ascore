@@ -4,6 +4,7 @@ import android.net.Uri
 import com.philblandford.ascore.external.interfaces.ExportDestination
 import com.philblandford.kscore.engine.types.ExportType
 import org.philblandford.ascore2.features.export.ExportScore
+import org.philblandford.ascore2.features.instruments.GetInstruments
 import org.philblandford.ascore2.features.save.GetFileName
 import org.philblandford.ascore2.util.ok
 import org.philblandford.ui.base.viewmodel.BaseViewModel
@@ -27,11 +28,13 @@ interface ExportInterface : VMInterface {
 
 class ExportViewModel(
   private val exportScore: ExportScore,
-  private val getFileName: GetFileName
+  private val getFileName: GetFileName,
+  private val getInstruments: GetInstruments
   ) : BaseViewModel<ExportModel, ExportInterface, VMSideEffect>(), ExportInterface {
 
   override suspend fun initState(): Result<ExportModel> {
-    return ExportModel(getFileName() ?: "", ExportType.JPG,false, false).ok()
+    return ExportModel(getFileName() ?: "", ExportType.JPG,
+      if (getInstruments().size > 1) false else null, false).ok()
   }
 
   override fun getInterface(): ExportInterface  = this

@@ -1,10 +1,15 @@
 package com.philblandford.kscore.engine.core.areadirectory.segment
 
+import com.philblandford.kscore.engine.core.SegmentGeography
 import com.philblandford.kscore.engine.core.area.factory.DrawableFactory
 import com.philblandford.kscore.engine.core.areadirectory.AreaDirectory
 import com.philblandford.kscore.engine.duration.dZero
 import com.philblandford.kscore.engine.map.EventList
 import com.philblandford.kscore.engine.types.*
+import com.philblandford.kscore.util.toImmutableMap
+import kotlinx.collections.immutable.ImmutableMap
+import kotlinx.collections.immutable.immutableMapOf
+import kotlinx.collections.immutable.persistentMapOf
 
 internal data class SegmentCreatorReturn(
   val segmentLookup: Lookup<SegmentArea>,
@@ -22,7 +27,7 @@ internal fun DrawableFactory.createSegments(
   val geogs = segments.map { Pair(it.key, it.value.geography) }.toMap()
 
   val segmentStaveLookup = createStaveLookup(segments)
-  val segmentGeogBarLookup = createBarLookup(geogs, scoreQuery.numBars)
+  val segmentGeogBarLookup = createBarLookup(geogs, scoreQuery.numBars, existing, changedBars?.map { it.barNum })
 
   return SegmentCreatorReturn(segments, segmentGeogBarLookup, segmentStaveLookup)
 
@@ -101,13 +106,20 @@ private fun <T> createStaveLookup(segmentLookup: Lookup<T>): Map<StaveId, Lookup
 }
 
 
-private fun <T> createBarLookup(segmentLookup: Lookup<T>, numBars: Int): Map<Int, Lookup<T>> {
+private fun  createBarLookup(segmentLookup: Lookup<SegmentGeography>, numBars: Int,
+existing: AreaDirectory?, changedBars: Iterable<Int>?): Map<Int, Lookup<SegmentGeography>> {
   val grouped = segmentLookup.toList().groupBy { it.first.barNum }
 
-  return (1..numBars).fold(hashMapOf()) { map, num ->
-    val subMap = grouped[num]?.toMap() ?: mapOf()
-    map.put(num, subMap)
+  return (1..numBars).fold(hashMapOf()) { map, barNum ->
+    val existingMap = changedBars?.let {
+      if (changedBars.contains(barNum)) null else existing?.segmentGeogBarLookup?.get(barNum)
+    }
+
+    val subMap = existingMap ?: grouped[barNum]?.toMap() ?: mapOf()
+    map[barNum] = subMap
     map
   }
 }
+
+
 

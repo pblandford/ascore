@@ -13,6 +13,7 @@ import org.philblandford.ascore2.features.input.usecases.MoveMarker
 import org.philblandford.ascore2.features.insert.GetLyricAtMarker
 import org.philblandford.ascore2.features.insert.GetMarker
 import org.philblandford.ascore2.features.insert.InsertLyricAtMarker
+import org.philblandford.ascore2.features.settings.usecases.GetAssignedFonts
 import org.philblandford.ascore2.util.ok
 import org.philblandford.ui.base.viewmodel.VMSideEffect
 import org.philblandford.ui.insert.common.viewmodel.ScoreInsertViewModel
@@ -36,7 +37,7 @@ class LyricInsertViewModel(
   private val moveMarker: MoveMarker,
   private val insertLyricAtMarker: InsertLyricAtMarker,
   private val getLyricAtMarker: GetLyricAtMarker,
-  private val getMarker: GetMarker
+  private val getMarker: GetMarker,
 ) : ScoreInsertViewModel<LyricInsertModel, LyricInsertInterface>(), LyricInsertInterface {
 
   private var markerPosition = scoreUpdate().map { getMarker() }

@@ -38,7 +38,7 @@ class PlayViewModel(
   }
 
   override suspend fun initState(): Result<PlayModel> {
-    return PlayModel(PlayState.STOPPED).ok()
+    return PlayModel(getPlayState().value).ok()
   }
 
   override fun getInterface() = this

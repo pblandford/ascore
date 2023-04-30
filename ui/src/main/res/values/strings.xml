@@ -147,6 +147,7 @@
     <string name="importing_soundfont">Importing Soundfont…</string>
     <string name="loading_autosave">Loading autosaved file…</string>
     <string name="loading_score">Loading Score…</string>
+    <string name="loading_score_name">Loading Score %s</string>
     <string name="dividing_parts">Dividing parts</string>
     <string name="creating_representation">Creating part for %1$s</string>
     <string name="creating_pdf">Creating PDF Image for %1$s</string>

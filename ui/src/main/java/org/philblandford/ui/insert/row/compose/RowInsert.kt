@@ -48,7 +48,7 @@ fun <T> RowInsertInternal(
   ) {
   Box(
     modifier
-      .height(100.dp)
+      .heightIn(100.dp)
       .padding(10.dp)
   ) {
     IdRow(

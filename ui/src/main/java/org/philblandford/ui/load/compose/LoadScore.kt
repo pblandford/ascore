@@ -16,6 +16,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -25,23 +26,36 @@ import com.google.accompanist.pager.HorizontalPager
 import com.google.accompanist.pager.rememberPagerState
 import com.philblandford.kscore.engine.types.FileSource
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import org.philblandford.ui.R
 import org.philblandford.ui.base.compose.VMView
 import org.philblandford.ui.base.viewmodel.VMSideEffect
 import org.philblandford.ui.load.viewmodels.LoadInterface
 import org.philblandford.ui.load.viewmodels.LoadModel
+import org.philblandford.ui.load.viewmodels.LoadSideEffect
 import org.philblandford.ui.load.viewmodels.LoadViewModel
+import org.philblandford.ui.load.viewmodels.ProgressDescr
 import org.philblandford.ui.theme.DialogButton
 import org.philblandford.ui.theme.DialogTheme
 import org.philblandford.ui.util.Gap
 import org.philblandford.ui.util.LabelText
+import timber.log.Timber
 import java.text.SimpleDateFormat
 import java.util.*
 
 @Composable
 fun LoadScore(dismiss: () -> Unit) {
-  VMView(LoadViewModel::class.java) { state, iface, _ ->
+  VMView(LoadViewModel::class.java) { state, iface, effects ->
+
+    LaunchedEffect(Unit) {
+      effects.collectLatest { effect ->
+        when (effect) {
+          LoadSideEffect.Done -> dismiss()
+        }
+      }
+    }
+
     DialogTheme { modifier ->
       LoadScoreInternal(modifier, state, iface, dismiss)
     }
@@ -53,6 +67,16 @@ private fun LoadScoreInternal(
   modifier: Modifier,
   model: LoadModel, iface: LoadInterface, dismiss: () -> Unit
 ) {
+  Timber.e("LOAD ${model.progress}")
+  model.loadingScore?.let {
+    LoadScoreProgress(modifier, it, model.progress)
+  } ?: run {
+    LoadScoreSelect(modifier, model, iface, dismiss)
+  }
+}
+
+@Composable
+private fun LoadScoreSelect(modifier: Modifier, model: LoadModel, iface: LoadInterface, dismiss: () -> Unit) {
   Column(
     modifier
       .fillMaxWidth()
@@ -74,6 +98,17 @@ private fun LoadScoreInternal(
     } else {
       ScorePager(model, iface, dismiss)
     }
+  }
+}
+
+@Composable
+private fun LoadScoreProgress(modifier: Modifier, name:String, progressDescr: ProgressDescr?) {
+
+  Column(modifier.padding(5.dp)) {
+    Text(stringResource(R.string.loading_score_name, name), maxLines = 1,
+    overflow = TextOverflow.Ellipsis)
+    Gap(0.5f)
+    LinearProgressIndicator((progressDescr?.progress ?: 0f) / 100f, Modifier.fillMaxWidth())
   }
 }
 
@@ -127,7 +162,6 @@ private fun ColumnScope.ScorePager(
       items(model.fileNames[fileSourceTypes[idx].fileSource] ?: listOf()) { fileInfo ->
         ScoreDetailCard(fileInfo, {
           iface.load(fileInfo)
-          dismiss()
         }) { deleteConfirm = it }
         Gap(10.dp)
       }
@@ -144,7 +178,6 @@ private fun ColumnScope.ScorePager(
 
 @Composable
 private fun ConfirmDialog(fileInfo: FileInfo, action: () -> Unit, dismiss: () -> Unit) {
-
 
   Dialog(onDismissRequest = dismiss) {
     DialogTheme { modifier ->

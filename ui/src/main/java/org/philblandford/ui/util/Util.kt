@@ -7,12 +7,8 @@ import androidx.compose.foundation.*
 import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.foundation.text.KeyboardActions
-import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.Button
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -22,14 +18,10 @@ import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.LocalConfiguration
-import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.input.ImeAction
-import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
-import com.philblandford.ascore.android.ui.style.backgroundGray
 import com.philblandford.kscore.log.ksLogv
 import org.philblandford.ui.R
 import org.philblandford.ui.common.block
@@ -111,7 +103,7 @@ fun ToggleColumn(
 @Composable
 fun Stoppable(
     enable: Boolean, tag: String = "",
-    disabledColor: Color = com.philblandford.ascore.android.ui.style.disabledColor,
+    disabledColor: Color = org.philblandford.ui.theme.compose.disabledColor,
     children: @Composable() () -> Unit
 ) {
     Box {

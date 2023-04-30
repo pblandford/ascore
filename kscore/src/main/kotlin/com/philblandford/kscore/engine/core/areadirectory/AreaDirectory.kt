@@ -119,7 +119,7 @@ fun DrawableFactory.areaDirectory(
   changedBars:List<EventAddress>? = null,
   updateHeaders:Boolean = true
 ): AreaDirectory? {
-  if (changedBars?.isEmpty() == true) {
+  if (changedBars?.isEmpty() == true && !updateHeaders) {
     return existing
   }
 

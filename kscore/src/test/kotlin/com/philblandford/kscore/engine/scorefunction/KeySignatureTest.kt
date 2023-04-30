@@ -118,6 +118,15 @@ class KeySignatureTest : ScoreTest() {
   }
 
   @Test
+  fun testAddKeySignatureAfterSameReplacingOther() {
+    SAE(KeySignature(3).toEvent(), eav(1))
+    SAE(KeySignature(5).toEvent(), eav(3))
+    SAE(KeySignature(3).toEvent(), eav(3))
+    SVNE(EventType.KEY_SIGNATURE, ez(3))
+  }
+
+
+  @Test
   fun testAddKeySignatureLastButOneSameOK() {
     SAE(KeySignature(3).toEvent(), eav(1))
     SAE(KeySignature(4).toEvent(), eav(2))

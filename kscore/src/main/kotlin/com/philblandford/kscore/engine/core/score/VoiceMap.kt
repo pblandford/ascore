@@ -208,7 +208,7 @@ open class VoiceMap internal constructor(
       EventType.NOTE -> getSpecialEvents(EventType.DURATION)?.flatMap { (k, e) ->
         chord(e)?.let {
           it.notes.withIndex().map { iv ->
-            k.copy(eventAddress = k.eventAddress.copy(id = iv.index + 1)) to it.toEvent()
+            k.copy(eventAddress = k.eventAddress.copy(id = iv.index + 1), eventType = eventType) to iv.value.toEvent()
           }
         } ?: listOf()
       }?.toMap()

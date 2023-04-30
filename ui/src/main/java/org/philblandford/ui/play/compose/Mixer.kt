@@ -6,6 +6,7 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Slider
 import androidx.compose.material3.SliderDefaults
@@ -32,6 +33,7 @@ import org.philblandford.ui.play.viewmodel.MixerViewModel
 import org.philblandford.ui.util.SquareButton
 import org.philblandford.ui.R
 import org.philblandford.ui.base.viewmodel.VMSideEffect
+import org.philblandford.ui.main.toprow.PlayButton
 import org.philblandford.ui.stubs.StubMixerInterface
 import org.philblandford.ui.theme.DialogTheme
 import org.philblandford.ui.util.ButtonState
@@ -62,7 +64,7 @@ private fun MixerInternal(
     modifier
       .background(MaterialTheme.colorScheme.surface)
       .padding(2.dp)
-      .border(3.dp, MaterialTheme.colorScheme.onSurface)
+     // .border(3.dp, MaterialTheme.colorScheme.onSurface, RoundedCornerShape(10.dp))
   ) {
     Column(
       Modifier
@@ -151,24 +153,31 @@ private fun MixerButton(
 
 @Composable
 private fun ButtonRow(modifier: Modifier, model: MixerModel, iface: MixerInterface) {
-  Row(
-    modifier
-      .border(1.dp, MaterialTheme.colorScheme.onSurface)
-      .padding(2.dp),
-    verticalAlignment = Alignment.CenterVertically
-  ) {
-    SquareButton(
-      R.drawable.shuffle,
-      state = selected(model.playbackState.shuffle)
-    ) { iface.toggleShuffle() }
+  Row(modifier) {
+    Row(
+      Modifier
+        .border(1.dp, MaterialTheme.colorScheme.onSurface)
+        .padding(2.dp),
+      verticalAlignment = Alignment.CenterVertically
+    ) {
+      SquareButton(
+        R.drawable.shuffle,
+        state = selected(model.playbackState.shuffle)
+      ) { iface.toggleShuffle() }
+      Gap(0.5f)
+      SquareButton(
+        R.drawable.chord,
+        state = selected(model.playbackState.harmonies)
+      ) { iface.toggleHarmonies() }
+      Gap(0.5f)
+      SquareButton(
+        R.drawable.loop,
+        state = selected(model.playbackState.loop)
+      ) { iface.toggleLoop() }
+      Gap(0.5f)
+    }
     Gap(0.5f)
-    SquareButton(
-      R.drawable.chord,
-      state = selected(model.playbackState.harmonies)
-    ) { iface.toggleHarmonies() }
-    Gap(0.5f)
-    SquareButton(R.drawable.loop, state = selected(model.playbackState.loop)) { iface.toggleLoop() }
-    Gap(0.5f)
+    PlayButton()
   }
 }
 

@@ -372,6 +372,7 @@ class Loader {
     SaveType.PAUSETYPE to { b -> loadEnum(b) { PauseType.valueOf(it) } },
     SaveType.PEDALTYPE to { b -> loadEnum(b) { PedalType.valueOf(it) } },
     SaveType.WEDGETYPE to { b -> loadEnum(b) { WedgeType.valueOf(it) } },
+    SaveType.LONGTRILLTYPE to { b -> loadEnum(b) { LongTrillType.valueOf(it) } },
     SaveType.NAVIGATIONTYPE to { b -> loadEnum(b) { NavigationType.valueOf(it) } },
     SaveType.LYRICTYPE to { b -> loadEnum(b) { LyricType.valueOf(it) } },
     SaveType.GLISSANDOTYPE to { b -> loadEnum(b) { GlissandoType.valueOf(it) } },

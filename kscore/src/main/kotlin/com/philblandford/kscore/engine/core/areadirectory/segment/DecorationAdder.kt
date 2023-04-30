@@ -94,7 +94,7 @@ private fun getY(desc: DecorationDesc, geog: VoiceGeography, area: Area): Int {
       val top = if (desc.clearStave) min(0, geog.stemGeography?.yPos ?: 0) else
         geog.stemGeography?.yPos ?: 0
       val articulationOffset =
-        if (geog.stemGeography?.up == true) 0 else ARTICULATION_OFFSET - geog.articulationHeight
+        if (geog.stemGeography?.up == true) 2 else ARTICULATION_OFFSET - geog.articulationHeight
       top - area.height - articulationOffset
     }
   } else {

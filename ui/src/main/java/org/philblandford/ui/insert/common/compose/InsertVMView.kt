@@ -21,6 +21,7 @@ import org.philblandford.ui.insert.model.InsertCombinedState
 import org.philblandford.ui.insert.model.InsertInterface
 import org.philblandford.ui.insert.model.InsertModel
 import org.philblandford.ui.util.SquareButton
+import timber.log.Timber
 
 
 @Composable

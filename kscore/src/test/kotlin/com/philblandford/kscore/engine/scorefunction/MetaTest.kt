@@ -68,7 +68,7 @@ class MetaTest : ScoreTest() {
     SAE(EventType.TITLE, eZero(), paramMapOf(EventParam.TEXT to "Hello"))
     SSP(EventType.TITLE, EventParam.HARD_START, Coord(50,50), eZero())
     SSP(EventType.TITLE, EventParam.HARD_START, null, eZero())
-    SVNP(EventType.TITLE, EventParam.HARD_START, eZero())
+    SVP(EventType.TITLE, EventParam.HARD_START, Coord(),  eZero())
   }
 
 }

@@ -206,6 +206,7 @@ class ScoreContainer(private val drawableFactory: DrawableFactory) {
         val newScoreState = currentScoreState.value.applyCommand(command)
         currentScoreState.emit(newScoreState)
     } catch (e:Exception) {
+      ksLoge("SC caught error", e)
         errorFlow.emit(ScoreError(e, command))
     }
   }
@@ -358,7 +359,7 @@ class ScoreContainer(private val drawableFactory: DrawableFactory) {
     eventAddress: EventAddress,
     default: T?
   ): T? {
-    return currentScore.value?.getParam<T>(eventType, eventParam, eventAddress) ?: default
+    return currentScoreState.value.score?.getParam<T>(eventType, eventParam, eventAddress) ?: default
   }
 
   fun setOption(option: EventParam, value: Any?) {

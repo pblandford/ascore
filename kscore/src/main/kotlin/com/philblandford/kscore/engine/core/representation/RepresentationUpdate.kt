@@ -5,11 +5,14 @@ import com.philblandford.kscore.engine.core.area.factory.DrawableFactory
 import com.philblandford.kscore.engine.core.areadirectory.AreaDirectory
 import com.philblandford.kscore.engine.core.areadirectory.areaDirectory
 import com.philblandford.kscore.engine.core.geographyX.GeographyXDirectory
+import com.philblandford.kscore.engine.core.geographyX.geographyXDirectory
 import com.philblandford.kscore.engine.core.geographyX.geographyXDirectoryDiff
 import com.philblandford.kscore.engine.core.geographyY.geographyYDirectory
 import com.philblandford.kscore.engine.core.getLayoutDescriptor
 import com.philblandford.kscore.engine.core.score.Score
+import com.philblandford.kscore.engine.core.stave.PartDirectory
 import com.philblandford.kscore.engine.core.stave.update
+import com.philblandford.kscore.engine.core.stave.updateAll
 import com.philblandford.kscore.engine.types.EventParam
 import com.philblandford.kscore.engine.types.EventType
 import com.philblandford.kscore.engine.types.ScoreQuery
@@ -46,43 +49,71 @@ internal fun Representation.update(
   }
 
   /* create a new area directory */
-  val ad = drawableFactory.refreshAreas(pipeLine.areaDirectory, scoreDiff, score)
 
   /* create all the parts and systems */
   return if (scoreDiff.createParts) {
-    geographyXDirectoryDiff(
-      ad,
-      score,
-      getAvailable(layoutDescriptor),
-      pipeLine.geographyXDirectory,
-      scoreDiff.changedBars.map { it.barNum }.distinct()
-    ).let { gxd ->
-      val geogChanged = getXGeogBarsChanged(pipeLine.geographyXDirectory, gxd)
-
-      val partDir = pipeLine.partDirectory.update(
+    if (scoreDiff.changedLines.isEmpty() && scoreDiff.changedBars.isEmpty()) {
+      val areaDirectory = drawableFactory.areaDirectory(score, pipeLine.areaDirectory, listOf(),  updateHeaders = true)!!
+      val xDirectory = geographyXDirectory(areaDirectory, score, getAvailable(layoutDescriptor))
+      val partDir = pipeLine.partDirectory.updateAll(
         score,
-        ad,
-        gxd,
+        pipeLine.areaDirectory,
+        xDirectory,
         layoutDescriptor,
-        false,
-        scoreDiff.changedBars.map { it.barNum }.plus(geogChanged).plus(scoreDiff.changedLines),
         drawableFactory
       )
-      geographyYDirectory(partDir, gxd, score)?.let { gyd ->
-        val pipeLine = PipeLine(ad, gxd, partDir, gyd)
-        val rep =
-          representation(
-            pipeLine,
-            score,
-            layoutDescriptor,
-            drawableFactory
-          )
-        rep
-      }
-    } ?: this
+      val yDirectory = geographyYDirectory(partDir, xDirectory, score)!!
+      val pipeLine = pipeLine.copy(geographyXDirectory = xDirectory, partDirectory = partDir, areaDirectory = areaDirectory,
+      geographyYDirectory = yDirectory)
+      representation(pipeLine, score, layoutDescriptor, drawableFactory)
+    } else {
+      updateParts(score, layoutDescriptor, scoreDiff)
+    }
+  } else if (scoreDiff.pagesOnly) {
+    representation(pipeLine, score, layoutDescriptor, drawableFactory)
   } else {
     this
   }
+}
+
+private fun Representation.updateParts(
+  score: Score,
+  layoutDescriptor: LayoutDescriptor,
+  scoreDiff: ScoreDiff
+): Representation {
+  val ad = drawableFactory.refreshAreas(pipeLine.areaDirectory, scoreDiff, score)
+
+  return geographyXDirectoryDiff(
+    ad,
+    score,
+    getAvailable(layoutDescriptor),
+    pipeLine.geographyXDirectory,
+    scoreDiff.changedBars.map { it.barNum }.distinct()
+  ).let { gxd ->
+    val geogChanged = getXGeogBarsChanged(pipeLine.geographyXDirectory, gxd)
+
+    val partDir = pipeLine.partDirectory.update(
+      score,
+      ad,
+      gxd,
+      layoutDescriptor,
+      false,
+      scoreDiff.changedBars.map { it.barNum }.plus(geogChanged).plus(scoreDiff.changedLines),
+      drawableFactory
+    )
+    geographyYDirectory(partDir, gxd, score)?.let { gyd ->
+      val pipeLine = PipeLine(ad, gxd, partDir, gyd)
+      val rep =
+        representation(
+          pipeLine,
+          score,
+          layoutDescriptor,
+          drawableFactory
+        )
+      rep
+    }
+  } ?: this
+
 }
 
 

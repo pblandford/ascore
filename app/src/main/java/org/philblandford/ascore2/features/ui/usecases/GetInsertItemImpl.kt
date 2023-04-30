@@ -15,6 +15,9 @@ class GetInsertItemImpl(private val uiStateRepository: UiStateRepository) :GetIn
         is UIState.Insert -> {
           state.insertItem
         }
+        is UIState.InsertDelete -> {
+          state.insertItem
+        }
         else -> null
       }
 

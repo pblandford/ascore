@@ -1,4 +1,4 @@
-package com.philblandford.ascore.android.ui.style
+package org.philblandford.ui.theme.compose
 
 import androidx.compose.ui.graphics.Color
 

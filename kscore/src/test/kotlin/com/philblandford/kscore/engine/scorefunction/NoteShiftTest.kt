@@ -222,6 +222,23 @@ class NoteShiftTest : ScoreTest() {
     }
   }
 
+  @Test
+  fun testShiftNoteOctaveDownTiedFirstNote() {
+    SMV(duration = breve())
+    SAE(
+      EventType.NOTE_SHIFT, eav(1), paramMapOf(
+        EventParam.AMOUNT to -12,
+        EventParam.ACCIDENTAL to Accidental.SHARP
+      ), eav(1)
+    )
+    repeat(2) { bar ->
+      SVP(
+        EventType.NOTE, EventParam.PITCH, Pitch(NoteLetter.C, Accidental.NATURAL, 4),
+        eav(bar+1).copy(id = 1)
+      )
+    }
+  }
+
 
   @Test
   fun testShiftChordArticulationRetained() {

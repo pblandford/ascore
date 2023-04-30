@@ -10,7 +10,7 @@ import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.IntSize
 import androidx.compose.ui.unit.dp
-import com.philblandford.ascore.android.ui.style.unselectedColor
+import org.philblandford.ui.theme.compose.unselectedColor
 
 @Composable
 fun DimmableBox(dim:Boolean, modifier: Modifier, content : @Composable BoxScope.()->Unit) {

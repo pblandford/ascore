@@ -114,6 +114,6 @@ class UtilityViewModel(
   }
 
   override fun togglePanelType() {
-    togglePanelLayout().ok()
+    togglePanelLayout()
   }
 }

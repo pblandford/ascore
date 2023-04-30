@@ -72,7 +72,9 @@ class InputViewModel(
 
   override fun insertNote(midiVal: Int, hold: Boolean) {
     receiveAction {
-      insertNoteUC(midiVal, hold)
+      if (!it.noteInputDescriptor.isNoEdit) {
+        insertNoteUC(midiVal, hold)
+      }
       soundNote(midiVal)
       if (it.noteInputDescriptor.isPlusOctave) {
         soundNote(midiVal - 12)

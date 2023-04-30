@@ -20,11 +20,10 @@ import androidx.compose.ui.unit.sp
 import com.google.accompanist.pager.ExperimentalPagerApi
 import com.google.accompanist.pager.VerticalPager
 import com.google.accompanist.pager.rememberPagerState
-import com.philblandford.ascore.android.ui.style.disabledColor
+import org.philblandford.ui.theme.compose.disabledColor
 import com.philblandford.kscore.engine.time.TimeSignature
 import com.philblandford.kscore.engine.types.TimeSignatureType
 import org.philblandford.ui.common.block
-import timber.log.Timber
 import kotlin.math.log
 import kotlin.math.pow
 

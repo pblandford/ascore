@@ -33,6 +33,14 @@ class TieTest : ScoreTest() {
   }
 
   @Test
+  fun testAddTieToMismatchedNotesIsNoop() {
+    SMV()
+    SMV(63, eventAddress = eav(1, crotchet()))
+    SAE(EventType.TIE, eav(1).copy(id = 1))
+    SVNE(EventType.TIE, eav(1).copy(id = 1))
+  }
+
+  @Test
   fun testAddTieChord() {
     SMV()
     SMV(eventAddress = eav(1, crotchet()))

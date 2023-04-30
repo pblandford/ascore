@@ -32,7 +32,12 @@ fun DrawableFactory.tempoArea(event: Event):Area? {
 private fun DrawableFactory.getSymbolArea(event: Event): Area? {
   return event.getParam<Duration>(EventParam.DURATION)?.let { duration ->
     durationKeys[duration.undot()]?.let {
-      getDrawableArea(ImageArgs(it, INT_WILD, BLOCK_HEIGHT*4))
+      val height = if (event.duration() >= semibreve()) {
+        BLOCK_HEIGHT * 2
+      } else {
+        BLOCK_HEIGHT * 4
+      }
+      getDrawableArea(ImageArgs(it, INT_WILD, height))
     }
   }
 }

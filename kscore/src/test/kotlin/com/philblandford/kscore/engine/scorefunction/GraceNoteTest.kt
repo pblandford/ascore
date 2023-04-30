@@ -60,6 +60,14 @@ class GraceNoteTest : ScoreTest() {
   }
 
   @Test
+  fun testAddNoteGraceShiftMarkerMovesToMainOffset() {
+    SMV()
+    grace()
+    grace(offset = getMarker()!!.graceOffset)
+    assertEqual(ea(1), getMarker())
+  }
+
+  @Test
   fun testAddNoteGraceShiftNotAddedToChord() {
     SMV()
     grace()
@@ -95,6 +103,7 @@ class GraceNoteTest : ScoreTest() {
   fun testAddNoteGraceToChordMarkerMovesToMainOffset() {
     SMV()
     grace()
+    setMarker(eag(1))
     grace(mode = GraceInputMode.ADD, midiVal = 60)
     assertEqual(ea(1), getMarker())
   }
@@ -130,7 +139,7 @@ class GraceNoteTest : ScoreTest() {
   fun testAddNoteGraceShiftMarkerCorrect() {
     grace()
     SVP(
-      EventType.UISTATE, EventParam.MARKER_POSITION, ea(1), eZero()
+      EventType.UISTATE, EventParam.MARKER_POSITION, eag(1, graceOffset = null), eZero()
     )
   }
 
@@ -155,7 +164,7 @@ class GraceNoteTest : ScoreTest() {
   fun testAddNoteGraceAddMarkerCorrect() {
     grace(mode = GraceInputMode.ADD)
     SVP(
-      EventType.UISTATE, EventParam.MARKER_POSITION, ea(1), eZero()
+      EventType.UISTATE, EventParam.MARKER_POSITION, eag(1, graceOffset = null), eZero()
     )
   }
 
@@ -168,14 +177,14 @@ class GraceNoteTest : ScoreTest() {
         EventParam.GRACE_MODE to GraceInputMode.ADD
       )
     )
-    assertEqual(ea(1), getMarker())
+    assertEqual(eag(1, graceOffset = null), getMarker())
 
   }
 
   @Test
   fun testAddNoteGraceNonGraceOffsetMarkerMoves() {
     grace(null)
-    SVP(EventType.UISTATE, EventParam.MARKER_POSITION, ea(1, dZero()), eZero())
+    SVP(EventType.UISTATE, EventParam.MARKER_POSITION, eag(1, graceOffset = null), eZero())
   }
 
   @Test

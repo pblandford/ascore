@@ -26,6 +26,7 @@ import org.philblandford.ui.edit.items.ornament.compose.OrnamentEdit
 import org.philblandford.ui.edit.items.pause.compose.PauseEdit
 import org.philblandford.ui.edit.items.pedal.compose.PedalEdit
 import org.philblandford.ui.edit.items.slur.compose.SlurEdit
+import org.philblandford.ui.edit.items.stavejoin.compose.StaveJoinEdit
 import org.philblandford.ui.edit.items.tempo.compose.TempoEdit
 import org.philblandford.ui.edit.items.text.compose.LyricEdit
 import org.philblandford.ui.edit.items.text.compose.TextEdit
@@ -62,6 +63,7 @@ fun EditPanel(modifier: Modifier, type: EventType, scale: Float) {
         EventType.PEDAL -> PedalEdit(scale)
         EventType.REHEARSAL_MARK -> TextEdit(scale)
         EventType.SLUR -> SlurEdit(scale)
+        EventType.STAVE_JOIN -> StaveJoinEdit()
         EventType.SUBTITLE -> TextEdit(scale)
         EventType.TEMPO -> TempoEdit(scale)
         EventType.TEMPO_TEXT -> TextEdit(scale)

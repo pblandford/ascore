@@ -194,7 +194,7 @@ interface AreaDirectoryQuery {
 }
 
 interface GeographyXQuery {
-  fun getSystemXGeographies(): Iterable<SystemXGeography>
+  fun getSystemXGeographies(): List<SystemXGeography>
 }
 
 interface PartQuery {

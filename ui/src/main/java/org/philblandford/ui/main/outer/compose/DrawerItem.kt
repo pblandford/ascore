@@ -22,7 +22,7 @@ import org.philblandford.ui.common.block
 import org.philblandford.ui.main.outer.model.DrawerItem
 import org.philblandford.ui.main.outer.model.DrawerItemGroup
 import org.philblandford.ui.main.outer.model.drawerItems
-import org.philblandford.ui.theme.AscoreTheme
+import org.philblandford.ui.theme.compose.AscoreTheme
 
 
 @Composable

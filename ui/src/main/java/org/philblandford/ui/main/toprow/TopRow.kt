@@ -19,6 +19,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import org.philblandford.ui.R
@@ -32,7 +33,7 @@ import org.philblandford.ui.util.SquareButton
 fun TopRow(
   modifier: Modifier,
   canShowTabs: Boolean,
-  vertical:Boolean,
+  vertical: Boolean,
   openDrawer: () -> Unit,
   showLayoutOptions: () -> Unit,
   fullScreen: () -> Unit,
@@ -112,16 +113,14 @@ fun TopRowCompact(
           SquareButton(R.drawable.page) {
             showLayoutOptions()
           }
-          SquareButton(if (!vertical) R.drawable.page_down else  R.drawable.page_forward) { toggleVertical() }
+          SquareButton(if (!vertical) R.drawable.page_down else R.drawable.page_forward) { toggleVertical() }
           SquareButton(R.drawable.mixer) {
             showConsole()
           }
-          PlayButton()
         }
       }
-
     }
-
+    PlayButton()
   }
 }
 
@@ -140,23 +139,24 @@ fun TopRowExpanded(
     modifier
       .fillMaxWidth()
       .background(MaterialTheme.colorScheme.surface)
-      .border(1.dp, MaterialTheme.colorScheme.onSurface)
+      .border(1.dp, MaterialTheme.colorScheme.onSurface),
+    verticalAlignment = Alignment.Bottom
   ) {
     SquareButton(R.drawable.settings) { openDrawer() }
     Line()
     Tabs(Modifier.weight(1f))
-      SquareButton(R.drawable.fullscreen) {
-        fullScreen()
-      }
-      SquareButton(R.drawable.page) {
-        showLayoutOptions()
-      }
-    SquareButton(if (!vertical) R.drawable.page_down else  R.drawable.page_forward) { toggleVertical() }
+    SquareButton(R.drawable.fullscreen) {
+      fullScreen()
+    }
+    SquareButton(R.drawable.page) {
+      showLayoutOptions()
+    }
+    SquareButton(if (!vertical) R.drawable.page_down else R.drawable.page_forward) { toggleVertical() }
 
     SquareButton(R.drawable.mixer) {
-        showConsole()
-      }
-      PlayButton()
+      showConsole()
+    }
+    PlayButton()
   }
 
 }

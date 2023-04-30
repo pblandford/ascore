@@ -21,7 +21,7 @@ import org.philblandford.ui.R
 import org.philblandford.ui.common.Gap
 import org.philblandford.ui.export.viewmodel.ExportInterface
 import org.philblandford.ui.export.viewmodel.ExportModel
-import org.philblandford.ui.theme.PopupTheme
+import org.philblandford.ui.theme.compose.PopupTheme
 import org.philblandford.ui.util.SquareButton
 import org.philblandford.ui.util.StyledText
 import org.philblandford.ui.util.ThemeButton

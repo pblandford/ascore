@@ -193,7 +193,7 @@ private fun Area.getAreasAtAddress(
     childMap.forEach { (k, v) ->
       newMap = newMap.plus(getEvents(k, v, eventAddress, offset)).distinctBy { it.first }
       newMap =
-        newMap.plus(v.getAreasAtAddress(eventAddress, k.eventAddress, k.coord.plus(offset), newMap))
+        newMap.plus(v.getAreasAtAddress(eventAddress, k.eventAddress, k.coord.plus(offset), newMap)).distinctBy { it.first }
     }
   }
   return newMap
@@ -317,23 +317,24 @@ private fun StaveGeography.getBar(
   x: Int,
   y: Int,
   eventAddress: EventAddress
-): QueryReturn<BarGeography>? {
+): QueryReturn<ResolvedBarGeography>? {
   return barPositions.toList().find { (_, barPos) ->
     x >= barPos.pos + this.headerLen && x <= barPos.pos + barPos.geog.width + this.headerLen
   }?.let {
     QueryReturn(
-      it.second.geog.original, x - it.second.pos - this.headerLen, y,
+      it.second.geog, x - it.second.pos - this.headerLen, y,
       eventAddress.copy(barNum = it.first)
     )
   }
 }
 
-private fun BarGeography.getSlice(x: Int, y: Int, eventAddress: EventAddress): EventAddress? {
-  val sliceList = slicePositions.toList().sortedBy { it.first }
+private fun ResolvedBarGeography.getSlice(x: Int, y: Int, eventAddress: EventAddress): EventAddress? {
+  val sliceList = original.slicePositions.toList().sortedBy { it.first }
+  val resolvedX = x - this.barStartGeography.width
   val hz = sliceList.windowed(2).find() { (l1, l2) ->
 
-    x >= l1.second.start && x <= l2.second.start
-  }?.first()?.first ?: sliceList.lastOrNull()?.let { if (x > it.second.xMargin) it.first else null }
+    resolvedX >= l1.second.start && x <= l2.second.start
+  }?.first()?.first ?: sliceList.lastOrNull()?.let { if (resolvedX > it.second.xMargin) it.first else null }
   ?: Horizontal(0, dZero())
   return eventAddress.copy(offset = hz.offset, graceOffset = hz.graceOffset)
 }

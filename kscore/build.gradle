@@ -15,8 +15,6 @@ plugins {
 
 sourceCompatibility = 1.8
 
-
-
 group = 'com.philblandford'
 archivesBaseName = 'com.philblandford.kscore'
 version = '1.0.2.8'
@@ -34,6 +32,7 @@ publishing {
                 password 'akkadian'
             }
         }
+
     }
 
     publications {
@@ -46,6 +45,7 @@ publishing {
 dependencies {
     implementation "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
     implementation "org.jetbrains.kotlinx:kotlinx-coroutines-core:$kotlin_coroutines_version"
+    implementation "org.jetbrains.kotlinx:kotlinx-collections-immutable:0.3.5"
 
     implementation "org.apache.commons:commons-math3:3.6.1"
     implementation 'commons-io:commons-io:2.11.0'

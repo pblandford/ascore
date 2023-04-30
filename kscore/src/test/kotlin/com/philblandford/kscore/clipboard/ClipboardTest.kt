@@ -481,6 +481,35 @@ class ClipboardTest : ScoreTest() {
   }
 
 
+  @Test
+  fun testPasteLongTrill() {
+    SCD()
+    SMV(duration = semibreve())
+    SAE(EventType.LONG_TRILL, eav(1), paramMapOf(), eav(1))
+    SVE(EventType.LONG_TRILL, eav(1))
+
+    Clipboard.copy(eav(1), eav(2), EG())
+    val newScore = Clipboard.paste(eav(3), EG()).rightOrThrow()
+    replaceScore(newScore)
+    SVE(EventType.LONG_TRILL, eav(3))
+  }
+
+
+  @Test
+  fun testPasteSlur() {
+    SCD()
+    SMV(duration = semibreve())
+    SMV(duration = semibreve(), eventAddress = eav(2))
+    SAE(EventType.SLUR, eav(1), paramMapOf(), eav(2))
+    SVE(EventType.SLUR, eav(1))
+
+    Clipboard.copy(eav(1), eav(2), EG())
+    val newScore = Clipboard.paste(eav(3), EG()).rightOrThrow()
+    replaceScore(newScore)
+    SVE(EventType.SLUR, eav(3))
+  }
+
+
 
   private fun copy(start: EventAddress, end: EventAddress) {
     Clipboard.copy(start, end, EG())

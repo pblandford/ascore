@@ -24,6 +24,7 @@ import org.philblandford.ui.manual.compose.Manual
 import org.philblandford.ui.play.compose.Mixer
 import org.philblandford.ui.quickscore.compose.QuickScore
 import org.philblandford.ui.save.compose.SaveScore
+import org.philblandford.ui.settings.compose.InstrumentManage
 import org.philblandford.ui.settings.compose.Settings
 
 @Composable
@@ -96,6 +97,9 @@ private fun Layout(layoutID: LayoutID, dismiss: () -> Unit) {
     }
     LayoutID.MIXER -> {
       Mixer()
+    }
+    LayoutID.MANAGE_SOUNDFONT -> {
+      InstrumentManage()
     }
     LayoutID.SETTINGS_LAYOUT -> {
       Settings()

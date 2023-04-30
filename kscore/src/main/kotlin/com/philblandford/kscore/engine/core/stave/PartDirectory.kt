@@ -51,6 +51,21 @@ internal fun PartDirectory.update(
   return PartDirectory(oldParts.plus(newParts))
 }
 
+/* No bars have changed, but still need to redraw parts */
+internal fun PartDirectory.updateAll(
+  scoreQuery: ScoreQuery,
+  areaDirectoryQuery: AreaDirectoryQuery,
+  geographyXQuery: GeographyXQuery,
+  layoutDescriptor: LayoutDescriptor,
+  drawableFactory: DrawableFactory
+): PartDirectory {
+
+
+  val newParts = drawableFactory.createParts(scoreQuery, areaDirectoryQuery, geographyXQuery.getSystemXGeographies(), layoutDescriptor)?.
+  getParts() ?: mapOf()
+  return PartDirectory(newParts)
+}
+
 /* Find those geographies affected by a change event */
 private fun getGeogs(
   geographyXQuery: GeographyXQuery,

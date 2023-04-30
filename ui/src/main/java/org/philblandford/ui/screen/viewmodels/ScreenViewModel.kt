@@ -14,6 +14,7 @@ import org.philblandford.ascore2.features.gesture.HandleLongPressRelease
 import org.philblandford.ascore2.features.gesture.HandleTap
 import org.philblandford.ascore2.features.instruments.GetSelectedPart
 import org.philblandford.ascore2.features.score.CheckForScore
+import org.philblandford.ascore2.features.score.ScoreLoadUpdate
 import org.philblandford.ascore2.features.scorelayout.usecases.GetScoreLayout
 import org.philblandford.ascore2.features.scorelayout.usecases.ScoreLayout
 import org.philblandford.ascore2.features.sound.usecases.GetPlaybackMarker
@@ -55,6 +56,7 @@ sealed class ScreenEffect : VMSideEffect() {
 class ScreenViewModel(
   private val getScoreLayout: GetScoreLayout,
   private val scoreChanged: ScoreChanged,
+  private val scoreLoadUpdate: ScoreLoadUpdate,
   private val getPlaybackMarker: GetPlaybackMarker,
   private val getSelectedPart: GetSelectedPart,
   private val drawPageUC: DrawPage,
@@ -94,6 +96,11 @@ class ScreenViewModel(
         getSelectedPart().value
       }.distinctUntilChanged().collectLatest {
         Timber.e("part changed")
+        launchEffect(ScreenEffect.ScrollToPage(1))
+      }
+    }
+    viewModelScope.launch {
+      scoreLoadUpdate().collectLatest {
         launchEffect(ScreenEffect.ScrollToPage(1))
       }
     }

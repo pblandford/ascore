@@ -6,12 +6,15 @@ import com.philblandford.kscore.engine.core.area.factory.DrawableFactory
 import com.philblandford.kscore.engine.core.area.factory.ImageArgs
 import com.philblandford.kscore.engine.core.area.factory.LineArgs
 import com.philblandford.kscore.engine.core.representation.*
+import com.philblandford.kscore.engine.duration.Duration
+import com.philblandford.kscore.engine.duration.duration
+import com.philblandford.kscore.engine.duration.semibreve
 import com.philblandford.kscore.engine.eventadder.subadders.ChordDecoration
 import com.philblandford.kscore.engine.types.*
 import com.philblandford.kscore.engine.types.ArticulationType.*
 
 fun DrawableFactory.articulationArea(articulations: ChordDecoration<ArticulationType>, chord: Event,
-                     above:Boolean): Area? {
+                     above:Boolean): Area {
   var ordered = articulations.items.sortedBy { ordering[it] }
   if (!chord.isTrue(EventParam.IS_UPSTEM)) ordered = ordered.reversed()
 
@@ -27,7 +30,7 @@ fun DrawableFactory.articulationArea(articulations: ChordDecoration<Articulation
     }
     val gap = if (articulation == ordered.first()) 0 else ARTICULATION_GAP
     area?.let {
-      val x = getOffset(articulation)
+      val x = getOffset(articulation, chord.duration())
 
       main = main.addBelow(
         it.copy(
@@ -83,12 +86,17 @@ private fun DrawableFactory.staccatissimoArea(above:Boolean): Area? {
   )
 }
 
-private fun getOffset(articulationType: ArticulationType): Int {
-  return when (articulationType) {
+private fun getOffset(articulationType: ArticulationType, chordDuration:Duration): Int {
+  val x = when (articulationType) {
     ACCENT -> ACCENT_OFFSET
     STACCATO -> STACCCATO_OFFSET
     MARCATO -> MARCATO_OFFSET
     STACCATISSIMO -> STACCATISSIMO_OFFSET
     else -> 0
+  }
+  return if (chordDuration >= semibreve()) {
+    x + (BLOCK_HEIGHT * 0.75).toInt()
+  } else {
+    x
   }
 }

@@ -14,6 +14,7 @@ import org.philblandford.ascore2.features.crosscutting.model.ErrorDescr
 import org.philblandford.ascore2.features.crosscutting.usecases.GetError
 import org.philblandford.ascore2.features.error.GetErrorFlow
 import org.philblandford.ascore2.features.instruments.GetInstruments
+import org.philblandford.ascore2.features.scorelayout.usecases.GetScoreLayout
 import org.philblandford.ascore2.features.ui.model.UIState
 import org.philblandford.ascore2.features.ui.usecases.GetHelpKey
 import org.philblandford.ascore2.features.ui.usecases.GetUIState
@@ -37,7 +38,8 @@ data class MainPageModel(
   val vertical:Boolean = true,
   val canShowTabs:Boolean = false,
   val selectedArea: Location? = null,
-  val helpKey:String? = null
+  val helpKey:String? = null,
+  val showScrollType:Boolean = false
 ) : VMModel()
 
 sealed class MainPageSideEffect : VMSideEffect() {
@@ -46,11 +48,12 @@ sealed class MainPageSideEffect : VMSideEffect() {
 
 class MainPageViewModel(
   getUIState: GetUIState,
-  private val getError: GetErrorFlow,
+  private val getError: GetError,
   getSelection: GetSelection,
   private val getHelpKey: GetHelpKey,
   private val setHelpKey: SetHelpKey,
-  private val getInstruments: GetInstruments
+  private val getInstruments: GetInstruments,
+  private val getScoreLayout: GetScoreLayout
 ) :
   BaseViewModel<MainPageModel, MainPageInterface, MainPageSideEffect>(), MainPageInterface {
 
@@ -61,7 +64,7 @@ class MainPageViewModel(
           showClipboard = uiState == UIState.Clipboard,
           showNoteZoom = uiState is UIState.MoveNote,
           showEdit = uiState is UIState.Edit,
-          selectedArea = selection?.startLocation
+          selectedArea = selection?.startLocation,
         )
       }
     }.stateIn(viewModelScope, SharingStarted.Eagerly, Unit)
@@ -70,12 +73,7 @@ class MainPageViewModel(
       getError().collectLatest { error ->
         Timber.e("Error $error")
         launchEffect(
-          MainPageSideEffect.Error(
-            ErrorDescr(
-              error.exception.message ?: "",
-              error.command.toString()
-            )
-          )
+          MainPageSideEffect.Error(error)
         )
       }
     }
@@ -89,13 +87,15 @@ class MainPageViewModel(
     viewModelScope.launch {
       scoreUpdate().map { getInstruments().size }.distinctUntilChanged().collectLatest { numInstruments ->
         Timber.e("HEY! $numInstruments ${numInstruments > 1}")
-        update { copy(canShowTabs = numInstruments > 1) }
+        update { copy(canShowTabs = numInstruments > 1, showScrollType = getScoreLayout().numPages > 1) }
       }
     }
   }
 
   override suspend fun initState(): Result<MainPageModel> {
-    return MainPageModel(canShowTabs = getInstruments().size > 1).ok()
+    return MainPageModel(canShowTabs = getInstruments().size > 1,
+      showScrollType = getScoreLayout().numPages > 1
+    ).ok()
   }
 
   override fun getInterface() = this

@@ -60,6 +60,9 @@ fun UtilityRowInternal(
       ToggleInsertButton(model.panelType) {
         if (!panelShowing) {
           togglePanel()
+          if (model.panelType == LayoutID.INSERT_CHOOSE || model.panelType == LayoutID.INSERT) {
+            iface.togglePanelType()
+          }
         } else {
           iface.togglePanelType()
         }
