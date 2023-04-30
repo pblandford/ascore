@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "841043158272",
+    "firebase_url": "https://a-score.firebaseio.com",
+    "project_id": "a-score",
+    "storage_bucket": "a-score.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:841043158272:android:019ec6d807dc3765e63fe5",
+        "android_client_info": {
+          "package_name": "com.philblandford.ascore"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "841043158272-iqqja0asbg37v2b2rg1pef9voh75su6u.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAVVmLHBuL3R3yqBT15efnfXoYNmuZZNhU"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "841043158272-iqqja0asbg37v2b2rg1pef9voh75su6u.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
