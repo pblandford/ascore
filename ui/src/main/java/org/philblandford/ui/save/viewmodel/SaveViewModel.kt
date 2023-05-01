@@ -43,8 +43,10 @@ class SaveViewModel(
   override fun getInterface() = this
 
   override fun saveInternal(name: String) {
-    receiveAction { model ->
-      saveScore(name, model.source).map { model }
+    if (name.isNotEmpty()) {
+      receiveAction { model ->
+        saveScore(name, model.source).map { model }
+      }
     }
   }
 

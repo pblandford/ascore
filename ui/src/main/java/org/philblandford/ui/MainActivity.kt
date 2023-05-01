@@ -57,7 +57,7 @@ class MainActivity : ComponentActivity() {
               LocalContentColor provides MaterialTheme.colorScheme.onSurface,
               LocalWindowSizeClass provides windowSizeClass
             ) {
-              OuterPage(::launchIntentActivity)
+              OuterPage()
             }
 
           }

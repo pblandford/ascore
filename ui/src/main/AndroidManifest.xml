@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android">
 
-    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
 
     <application
         android:name="org.philblandford.ui.base.BaseApplication"
@@ -18,10 +17,6 @@
             android:windowSoftInputMode="adjustResize"
             android:theme="@style/Theme.Ascore2">
 
-        </activity>
-        <activity
-            android:name=".imports.activity.IntentActivity"
-            android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />

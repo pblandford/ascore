@@ -44,7 +44,7 @@ internal object OctaveSubAdder : LineSubAdderIf {
   }
 
   private fun Score.getEnd(params: ParamMap, eventAddress: EventAddress): AnyResult<EventAddress> {
-    return (params.g<EventAddress>(EventParam.END) ?:
+    return (params[EventParam.END] as? EventAddress ?:
         params.g<Duration>(EventParam.DURATION)?.let {  duration ->
           addDuration(eventAddress, duration)
         })?.let { Right(it) } ?: Left(NotFound("End of octave line not found"))
@@ -80,7 +80,7 @@ internal object OctaveSubAdder : LineSubAdderIf {
           setNotes(paramMapOf(EventParam.NUMBER to -number, EventParam.END to end), eventAddress)
         }
       }
-    } ?: Left(NotFound("Octave not found at $eventAddress"))
+    } ?: Right(this)
   }
 
 }

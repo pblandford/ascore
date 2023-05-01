@@ -9,6 +9,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import org.philblandford.ascore2.features.crosscutting.usecases.GetError
+import timber.log.Timber
 
 class CrashHandler(private val getError: GetError) {
   private val coroutineScope = CoroutineScope(Dispatchers.Default)
@@ -19,6 +20,7 @@ class CrashHandler(private val getError: GetError) {
         error.exception?.let {
           Firebase.crashlytics.recordException(Exception("Caught by crash handler", it))
           Firebase.crashlytics.sendUnsentReports()
+          Timber.e(it)
         }
       }
     }

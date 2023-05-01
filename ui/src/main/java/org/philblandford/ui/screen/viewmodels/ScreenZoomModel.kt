@@ -2,8 +2,11 @@ package org.philblandford.ui.screen.viewmodels
 
 import androidx.compose.ui.graphics.drawscope.DrawScope
 import androidx.lifecycle.viewModelScope
+import com.philblandford.kscore.api.Location
+import com.philblandford.kscore.engine.types.EventAddress
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
+import org.philblandford.ascore2.features.clipboard.usecases.GetLocation
 import org.philblandford.ascore2.features.drawing.DrawPage
 import org.philblandford.ascore2.features.drawing.ScoreChanged
 import org.philblandford.ascore2.features.scorelayout.usecases.GetScoreLayout
@@ -18,10 +21,12 @@ import org.philblandford.ui.base.viewmodel.VMSideEffect
 data class ScreenZoomModel(
   val scoreLayout: ScoreLayout,
   val updateCounter: Int,
+  val location: Location? = null
 ) : VMModel()
 
 interface ScreenZoomInterface : VMInterface {
   fun drawPage(page: Int, drawScope: DrawScope)
+  fun setAddress(eventAddress: EventAddress)
 }
 
 sealed class ScreenZoomEffect : VMSideEffect() {
@@ -34,8 +39,16 @@ class ScreenZoomViewModel(
   private val scoreChanged: ScoreChanged,
   private val getPlaybackMarker: GetPlaybackMarker,
   private val drawPageUC: DrawPage,
+  private val getLocation: GetLocation
 ) : BaseViewModel<ScreenZoomModel, ScreenZoomInterface, ScreenEffect>(),
   ScreenZoomInterface {
+
+  private lateinit var eventAddress: EventAddress
+
+  override fun setAddress(eventAddress: EventAddress) {
+    this.eventAddress = eventAddress
+    update { copy(location = getLocation(eventAddress)) }
+  }
 
   init {
     launchEffect(ScreenEffect.Redraw)
@@ -43,7 +56,10 @@ class ScreenZoomViewModel(
     viewModelScope.launch {
       scoreChanged().collect {
         update {
-          copy(scoreLayout = getScoreLayout(), updateCounter = updateCounter + 1)
+          copy(
+            scoreLayout = getScoreLayout(), updateCounter = updateCounter + 1,
+            location = getLocation(eventAddress)
+          )
         }
       }
     }

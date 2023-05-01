@@ -252,7 +252,9 @@ class ScoreContainer(private val drawableFactory: DrawableFactory) {
       }
     } catch (e:Exception) {
       ksLoge("Failed applying $command", e)
-      exceptionHandler(e)
+      coroutineScope.launch {
+        errorFlow.emit(ScoreError(e, command))
+      }
       this
     }
   }

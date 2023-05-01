@@ -60,7 +60,7 @@ private fun SaveFileInternal(modifier: Modifier, model: SaveModel, iface: SaveIn
       Button(onClick = {
         iface.saveInternal(title.value)
         dismiss()
-      }) {
+      }, enabled = title.value.isNotEmpty()) {
         Text(stringResource(R.string.save_score_save))
       }
       Button(onClick = { dismiss() }) {
@@ -73,13 +73,28 @@ private fun SaveFileInternal(modifier: Modifier, model: SaveModel, iface: SaveIn
 @Composable
 private fun SourceSelect(current:FileSource, set:(FileSource)->Unit) {
 
-  Row(Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
-    RadioButton(current == FileSource.SAVE, onClick = { set(FileSource.SAVE) },
-      colors = RadioButtonDefaults.colors(selectedColor = MaterialTheme.colorScheme.onSurface))
-    Text(stringResource(R.string.files_in_storage))
-    RadioButton(current == FileSource.EXTERNAL, onClick = { set(FileSource.EXTERNAL) },
-      colors = RadioButtonDefaults.colors(selectedColor = MaterialTheme.colorScheme.onSurface))
-    Text(stringResource(R.string.files_in_external_storage))
+  Column(Modifier.fillMaxWidth(), horizontalAlignment = Alignment.Start) {
+    Row(verticalAlignment = Alignment.CenterVertically){
+      RadioButton(
+        current == FileSource.SAVE, onClick = { set(FileSource.SAVE) },
+        colors = RadioButtonDefaults.colors(selectedColor = MaterialTheme.colorScheme.onSurface)
+      )
+      Text(stringResource(R.string.files_in_storage))
+    }
+    Row(verticalAlignment = Alignment.CenterVertically){
+      RadioButton(
+        current == FileSource.EXTERNAL, onClick = { set(FileSource.EXTERNAL) },
+        colors = RadioButtonDefaults.colors(selectedColor = MaterialTheme.colorScheme.onSurface)
+      )
+      Text(stringResource(R.string.files_in_external_storage))
+    }
+    Row(verticalAlignment = Alignment.CenterVertically) {
+      RadioButton(
+        current == FileSource.TEMPLATE, onClick = { set(FileSource.TEMPLATE) },
+        colors = RadioButtonDefaults.colors(selectedColor = MaterialTheme.colorScheme.onSurface)
+      )
+      Text(stringResource(R.string.set_template))
+    }
   }
 }
 

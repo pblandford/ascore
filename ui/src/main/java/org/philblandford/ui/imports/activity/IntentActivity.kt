@@ -33,6 +33,7 @@ import org.philblandford.ui.R
 import org.philblandford.ui.base.compose.VMView
 import org.philblandford.ui.common.block
 import org.philblandford.ui.imports.viewmodel.ImportSideEffect
+import org.philblandford.ui.theme.DialogTheme
 import org.philblandford.ui.util.Gap
 import timber.log.Timber
 
@@ -107,30 +108,14 @@ private fun Activity.loadMain() {
 @Composable
 private fun IntentLayout(model: ImportModel) {
 
-  Box(
-    Modifier
-      .fillMaxSize()
-      .background(MaterialTheme.colorScheme.surface)) {
-    Column(
-      Modifier
-        .fillMaxSize()
-        .offset(y = 50.dp)
-        .padding(horizontal = 30.dp, vertical = 50.dp),
-      horizontalAlignment = Alignment.Start
-    ) {
-      Image(
-        painterResource(id = R.drawable.logo), "",
-        Modifier.width(block(3)), colorFilter = ColorFilter.tint(MaterialTheme.colorScheme.onSurface)
-      )
-      Gap(0.5f)
-      if (model.name.isNotEmpty()) {
-        Label(stringResource(R.string.importing_file, model.name))
-        Gap(0.5f)
+  DialogTheme { modifier ->
+
+      Column {
+        if (model.name.isNotEmpty()) {
+          Label(stringResource(R.string.importing_file, model.name))
+        }
+        LinearProgressIndicator(model.progress / 100f, Modifier.fillMaxWidth())
       }
-      Label(model.action)
-      Label(model.subAction)
-      LinearProgressIndicator(model.progress / 100f, Modifier.fillMaxWidth())
-    }
   }
 }
 

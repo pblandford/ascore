@@ -3,7 +3,7 @@
     <string name="app_id">325610991060</string>
     <string name="save">Save score</string>
     <string name="print">Print score</string>
-    <string name="set_template">Set as template</string>
+    <string name="set_template">Save as template</string>
     <string name="export_to_fs">Save to external file system</string>
     <string name="share">Share</string>
     <string name="send_to">Send to</string>
@@ -60,7 +60,8 @@
     <string name="nothanks">No Thanks</string>
     <string name="new_score">New score</string>
     <string name="full_score">Full score</string>
-    <string name="new_score_template">New score from Template</string>
+    <string name="new_score_template">Create score from Template</string>
+    <string name="new_score_template_short">From Template</string>
     <string name="quick_score">Quick score</string>
     <string name="load">Load</string>
     <string name="importFile">Import</string>

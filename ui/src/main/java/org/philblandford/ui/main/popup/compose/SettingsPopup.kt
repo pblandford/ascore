@@ -16,6 +16,7 @@ import com.philblandford.kscore.engine.types.ExportType
 import org.philblandford.ascore2.features.ui.model.LayoutID
 import org.philblandford.ui.about.compose.About
 import org.philblandford.ui.create.compose.CreateScore
+import org.philblandford.ui.createfromtemplate.compose.CreateFromTemplate
 import org.philblandford.ui.export.PrintFile
 import org.philblandford.ui.export.compose.ExportFile
 import org.philblandford.ui.layout.compose.LayoutOptions
@@ -26,6 +27,7 @@ import org.philblandford.ui.quickscore.compose.QuickScore
 import org.philblandford.ui.save.compose.SaveScore
 import org.philblandford.ui.settings.compose.InstrumentManage
 import org.philblandford.ui.settings.compose.Settings
+import timber.log.Timber
 
 @Composable
 fun SettingsDialog(layoutID: LayoutID, dismiss: () -> Unit) {
@@ -43,7 +45,12 @@ fun SettingsDialog(layoutID: LayoutID, dismiss: () -> Unit) {
           Modifier
             .fillMaxSize()
             .clickable { dismiss() })
-        Layout(layoutID, dismiss)
+        Timber.e("CUNTING TWAT $layoutID")
+
+        Box() {
+          Timber.e("WHAT THE FUCK ARE YOU DOING? $layoutID")
+          Layout(layoutID, dismiss)
+        }
       }
     }
   }
@@ -57,6 +64,9 @@ private fun Layout(layoutID: LayoutID, dismiss: () -> Unit) {
     }
     LayoutID.QUICK_SCORE -> {
       QuickScore(dismiss)
+    }
+    LayoutID.NEW_SCORE_TEMPLATE -> {
+      CreateFromTemplate(dismiss)
     }
     LayoutID.SAVE_SCORE -> {
       SaveScore(dismiss)

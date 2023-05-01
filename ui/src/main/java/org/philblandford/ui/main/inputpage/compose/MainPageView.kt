@@ -26,10 +26,12 @@ import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import org.philblandford.ascore2.features.crosscutting.model.ErrorDescr
 import org.philblandford.ascore2.features.ui.model.LayoutID
+import org.philblandford.ui.LocalActivity
 import org.philblandford.ui.base.compose.VMView
 import org.philblandford.ui.clipboard.compose.ClipboardExtraView
 import org.philblandford.ui.clipboard.compose.ClipboardView
 import org.philblandford.ui.common.block
+import org.philblandford.ui.imports.IntentView
 import org.philblandford.ui.main.inputpage.viewmodel.MainPageModel
 import org.philblandford.ui.main.inputpage.viewmodel.MainPageSideEffect
 import org.philblandford.ui.main.inputpage.viewmodel.MainPageViewModel
@@ -46,7 +48,13 @@ import timber.log.Timber
 @Composable
 fun MainPageView(openDrawer: () -> Unit, setPopupLayout: (LayoutID) -> Unit, toggleMixer:()->Unit,
 onScoreEmpty: () -> Unit) {
-  Timber.e("RECO MainPageView")
+  val activity = LocalActivity.current
+
+  var intent by rememberSaveable { mutableStateOf(activity?.intent) }
+
+  LaunchedEffect(activity?.intent?.data) {
+    intent = activity?.intent
+  }
 
   VMView(MainPageViewModel::class.java) { state, iface, effect ->
 
@@ -76,6 +84,14 @@ onScoreEmpty: () -> Unit) {
     state.helpKey?.let {
       Dialog({ iface.dismissHelp()}) {
         Help(it) { iface.dismissHelp() }
+      }
+    }
+
+    Timber.e("Launch intent $intent")
+    intent?.let {
+      Timber.e("Launch dialog")
+      Dialog({}) {
+       IntentView(it) { intent = null }
       }
     }
 
@@ -146,11 +162,11 @@ changeMethod:()->Unit) {
     }
 
     if (state.showNoteZoom) {
-      state.selectedArea?.let { location ->
+      state.selectedArea?.let { address ->
         DraggableItem(Modifier.align(Alignment.TopEnd), zoomOffset) {
           ScreenZoom(
             Modifier
-              .align(Alignment.TopEnd), location
+              .align(Alignment.TopEnd), address
           )
         }
       }

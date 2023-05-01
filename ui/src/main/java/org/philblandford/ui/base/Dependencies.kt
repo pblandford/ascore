@@ -72,6 +72,7 @@ import org.philblandford.ui.base.log.AndroidLogger
 import org.philblandford.ui.clipboard.viewmodel.ClipboardViewModel
 import org.philblandford.ui.crash.CrashHandler
 import org.philblandford.ui.create.viewmodel.CreateViewModel
+import org.philblandford.ui.createfromtemplate.viewmodel.CreateFromTemplateViewModel
 import org.philblandford.ui.edit.items.harmony.viewmodel.HarmonyEditViewModel
 import org.philblandford.ui.edit.items.instrumentedit.viewmodel.InstrumentEditViewModel
 import org.philblandford.ui.edit.items.text.viewmodel.TextEditViewModel
@@ -165,7 +166,8 @@ object Dependencies {
   }
 
   private val startupModule = module {
-    single { StartupManager(get(), get()) }
+    single<InstallTemplates> { InstallTemplatesImpl(get(), get()) }
+    single { StartupManager(get(), get(), get()) }
   }
 
   private val errorModule = module {
@@ -181,8 +183,10 @@ object Dependencies {
   private val createModule = module {
     single<CreateScore> { CreateScoreImpl(get(), get()) }
     single<CreateDefaultScore> { CreateDefaultScoreImpl(get(), get()) }
+    single<CreateScoreFromTemplate> { CreateScoreFromTemplateImpl(get(), get(), get())}
     viewModel { CreateViewModel(get(), get()) }
     viewModel { QuickScoreViewModel(get()) }
+    viewModel { CreateFromTemplateViewModel(get(), get(), get()) }
   }
 
 
@@ -324,6 +328,7 @@ object Dependencies {
     single<HandleLongPress> { HandleLongPressImpl(get(), get()) }
     single<HandleDrag> { HandleDragImpl(get(), get()) }
     single<CheckForScore> { CheckForScoreImpl(get()) }
+    single<GetLocation> { GetLocationImpl(get()) }
     viewModel {
       ScreenViewModel(
         get(),
@@ -340,7 +345,7 @@ object Dependencies {
         get()
       )
     }
-    viewModel { ScreenZoomViewModel(get(), get(), get(), get()) }
+    viewModel { ScreenZoomViewModel(get(), get(), get(), get(), get()) }
     viewModel { MainPageViewModel(get(), get(), get(), get(), get(), get(), get()) }
     viewModel { ThemeViewModel(get()) }
   }

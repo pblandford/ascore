@@ -8,7 +8,8 @@ val drawerItems = listOf(
   DrawerItemGroup(
     R.string.new_score, listOf(
       DrawerItem(R.string.full_score, LayoutID.NEW_SCORE),
-      DrawerItem(R.string.quick_score, LayoutID.QUICK_SCORE)
+      DrawerItem(R.string.quick_score, LayoutID.QUICK_SCORE),
+      DrawerItem(R.string.new_score_template_short, LayoutID.NEW_SCORE_TEMPLATE),
     )
   ),
   DrawerItemGroup(

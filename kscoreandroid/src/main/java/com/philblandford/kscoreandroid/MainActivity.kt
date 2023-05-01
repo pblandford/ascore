@@ -11,7 +11,6 @@ import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.tooling.preview.Preview
 import com.philblandford.kscore.engine.core.representation.StandaloneGenerator
 import com.philblandford.kscore.engine.duration.Chord
 import com.philblandford.kscore.engine.duration.Note
@@ -43,10 +42,3 @@ fun Greeting(name: String) {
   Text(text = "Hello $name!")
 }
 
-@Preview(showBackground = true)
-@Composable
-fun DefaultPreview() {
-  KScoreAndroidTheme {
-    Greeting("Android")
-  }
-}

@@ -2,6 +2,7 @@ package org.philblandford.ui.main.inputpage.viewmodel
 
 import androidx.lifecycle.viewModelScope
 import com.philblandford.kscore.api.Location
+import com.philblandford.kscore.engine.types.EventAddress
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.combine
@@ -37,7 +38,7 @@ data class MainPageModel(
   val showEdit: Boolean = false,
   val vertical:Boolean = true,
   val canShowTabs:Boolean = false,
-  val selectedArea: Location? = null,
+  val selectedArea: EventAddress? = null,
   val helpKey:String? = null,
   val showScrollType:Boolean = false
 ) : VMModel()
@@ -64,7 +65,7 @@ class MainPageViewModel(
           showClipboard = uiState == UIState.Clipboard,
           showNoteZoom = uiState is UIState.MoveNote,
           showEdit = uiState is UIState.Edit,
-          selectedArea = selection?.startLocation,
+          selectedArea = selection?.start,
         )
       }
     }.stateIn(viewModelScope, SharingStarted.Eagerly, Unit)
@@ -73,7 +74,8 @@ class MainPageViewModel(
       getError().collectLatest { error ->
         Timber.e("Error $error")
         launchEffect(
-          MainPageSideEffect.Error(error)
+          MainPageSideEffect.Error(ErrorDescr("An internal error has occured",
+          "Apologies, a report has been sent to the developer"))
         )
       }
     }

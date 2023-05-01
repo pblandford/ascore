@@ -176,6 +176,8 @@ object TimeSignatureSubAdder : RangeSubAdder {
   }
 
   private fun Score.removeOldEvents(offsetEvents: List<Pair<Offset, Pair<EventAddress, Event>>>): ScoreResult {
+    val sorted = offsetEvents.sortedBy { it.first }
+    ksLogv(sorted.toString())
     return fold(offsetEvents.toList()) { (_, pair) ->
       NewEventAdder.deleteEvent(this, pair.second.eventType, pair.second.params, pair.first)
     }

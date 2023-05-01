@@ -2,7 +2,9 @@ package com.philblandford.kscore.engine.scorefunction
 
 import assertEqual
 import com.philblandford.kscore.engine.dsl.rest
+import com.philblandford.kscore.engine.duration.breve
 import com.philblandford.kscore.engine.duration.crotchet
+import com.philblandford.kscore.engine.duration.dZero
 import com.philblandford.kscore.engine.duration.minim
 import com.philblandford.kscore.engine.duration.semibreve
 import com.philblandford.kscore.engine.duration.times
@@ -132,6 +134,33 @@ class TimeSignatureChangeTest : ScoreTest() {
     assertEqual(TimeSignature(3,4), vm.timeSignature)
     vm = EG().getVoiceMap(eav(8))!!
     assertEqual(TimeSignature(2,4), vm.timeSignature)
+  }
+
+  @Test
+  fun testChangeTSWithLineEvent() {
+    SAE(EventType.OCTAVE, ea(1), paramMapOf(EventParam.NUMBER to 1), ea(2))
+    setTs(3, 4)
+    SVP(EventType.OCTAVE, EventParam.DURATION, semibreve())
+  }
+
+  @Test
+  fun testChangeTSWithLineEventZeroDuration() {
+    SAE(EventType.OCTAVE, ea(1), paramMapOf(EventParam.NUMBER to 1), ea(1))
+    setTs(3, 4)
+    SVP(EventType.OCTAVE, EventParam.DURATION, dZero())
+  }
+
+  @Test
+  fun testChangeTSWithLineEventWithCrotchets() {
+    SCD(timeSignature = TimeSignature(8,4))
+    (1..2).forEach { bar ->
+      (0..7).forEach { offset ->
+        SMV(eventAddress = eav(bar, crotchet() * offset))
+      }
+    }
+    SAE(EventType.OCTAVE, ea(2), paramMapOf(EventParam.NUMBER to 1), ea(2, crotchet()* 7))
+    setTs(9, 4)
+    SVP(EventType.OCTAVE, EventParam.DURATION, crotchet() * 7, ea(2, crotchet()))
   }
 
   private fun setTs(num: Int, den: Int, eventAddress: EventAddress = ez(1)) {

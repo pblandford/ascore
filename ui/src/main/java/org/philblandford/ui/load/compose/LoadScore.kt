@@ -7,7 +7,6 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -40,7 +39,6 @@ import org.philblandford.ui.theme.DialogButton
 import org.philblandford.ui.theme.DialogTheme
 import org.philblandford.ui.util.Gap
 import org.philblandford.ui.util.LabelText
-import timber.log.Timber
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -67,7 +65,6 @@ private fun LoadScoreInternal(
   modifier: Modifier,
   model: LoadModel, iface: LoadInterface, dismiss: () -> Unit
 ) {
-  Timber.e("LOAD ${model.progress}")
   model.loadingScore?.let {
     LoadScoreProgress(modifier, it, model.progress)
   } ?: run {
@@ -169,7 +166,7 @@ private fun ColumnScope.ScorePager(
   }
 
   deleteConfirm?.let { fileInfo ->
-    ConfirmDialog(fileInfo, { iface.delete(fileInfo) }) {
+    DeleteConfirmDialog(fileInfo, { iface.delete(fileInfo) }) {
       deleteConfirm = null
     }
   }
@@ -177,7 +174,7 @@ private fun ColumnScope.ScorePager(
 }
 
 @Composable
-private fun ConfirmDialog(fileInfo: FileInfo, action: () -> Unit, dismiss: () -> Unit) {
+fun DeleteConfirmDialog(fileInfo: FileInfo, action: () -> Unit, dismiss: () -> Unit) {
 
   Dialog(onDismissRequest = dismiss) {
     DialogTheme { modifier ->
@@ -196,7 +193,7 @@ private fun ConfirmDialog(fileInfo: FileInfo, action: () -> Unit, dismiss: () ->
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-private fun ScoreDetailCard(
+fun ScoreDetailCard(
   fileInfo: FileInfo, select: (FileInfo) -> Unit,
   delete: (FileInfo) -> Unit
 ) {

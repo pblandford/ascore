@@ -9,10 +9,12 @@ class GetSavedScoresImpl(private val resourceManager: ResourceManager) : GetSave
     val saved = resourceManager.getSavedFiles(FileSource.SAVE).sortedBy { -it.accessTime }
     val auto = resourceManager.getSavedFiles(FileSource.AUTOSAVE).sortedBy { -it.accessTime }
     val external = resourceManager.getSavedFiles(FileSource.EXTERNAL).sortedBy { -it.accessTime }
+    val template = resourceManager.getSavedFiles(FileSource.TEMPLATE).sortedBy { -it.accessTime }
     return mapOf(
       FileSource.SAVE to saved,
       FileSource.AUTOSAVE to auto,
-      FileSource.EXTERNAL to external
+      FileSource.EXTERNAL to external,
+      FileSource.TEMPLATE to template
     )
   }
 }

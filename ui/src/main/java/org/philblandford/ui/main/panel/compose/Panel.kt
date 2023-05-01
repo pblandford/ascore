@@ -10,6 +10,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import org.philblandford.ascore2.features.ui.model.LayoutID
 import org.philblandford.ui.base.compose.VMView
+import org.philblandford.ui.createfromtemplate.compose.CreateFromTemplate
 import org.philblandford.ui.input.compose.percussion.PercussionInputPanel
 import org.philblandford.ui.insert.choose.compose.InsertChoosePanel
 import org.philblandford.ui.insert.items.articulation.compose.ArticulationInsert
@@ -60,7 +61,6 @@ fun Panel() {
   }
 }
 
-@OptIn(ExperimentalAnimationApi::class)
 @Composable
 private fun PanelInternal(model: PanelModel) {
   var currentLayout by remember { mutableStateOf(model.layoutID) }

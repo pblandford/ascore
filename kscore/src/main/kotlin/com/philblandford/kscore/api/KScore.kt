@@ -80,6 +80,7 @@ interface KScore {
   fun moveSelection(left: Boolean)
   fun cycleArea()
   fun moveSelectedArea(x: Int, y: Int, eventParam: EventParam = EventParam.HARD_START)
+  fun getLocation(eventAddress: EventAddress):Location?
 
   fun copy()
   fun cut()
@@ -663,6 +664,12 @@ class KScoreImpl(
       getEvent(area.event.eventType, area.eventAddress)?.let { scoreEvent ->
         setParam(area.event.eventType, eventParam, Coord(x, y), area.eventAddress)
       }
+    }
+  }
+
+  override fun getLocation(eventAddress: EventAddress): Location? {
+    return rep()?.getArea(AddressRequirement.SEGMENT, eventAddress)?.let { areaReturn ->
+      Location(areaReturn.page, areaReturn.x, areaReturn.y)
     }
   }
 

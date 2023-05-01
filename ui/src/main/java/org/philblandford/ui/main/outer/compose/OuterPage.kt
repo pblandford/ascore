@@ -25,7 +25,7 @@ import timber.log.Timber
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun OuterPage(onScoreEmpty:()->Unit) {
+fun OuterPage() {
 
   Timber.e("RECO OuterPage")
 
@@ -46,7 +46,7 @@ fun OuterPage(onScoreEmpty:()->Unit) {
     }) {
     MainPageView( { scope.launch { drawerState.open() } }, { popupLayout.value = it }, {
       showMixer.value = !showMixer.value
-    }, onScoreEmpty)
+    }, {})
     popupLayout.value?.let { popup ->
       SettingsDialog(popup) {
         popupLayout.value = null
