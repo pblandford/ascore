@@ -18,7 +18,8 @@ data class AreaReturn(val page: Int, val areaMapKey: AreaMapKey, val area: Area)
 internal fun Representation.getArea(
   eventType: EventType,
   eventAddress: EventAddress,
-  extra: Any? = null
+  extra: Any? = null,
+
 ): AreaReturn? {
   pages.forEach { page ->
     page.base.getArea(eventAddress) { area ->

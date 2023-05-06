@@ -71,7 +71,7 @@ private fun getBreaks(scoreQuery: ScoreQuery): EventHash {
 private fun createBreaksPerLine(barsPerLine: Int, scoreQuery: ScoreQuery): EventHash {
   /* Start counting from first non-upbeat bar */
   val start =
-    if (scoreQuery.getTimeSignature(ez(1))?.hidden == true) barsPerLine + 1 else barsPerLine
+    if (scoreQuery.getEvent(EventType.HIDDEN_TIME_SIGNATURE, ez(1)) != null) barsPerLine + 1 else barsPerLine
   return (start..scoreQuery.numBars step barsPerLine).fold(eventHashOf()) { eh, num ->
     eh.plus(
       EMK(EventType.BREAK, ez(num)) to Event(

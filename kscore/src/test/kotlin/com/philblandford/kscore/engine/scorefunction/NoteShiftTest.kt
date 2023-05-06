@@ -470,5 +470,20 @@ class NoteShiftTest : ScoreTest() {
     )
   }
 
+  @Test
+  fun testShiftNotePercussionIsNoOp() {
+    SAE(instrumentGetter.getInstrument("Bass Drum 1")!!.toEvent(), ea(1))
+    SMV(midiVal = 35)
+    SAE(
+      EventType.NOTE_SHIFT, eav(1).copy(id = 1), paramMapOf(
+        EventParam.AMOUNT to 1,
+        EventParam.ACCIDENTAL to Accidental.SHARP
+      )
+    )
+    SVP(
+      EventType.NOTE, EventParam.PITCH, unPitched(),
+      eav(1).copy(id = 1)
+    )
+  }
 
 }

@@ -85,8 +85,12 @@ internal object NoteShiftSubAdder : BaseEventAdder {
 
 
   private fun Note.shift(amount: Int, accidental: Accidental): Note {
-    val pitch = getNoteShift(pitch, amount, accidental)
-    return copy(pitch = pitch)
+    return if (pitch == unPitched()) {
+      this
+    } else {
+      val pitch = getNoteShift(pitch, amount, accidental)
+       copy(pitch = pitch)
+    }
   }
 
   private fun Score.handleTie(

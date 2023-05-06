@@ -25,12 +25,13 @@ import org.philblandford.ui.theme.compose.AscoreTheme
 
 
 @Composable
-fun DialogTheme(content: @Composable BoxScope.(Modifier) -> Unit) {
+fun DialogTheme(dismiss:(()->Unit)? = null,
+                content: @Composable BoxScope.(Modifier) -> Unit) {
   AscoreTheme {
 
     val interactionSource = remember { MutableInteractionSource() }
 
-      Box(Modifier.fillMaxSize()) {
+      Box(Modifier.fillMaxSize().clickable(dismiss != null) { dismiss?.invoke() }) {
         CompositionLocalProvider(LocalContentColor provides MaterialTheme.colorScheme.onSurface) {
           content(
             Modifier

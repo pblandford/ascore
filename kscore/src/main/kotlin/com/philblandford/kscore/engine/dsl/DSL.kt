@@ -186,7 +186,7 @@ class VoiceMapBuilder(val timeSignature: TimeSignature, val getClef: (Duration) 
   }
 
   fun tuplet(numerator: Int, denominator: Int, voiceMap: VoiceMap) {
-    val tuplet = tuplet(offset, numerator, denominator, false, voiceMap.eventMap)
+    val tuplet = tuplet(offset, numerator, denominator, false, Coord(), voiceMap.eventMap)
     tuplets += tuplet
   }
 

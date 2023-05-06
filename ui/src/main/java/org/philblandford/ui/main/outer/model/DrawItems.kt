@@ -35,7 +35,8 @@ val drawerItems = listOf(
       DrawerItem(R.string.instruments, LayoutID.MANAGE_SOUNDFONT),
       DrawerItem(R.string.settings, LayoutID.SETTINGS_LAYOUT),
       DrawerItem(R.string.about, LayoutID.ABOUT),
-      DrawerItem(R.string.manual, LayoutID.MANUAL)
+      DrawerItem(R.string.manual, LayoutID.MANUAL),
+      DrawerItem(R.string.donate, LayoutID.DONATE)
     )
   )
 )

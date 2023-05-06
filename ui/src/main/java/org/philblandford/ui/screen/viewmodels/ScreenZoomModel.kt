@@ -43,7 +43,7 @@ class ScreenZoomViewModel(
 ) : BaseViewModel<ScreenZoomModel, ScreenZoomInterface, ScreenEffect>(),
   ScreenZoomInterface {
 
-  private lateinit var eventAddress: EventAddress
+  private var eventAddress: EventAddress? = null
 
   override fun setAddress(eventAddress: EventAddress) {
     this.eventAddress = eventAddress
@@ -55,11 +55,13 @@ class ScreenZoomViewModel(
 
     viewModelScope.launch {
       scoreChanged().collect {
-        update {
-          copy(
-            scoreLayout = getScoreLayout(), updateCounter = updateCounter + 1,
-            location = getLocation(eventAddress)
-          )
+        eventAddress?.let {
+          update {
+            copy(
+              scoreLayout = getScoreLayout(), updateCounter = updateCounter + 1,
+              location = getLocation(it)
+            )
+          }
         }
       }
     }

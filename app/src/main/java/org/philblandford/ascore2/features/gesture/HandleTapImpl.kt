@@ -26,7 +26,13 @@ class HandleTapImpl(
         uiStateRepository.setUiState(UIState.Input)
       }
       is UIState.InsertDelete -> {
-        kScore.deleteEventAt(location, state.insertItem.eventType)
+        kScore.getStartSelect()?.let { start ->
+          kScore.setEndSelection(location)
+          kScore.deleteRange(state.insertItem.eventType)
+          kScore.clearSelection()
+        } ?: run {
+          kScore.deleteEventAt(location, state.insertItem.eventType)
+        }
       }
       else -> {}
     }

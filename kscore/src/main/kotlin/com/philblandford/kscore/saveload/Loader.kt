@@ -129,15 +129,20 @@ class Loader {
   }
 
   fun loadParams(byteArray: LinkedList<Byte>): ParamMap? {
-    return loadByte(byteArray)?.let { cnt ->
-      (1..cnt).fold(paramMapOf().toMutableMap()) { map, _ ->
-        loadAny(byteArray)?.let { param ->
-          val value = loadAny(byteArray)
-          map.put(param as EventParam, value)
-          map
-        } ?: map
-      }
-    }?.toMap()
+    try {
+      return loadByte(byteArray)?.let { cnt ->
+        (1..cnt).fold(paramMapOf().toMutableMap()) { map, _ ->
+          loadAny(byteArray)?.let { param ->
+            val value = loadAny(byteArray)
+            map[param as EventParam] = value
+            map
+          } ?: map
+        }
+      }?.toMap()
+    } catch(e:Exception) {
+      ksLoge("loadParams", e)
+    }
+    return null
   }
 
   fun loadEventAddress(byteArray: LinkedList<Byte>): EventAddress? {
@@ -196,13 +201,18 @@ class Loader {
   }
 
   fun loadString(byteArray: LinkedList<Byte>): String? {
-    val length = byteArray[0].toInt()
-    byteArray.removeFirst()
-    val bytes = ByteArray(length)
-    repeat(length) {
-      bytes[it] = byteArray.removeAt(0)
+    try {
+      val length = byteArray[0].toUByte().toInt()
+      byteArray.removeFirst()
+      val bytes = ByteArray(length)
+      repeat(length) {
+        bytes[it] = byteArray.removeAt(0)
+      }
+      return String(bytes)
+    } catch(e:Exception) {
+      ksLoge("loadString anomaly", e)
     }
-    return String(bytes)
+    return null
   }
 
   fun loadPitch(bytes: LinkedList<Byte>): Pitch? {

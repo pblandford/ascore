@@ -14,10 +14,12 @@ import androidx.compose.ui.unit.dp
 import com.philblandford.ascore.external.interfaces.ExportDestination
 import com.philblandford.kscore.engine.types.ExportType
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.collectLatest
 import org.philblandford.ui.R
 import org.philblandford.ui.base.compose.VMView
 import org.philblandford.ui.base.viewmodel.VMSideEffect
 import org.philblandford.ui.common.block
+import org.philblandford.ui.export.viewmodel.ExportEffect
 import org.philblandford.ui.export.viewmodel.ExportInterface
 import org.philblandford.ui.export.viewmodel.ExportModel
 import org.philblandford.ui.export.viewmodel.ExportViewModel
@@ -38,22 +40,31 @@ private fun ExportType.asStringRes(): Int {
 }
 
 @Composable
-fun ExportFile(exportType: ExportType) {
+fun ExportFile(exportType: ExportType, dismiss:()->Unit) {
 
-  VMView(ExportViewModel::class.java) { state, iface, _ ->
+  VMView(ExportViewModel::class.java) { state, iface, effects ->
 
     LaunchedEffect(exportType) {
       iface.setExportType(exportType)
     }
 
+    LaunchedEffect(Unit) {
+      effects.collectLatest { effect ->
+        when (effect) {
+          ExportEffect.Complete -> dismiss()
+        }
+      }
+    }
+
     DialogTheme {
-      ExportFileInternal(it, state, iface)
+      ExportFileInternal(it, state, iface, dismiss)
     }
   }
 }
 
 @Composable
-private fun ExportFileInternal(modifier: Modifier, model: ExportModel, iface: ExportInterface) {
+private fun ExportFileInternal(modifier: Modifier, model: ExportModel, iface: ExportInterface,
+dismiss: () -> Unit) {
 
   Box(modifier) {
     Main(model, iface)
@@ -135,5 +146,5 @@ private fun Preview() {
     }
 
 
-  })
+  }){}
 }

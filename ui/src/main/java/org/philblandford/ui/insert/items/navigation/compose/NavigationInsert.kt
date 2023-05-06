@@ -31,9 +31,9 @@ fun NavigationInsertInternal(model: RowInsertModel<NavigationType>, insertItem: 
                      iface:RowInsertInterface<NavigationType>) {
   Row(Modifier.wrapContentWidth()) {
     RowInsertInternal(model, iface)
-    Spacer(Modifier.width(block()))
 
     if (model.ids[model.selected].second == NavigationType.CODA) {
+      Spacer(Modifier.width(block(0.5f)))
       IdRow(
         ids = listOf(R.drawable.left_arrow to true, R.drawable.right_arrow to false),
         selected = if (insertItem.getParam<Boolean>(EventParam.START) == true) 0 else 1 ,

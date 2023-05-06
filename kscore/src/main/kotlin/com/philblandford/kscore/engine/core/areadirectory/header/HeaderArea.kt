@@ -37,19 +37,19 @@ private const val cacheId = "HEADER"
 
 fun DrawableFactory.headerArea(hash: Map<EventType, Event>): HeaderArea? {
 
-  return getOrCreate(cacheId, hash, {
+  return getOrCreate(cacheId, hash) {
     var area = Area(tag = "Header")
     area = addClef(hash, area)
     area = addKey(hash, area)
     area = addTimeSignature(hash, area)
     area = area.createTagMap()
     HeaderArea(area.extendRight(STAVE_HEADER_GAP))
-  })
+  }
 }
 
 private fun DrawableFactory.addClef(hash: Map<EventType, Event>, area: Area): Area {
   return hash[EventType.CLEF]?.let {
-    clefArea(it)?.let { area.addRight(it, gap = STAVE_HEADER_GAP) }
+    clefArea(it)?.let { area.addRight(it.copy(extra = "header"), gap = STAVE_HEADER_GAP) }
   } ?: area
 }
 

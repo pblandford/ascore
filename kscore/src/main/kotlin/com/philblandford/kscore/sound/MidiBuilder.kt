@@ -10,6 +10,7 @@ import com.philblandford.kscore.engine.pitch.harmony
 import com.philblandford.kscore.engine.time.TimeSignature
 import com.philblandford.kscore.engine.time.timeSignature
 import com.philblandford.kscore.engine.types.*
+import com.philblandford.kscore.log.ksLoge
 import com.philblandford.kscore.log.ksLogv
 import com.philblandford.kscore.option.getOption
 import com.philblandford.kscore.sound.transform.Transformer
@@ -252,24 +253,28 @@ private fun addExpressionEvents(
 ): EventHash {
   val staveRange = start?.let {
     val end = endExcl?.staveId ?: scoreQuery.getAllStaves(true).toList().last()
-    (start.staveId to end).toList().distinct()
+    val range = scoreQuery.getStaveRange(start.staveId, end)
+    ksLoge("range $range")
+    range
   } ?: scoreQuery.getAllStaves(true)
-  var current = staveRange.flatMap { staveId ->
+  ksLoge("rangeRet $staveRange")
+  var current = staveRange.mapNotNull { staveId ->
     start?.let {
-      (0..1).mapNotNull { id ->
+      val byId = (0..1).mapNotNull { id ->
         scoreQuery.getEventAt(EventType.EXPRESSION_TEXT, start.copy(staveId = staveId, id = id))
       }
-    } ?: listOf()
+      byId.maxByOrNull { it.first.eventAddress.horizontal }
+    }
   }.toMap()
+  ksLoge("range current $current")
+
   current = current.map {
     it.key.copy(
-      eventAddress = it.key.eventAddress.copy(
-        barNum = maxOf(
-          start?.barNum ?: 1, it.key.eventAddress.barNum
-        ), id = 0
-      )
+      eventAddress = maxOf(it.key.eventAddress, start?.copy(staveId = it.key.eventAddress.staveId) ?: it.key.eventAddress).copy(id = 0)
     ) to it.value
   }.toMap()
+  ksLoge("range current2 $current")
+
   val inRange = scoreQuery.getEvents(EventType.EXPRESSION_TEXT, start, endExcl) ?: mapOf()
   return eventHash + current + inRange
 }

@@ -28,9 +28,14 @@ object BarNumberDecorator : Decorator {
       )]?.let {
         getOption<Any>(EventParam.OPTION_BAR_NUMBERING, it)
       } ?: BarNumbering.EVERY_SYSTEM
+    val upBeatBar = stavePositionFinder.getScoreQuery().getEvent(EventType.HIDDEN_TIME_SIGNATURE,
+    ez(1)) != null
+
     (stavePositionFinder.getStartBar()..stavePositionFinder.getEndBar()).forEach { bar ->
       if (doIt(option, bar, stavePositionFinder.getStartBar())) {
-        drawableFactory.numberArea(bar, BLOCK_HEIGHT * 2)?.let { numArea ->
+        val displayBar = if (upBeatBar) bar - 1 else bar
+
+        drawableFactory.numberArea(displayBar, BLOCK_HEIGHT * 2)?.let { numArea ->
           stavePositionFinder.getSlicePosition(ez(bar))?.let { sp ->
             val yPos = copy.getTopForRange(
               sp.start - numArea.width,

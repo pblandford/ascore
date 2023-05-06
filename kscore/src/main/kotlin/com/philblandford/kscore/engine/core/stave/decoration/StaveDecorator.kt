@@ -42,9 +42,9 @@ private fun groupEvents(eventHash: EventHash): Map<Decorator, EventHash> {
   val grouped = eventHash.toList().groupBy { it.first.eventType }.toMap()
 
   decorators.forEach { (et, decorator) ->
-    grouped.get(et)?.let { events ->
+    grouped[et]?.let { events ->
       val all = map[decorator] ?: eventHashOf()
-      map.put(decorator, all.plus(events))
+      map[decorator] = all.plus(events)
     }
   }
   return map

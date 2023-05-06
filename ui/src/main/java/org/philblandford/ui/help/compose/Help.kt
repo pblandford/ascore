@@ -29,7 +29,7 @@ fun Help(helpKey: String, dismiss: () -> Unit) {
   val path = "file:///android_asset/manual/en/$helpKey.html"
   val webViewState = rememberWebViewState(path)
 
-  DialogTheme { modifier ->
+  DialogTheme(dismiss) { modifier ->
     Box(modifier.wrapContentHeight()) {
       WebView(webViewState, Modifier.clip(RoundedCornerShape(10)))
       SquareButton(

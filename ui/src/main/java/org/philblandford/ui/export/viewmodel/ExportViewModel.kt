@@ -1,8 +1,11 @@
 package org.philblandford.ui.export.viewmodel
 
 import android.net.Uri
+import androidx.lifecycle.viewModelScope
 import com.philblandford.ascore.external.interfaces.ExportDestination
 import com.philblandford.kscore.engine.types.ExportType
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import org.philblandford.ascore2.features.export.ExportScore
 import org.philblandford.ascore2.features.instruments.GetInstruments
 import org.philblandford.ascore2.features.save.GetFileName
@@ -13,31 +16,37 @@ import org.philblandford.ui.base.viewmodel.VMModel
 import org.philblandford.ui.base.viewmodel.VMSideEffect
 
 data class ExportModel(
-  val fileName:String,
+  val fileName: String,
   val exportType: ExportType,
-  val allParts:Boolean?,
-  val inProgress:Boolean
+  val allParts: Boolean?,
+  val inProgress: Boolean
 ) : VMModel()
 
 interface ExportInterface : VMInterface {
-  fun setFileName(name:String)
+  fun setFileName(name: String)
   fun toggleAllParts()
   fun export(destination: ExportDestination, uri: Uri? = null)
   fun setExportType(exportType: ExportType)
+}
+
+sealed class ExportEffect : VMSideEffect() {
+  object Complete : VMSideEffect()
 }
 
 class ExportViewModel(
   private val exportScore: ExportScore,
   private val getFileName: GetFileName,
   private val getInstruments: GetInstruments
-  ) : BaseViewModel<ExportModel, ExportInterface, VMSideEffect>(), ExportInterface {
+) : BaseViewModel<ExportModel, ExportInterface, VMSideEffect>(), ExportInterface {
 
   override suspend fun initState(): Result<ExportModel> {
-    return ExportModel(getFileName() ?: "", ExportType.JPG,
-      if (getInstruments().size > 1) false else null, false).ok()
+    return ExportModel(
+      getFileName() ?: "", ExportType.JPG,
+      if (getInstruments().size > 1) false else null, false
+    ).ok()
   }
 
-  override fun getInterface(): ExportInterface  = this
+  override fun getInterface(): ExportInterface = this
 
   override fun setFileName(name: String) {
     update { copy(fileName = name) }
@@ -49,7 +58,11 @@ class ExportViewModel(
 
   override fun export(destination: ExportDestination, uri: Uri?) {
     getState().value?.let { state ->
-      exportScore(state.fileName, state.exportType, state.allParts ?: false, destination)
+      update { copy(inProgress = true) }
+      viewModelScope.launch(Dispatchers.IO) {
+        exportScore(state.fileName, state.exportType, state.allParts ?: false, destination)
+        launchEffect(ExportEffect.Complete)
+      }
     }
   }
 

@@ -13,8 +13,10 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
+import com.google.android.play.core.review.ReviewManagerFactory
 import com.philblandford.kscore.engine.types.FileSource
 import kotlinx.coroutines.flow.Flow
 import org.philblandford.ui.R
@@ -42,6 +44,13 @@ fun SaveScore(dismiss: () -> Unit) {
 @Composable
 private fun SaveFileInternal(modifier: Modifier, model: SaveModel, iface: SaveInterface, dismiss: () -> Unit) {
 
+
+  val localContext = LocalContext.current
+
+  val reviewManager = remember {
+    ReviewManagerFactory.create(localContext)
+  }
+
   val title = remember { mutableStateOf(model.scoreTitle) }
   Column(
     modifier
@@ -51,7 +60,6 @@ private fun SaveFileInternal(modifier: Modifier, model: SaveModel, iface: SaveIn
     LabelText(stringResource(R.string.save_score_title))
     Gap(0.5f)
     OutlinedTextField(title.value, {
-      Timber.e("TITLE ${title.value}")
       title.value = it }, Modifier.wrapContentHeight())
     Gap(0.5f)
     SourceSelect(model.source, iface::setFileSource)
@@ -59,7 +67,9 @@ private fun SaveFileInternal(modifier: Modifier, model: SaveModel, iface: SaveIn
     Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceEvenly) {
       Button(onClick = {
         iface.saveInternal(title.value)
-        dismiss()
+        reviewManager.requestReviewFlow().addOnCompleteListener {
+          dismiss()
+        }
       }, enabled = title.value.isNotEmpty()) {
         Text(stringResource(R.string.save_score_save))
       }

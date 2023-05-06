@@ -17,6 +17,7 @@ import org.philblandford.ascore2.features.ui.model.LayoutID
 import org.philblandford.ui.about.compose.About
 import org.philblandford.ui.create.compose.CreateScore
 import org.philblandford.ui.createfromtemplate.compose.CreateFromTemplate
+import org.philblandford.ui.donate.compose.Donate
 import org.philblandford.ui.export.PrintFile
 import org.philblandford.ui.export.compose.ExportFile
 import org.philblandford.ui.layout.compose.LayoutOptions
@@ -45,10 +46,7 @@ fun SettingsDialog(layoutID: LayoutID, dismiss: () -> Unit) {
           Modifier
             .fillMaxSize()
             .clickable { dismiss() })
-        Timber.e("CUNTING TWAT $layoutID")
-
         Box() {
-          Timber.e("WHAT THE FUCK ARE YOU DOING? $layoutID")
           Layout(layoutID, dismiss)
         }
       }
@@ -79,22 +77,22 @@ private fun Layout(layoutID: LayoutID, dismiss: () -> Unit) {
       dismiss()
     }
     LayoutID.EXPORT_PDF -> {
-      ExportFile(ExportType.PDF)
+      ExportFile(ExportType.PDF, dismiss)
     }
     LayoutID.EXPORT_MIDI -> {
-      ExportFile(ExportType.MIDI)
+      ExportFile(ExportType.MIDI, dismiss)
     }
     LayoutID.EXPORT_MXML -> {
-      ExportFile(ExportType.MXML)
+      ExportFile(ExportType.MXML, dismiss)
     }
     LayoutID.EXPORT_MP3 -> {
-      ExportFile(ExportType.MP3)
+      ExportFile(ExportType.MP3, dismiss)
     }
     LayoutID.EXPORT_WAV -> {
-      ExportFile(ExportType.WAV)
+      ExportFile(ExportType.WAV, dismiss)
     }
     LayoutID.EXPORT_SAVE -> {
-      ExportFile(ExportType.SAVE)
+      ExportFile(ExportType.SAVE, dismiss)
     }
     LayoutID.LAYOUT_OPTIONS -> {
       LayoutOptions()
@@ -104,6 +102,9 @@ private fun Layout(layoutID: LayoutID, dismiss: () -> Unit) {
     }
     LayoutID.MANUAL -> {
       Manual()
+    }
+    LayoutID.DONATE -> {
+      Donate(dismiss)
     }
     LayoutID.MIXER -> {
       Mixer()

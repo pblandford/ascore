@@ -64,7 +64,6 @@ fun TopRow(
   }
 }
 
-@OptIn(ExperimentalAnimationApi::class)
 @Composable
 fun TopRowCompact(
   modifier: Modifier,
@@ -89,38 +88,55 @@ fun TopRowCompact(
       SquareButton(R.drawable.tabs) {
         showTabs = !showTabs
       }
-    }
 
-    AnimatedContent(showTabs, Modifier.weight(1f),
-      transitionSpec =
-      {
 
-        (slideInHorizontally { width -> width } with
-            slideOutHorizontally { width -> width }).using(
-          SizeTransform(clip = false)
-        )
 
-      }
-    ) {
-      if (it) {
-        Tabs(Modifier)
-      } else {
-        Row {
-          Box(Modifier.weight(1f))
-          SquareButton(R.drawable.fullscreen) {
-            fullScreen()
-          }
-          SquareButton(R.drawable.page) {
-            showLayoutOptions()
-          }
-          SquareButton(if (!vertical) R.drawable.page_down else R.drawable.page_forward) { toggleVertical() }
-          SquareButton(R.drawable.mixer) {
-            showConsole()
-          }
+      AnimatedContent(showTabs, Modifier.weight(1f),
+        transitionSpec =
+        {
+
+          (slideInHorizontally { width -> width } with
+              slideOutHorizontally { width -> width }).using(
+            SizeTransform(clip = false)
+          )
+
         }
+      ) {
+        if (it) {
+          Tabs(Modifier)
+        } else {
+          ScoreButtons(vertical, showLayoutOptions, fullScreen, showConsole, toggleVertical)
+        }
+      }
+    } else {
+      Box(Modifier.weight(1f)) {
+        ScoreButtons(vertical, showLayoutOptions, fullScreen, showConsole, toggleVertical)
       }
     }
     PlayButton()
+  }
+}
+
+@Composable
+private fun ScoreButtons(
+  vertical: Boolean,
+  showLayoutOptions: () -> Unit,
+  fullScreen: () -> Unit,
+  showConsole: () -> Unit,
+  toggleVertical: () -> Unit
+) {
+  Row {
+    Box(Modifier.weight(1f))
+    SquareButton(R.drawable.fullscreen) {
+      fullScreen()
+    }
+    SquareButton(R.drawable.page) {
+      showLayoutOptions()
+    }
+    SquareButton(if (!vertical) R.drawable.page_down else R.drawable.page_forward) { toggleVertical() }
+    SquareButton(R.drawable.mixer) {
+      showConsole()
+    }
   }
 }
 

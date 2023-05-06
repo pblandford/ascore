@@ -26,6 +26,7 @@ enum class LayoutID {
   PURCHASE,
   MANUAL,
   ABOUT,
+  DONATE,
 
   EMPTY
 }

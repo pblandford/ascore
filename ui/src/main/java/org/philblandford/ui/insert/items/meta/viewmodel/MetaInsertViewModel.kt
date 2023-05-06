@@ -84,4 +84,8 @@ class MetaInsertViewModel(
       getDefaultTextSize(item.eventType)
     } ?: 100
   }
+
+  override fun getExpectedTypes(): List<EventType> {
+    return listOf(EventType.TITLE, EventType.COMPOSER, EventType.LYRICIST, EventType.SUBTITLE)
+  }
 }

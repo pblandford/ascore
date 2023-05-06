@@ -275,6 +275,16 @@
     </string>
 
     <string name="donate">Donate</string>
+    <string name="donate_text">
+        A-Score is now completely free to use!\n\n
+        However, I have spent quite a lot of time on it, to put it mildly - if you would like to show your
+        appreciation for my efforts, please consider helping me to afford the following essential items:
+    </string>
+    <string name="crisps">Buy me some crisps</string>
+    <string name="beer">Buy me a beer</string>
+    <string name="curry">Buy me a curry</string>
+    <string name="thank_you">Thank you kind sir/madam!</string>
+    <string name="your_welcome">You\'re Welcome</string>
     <string name="rate_text">
         Please rate me!
     \n\nSupporting A-Score development is easy! If you are enjoying the app, please give it a nice rating in the Play

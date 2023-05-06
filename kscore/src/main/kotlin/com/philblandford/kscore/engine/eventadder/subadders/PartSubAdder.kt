@@ -88,7 +88,7 @@ object PartSubAdder : BaseEventAdder {
       list.removeAt(eventAddress.staveId.main - 1)
       Right(Score(list, score.eventMap))
     } else {
-      Left(NotFound("Could not remove part"))
+      Right(score)
     }
   }
 }

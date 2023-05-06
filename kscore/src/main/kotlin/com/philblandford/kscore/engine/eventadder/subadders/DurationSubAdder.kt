@@ -365,7 +365,7 @@ object DurationSubAdder : BaseEventAdder {
 
   private fun isGrace(eventAddress: EventAddress, params: ParamMap): Boolean {
     return eventAddress.isGrace ||
-        params.g<GraceType>(EventParam.GRACE_TYPE) ?: GraceType.NONE != GraceType.NONE
+        (params.g<GraceType>(EventParam.GRACE_TYPE) ?: GraceType.NONE) != GraceType.NONE
   }
 
 }

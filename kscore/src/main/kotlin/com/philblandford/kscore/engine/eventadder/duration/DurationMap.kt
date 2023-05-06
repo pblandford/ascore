@@ -5,6 +5,7 @@ import com.philblandford.kscore.engine.eventadder.*
 import com.philblandford.kscore.engine.time.TimeSignature
 import com.philblandford.kscore.engine.time.getRegularDivisions
 import com.philblandford.kscore.engine.types.DurationType
+import com.philblandford.kscore.log.ksLoge
 import java.util.*
 
 typealias DMResult = AnyResult<DurationMap>
@@ -105,18 +106,23 @@ fun DurationMap.addRests(): DurationMap {
 
   if (map.isEmpty()) {
     return if (timeSignature.hidden) {
-      val events = timeSignature.getRegularDivisions().map {(offset, duration) ->
+      val events = timeSignature.getRegularDivisions().map { (offset, duration) ->
         offset to DEvent(duration, DurationType.REST)
       }
-       copy(map = events.toMap().toSortedMap())
-    } else this
+      copy(map = events.toMap().toSortedMap())
+    } else {
+      this
+    }
   }
 
   return split()?.let { maps ->
+
     val mapList = maps.map { m ->
-      if (m.map.isEmpty())
+      if (m.map.isEmpty()) {
         m.addSimple(DEvent(m.timeSignature.duration, DurationType.REST), dZero())
-      else m.addRests()
+      } else {
+        m.addRests()
+      }
     }
     mapList.merge(timeSignature)
   } ?: this
@@ -156,7 +162,11 @@ private fun List<DurationMap>.putEmptyMarkers(): List<DurationMap> {
   val initialised = listOf(DurationMap(TimeSignature(4, 4))).plus(this)
   return initialised.windowed(2).map { (one, two) ->
     one.map.toList().lastOrNull()?.let { last ->
-      val overlap = last.first + last.second.duration - one.timeSignature.duration
+
+      val overlap = if (last.second.type != DurationType.NONE) {
+        last.first + last.second.duration - one.timeSignature.duration
+      } else dZero()
+
       if (overlap > dZero()) {
         val marker = DEvent(overlap, DurationType.NONE)
         two.copy(map = two.map.plus(dZero() to marker).toSortedMap())
@@ -217,7 +227,7 @@ private fun DurationMap.removeOverlapping(duration: Duration, offset: Offset): D
 }
 
 fun DurationMap.eventString(): String {
-  return map.toList()
+  return "$timeSignature " + map.toList()
     .joinToString(separator = "")
     { it.second.asString() + ":" }.dropLastWhile { it == ':' }
 }
@@ -233,6 +243,7 @@ fun DEvent.getLetter(): String {
     DurationType.REST -> "R"
     DurationType.EMPTY -> "E"
     DurationType.TUPLET_MARKER -> "T"
+    DurationType.NONE -> "N"
     else -> ""
   }
 }

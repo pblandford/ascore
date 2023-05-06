@@ -46,7 +46,6 @@ data class AreaToShow(
 class SelectionManager {
 
   private var selectState = MutableStateFlow(SelectState())
-  private var voice: Int = 1
   private var atsIdx = -1
   private val coroutineScope = CoroutineScope(Dispatchers.Default)
 
@@ -180,7 +179,7 @@ class SelectionManager {
       ksLoge("COORD kscore SM Update old ${ats.scoreArea.rectangle}")
 
       score.tryGetEvent(ats.event.eventType, ats.eventAddress)?.let { (latestEvent, latestAddress) ->
-        representation.getArea(latestEvent.eventType, latestAddress)?.let { area ->
+        representation.getArea(latestEvent.eventType, latestAddress, ats.extra)?.let { area ->
           ksLoge("COORD kscore update new ${area.x} ${area.y} ${latestEvent.params}")
           val newAts = ats.copy(event = latestEvent, eventAddress = latestAddress,
             scoreArea = ats.scoreArea.copy(rectangle = Rectangle(area.x, area.y, area.width, area.height)))

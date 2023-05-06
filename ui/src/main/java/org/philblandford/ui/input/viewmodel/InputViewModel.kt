@@ -35,13 +35,13 @@ sealed class InputEffect : VMSideEffect() {
 
 class InputViewModel(
   private val insertNoteUC: InsertNote,
-  private val insertRestUC : InsertRest,
+  private val insertRestUC: InsertRest,
   private val noteInputState: NoteInputState,
   private val updateInputState: UpdateInputState,
   private val moveMarkerUC: MoveMarker,
   private val soundNote: SoundNote,
-  private val getInstrumentAtMarker:GetInstrumentAtMarker,
-  private val getKeySignature:GetKeySignatureAtMarker,
+  private val getInstrumentAtMarker: GetInstrumentAtMarker,
+  private val getKeySignature: GetKeySignatureAtMarker,
 ) :
   BaseViewModel<InputModel, InputInterface, InputEffect>(), InputInterface {
 
@@ -52,10 +52,17 @@ class InputViewModel(
       }
     }
     viewModelScope.launch {
-      scoreUpdate().map { getKeySignature() }.distinctUntilChanged().collectLatest { key ->
-        val accidental = if (key >= 0) Accidental.SHARP else Accidental.FLAT
-        updateInputState{ copy(accidental = accidental)}
-      }
+      scoreUpdate().map { getKeySignature() to getInstrumentAtMarker() }.distinctUntilChanged()
+        .collectLatest { (key, instrument) ->
+          val accidental = if (key >= 0) Accidental.SHARP else Accidental.FLAT
+          val descrs = getInstrumentAtMarker()?.percussionDescrs ?: listOf()
+          update {
+            copy(
+              noteInputDescriptor = noteInputDescriptor.copy(accidental = accidental),
+              percussionDescrs = descrs
+            )
+          }
+        }
     }
   }
 
@@ -85,7 +92,7 @@ class InputViewModel(
   }
 
   private fun updateState(func: NoteInputDescriptor.() -> NoteInputDescriptor) {
-      updateInputState(func)
+    updateInputState(func)
   }
 
   override fun toggleOctaveShift() {

@@ -9,6 +9,7 @@ import com.philblandford.ascore.external.interfaces.ExportDestination
 import com.philblandford.ascore.external.interfaces.ExporterIf
 import com.philblandford.ascore.external.interfaces.ExternalSaver
 import com.philblandford.kscore.api.InstrumentGetter
+import com.philblandford.kscore.api.ProgressFunc
 import com.philblandford.kscore.engine.core.score.Score
 import com.philblandford.kscore.engine.eventadder.util.addEventToMap
 import com.philblandford.kscore.engine.types.*
@@ -52,7 +53,8 @@ class Exporter(
 
   fun export(
     score: Score, filename: String, exportType: ExportType, allParts: Boolean = false,
-    exportDestination: ExportDestination, uri: Uri? = null, onComplete: () -> Unit
+    exportDestination: ExportDestination, uri: Uri? = null, progress:ProgressFunc = {_,_,_ -> false},
+    onComplete: () -> Unit
   ) {
 
     val safeFileName = filename.replace(Regex("[:\\\\/*?|<>]"), "")

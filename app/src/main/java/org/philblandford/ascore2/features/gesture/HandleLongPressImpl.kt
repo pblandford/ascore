@@ -2,6 +2,8 @@ package org.philblandford.ascore2.features.gesture
 
 import com.philblandford.kscore.api.KScore
 import com.philblandford.kscore.api.Location
+import com.philblandford.kscore.engine.types.DurationType
+import com.philblandford.kscore.engine.types.EventType
 import org.philblandford.ascore2.features.ui.model.EditItem
 import org.philblandford.ascore2.features.ui.model.UIState
 import org.philblandford.ascore2.features.ui.repository.UiStateRepository
@@ -34,12 +36,28 @@ class HandleLongPressImpl(
           }
         } ?: run {
           kScore.getEventAddress(location)?.let { eventAddress ->
-            uiStateRepository.setUiState(UIState.MoveNote(location))
-            kScore.setStartSelection(eventAddress)
+            if (kScore.getEvent(
+                EventType.DURATION,
+                eventAddress.copy(voice = uiStateRepository.getVoice().value)
+              )?.subType == DurationType.CHORD
+            ) {
+              uiStateRepository.setUiState(UIState.MoveNote(location))
+              kScore.setStartSelection(eventAddress)
+            } else {
+              kScore.setStartSelection(eventAddress)
+              uiStateRepository.setUiState(UIState.Clipboard)
+            }
           }
         }
       }
+
       is UIState.Insert -> {
+        if (state.insertItem.isRangeCapable(state.insertItem.eventType)) {
+          kScore.setStartSelection(location)
+        }
+      }
+
+      is UIState.InsertDelete -> {
         if (state.insertItem.isRangeCapable(state.insertItem.eventType)) {
           kScore.setStartSelection(location)
         }

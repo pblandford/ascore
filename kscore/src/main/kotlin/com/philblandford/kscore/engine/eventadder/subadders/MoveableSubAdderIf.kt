@@ -8,6 +8,7 @@ import com.philblandford.kscore.engine.eventadder.ScoreResult
 import com.philblandford.kscore.engine.types.EventAddress
 import com.philblandford.kscore.engine.types.EventParam
 import com.philblandford.kscore.engine.types.EventType
+import com.philblandford.kscore.log.ksLoge
 
 object MoveableSubAdder : MoveableSubAdderIf
 
@@ -35,7 +36,6 @@ interface MoveableSubAdderIf : BaseEventAdder {
         value
       }
     }
-
     return super.setParam(score, destination, eventType, param, adjustedValue, eventAddress)
   }
 }

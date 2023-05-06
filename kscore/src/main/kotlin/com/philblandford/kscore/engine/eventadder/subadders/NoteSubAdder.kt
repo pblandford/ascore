@@ -19,7 +19,6 @@ internal object NoteSubAdder : BaseEventAdder {
     params: ParamMap,
     eventAddress: EventAddress
   ): ScoreResult {
-
     return score.getVoice(eventAddress, params).then { voiceAddress ->
       doAddEvent(score, destination, params, voiceAddress)
     }

@@ -37,7 +37,7 @@ data class Tuplet(
   override fun replaceSelf(eventMap: EventMap, newSubLevels: Iterable<ScoreLevel>?): ScoreLevel {
     return if (eventMap.getEvents(EventType.DURATION)?.isEmpty() != false) {
       /* if we have lost all our events, recreate our rests */
-      tuplet(offset, timeSignature.numerator, timeSignature.denominator, hidden)
+      tuplet(offset, timeSignature.numerator, timeSignature.denominator, hidden).copy(hardStart = hardStart)
     } else {
       tuplet(this, eventMap)
     }
@@ -198,17 +198,19 @@ fun tuplet(
 
 fun tuplet(
   offset: Duration, numerator: Int, denominator: Int, hidden: Boolean = false,
+  hardStart: Coord = Coord(),
   eventMap: EventMap = emptyEventMap()
 ): Tuplet {
   val childDivisor = getChildDivisor(numerator, false)
   val ratio = Duration(numerator, childDivisor)
   val ts = TimeSignature(numerator, denominator)
   val realDuration = ts.duration.divide(ratio)
-  return tuplet(offset, numerator, realDuration, hidden, eventMap)
+  return tuplet(offset, numerator, realDuration, hidden, hardStart, eventMap)
 }
 
 fun tuplet(
   offset: Duration, numerator: Int, duration: Duration, hidden: Boolean = false,
+  hardStart: Coord = Coord(),
   eventMap: EventMap = emptyEventMap()
 ): Tuplet {
   val childDivisor = getChildDivisor(numerator, duration.numerator % 3 == 0)

@@ -108,4 +108,7 @@ class LyricInsertViewModel(
     updateFromScore()
   }
 
+  override fun getExpectedTypes(): List<EventType> {
+    return listOf(EventType.LYRIC)
+  }
 }

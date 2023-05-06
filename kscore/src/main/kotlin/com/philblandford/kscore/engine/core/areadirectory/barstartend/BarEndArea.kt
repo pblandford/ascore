@@ -89,7 +89,7 @@ private fun DrawableFactory.addTimeSignatureArea(area: Area, events: Map<EventTy
 private fun DrawableFactory.addClefArea(area: Area, events: Map<EventType, Event>): Area {
   return events[EventType.CLEF]?.let { clef ->
     clefArea(clef)?.let { clefArea ->
-      area.addRight(clefArea.extendRight(STAVE_HEADER_GAP))
+      area.addRight(clefArea.extendRight(STAVE_HEADER_GAP).copy(extra = "end"))
     }
   } ?: area
 }

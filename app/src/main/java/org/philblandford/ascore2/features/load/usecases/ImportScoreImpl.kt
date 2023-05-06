@@ -29,7 +29,6 @@ class ImportScoreImpl(
   ) {
 
     importer.import(uri)?.let { importDescriptor ->
-      Timber.e("IMPORT $importDescriptor")
 
       when (importDescriptor.importType) {
         ImportType.MXL, ImportType.SAVE, ImportType.XML -> {

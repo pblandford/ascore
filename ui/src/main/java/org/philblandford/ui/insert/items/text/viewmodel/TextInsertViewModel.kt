@@ -18,10 +18,18 @@ class TextInsertViewModel(
   init {
     viewModelScope.launch {
       getSelection().collectLatest { selection ->
-        if (selection != null) {
-          setEventType(EventType.EXPRESSION_DASH)
-        } else {
-          setEventType(EventType.EXPRESSION_TEXT)
+        getInsertItem()?.let { item ->
+          if (listOf(
+              EventType.TEMPO_TEXT, EventType.EXPRESSION_TEXT, EventType.REHEARSAL_MARK,
+              EventType.EXPRESSION_DASH
+            ).contains(item.eventType)
+          ) {
+            if (selection != null) {
+              setEventType(EventType.EXPRESSION_DASH)
+            } else {
+              setEventType(EventType.EXPRESSION_TEXT)
+            }
+          }
         }
       }
     }

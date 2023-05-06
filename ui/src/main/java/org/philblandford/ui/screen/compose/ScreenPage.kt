@@ -245,10 +245,10 @@ private fun BoxScope.EditOverlay(
 
         val offset = Offset(
           (editItem.rectangle.x.toFloat() * getScale() / density)
-            .coerceAtMost(rightEdge - editSize.value.width),
+            .coerceIn(0f, (rightEdge - editSize.value.width).coerceAtLeast(0f)),
           ((editItem.rectangle.y + editItem.rectangle.height + 150).toFloat() * getScale() / density)
         )
-        Timber.e("SV offset $offset $viewPortWidth")
+        Timber.e("SV offset $offset $viewPortWidth ${rightEdge} ${editSize.value.width}")
         EditPanel(
           Modifier
             .align(Alignment.TopStart)

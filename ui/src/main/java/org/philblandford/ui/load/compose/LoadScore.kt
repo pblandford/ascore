@@ -156,11 +156,14 @@ private fun ColumnScope.ScorePager(
         .fillMaxSize()
         .padding(5.dp)
     ) {
-      items(model.fileNames[fileSourceTypes[idx].fileSource] ?: listOf()) { fileInfo ->
-        ScoreDetailCard(fileInfo, {
-          iface.load(fileInfo)
-        }) { deleteConfirm = it }
-        Gap(10.dp)
+      fileSourceTypes.getOrNull(idx)?.let { type ->
+        val filenames:List<FileInfo> = model.fileNames[type.fileSource] ?: listOf()
+        items(filenames) { fileInfo ->
+          ScoreDetailCard(fileInfo, {
+            iface.load(fileInfo)
+          }) { deleteConfirm = it }
+          Gap(10.dp)
+        }
       }
     }
   }

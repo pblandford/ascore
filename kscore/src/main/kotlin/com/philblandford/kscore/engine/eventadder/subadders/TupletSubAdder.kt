@@ -43,10 +43,10 @@ object TupletSubAdder : MoveableSubAdderIf {
         eventAddress: EventAddress
     ): ScoreResult {
         return if (param == EventParam.HARD_START) {
-            val coord = (value as? Coord) ?: Coord()
+            val coord =  (value as? Coord) ?: Coord()
             score.getVoiceMap(eventAddress).ifNullFail("Voice map not found").then { vm ->
                 vm.getTuplet(eventAddress.offset).ifNullFail("Tuplet not found").then { tuplet ->
-                    score.addTuplet(tuplet.copy(hardStart = coord), eventAddress)
+                    score.addTuplet(tuplet.copy(hardStart = tuplet.hardStart + coord), eventAddress)
                 }
             }
         } else score.ok()
@@ -163,17 +163,18 @@ object TupletSubAdder : MoveableSubAdderIf {
         eventAddress: EventAddress
     ): AnyResult<Tuplet> {
         val hidden = params.isTrue(EventParam.HIDDEN)
+        val hardStart = params.g<Coord>(EventParam.HARD_START) ?: Coord()
         return params.g<Int>(EventParam.NUMERATOR)?.let { numerator ->
             params.g<Duration>(EventParam.DURATION)?.let { duration ->
-                Right(tuplet(eventAddress.offset, numerator, duration, hidden))
+                Right(tuplet(eventAddress.offset, numerator, duration, hidden, hardStart))
             } ?: params.g<Int>(EventParam.DENOMINATOR)?.let { denominator ->
-                Right(tuplet(eventAddress.offset, numerator, denominator, hidden))
+                Right(tuplet(eventAddress.offset, numerator, denominator, hidden, hardStart))
             } ?: run {
                 val duration =
                     getParam<Duration>(EventType.DURATION, EventParam.DURATION, eventAddress)
                         ?: getTimeSignature(eventAddress)?.duration
                 duration?.let {
-                    Right(tuplet(eventAddress.offset, numerator, duration, hidden))
+                    Right(tuplet(eventAddress.offset, numerator, duration, hidden, hardStart))
                 }
             }
         } ?: Left(ParamsMissing(listOf(EventParam.DURATION, EventParam.NUMERATOR)))

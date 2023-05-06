@@ -25,6 +25,7 @@ import org.koin.androidx.viewmodel.dsl.viewModel
 import org.koin.core.module.Module
 import org.koin.dsl.binds
 import org.koin.dsl.module
+import org.philblandford.ascore2.android.billing.BillingManager
 import org.philblandford.ascore2.android.export.AndroidExternalSaver
 import org.philblandford.ascore2.android.export.AndroidImporter
 import org.philblandford.ascore2.android.export.AndroidScoreLoader
@@ -125,7 +126,7 @@ object Dependencies {
     single<DrawableGetter> { ComposeDrawableGetter(androidContext(), get()) }
     single<ScoreLoader> { AndroidScoreLoader(get(), get(), get()) }
     single { AndroidImporter(get()) }
-    single { CrashHandler(get()) }
+    single { CrashHandler(get(), get()) }
   }
 
   private val stubModules = module {
@@ -167,7 +168,8 @@ object Dependencies {
 
   private val startupModule = module {
     single<InstallTemplates> { InstallTemplatesImpl(get(), get()) }
-    single { StartupManager(get(), get(), get()) }
+    single{ BillingManager(get()) }
+    single { StartupManager(get(), get(), get(), get()) }
   }
 
   private val errorModule = module {
@@ -283,7 +285,7 @@ object Dependencies {
     viewModel { DefaultInsertViewModel() }
     viewModel { BarNumberingViewModel(get(), get()) }
     viewModel { LyricInsertViewModel(get(), get(), get(), get()) }
-    viewModel { HarmonyInsertViewModel(get(), get(), get(), get(), get()) }
+    viewModel { HarmonyInsertViewModel(get(), get(), get(), get(), get(), get()) }
     viewModel { InstrumentInsertViewModel(get()) }
     viewModel { MetaInsertViewModel(get(), get(), get(), get(), get(), get()) }
     viewModel { OrnamentInsertViewModel() }
