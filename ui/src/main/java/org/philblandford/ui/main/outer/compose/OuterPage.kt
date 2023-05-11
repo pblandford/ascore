@@ -27,8 +27,6 @@ import timber.log.Timber
 @Composable
 fun OuterPage() {
 
-  Timber.e("RECO OuterPage")
-
   val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
   val scope = rememberCoroutineScope()
   val popupLayout = remember { mutableStateOf<LayoutID?>(null) }
@@ -57,23 +55,5 @@ fun OuterPage() {
         showMixer.value = false
       }
     }
-  }
-}
-
-@Composable
-fun customShape() = object : Shape {
-  override fun createOutline(
-    size: Size,
-    layoutDirection: LayoutDirection,
-    density: Density
-  ): Outline {
-    return Outline.Rectangle(
-      Rect(
-        left = 0f,
-        top = 0f,
-        right = size.width * 2 / 3,
-        bottom = size.height
-      )
-    )
   }
 }

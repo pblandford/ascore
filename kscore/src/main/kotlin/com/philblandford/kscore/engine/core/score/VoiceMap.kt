@@ -19,10 +19,6 @@ data class EventListKey(val offset: Duration, val event: Event)
 private typealias EventList = List<EventListKey>
 typealias EventListM = SortedMap<Duration, Event>
 
-fun EventListM.immutable(): EventList {
-  return map { EventListKey(it.key, it.value) }.toList()
-}
-
 typealias VoiceEventMap = SortedMap<Duration, Event>
 
 fun VoiceEventMap.eventString(): String {
@@ -429,7 +425,6 @@ internal fun markBeamGroupMembers(
 
   val allBeams = beamMap.plus(
     userBeams.map { it.key.eventAddress to beam(it.value) }
-
   )
 
   allBeams.forEach { entry ->

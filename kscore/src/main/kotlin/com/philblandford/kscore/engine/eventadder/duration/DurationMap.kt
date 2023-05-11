@@ -163,9 +163,7 @@ private fun List<DurationMap>.putEmptyMarkers(): List<DurationMap> {
   return initialised.windowed(2).map { (one, two) ->
     one.map.toList().lastOrNull()?.let { last ->
 
-      val overlap = if (last.second.type != DurationType.NONE) {
-        last.first + last.second.duration - one.timeSignature.duration
-      } else dZero()
+      val overlap = last.first + last.second.duration - one.timeSignature.duration
 
       if (overlap > dZero()) {
         val marker = DEvent(overlap, DurationType.NONE)
@@ -227,7 +225,7 @@ private fun DurationMap.removeOverlapping(duration: Duration, offset: Offset): D
 }
 
 fun DurationMap.eventString(): String {
-  return "$timeSignature " + map.toList()
+  return map.toList()
     .joinToString(separator = "")
     { it.second.asString() + ":" }.dropLastWhile { it == ':' }
 }

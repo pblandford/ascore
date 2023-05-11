@@ -5,6 +5,7 @@ import com.philblandford.kscore.api.InstrumentGroup
 import com.philblandford.kscore.engine.types.EventParam
 import com.philblandford.kscore.engine.types.ParamMap
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.MutableStateFlow
 import org.philblandford.ui.base.viewmodel.VMSideEffect
 import org.philblandford.ui.edit.items.instrumentedit.viewmodel.InstrumentEditInterface
 
@@ -53,7 +54,5 @@ class StubInstrumentEditInterface : InstrumentEditInterface {
     TODO("Not yet implemented")
   }
 
-  override fun selectedInstrument(): Instrument? {
-    TODO("Not yet implemented")
-  }
+  override fun selectedInstrument() = MutableStateFlow(null)
 }

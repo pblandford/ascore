@@ -13,6 +13,7 @@ import com.philblandford.kscore.engine.pitch.transpose
 import com.philblandford.kscore.engine.types.*
 import com.philblandford.kscore.engine.util.lastKeyOrNull
 import com.philblandford.kscore.log.ksLogd
+import com.philblandford.kscore.log.ksLoge
 import java.util.*
 
 typealias SelectionRange = SortedMap<Duration, EventHash>
@@ -66,7 +67,8 @@ class Clipboard {
 
       if (score.getEventAt(EventType.TUPLET, start) != null
         && score.getEvent(EventType.TUPLET, start) == null) {
-        return asError("Cannot paste into the middle of a tuplet")
+        ksLoge("Not pasting into middle of a tuplet")
+        return Right(score)
       }
 
       val ret = selection.ifNullWarn(score, "No selection") { sel ->
@@ -79,7 +81,6 @@ class Clipboard {
       }
       cut = false
       return ret
-
     }
   }
 

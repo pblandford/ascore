@@ -57,6 +57,9 @@ import timber.log.Timber
 import kotlin.math.abs
 import kotlin.math.absoluteValue
 
+private const val CHANGE_MODE_THRESHOLD = 30
+private const val CHANGE_PAGE_THRESHOLD = 5
+
 @Composable
 internal fun ScreenPage(
   num: Int,
@@ -148,16 +151,14 @@ internal fun ScreenPage(
               detectHorizontalDragGestures(
                 onDragStart = { totalDrag = 0f },
                 onDragEnd = {
-                  if (totalDrag.absoluteValue > 50f) {
-                    if (vertical) {
-                      changeMethod()
-                    } else {
-                      turnPage(totalDrag > 0)
-                    }
+                  if (totalDrag.absoluteValue > CHANGE_MODE_THRESHOLD && vertical) {
+                    changeMethod()
+                  }  else if (totalDrag.absoluteValue > CHANGE_PAGE_THRESHOLD && !vertical) {
+                    turnPage(totalDrag > 0)
                   }
                 },
                 onHorizontalDrag = { change, dragAmount ->
-                  if (dragAmount.absoluteValue > 50) {
+                  if (dragAmount.absoluteValue > CHANGE_PAGE_THRESHOLD) {
                     totalDrag += dragAmount
                   }
                 }
@@ -167,7 +168,7 @@ internal fun ScreenPage(
           .pointerInput(Unit) {
             if (!vertical) {
               detectVerticalDragGestures { change, dragAmount ->
-                if (getScale() == minScale && dragAmount.absoluteValue > 50) {
+                if (getScale() == minScale && dragAmount.absoluteValue > CHANGE_MODE_THRESHOLD) {
                   changeMethod()
                 } else {
                   coroutineScope.launch {

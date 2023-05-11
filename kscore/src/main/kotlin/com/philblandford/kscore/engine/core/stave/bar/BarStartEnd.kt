@@ -8,6 +8,7 @@ import com.philblandford.kscore.engine.core.areadirectory.barstartend.BarEndArea
 import com.philblandford.kscore.engine.core.areadirectory.barstartend.BarStartAreaPair
 import com.philblandford.kscore.engine.types.EventAddress
 import com.philblandford.kscore.engine.types.EventType
+import com.philblandford.kscore.log.ksLoge
 
 
 internal fun addBarStartEnd(
@@ -29,6 +30,10 @@ internal fun addBarStartEnd(
     barEnd.base, Coord(barGeography.width - barGeography.barEndGeography.width, 0),
     eventAddress
   )
+  if (eventAddress.barNum == 2) {
+    ksLoge("BSE $newArea ${newArea.childMap.map { it.first.coord.x to it.second.tag }}")
+    ksLoge("BSE barStart ${barStart.base.width} ${barStart.base.childMap.map { it.first.coord.x to it.second.tag }}")
+  }
   return newArea
 }
 

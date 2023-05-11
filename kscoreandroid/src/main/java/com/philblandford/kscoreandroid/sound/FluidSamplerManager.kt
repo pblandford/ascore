@@ -19,7 +19,11 @@ class FluidSamplerManager(private val resourceManager: ResourceManager):SamplerM
   private var userInstruments = mapOf<String, InstrumentGroup>()
 
   init {
-    reloadSoundFonts()
+    try {
+      reloadSoundFonts()
+    } catch (e:Exception) {
+      ksLoge("Could not load soundfonts", e)
+    }
   }
 
   override fun getSoundFonts(): List<String> {
@@ -46,8 +50,8 @@ class FluidSamplerManager(private val resourceManager: ResourceManager):SamplerM
   }
 
   private fun createSampler(soundFontPath: String, bank: Int, withDriver:Boolean = true): FluidSampler? {
-    val sampler = if (withDriver) FluidSampler(soundFontPath) else FluidConvertSampler(soundFontPath)
     return try {
+      val sampler = if (withDriver) FluidSampler(soundFontPath) else FluidConvertSampler(soundFontPath)
       sampler.open()
       sampler
     } catch (e: Exception) {

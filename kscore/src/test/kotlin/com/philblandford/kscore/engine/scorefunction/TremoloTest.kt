@@ -32,4 +32,25 @@ class TremoloTest : ScoreTest() {
     SVNP(EventType.DURATION, EventParam.TREMOLO_BEATS, eav(1))
   }
 
+  @Test
+  fun testAddTremoloVoice2() {
+    SMV(eventAddress = eav(1, voice = 2))
+    SAE(EventType.TREMOLO, eav(1, voice = 2), paramMapOf(EventParam.TREMOLO_BEATS to Duration(1,16)))
+    SVP(EventType.DURATION, EventParam.TREMOLO_BEATS, ChordDecoration(items = listOf(Duration(1,16))), eav(1, voice = 2))
+  }
+
+  @Test
+  fun testAddTremoloVoice2NoteNotThere() {
+    SMV(eventAddress = eav(1))
+    SAE(EventType.TREMOLO, eav(1, voice = 2), paramMapOf(EventParam.TREMOLO_BEATS to Duration(1,16)))
+    SVNP(EventType.DURATION, EventParam.TREMOLO_BEATS, eav(1))
+  }
+
+  @Test
+  fun testAddTremoloNoBeatsVoice2NoteNotThere() {
+    SMV(eventAddress = eav(1))
+    SAE(EventType.TREMOLO, eav(1, voice = 2), paramMapOf(EventParam.TREMOLO_BEATS to 0))
+    SVNP(EventType.DURATION, EventParam.TREMOLO_BEATS, eav(1))
+  }
+
 }

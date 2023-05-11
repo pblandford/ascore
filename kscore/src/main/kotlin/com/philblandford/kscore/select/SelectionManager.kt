@@ -199,6 +199,7 @@ class SelectionManager {
   private fun setState(state: SelectState) {
     selectState.value = state
     coroutineScope.launch {
+      selectState.value = state
       selectState.emit(state)
     }
   }

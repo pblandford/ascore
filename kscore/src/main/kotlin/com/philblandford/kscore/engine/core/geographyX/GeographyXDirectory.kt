@@ -101,22 +101,22 @@ private fun getBarGeographies(
 
   val lyricWidthsGrouped =
     areaDirectoryQuery.getLyricWidths().toList().groupBy { it.first.barNum }.map {
-      it.key to it.value.map { it.first.offset to it.second }.toMap()
+      it.key to it.value.associate { it.first.offset to it.second }
     }.toMap()
 
   val harmonyWidthsGrouped =
     areaDirectoryQuery.getHarmonyWidths().toList().groupBy { it.first.barNum }.map {
-      it.key to it.value.map { it.first.offset to it.second }.toMap()
+      it.key to it.value.associate { it.first.offset to it.second }
     }.toMap()
 
   val fermataWidthsGrouped =
     areaDirectoryQuery.getFermataWidths().toList().groupBy { it.first.barNum }.map {
-      it.key to it.value.map { it.first.offset to it.second }.toMap()
+      it.key to it.value.associate { it.first.offset to it.second }
     }.toMap()
 
   val segmentExtensionsGrouped =
     areaDirectoryQuery.getSegmentExtensions().toList().groupBy { it.first.barNum }.map {
-      it.key to it.value.map { it.first.offset to it.second }.toMap()
+      it.key to it.value.associate { it.first.offset to it.second }
     }.toMap()
 
   val barGeographies = segmentGeographies.map { (bar, map) ->
@@ -212,20 +212,19 @@ private fun createBarGeography(
       fermataWidths,
       segmentExtensionWidths
     )
-  slicePositions = slicePositions?.let { adjustEmpty(it, lyricWidths, harmonyWidths) }
-  slicePositions = slicePositions?.map {
+  slicePositions = adjustEmpty(slicePositions, lyricWidths, harmonyWidths)
+  slicePositions = slicePositions.map {
     it.key to SlicePosition(
       it.value.start + BAR_START_MARGIN,
       it.value.xMargin + BAR_START_MARGIN, it.value.width
     )
-  }?.toMap()
-  return slicePositions?.let {
-    BarGeography(
-      slicePositions = it,
+  }.toMap()
+  return BarGeography(
+      slicePositions = slicePositions,
       canBeLast = canBeLast,
       isEmpty = segmentGeogStaveMap.isEmpty()
     )
-  }
+
 }
 
 private fun adjustEmpty(

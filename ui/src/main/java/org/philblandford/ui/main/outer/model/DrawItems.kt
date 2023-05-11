@@ -27,7 +27,8 @@ val drawerItems = listOf(
       DrawerItem(R.string.midi, LayoutID.EXPORT_MIDI, true),
       DrawerItem(R.string.mp3, LayoutID.EXPORT_MP3, true),
       DrawerItem(R.string.wav, LayoutID.EXPORT_WAV, true),
-      DrawerItem(R.string.save, LayoutID.EXPORT_SAVE, true)
+      DrawerItem(R.string.save, LayoutID.EXPORT_SAVE, true),
+      DrawerItem(R.string.importFile, LayoutID.IMPORT, false)
     )
   ),
   DrawerItemGroup(

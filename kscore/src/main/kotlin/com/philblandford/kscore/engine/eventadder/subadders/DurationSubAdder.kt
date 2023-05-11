@@ -328,7 +328,7 @@ object DurationSubAdder : BaseEventAdder {
     val destination = EventDestination(listOf(ScoreLevelType.VOICEMAP))
     return getEvent(EventType.DURATION, eventAddress)?.let { chord(it) }?.let {
       getPreviousStaveSegment(eventAddress)?.let { previous ->
-        getEvent(EventType.DURATION, previous)?.let { chord(it) }?.let { chord ->
+        getEvent(EventType.DURATION, previous.copy(voice = eventAddress.voice))?.let { chord(it) }?.let { chord ->
           chord.notes.withIndex().filter { it.value.isStartTie }
             .fold(Right(this) as ScoreResult) { s, iv ->
               s.then {

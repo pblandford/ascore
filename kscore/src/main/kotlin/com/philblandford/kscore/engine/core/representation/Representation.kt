@@ -59,7 +59,7 @@ internal fun representation(
   val pages = drawableFactory.createPages(
     pipeLine.partDirectory, scoreQuery, pipeLine.geographyYDirectory,
     layoutDescriptor
-  )
+  )//.map { it.copy(base = it.base.paintBorders(drawableFactory) { k,v -> v.tag == "Bar"}) }
 
   return Representation(
     pages,

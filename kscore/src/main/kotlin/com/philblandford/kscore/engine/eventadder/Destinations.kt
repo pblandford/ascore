@@ -2,6 +2,7 @@ package com.philblandford.kscore.engine.eventadder
 
 import com.philblandford.kscore.engine.core.score.ScoreLevelType
 import com.philblandford.kscore.engine.eventadder.subadders.*
+import com.philblandford.kscore.engine.types.Event
 import com.philblandford.kscore.engine.types.EventType
 
 internal val destinations = mapOf(
@@ -10,6 +11,7 @@ internal val destinations = mapOf(
   EventType.BAR to EventDestination(listOf(ScoreLevelType.BAR), BarSubAdder),
   EventType.BAR_BREAK to EventDestination(listOf(ScoreLevelType.BAR), BarBreakSubAdder),
   EventType.BARLINE to EventDestination(listOf(ScoreLevelType.SCORE), BarLineSubAdder),
+  EventType.BEAM to EventDestination(listOf(ScoreLevelType.PART), BeamSubAdder),
   EventType.BOWING to EventDestination(listOf(ScoreLevelType.VOICEMAP), BowingSubAdder),
   EventType.BREAK to EventDestination(
     listOf(ScoreLevelType.SCORE, ScoreLevelType.PART),

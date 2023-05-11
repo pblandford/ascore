@@ -22,16 +22,16 @@ fun ImageGridDropdown(
   size: Dp = block(),
   tag: (Int) -> String = { "" },
   border: Boolean = false,
-  selected: () -> Int, onSelect: (Int) -> Unit
+  selected: Int, onSelect: (Int) -> Unit
 ) {
   val showDropdown = remember { mutableStateOf(false) }
 
   Box(modifier.padding(5.dp)) {
     SquareButton(
-      resource = images[selected()],
+      resource = images[selected],
       size = size,
       border = border,
-      tag = "Button ${tag(selected())}",
+      tag = "Button ${tag(selected)}",
       onClick = { showDropdown.value = !showDropdown.value })
     if (showDropdown.value) {
 

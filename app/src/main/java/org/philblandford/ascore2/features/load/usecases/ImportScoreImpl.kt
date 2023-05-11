@@ -26,9 +26,9 @@ class ImportScoreImpl(
   override suspend fun invoke(
     uri: Uri, progress:
       (String, String, String, Float) -> Unit
-  ) {
+  ):String? {
 
-    importer.import(uri)?.let { importDescriptor ->
+    return importer.import(uri)?.let { importDescriptor ->
 
       when (importDescriptor.importType) {
         ImportType.MXL, ImportType.SAVE, ImportType.XML -> {
@@ -49,6 +49,7 @@ class ImportScoreImpl(
           resourceManager.addTextFont(importDescriptor.bytes, importDescriptor.fileName)
         }
       }
+       importDescriptor.fileName
     }
   }
 }

@@ -23,7 +23,7 @@ abstract class VMModel
 
 interface VMInterface {
   fun reset()
-  fun getSideEffects():Flow<VMSideEffect>
+  fun getSideEffects(): Flow<VMSideEffect>
 }
 
 abstract class VMSideEffect
@@ -39,14 +39,14 @@ fun setSynchronous(yes: Boolean) {
   synchronous = yes
 }
 
-private data class Action<M>(val id:Int, val func:suspend (M) -> Result<M>)
+private data class Action<M>(val id: Int, val func: suspend (M) -> Result<M>)
 
 abstract class BaseViewModel<M : VMModel, I : VMInterface, S : VMSideEffect> : ViewModel(),
   KoinComponent {
 
   private val setErrorUC: SetError by inject()
   private val setProgressUC: SetProgress by inject()
-  protected val scoreUpdate:ScoreUpdate by inject()
+  protected val scoreUpdate: ScoreUpdate by inject()
   private val _viewState = MutableStateFlow<M?>(null)
   private val _actions = Channel<Action<M>>(Channel.UNLIMITED)
   private val _sideEffects = Channel<S>()
@@ -66,7 +66,7 @@ abstract class BaseViewModel<M : VMModel, I : VMInterface, S : VMSideEffect> : V
 
   val effectFlow = _sideEffects.receiveAsFlow()
 
-  fun getSideEffects():Flow<VMSideEffect> = effectFlow
+  fun getSideEffects(): Flow<VMSideEffect> = effectFlow
 
   protected fun launchEffect(effect: S) {
     viewModelScope.launch {
@@ -163,7 +163,7 @@ abstract class BaseViewModel<M : VMModel, I : VMInterface, S : VMSideEffect> : V
     }
   }
 
-  fun updateSynchronous(action: M.()->M) {
+  fun updateSynchronous(action: M.() -> M) {
     val newValue = _viewState.value?.action()
     viewModelScope.launch {
       _viewState.emit(newValue)
@@ -171,7 +171,7 @@ abstract class BaseViewModel<M : VMModel, I : VMInterface, S : VMSideEffect> : V
     _viewState.value = newValue
   }
 
-  protected suspend fun setProgress(yes:Boolean) {
+  protected suspend fun setProgress(yes: Boolean) {
     setProgressUC(yes)
   }
 
@@ -179,7 +179,7 @@ abstract class BaseViewModel<M : VMModel, I : VMInterface, S : VMSideEffect> : V
     _viewState.emit(state)
   }
 
-  protected fun setState(state:M) {
+  protected fun setState(state: M) {
     _viewState.value = state
   }
 
@@ -191,8 +191,20 @@ abstract class BaseViewModel<M : VMModel, I : VMInterface, S : VMSideEffect> : V
         }
         _viewState.value?.let { value ->
           emitOrFail {
-            action.func(value) }
+            action.func(value)
+          }
         }
+      }
+    }
+  }
+
+  protected fun tryAction(onError:(Exception)->Unit = {}, action: () -> Unit) {
+    try {
+      action()
+    } catch (e: Exception) {
+      onError(e)
+      viewModelScope.launch {
+        setError(ErrorDescr(e.message ?: "", "", e))
       }
     }
   }

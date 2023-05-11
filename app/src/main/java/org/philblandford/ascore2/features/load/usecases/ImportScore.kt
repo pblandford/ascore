@@ -5,5 +5,5 @@ import com.philblandford.kscore.api.ProgressFunc
 import java.net.URI
 
 interface ImportScore {
-  suspend operator fun invoke(uri: Uri, progress:(String,String,String,Float)->Unit)
+  suspend operator fun invoke(uri: Uri, progress:(String,String,String,Float)->Unit):String?
 }

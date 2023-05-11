@@ -17,7 +17,7 @@ fun alignSegments(
   harmonyWidths: Map<Offset, Int> = mapOf(),
   fermataWidths: Map<Offset, Int> = mapOf(),
   segmentExtensionWidths: Map<Offset, Int> = mapOf()
-): HorizontalMap? {
+): HorizontalMap {
   val allSegments = segmentStaveMap.flatMap { it.value.toList() }
   val endBar =
     allSegments.maxByOrNull { it.first }?.let { it.first.offset + it.second.duration }
@@ -125,7 +125,7 @@ private fun addWidthsSimple(
   var totalShift = 0
 
   return map.map { (offset, sp) ->
-    val width = max(widths[offset.offset] ?: sp.width, sp.width)
+    val width = sp.width + (widths[offset.offset] ?: 0)
     val shift = totalShift
     totalShift += width - sp.width
     offset to sp.copy(sp.start + shift, sp.xMargin + shift, width)

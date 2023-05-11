@@ -122,7 +122,7 @@ object Transposer {
       val pitch = newPitch.copy(accidental = FLAT)
       pitch.getNoteShift(-2, if (isSharp(newKS)) SHARP else FLAT)
     } else {
-      val accidental = Accidental.values()[newPitch.accidental.ordinal + alteration]
+      val accidental = Accidental.values()[(newPitch.accidental.ordinal + alteration) % 7]
       newPitch.copy(accidental = accidental)
     }
   }

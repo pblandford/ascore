@@ -20,7 +20,7 @@ class GetPlaybackStateImpl(private val kScore: KScore) : GetPlaybackState {
   private fun stateFromScore() =
     PlaybackState(
       kScore.isShuffleRhythm(), kScore.isHarmonyPlayback(), kScore.isLoop(),
-      getInstruments()
+      getInstruments(), kScore.getHarmonyPlaybackInstrument()
     )
 
   private fun getInstruments() =

@@ -29,6 +29,7 @@ enum class TextType {
       return  when (eventType) {
         EventType.TEMPO_TEXT -> SYSTEM
         EventType.EXPRESSION_TEXT -> EXPRESSION
+        EventType.EXPRESSION_DASH -> EXPRESSION
         EventType.REHEARSAL_MARK -> SYSTEM
         EventType.TITLE -> TITLE
         EventType.SUBTITLE -> SUBTITLE

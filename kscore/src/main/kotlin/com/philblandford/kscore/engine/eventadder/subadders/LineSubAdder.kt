@@ -64,9 +64,9 @@ internal interface LineSubAdderIf : UpDownSubAdderIf {
         swapped.second.plus(EventParam.END to true).plus(EventParam.DURATION to duration)
       val adjusted = adjustAddress(swapped.first, endParams)
       var newMap = score.adjustExisting(eventMap, adjusted, swapped.first, end, eventType)
-      newMap = newMap.putEvent(adjusted.stavelessWithId(), Event(eventType, newParams))
+      newMap = newMap.putEvent(adjusted.adjustForDestination(), Event(eventType, newParams))
       newMap = newMap.putEvent(
-        adjustAddress(end, endParams).stavelessWithId(),
+        adjustAddress(end, endParams).adjustForDestination(),
         Event(eventType, endParams)
       )
 
@@ -100,6 +100,8 @@ internal interface LineSubAdderIf : UpDownSubAdderIf {
         }
       }
   }
+
+  fun EventAddress.adjustForDestination() = stavelessWithId()
 
   private fun swapAddresses(
     eventAddress: EventAddress,

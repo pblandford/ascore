@@ -12,6 +12,10 @@ import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.AlertDialog
+import androidx.compose.material3.AlertDialogDefaults
+import androidx.compose.material3.Button
 import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -23,8 +27,10 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.res.painterResource
@@ -42,31 +48,45 @@ import org.philblandford.ui.imports.viewmodel.ImportViewModel
 import org.philblandford.ui.main.toprow.PlayViewModel
 import org.philblandford.ui.theme.DialogTheme
 import org.philblandford.ui.util.Gap
+import org.philblandford.ui.util.StandardAlert
 import timber.log.Timber
 
 
 @Composable
 fun IntentView(intent: Intent, done: () -> Unit) {
 
-  Box(Modifier.fillMaxWidth().fillMaxHeight(0.5f)) {
+  Box(
+    Modifier
+      .fillMaxWidth()
+      .fillMaxHeight(0.5f)
+  ) {
 
     VMView(ImportViewModel::class.java) { model, iface, effects ->
-
-      IntentLayout(model)
 
       val exception: MutableState<Exception?> = remember { mutableStateOf(null) }
       val coroutineScope = rememberCoroutineScope()
       val intentData by rememberSaveable { mutableStateOf(intent.data) }
+      var completedFileName by remember { mutableStateOf<String?>(null) }
 
       LaunchedEffect(Unit) {
         coroutineScope.launch {
           effects.collect {
             when (it) {
               is ImportSideEffect.Error -> exception.value = it.exception
-              ImportSideEffect.Complete -> done()
+              is ImportSideEffect.Complete -> {
+                it.fileName?.let { completedFileName = it } ?: run { done() }
+              }
             }
           }
         }
+      }
+
+      completedFileName?.let { name ->
+        StandardAlert(stringResource(R.string.file_import_confirm, name)) {
+          completedFileName = null; done()
+        }
+      } ?: run {
+        IntentLayout(model)
       }
 
       exception.value?.let {
@@ -77,14 +97,14 @@ fun IntentView(intent: Intent, done: () -> Unit) {
         }
       }
 
-    LaunchedEffect(intentData) {
-      Timber.e("Launching $intentData")
-      intentData?.let {
-        iface.import(it)
-      } ?: run {
-        iface.start()
+      LaunchedEffect(intentData) {
+        Timber.e("Launching $intentData")
+        intentData?.let {
+          iface.import(it)
+        } ?: run {
+          iface.start()
+        }
       }
-    }
 
     }
   }
@@ -97,7 +117,8 @@ private fun IntentLayout(model: ImportModel) {
   DialogTheme { modifier ->
     Box(
       modifier
-        .fillMaxWidth().padding(10.dp)
+        .fillMaxWidth()
+        .padding(10.dp)
         .background(MaterialTheme.colorScheme.surface)
     ) {
       Column(

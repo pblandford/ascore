@@ -14,11 +14,13 @@ import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
+import androidx.compose.material3.windowsizeclass.WindowSizeClass
 import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.unit.DpSize
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.window.Dialog
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
@@ -46,8 +48,10 @@ import timber.log.Timber
 
 
 @Composable
-fun MainPageView(openDrawer: () -> Unit, setPopupLayout: (LayoutID) -> Unit, toggleMixer:()->Unit,
-onScoreEmpty: () -> Unit) {
+fun MainPageView(
+  openDrawer: () -> Unit, setPopupLayout: (LayoutID) -> Unit, toggleMixer: () -> Unit,
+  onScoreEmpty: () -> Unit
+) {
   val activity = LocalActivity.current
 
   var intent by rememberSaveable { mutableStateOf(activity?.intent) }
@@ -56,10 +60,13 @@ onScoreEmpty: () -> Unit) {
     intent = activity?.intent
   }
 
+
   VMView(MainPageViewModel::class.java) { state, iface, effect ->
 
     val coroutineScope = rememberCoroutineScope()
     val alertText = remember { mutableStateOf<ErrorDescr?>(null) }
+
+    val currentPage = remember { mutableStateOf(1) }
 
     LaunchedEffect(Unit) {
       coroutineScope.launch {
@@ -77,21 +84,23 @@ onScoreEmpty: () -> Unit) {
         text = {
           Text(errorDescr.message, color = MaterialTheme.colorScheme.onSurface)
         },
-        title = { Text(errorDescr.headline, style = MaterialTheme.typography.bodyLarge,
-        color = MaterialTheme.colorScheme.onSurface) })
+        title = {
+          Text(
+            errorDescr.headline, style = MaterialTheme.typography.bodyLarge,
+            color = MaterialTheme.colorScheme.onSurface
+          )
+        })
     }
 
     state.helpKey?.let {
-      Dialog({ iface.dismissHelp()}) {
+      Dialog({ iface.dismissHelp() }) {
         Help(it) { iface.dismissHelp() }
       }
     }
 
-    Timber.e("Launch intent $intent")
     intent?.let {
-      Timber.e("Launch dialog")
       Dialog({}) {
-       IntentView(it) { intent = null }
+        IntentView(it) { intent = null }
       }
     }
 
@@ -104,7 +113,14 @@ onScoreEmpty: () -> Unit) {
       }
 
       if (fullScreen.value) {
-        ScreenBox(Modifier.fillMaxSize(), true, state, onScoreEmpty, iface::toggleVertical)
+        ScreenBox(
+          Modifier.fillMaxSize(),
+          true,
+          state,
+          currentPage,
+          onScoreEmpty,
+          iface::toggleVertical
+        )
       } else {
         Column(
           Modifier
@@ -123,7 +139,14 @@ onScoreEmpty: () -> Unit) {
 
           Box(Modifier.fillMaxWidth()) {
 
-            ScreenBox(Modifier.fillMaxSize(), false, state, onScoreEmpty, iface::toggleVertical)
+            ScreenBox(
+              Modifier.fillMaxSize(),
+              false,
+              state,
+              currentPage,
+              onScoreEmpty,
+              iface::toggleVertical
+            )
             Timber.e("Panel show ${showPanel.value}")
 
             Column(Modifier.align(Alignment.BottomCenter)) {
@@ -142,21 +165,25 @@ onScoreEmpty: () -> Unit) {
 }
 
 @Composable
-private fun ScreenBox(modifier: Modifier, center:Boolean, state: MainPageModel, onScoreEmpty:()->Unit,
-changeMethod:()->Unit) {
+private fun ScreenBox(
+  modifier: Modifier, center: Boolean, state: MainPageModel,
+  currentPage: MutableState<Int>,
+  onScoreEmpty: () -> Unit,
+  changeMethod: () -> Unit
+) {
 
   val clipboardOffset = remember { mutableStateOf(Offset(0f, 10f)) }
   val clipboardExtraOffset = remember { mutableStateOf(Offset(0f, -50f)) }
   val zoomOffset = remember { mutableStateOf(Offset(0f, 0f)) }
 
   Box(modifier) {
-    ScreenView(state.vertical, center, onScoreEmpty, changeMethod)
+    ScreenView(state.vertical, center, currentPage, onScoreEmpty, changeMethod)
 
     if (state.showClipboard) {
       DraggableItem(Modifier.align(Alignment.TopCenter), clipboardOffset) {
         ClipboardView(Modifier)
       }
-      DraggableItem(Modifier.align(Alignment.BottomCenter), clipboardExtraOffset ) {
+      DraggableItem(Modifier.align(Alignment.BottomCenter), clipboardExtraOffset) {
         ClipboardExtraView()
       }
     }

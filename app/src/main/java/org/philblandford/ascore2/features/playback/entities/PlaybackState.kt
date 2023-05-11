@@ -1,5 +1,7 @@
 package org.philblandford.ascore2.features.playback.entities
 
+import com.philblandford.kscore.api.Instrument
+
 data class MixerInstrument(
   val shortName: String,
   val longName: String,
@@ -9,4 +11,4 @@ data class MixerInstrument(
 )
 
 data class PlaybackState(val shuffle:Boolean, val harmonies:Boolean, val loop:Boolean,
-val mixerInstruments:List<MixerInstrument>)
+val mixerInstruments:List<MixerInstrument>, val harmonyInstrument:Instrument?)

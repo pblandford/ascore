@@ -31,10 +31,10 @@ internal fun ScreenViewHorizontal(
   scale: MutableState<Float>,
   defaultScale: Float,
   viewPortWidth: Dp,
+  page:MutableState<Int>,
   onScoreEmpty: () -> Unit,
   changeMethod: () -> Unit
 ) {
-  var page by remember { mutableStateOf(1) }
   var turningForward by remember { mutableStateOf(true) }
   val coroutineScope = rememberCoroutineScope()
   val pageRatio = model.scoreLayout.height.toFloat() / model.scoreLayout.width
@@ -43,13 +43,14 @@ internal fun ScreenViewHorizontal(
     coroutineScope.launch {
       effects.collectLatest { effect ->
         when (effect) {
-          is ScreenEffect.ScrollToPage -> page = effect.page
+          is ScreenEffect.ScrollToPage -> page.value = effect.page
           ScreenEffect.NoScore -> onScoreEmpty()
           else -> {}
         }
       }
     }
   }
+
   BoxWithConstraints(
     Modifier
       .fillMaxSize()
@@ -59,9 +60,9 @@ internal fun ScreenViewHorizontal(
     val width = maxWidth * (scale.value / defaultScale)
     val height = width * pageRatio
 
-    if (page <= model.scoreLayout.numPages) {
+    if (page.value <= model.scoreLayout.numPages) {
 
-      AnimatedContent(page,
+      AnimatedContent(page.value,
         transitionSpec =
         {
           if (turningForward) {
@@ -82,24 +83,24 @@ internal fun ScreenViewHorizontal(
         key(defaultScale) {
 
           ScreenPage(
-            page, model.updateCounter, model.editItem, iface,
+            page.value, model.updateCounter, model.editItem, iface,
             {
               scale.value
             },
             defaultScale, 1.5f, width, height, viewPortWidth,
             { scale.value = it },
-            { offset -> iface.handleTap(page, offset.x.toInt(), offset.y.toInt()) },
-            { offset -> iface.handleLongPress(page, offset.x.toInt(), offset.y.toInt()) },
+            { offset -> iface.handleTap(page.value, offset.x.toInt(), offset.y.toInt()) },
+            { offset -> iface.handleLongPress(page.value, offset.x.toInt(), offset.y.toInt()) },
             {
               scale.value = defaultScale;
             },
             { offset -> iface.handleDrag(offset.x, offset.y) },
             iface::handleLongPressRelease,
             turnPage = { left ->
-              page = if (left) {
-                (page - 1).coerceAtLeast(1)
+              page.value = if (left) {
+                (page.value - 1).coerceAtLeast(1)
               } else {
-                (page + 1).coerceAtMost(model.scoreLayout.numPages)
+                (page.value + 1).coerceAtMost(model.scoreLayout.numPages)
               }
               turningForward = !left
               Timber.e("Turned to $page")

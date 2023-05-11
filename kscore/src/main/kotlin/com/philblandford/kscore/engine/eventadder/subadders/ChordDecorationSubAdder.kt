@@ -140,7 +140,7 @@ internal interface ChordDecorationSubAdder<T> : BaseEventAdder {
       getParam(),
       null,
       eventAddress
-    )
+    ).failureIsNoop(score)
   }
 
   override fun deleteEventRange(

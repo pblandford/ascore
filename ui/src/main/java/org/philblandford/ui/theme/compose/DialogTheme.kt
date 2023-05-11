@@ -31,7 +31,7 @@ fun DialogTheme(dismiss:(()->Unit)? = null,
 
     val interactionSource = remember { MutableInteractionSource() }
 
-      Box(Modifier.fillMaxSize().clickable(dismiss != null) { dismiss?.invoke() }) {
+      Box(Modifier.fillMaxSize()) {
         CompositionLocalProvider(LocalContentColor provides MaterialTheme.colorScheme.onSurface) {
           content(
             Modifier

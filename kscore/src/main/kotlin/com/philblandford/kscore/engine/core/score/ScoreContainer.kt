@@ -48,9 +48,12 @@ data class UndoCommand(val undo: Boolean) : Command()
 
 data class BatchCommand(val commands:List<Command>) : Command()
 
+data class PasteCommand(val start:EventAddress) : Command()
+
 data class ScoreState(val score: Score?, val representation: Representation?)
 
-data class ScoreError(val exception:Exception, val command: Command)
+data class ScoreError(val exception:Exception, val command: Command?, val internal:Boolean = true)
+
 
 class ScoreContainer(private val drawableFactory: DrawableFactory) {
 
@@ -249,6 +252,7 @@ class ScoreContainer(private val drawableFactory: DrawableFactory) {
         is UndoCommand -> {
           if (command.undo) doUndo() else doRedo()
         }
+        else -> this
       }
     } catch (e:Exception) {
       ksLoge("Failed applying $command", e)

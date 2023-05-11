@@ -31,6 +31,22 @@ data class Instrument(
     }
     return Event(EventType.INSTRUMENT, params)
   }
+  companion object {
+    fun default() = Instrument("Violin", "Vln", "Strings", 42,0, listOf(ClefType.TREBLE), "default", 0)
+
+    fun fromEvent(event: Event):Instrument {
+      val name = event.getParam<String>(EventParam.NAME) ?: ""
+      val label = event.getParam<String>(EventParam.LABEL) ?: ""
+      val abbreviation = event.getParam<String>(EventParam.ABBREVIATION) ?: ""
+      val group = event.getParam<String>(EventParam.GROUP) ?: ""
+      val program = event.getParam<Int>(EventParam.PROGRAM) ?: 0
+      val transposition = event.getParam<Int>(EventParam.TRANSPOSITION) ?: 0
+      val clefs = event.getParam<List<ClefType>>(EventParam.CLEF) ?: listOf(ClefType.TREBLE)
+      val soundfont = event.getParam<String>(EventParam.SOUNDFONT) ?: "default"
+      val bank = event.getParam<Int>(EventParam.BANK) ?: 0
+      return Instrument(name, abbreviation, group, program, transposition, clefs, soundfont, bank, label = label)
+    }
+  }
 }
 
 fun instrument(params: ParamMap): Instrument? =

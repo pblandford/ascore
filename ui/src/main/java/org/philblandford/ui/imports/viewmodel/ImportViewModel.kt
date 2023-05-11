@@ -22,7 +22,7 @@ interface ImportInterface : VMInterface {
 }
 
 sealed class ImportSideEffect : VMSideEffect() {
-  object Complete : ImportSideEffect()
+  data class Complete(val fileName:String?) : ImportSideEffect()
   data class Error(val exception: Exception) : ImportSideEffect()
 }
 
@@ -40,12 +40,12 @@ private val startupManager: StartupManager) :
     CoroutineScope(Dispatchers.IO).launch {
 
       try {
-        importScore(uri) { n, t, s, p ->
+        val filename = importScore(uri) { n, t, s, p ->
           update {
             copy(name = n, action = t, subAction = s, progress = p)
           }
         }
-        launchEffect(ImportSideEffect.Complete)
+        launchEffect(ImportSideEffect.Complete(filename))
       } catch (e: Exception) {
         launchEffect(ImportSideEffect.Error(e))
       }
@@ -60,7 +60,7 @@ private val startupManager: StartupManager) :
         }
         false
       }
-      launchEffect(ImportSideEffect.Complete)
+      launchEffect(ImportSideEffect.Complete(null))
     }
   }
 }

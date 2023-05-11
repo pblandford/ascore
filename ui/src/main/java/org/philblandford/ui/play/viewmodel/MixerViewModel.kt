@@ -1,9 +1,13 @@
 package org.philblandford.ui.play.viewmodel
 
 import androidx.lifecycle.viewModelScope
+import com.philblandford.kscore.api.Instrument
+import com.philblandford.kscore.api.InstrumentGroup
 import com.philblandford.kscore.engine.util.replace
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
+import org.philblandford.ascore2.features.harmony.SetHarmonyInstrument
+import org.philblandford.ascore2.features.instruments.GetAvailableInstruments
 import org.philblandford.ascore2.features.instruments.GetInstruments
 import org.philblandford.ascore2.features.instruments.GetVolume
 import org.philblandford.ascore2.features.instruments.SetVolume
@@ -22,7 +26,8 @@ import org.philblandford.ui.base.viewmodel.VMModel
 import org.philblandford.ui.base.viewmodel.VMSideEffect
 
 data class MixerModel(
-  val playbackState: PlaybackState
+  val playbackState: PlaybackState,
+  val instrumentGroups:List<InstrumentGroup>
 ) : VMModel()
 
 interface MixerInterface : VMInterface {
@@ -32,6 +37,7 @@ interface MixerInterface : VMInterface {
   fun toggleHarmonies()
   fun toggleSolo(idx:Int)
   fun toggleMute(idx:Int)
+  fun setHarmonyInstrument(instrument: Instrument)
 }
 
 class MixerViewModel(
@@ -44,6 +50,8 @@ class MixerViewModel(
   private val getPlaybackState: GetPlaybackState,
   private val toggleSoloUC:ToggleSolo,
   private val toggleMuteUC: ToggleMute,
+  private val setHarmonyInstrumentUC: SetHarmonyInstrument,
+  private val getAvailableInstruments: GetAvailableInstruments
 ) :
   BaseViewModel<MixerModel, MixerInterface, VMSideEffect>(), MixerInterface {
   init {
@@ -55,7 +63,7 @@ class MixerViewModel(
   }
 
   override suspend fun initState(): Result<MixerModel> {
-    return MixerModel(getPlaybackState().value).ok()
+    return MixerModel(getPlaybackState().value, getAvailableInstruments()).ok()
   }
 
   override fun getInterface() = this
@@ -84,4 +92,7 @@ class MixerViewModel(
     toggleMuteUC(idx + 1)
   }
 
+  override fun setHarmonyInstrument(instrument: Instrument) {
+    setHarmonyInstrumentUC(instrument)
+  }
 }

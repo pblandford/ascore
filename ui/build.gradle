@@ -15,8 +15,8 @@ android {
         applicationId "com.philblandford.ascore"
         minSdkVersion "$min_sdk"
         targetSdkVersion "$target_sdk"
-        versionCode 128
-        versionName "1.0.1i Platinum"
+        versionCode 132
+        versionName "1.0.2 Platinum"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables {
@@ -25,6 +25,9 @@ android {
     }
 
     buildTypes {
+        debug {
+            debuggable = true
+        }
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
@@ -82,7 +85,7 @@ dependencies {
     implementation "com.google.accompanist:accompanist-webview:0.31.1-alpha"
     implementation 'com.google.android.play:review-ktx:2.0.1'
 
-
+    implementation "commons-io:commons-io:${io_version}"
 
     implementation 'com.godaddy.android.colorpicker:compose-color-picker-android:0.7.0'
     implementation "com.android.billingclient:billing-ktx:5.2.0"

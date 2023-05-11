@@ -37,7 +37,9 @@ class SettingsViewModel(
         val secondaryVariant = color.copy(saturation = 1f)
         setColors {
             copy(
-                surface = color.toColor(), secondary = secondary.toColor(),
+                surface = color.toColor(),
+                onPrimary = color.toColor(),
+                secondary = secondary.toColor(),
                 secondaryContainer = secondaryVariant.toColor()
             )
         }

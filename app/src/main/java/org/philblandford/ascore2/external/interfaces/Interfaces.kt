@@ -26,7 +26,7 @@ interface PrinterIf {
 }
 
 interface ExporterIf {
-  fun export(bytes: ByteArray, filename: String, type: ExportType)
+  fun share(bytes: ByteArray, filename: String, type: ExportType)
   fun printScore(scoreQuery: ScoreQuery)
   fun createPdf(scoreQuery: ScoreQuery): ByteArray?
   fun getTemporaryDir(): File?

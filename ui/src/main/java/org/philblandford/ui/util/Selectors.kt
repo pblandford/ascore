@@ -69,7 +69,7 @@ fun DotToggle(
 
 @Composable
 fun ClefSpinner(
-  selectedClef: () -> ClefType,
+  selectedClef: ClefType,
   border: Boolean = false,
   tag: String = "",
   setClef: (ClefType) -> Unit
@@ -79,10 +79,12 @@ fun ClefSpinner(
     rows = 5,
     columns = 2,
     border = border,
-    tag = { "$tag ${clefList[it].second}" },
-    selected = { clefList.indexOfFirst { it.second == selectedClef() } },
-    onSelect = {
-      setClef(clefList[it].second)
+    tag = { "$tag ${clefList.getOrNull(it)?.second}" },
+    selected = clefList.indexOfFirst { it.second == selectedClef },
+    onSelect = { idx ->
+      clefList.getOrNull(idx)?.second?.let { clef ->
+        setClef(clef)
+      }
     })
 }
 

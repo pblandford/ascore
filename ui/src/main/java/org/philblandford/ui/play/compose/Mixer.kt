@@ -7,21 +7,31 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Slider
 import androidx.compose.material3.SliderDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.TransformOrigin
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.layout.layout
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Constraints
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.compose.ui.window.Dialog
+import androidx.compose.ui.window.Popup
+import com.philblandford.kscore.api.Instrument
+import com.philblandford.kscore.api.InstrumentGroup
 import kotlinx.coroutines.flow.Flow
 import org.philblandford.ascore2.features.playback.entities.MixerInstrument
 import org.philblandford.ascore2.features.playback.entities.PlaybackState
@@ -38,6 +48,8 @@ import org.philblandford.ui.stubs.StubMixerInterface
 import org.philblandford.ui.theme.DialogTheme
 import org.philblandford.ui.util.ButtonState
 import org.philblandford.ui.util.ButtonState.Companion.selected
+import org.philblandford.ui.util.InstrumentList
+import org.philblandford.ui.util.InstrumentSelector
 import timber.log.Timber
 
 
@@ -47,7 +59,9 @@ fun Mixer() {
     DialogTheme { modifier ->
 
       MixerInternal(
-        modifier.wrapContentHeight(),
+        modifier
+          .wrapContentHeight()
+          .fillMaxWidth(),
         state,
         iface
       )
@@ -64,11 +78,12 @@ private fun MixerInternal(
     modifier
       .background(MaterialTheme.colorScheme.surface)
       .padding(2.dp)
-     // .border(3.dp, MaterialTheme.colorScheme.onSurface, RoundedCornerShape(10.dp))
+    // .border(3.dp, MaterialTheme.colorScheme.onSurface, RoundedCornerShape(10.dp))
   ) {
     Column(
       Modifier
         .wrapContentHeight()
+        .fillMaxWidth()
         .padding(10.dp)
     ) {
       LazyColumn(Modifier.sizeIn(maxHeight = 400.dp)) {
@@ -79,6 +94,13 @@ private fun MixerInternal(
       }
       Gap(0.5f)
       ButtonRow(Modifier.align(Alignment.CenterHorizontally), model, iface)
+      if (model.playbackState.harmonies) {
+        Gap(0.5f)
+        HarmonyInstrumentRow(
+          model.playbackState.harmonyInstrument, model.instrumentGroups,
+          iface::setHarmonyInstrument
+        )
+      }
     }
   }
 
@@ -182,6 +204,36 @@ private fun ButtonRow(modifier: Modifier, model: MixerModel, iface: MixerInterfa
 }
 
 @Composable
+private fun HarmonyInstrumentRow(
+  instrument: Instrument?,
+  instrumentGroups: List<InstrumentGroup>,
+  set: (Instrument) -> Unit
+) {
+  var showSelect by remember { mutableStateOf(false) }
+    Row {
+      Text(stringResource(R.string.mixer_harmony_instrument), fontSize = 16.sp)
+      Gap(0.5f)
+      Text(
+        instrument?.name ?: "Piano", Modifier.clickable { showSelect = true },
+        fontSize = 16.sp
+      )
+    }
+    if (showSelect) {
+      Dialog({ showSelect = false }) {
+        InstrumentList(
+          Modifier.background(MaterialTheme.colorScheme.surface),
+          instrumentGroups,
+          instrument
+        ) {
+          set(it)
+          showSelect = false
+        }
+      }
+    
+  }
+}
+
+@Composable
 @Preview
 private fun Preview() {
   val instruments = listOf(
@@ -194,7 +246,11 @@ private fun Preview() {
       .fillMaxWidth()
       .height(300.dp),
     MixerModel(
-      PlaybackState(false, false, false, instruments)
+      PlaybackState(
+        false, false, false, instruments,
+        Instrument.default()
+      ),
+      listOf()
     ),
     StubMixerInterface()
   )

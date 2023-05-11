@@ -3,6 +3,7 @@ package com.philblandford.kscore.engine.update
 import com.philblandford.kscore.engine.core.score.Score
 import com.philblandford.kscore.engine.core.score.ScoreLevel
 import com.philblandford.kscore.engine.types.*
+import com.philblandford.kscore.log.ksLoge
 
 internal data class ScoreDiff(
   val changedLines: List<Int> = listOf(),
@@ -10,7 +11,7 @@ internal data class ScoreDiff(
   val recreate: Boolean = false,
   val createHeaders: Boolean = false,
   val createParts: Boolean = false,
-  val pagesOnly:Boolean = false
+  val pagesOnly: Boolean = false
 )
 
 private data class ScoreLevelChange(val num: Int, val old: ScoreLevel, val new: ScoreLevel)
@@ -30,7 +31,7 @@ internal fun Score.diff(other: Score): ScoreDiff {
 
   val createHeaders = needCreateHeaders(other)
 
-  if (bars.isEmpty() && (lines.isEmpty()  || lines.toList() == listOf(0))) {
+  if (bars.isEmpty() && (lines.isEmpty() || lines.toList() == listOf(0))) {
     return getOptionDiff(other).copy(createHeaders = createHeaders)
   }
 
@@ -38,7 +39,7 @@ internal fun Score.diff(other: Score): ScoreDiff {
     lines,
     bars,
     createHeaders = createHeaders,
-    createParts =  lines.isNotEmpty() || bars.isNotEmpty()
+    createParts = lines.isNotEmpty() || bars.isNotEmpty()
   )
 }
 
@@ -49,15 +50,19 @@ private fun compareOption(old: Score, new: Score, option: EventParam): Boolean {
   )
 }
 
-private fun Score.needPagesOnly(oldScore: Score):Boolean {
-  val events  = listOf(EventType.TITLE, EventType.COMPOSER, EventType.SUBTITLE,
-    EventType.LYRICIST)
+private fun Score.needPagesOnly(oldScore: Score): Boolean {
+  val events = listOf(
+    EventType.TITLE, EventType.COMPOSER, EventType.SUBTITLE,
+    EventType.LYRICIST
+  )
   return events.any { eventMap.eventChanged(oldScore.eventMap, it) }
 }
 
-private fun Score.needCreateParts(oldScore: Score):Boolean {
-  val events  = listOf(EventType.STAVE_JOIN, EventType.TITLE, EventType.COMPOSER, EventType.SUBTITLE,
-  EventType.LYRICIST)
+private fun Score.needCreateParts(oldScore: Score): Boolean {
+  val events = listOf(
+    EventType.STAVE_JOIN, EventType.TITLE, EventType.COMPOSER, EventType.SUBTITLE,
+    EventType.LYRICIST
+  )
   return events.any { eventMap.eventChanged(oldScore.eventMap, it) }
 }
 
@@ -79,7 +84,9 @@ private fun Score.getOptionDiff(oldScore: Score): ScoreDiff {
   }
 
   for (type in listOf(EventType.UISTATE, EventType.LAYOUT)) {
+    ksLoge("optionDiff pondering $type")
     if (eventMap.eventChanged(oldScore.eventMap, type)) {
+      ksLoge("optionDiff changed $type")
       return createParts
     }
   }
@@ -103,6 +110,7 @@ private fun Score.recreate(other: Score): Boolean {
   if (selectedPart() != other.selectedPart()) {
     return true
   }
+
   if (subLevels.size != other.subLevels.size) {
     return true
   }
@@ -130,9 +138,9 @@ private fun Score.needCreateHeaders(other: Score): Boolean {
     }
   }
 
-  if (!compareOption(this, other,EventParam.OPTION_SHOW_TRANSPOSE_CONCERT) ||
+  if (!compareOption(this, other, EventParam.OPTION_SHOW_TRANSPOSE_CONCERT) ||
     !compareOption(this, other, EventParam.OPTION_SHOW_PART_NAME_START_STAVE) ||
-        !compareOption(this, other, EventParam.OPTION_SHOW_PART_NAME)
+    !compareOption(this, other, EventParam.OPTION_SHOW_PART_NAME)
   ) {
     return true
   }
@@ -144,8 +152,10 @@ private fun Score.needCreateHeaders(other: Score): Boolean {
   }
 
   subLevels.zip(other.subLevels).forEach { (partA, partB) ->
-    if (partA.eventMap.eventChanged(partB.eventMap, EventType.PART)) {
-      return true
+    for (type in listOf(EventType.PART, EventType.INSTRUMENT)) {
+      if (partA.eventMap.eventChanged(partB.eventMap, type)) {
+        return true
+      }
     }
   }
 
@@ -164,13 +174,27 @@ private fun EventMap.eventChanged(new: EventMap, eventType: EventType): Boolean 
 }
 
 private fun Score.getChangedBars(new: Score): List<EventAddress> {
-  val topLevel = eventMap.diff(new.eventMap, setOf(EventType.TITLE, EventType.SUBTITLE,
-  EventType.COMPOSER, EventType.LYRICIST)).map { EventAddress(it) }.filterNot { it.barNum == 0 }
+  val topLevel = eventMap.diff(
+    new.eventMap, setOf(
+      EventType.TITLE, EventType.SUBTITLE,
+      EventType.COMPOSER, EventType.LYRICIST
+    )
+  ).map { EventAddress(it) }.filterNot { it.barNum == 0 }
   return topLevel + getChangedSubLevels(new).flatMap { partChange ->
     partChange.old.getChangedSubLevels(partChange.new).flatMap { staveChange ->
-      staveChange.old.getChangedSubLevels(staveChange.new).map { barChange ->
-        EventAddress(barChange.num + 1, staveId = StaveId(partChange.num + 1, staveChange.num + 1))
+      val staveEventsThatEffectBars = staveChange.old.eventMap.diff(
+        staveChange.new.eventMap,
+        EventType.values().toSet() - EventType.GLISSANDO
+      ).map {
+        EventAddress(it, staveId = StaveId(partChange.num + 1, staveChange.num + 1))
       }
+      staveEventsThatEffectBars + staveChange.old.getChangedSubLevels(staveChange.new)
+        .map { barChange ->
+          EventAddress(
+            barChange.num + 1,
+            staveId = StaveId(partChange.num + 1, staveChange.num + 1)
+          )
+        }
     }
   }
 }

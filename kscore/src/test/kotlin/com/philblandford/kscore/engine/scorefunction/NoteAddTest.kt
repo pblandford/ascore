@@ -576,6 +576,14 @@ class NoteAddTest : ScoreTest() {
   }
 
   @Test
+  fun testAddCrotchetAtDottedQuaverOffset() {
+    SMV(duration = semiquaver())
+    SMV(duration = quaver(), eventAddress = eav(1, semiquaver()))
+    SMV(duration = crotchet(), eventAddress = eav(1, quaver(1)))
+    SVP(EventType.NOTE, EventParam.DURATION, crotchet(), eav(1, quaver(1)).copy(id = 1))
+  }
+
+  @Test
   fun testAddNotePercussion() {
     SCD(instruments = listOf("Bass Drum 1"))
     SMV(35)

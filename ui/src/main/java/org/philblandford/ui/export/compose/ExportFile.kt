@@ -1,20 +1,31 @@
 package org.philblandford.ui.export.compose
 
 import android.net.Uri
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.core.net.toFile
+import com.philblandford.ascore.external.export.getExtension
 import com.philblandford.ascore.external.interfaces.ExportDestination
 import com.philblandford.kscore.engine.types.ExportType
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.collectLatest
+import org.apache.commons.io.FileUtils
+import org.apache.commons.io.IOUtils
 import org.philblandford.ui.R
 import org.philblandford.ui.base.compose.VMView
 import org.philblandford.ui.base.viewmodel.VMSideEffect
@@ -25,6 +36,8 @@ import org.philblandford.ui.export.viewmodel.ExportModel
 import org.philblandford.ui.export.viewmodel.ExportViewModel
 import org.philblandford.ui.theme.DialogButton
 import org.philblandford.ui.theme.DialogTheme
+import org.philblandford.ui.util.StandardAlert
+import java.io.OutputStream
 
 private fun ExportType.asStringRes(): Int {
   return when (this) {
@@ -40,9 +53,11 @@ private fun ExportType.asStringRes(): Int {
 }
 
 @Composable
-fun ExportFile(exportType: ExportType, dismiss:()->Unit) {
+fun ExportFile(exportType: ExportType, dismiss: () -> Unit) {
 
   VMView(ExportViewModel::class.java) { state, iface, effects ->
+
+    var showConfirm by remember{ mutableStateOf(false) }
 
     LaunchedEffect(exportType) {
       iface.setExportType(exportType)
@@ -51,20 +66,30 @@ fun ExportFile(exportType: ExportType, dismiss:()->Unit) {
     LaunchedEffect(Unit) {
       effects.collectLatest { effect ->
         when (effect) {
-          ExportEffect.Complete -> dismiss()
+          ExportEffect.Complete -> {
+             showConfirm = true
+          }
+          ExportEffect.Error -> dismiss()
         }
       }
     }
 
+    if (showConfirm) {
+      StandardAlert(stringResource(R.string.file_export_confirm, state.fileName)) {
+        showConfirm = false
+        dismiss()
+      }
+    }
+
     DialogTheme {
-      ExportFileInternal(it, state, iface, dismiss)
+      ExportFileInternal(it, state, iface)
     }
   }
 }
 
 @Composable
-private fun ExportFileInternal(modifier: Modifier, model: ExportModel, iface: ExportInterface,
-dismiss: () -> Unit) {
+private fun ExportFileInternal(
+  modifier: Modifier, model: ExportModel, iface: ExportInterface) {
 
   Box(modifier) {
     Main(model, iface)
@@ -77,6 +102,17 @@ dismiss: () -> Unit) {
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun Main(model: ExportModel, iface: ExportInterface) {
+
+  val context = LocalContext.current
+  val launcher = rememberLauncherForActivityResult(ActivityResultContracts.CreateDocument("*/*")) { uri ->
+    uri?.let {
+       context.contentResolver.openOutputStream(uri)?.let { stream ->
+         iface.getBytes(stream)
+      }
+    }
+  }
+
+
   Column(Modifier.padding(10.dp), horizontalAlignment = Alignment.CenterHorizontally) {
 
     Text(stringResource(R.string.exporting_as, stringResource(id = model.exportType.asStringRes())))
@@ -102,16 +138,25 @@ private fun Main(model: ExportModel, iface: ExportInterface) {
             iface.toggleAllParts()
           },
         )
-        //  HelpPopup(R.string.all_parts_help)
       }
       Spacer(Modifier.height(block()))
     }
-    DialogButton(
-      stringResource(
-        R.string.export
+    Row(Modifier.fillMaxWidth(),
+      horizontalArrangement = Arrangement.SpaceBetween) {
+
+      DialogButton(
+        stringResource(
+          R.string.export
+        )
       )
-    )
-    { iface.export(ExportDestination.SHARE) }
+      {
+        val extension = if (model.allParts == true) "zip" else model.exportType.getExtension()
+        launcher.launch("${model.fileName}.${extension}")
+      }
+      DialogButton(stringResource(R.string.share)) {
+        iface.export(ExportDestination.SHARE)
+      }
+    }
   }
 }
 
@@ -145,6 +190,8 @@ private fun Preview() {
       TODO("Not yet implemented")
     }
 
-
-  }){}
+    override fun getBytes(outputStream: OutputStream) {
+      TODO("Not yet implemented")
+    }
+  })
 }

@@ -85,7 +85,7 @@ internal object NoteShiftSubAdder : BaseEventAdder {
 
 
   private fun Note.shift(amount: Int, accidental: Accidental): Note {
-    return if (pitch == unPitched()) {
+    return if (pitch == unPitched() || pitch.midiVal + amount <= 0) {
       this
     } else {
       val pitch = getNoteShift(pitch, amount, accidental)

@@ -34,13 +34,13 @@ interface MainPageInterface : VMInterface {
 
 data class MainPageModel(
   val showClipboard: Boolean = false,
-  val showNoteZoom:Boolean = false,
+  val showNoteZoom: Boolean = false,
   val showEdit: Boolean = false,
-  val vertical:Boolean = true,
-  val canShowTabs:Boolean = false,
+  val vertical: Boolean = true,
+  val canShowTabs: Boolean = false,
   val selectedArea: EventAddress? = null,
-  val helpKey:String? = null,
-  val showScrollType:Boolean = false
+  val helpKey: String? = null,
+  val showScrollType: Boolean = false
 ) : VMModel()
 
 sealed class MainPageSideEffect : VMSideEffect() {
@@ -73,10 +73,14 @@ class MainPageViewModel(
     viewModelScope.launch {
       getError().collectLatest { error ->
         Timber.e("Error $error")
+        val displayError = if (error.internal) {
+          ErrorDescr(
+            "An internal error has occurred",
+            "Apologies, a report has been sent to the developer"
+          )
+        } else error
         launchEffect(
-          MainPageSideEffect.Error(ErrorDescr("An internal error has occured",
-          "Apologies, a report has been sent to the developer"))
-        )
+          MainPageSideEffect.Error(displayError))
       }
     }
 
@@ -87,15 +91,22 @@ class MainPageViewModel(
     }
 
     viewModelScope.launch {
-      scoreUpdate().map { getInstruments().size }.distinctUntilChanged().collectLatest { numInstruments ->
-        Timber.e("HEY! $numInstruments ${numInstruments > 1}")
-        update { copy(canShowTabs = numInstruments > 1, showScrollType = getScoreLayout().numPages > 1) }
-      }
+      scoreUpdate().map { getInstruments().size }.distinctUntilChanged()
+        .collectLatest { numInstruments ->
+          Timber.e("HEY! $numInstruments ${numInstruments > 1}")
+          update {
+            copy(
+              canShowTabs = numInstruments > 1,
+              showScrollType = getScoreLayout().numPages > 1
+            )
+          }
+        }
     }
   }
 
   override suspend fun initState(): Result<MainPageModel> {
-    return MainPageModel(canShowTabs = getInstruments().size > 1,
+    return MainPageModel(
+      canShowTabs = getInstruments().size > 1,
       showScrollType = getScoreLayout().numPages > 1
     ).ok()
   }

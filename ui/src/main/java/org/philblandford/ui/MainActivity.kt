@@ -18,7 +18,6 @@ import com.github.zsoltk.compose.backpress.BackPressHandler
 import com.github.zsoltk.compose.backpress.LocalBackPressHandler
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
 import org.philblandford.ui.base.compose.VMView
-import org.philblandford.ui.imports.activity.IntentActivity
 import org.philblandford.ui.main.outer.compose.OuterPage
 import org.philblandford.ui.main.window.LocalWindowSizeClass
 import org.philblandford.ui.theme.compose.AscoreTheme
@@ -33,17 +32,14 @@ class MainActivity : ComponentActivity() {
 
   @OptIn(ExperimentalMaterial3WindowSizeClassApi::class)
   override fun onCreate(savedInstanceState: Bundle?) {
-    Timber.e("onCreate $this")
 
     super.onCreate(savedInstanceState)
     setContent {
       val windowSizeClass = calculateWindowSizeClass(this)
 
-
       VMView(ThemeViewModel::class.java) { model, _, _ ->
 
         AscoreTheme(model.colorScheme) {
-
 
           val uiController = rememberSystemUiController()
 
@@ -65,11 +61,6 @@ class MainActivity : ComponentActivity() {
       }
     }
   }
-
-  private fun launchIntentActivity() {
-    startActivity(Intent(this, IntentActivity::class.java))
-  }
-
 
   override fun onBackPressed() {
     if (!backPressHandler.handle()) {

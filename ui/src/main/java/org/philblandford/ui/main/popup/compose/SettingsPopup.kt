@@ -20,6 +20,7 @@ import org.philblandford.ui.createfromtemplate.compose.CreateFromTemplate
 import org.philblandford.ui.donate.compose.Donate
 import org.philblandford.ui.export.PrintFile
 import org.philblandford.ui.export.compose.ExportFile
+import org.philblandford.ui.imports.compose.ImportView
 import org.philblandford.ui.layout.compose.LayoutOptions
 import org.philblandford.ui.load.compose.LoadScore
 import org.philblandford.ui.manual.compose.Manual
@@ -93,6 +94,9 @@ private fun Layout(layoutID: LayoutID, dismiss: () -> Unit) {
     }
     LayoutID.EXPORT_SAVE -> {
       ExportFile(ExportType.SAVE, dismiss)
+    }
+    LayoutID.IMPORT -> {
+      ImportView()
     }
     LayoutID.LAYOUT_OPTIONS -> {
       LayoutOptions()

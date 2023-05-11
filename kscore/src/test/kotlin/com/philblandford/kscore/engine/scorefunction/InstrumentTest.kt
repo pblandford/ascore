@@ -2,6 +2,7 @@ package com.philblandford.kscore.engine.scorefunction
 
 import assertEqual
 import com.philblandford.kscore.api.defaultInstrument
+import com.philblandford.kscore.engine.core.score.Score
 import com.philblandford.kscore.engine.duration.dZero
 import com.philblandford.kscore.engine.time.TimeSignature
 import com.philblandford.kscore.engine.types.*
@@ -78,6 +79,14 @@ class InstrumentTest : ScoreTest(){
     SAE(EventType.INSTRUMENT, ea(1), defaultInstrument().toEvent().
     addParam(EventParam.NAME, "Trumpet").addParam(EventParam.TRANSPOSITION, -2).params)
     SVP(EventType.NOTE, EventParam.PITCH, Pitch(NoteLetter.D), eav(1).copy(id = 1))
+  }
+
+  @Test
+  fun testSetInstrumentToTransposingKeySignatureChanges() {
+    SMV(60)
+    SAE(EventType.INSTRUMENT, ea(1), defaultInstrument().toEvent().
+    addParam(EventParam.NAME, "Trumpet").addParam(EventParam.TRANSPOSITION, -2).params)
+    assertEqual(2, EG().getKeySignature(ea(1)))
   }
 
   @Test

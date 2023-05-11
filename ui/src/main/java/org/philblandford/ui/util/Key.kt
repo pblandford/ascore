@@ -43,19 +43,3 @@ fun KeySelector(
       onSelect(selectionToKs(it))
     })
 }
-
-@Composable
-fun KeySignatureGrid(selected: () -> Ks, onSelect: (Ks) -> Unit, modifier: Modifier = Modifier) {
-  ImageGridDropdown(
-    images = keySignatureIds.map { it.first },
-    rows = 3,
-    columns = 5,
-    border = true,
-    size = block(1.5f),
-    modifier = modifier,
-    tag = { "Key ${selectionToKs(it)}" },
-    selected = { ksToSelection(selected()) },
-    onSelect
-    = { onSelect(selectionToKs(it)) }
-  )
-}

@@ -4,6 +4,7 @@ import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.BoxWithConstraintsScope
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
@@ -23,11 +24,12 @@ import org.philblandford.ui.screen.viewmodels.ScreenViewModel
 fun ScreenView(
   vertical: Boolean,
   center: Boolean,
+  currentPage: MutableState<Int>,
   onScoreEmpty: () -> Unit,
   changeMethod: () -> Unit
 ) {
   VMView(ScreenViewModel::class.java) { model, iface, effects ->
-    ScreenViewInternal(vertical, center, model, iface, effects, onScoreEmpty, changeMethod)
+    ScreenViewInternal(vertical, center, model, iface, effects, currentPage, onScoreEmpty, changeMethod)
   }
 }
 
@@ -38,6 +40,7 @@ private fun ScreenViewInternal(
   model: ScreenModel,
   iface: ScreenInterface,
   effects: Flow<ScreenEffect>,
+  currentPage: MutableState<Int>,
   onScoreEmpty: () -> Unit,
   changeMethod: () -> Unit
 ) {
@@ -55,6 +58,7 @@ private fun ScreenViewInternal(
         scale,
         defaultScale,
         maxWidth,
+        currentPage,
         onScoreEmpty,
         changeMethod
       )
@@ -67,6 +71,7 @@ private fun ScreenViewInternal(
         scale,
         defaultScale,
         maxWidth,
+        currentPage,
         onScoreEmpty,
         changeMethod
       )

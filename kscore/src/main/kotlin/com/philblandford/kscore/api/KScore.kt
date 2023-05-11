@@ -36,7 +36,10 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.merge
+import kotlinx.coroutines.flow.zip
 import kotlinx.coroutines.launch
 import org.jetbrains.annotations.TestOnly
 import java.util.*
@@ -261,8 +264,8 @@ interface KScore {
   fun isSolo(part: Int): Boolean
   fun setShuffleRhythm(yes: Boolean)
   fun isShuffleRhythm(): Boolean
-  fun setHarmonyPlaybackInstrument(name: String? = null)
-  fun getHarmonyPlaybackInstrument(): String?
+  fun setHarmonyPlaybackInstrument(instrument: Instrument? = null)
+  fun getHarmonyPlaybackInstrument(): Instrument?
   fun setHarmonyPlayback(yes: Boolean)
   fun isHarmonyPlayback(): Boolean
   fun setLoop(yes: Boolean)
@@ -287,6 +290,8 @@ class KScoreImpl(
   private val scoreCreator = ScoreCreator(soundManager)
   private val coroutineScope = CoroutineScope(Dispatchers.Default)
   private val scoreLoadUpdate = MutableSharedFlow<Unit>()
+  private val kScoreErrorFlow = MutableSharedFlow<ScoreError>()
+  private val combinedErrorFlow = merge(scoreContainer.getErrorFlow(), kScoreErrorFlow)
 
   init {
     registerLogger(logger)
@@ -696,11 +701,12 @@ class KScoreImpl(
   override fun paste() {
     score()?.let { score ->
       selectionManager.getStartSelection()?.let { start ->
-        scoreContainer.updateScore(clipboard.paste(start, score).rightOrThrow())
+        tryAction(PasteCommand(start)) {
+          scoreContainer.updateScore(clipboard.paste(start, score).rightOrThrow())
+        }
       }
     }
   }
-
 
   override fun addNoteAtMarker(nsd: NoteInputDescriptor, voice: Int) {
     scoreContainer.addEvent(nsd.toEvent(), eWild().copy(voice = voice))
@@ -991,12 +997,14 @@ class KScoreImpl(
       val startPos = getStartSelect()
       val endPos = getEndSelect()
       val loop = { getOption<Boolean>(EventParam.OPTION_LOOP) ?: false }
-      midiPlayer.play(
-        it, loop,
-        getLiveVelocityAdjust = { part ->
-          if (isMute(part)) 0f else getVolume(part).toFloat() / 100
-        }, start = startPos, end = endPos
-      )
+      tryAction {
+        midiPlayer.play(
+          it, loop,
+          getLiveVelocityAdjust = { part ->
+            if (isMute(part)) 0f else getVolume(part).toFloat() / 100
+          }, start = startPos, end = endPos
+        )
+      }
     }
   }
 
@@ -1266,7 +1274,6 @@ class KScoreImpl(
   }
 
   override fun setShuffleRhythm(yes: Boolean) {
-    scoreContainer.synchronous = true
     scoreContainer.setParam(
       EventType.OPTION, EventParam.OPTION_SHUFFLE_RHYTHM, yes, eZero()
     )
@@ -1278,13 +1285,17 @@ class KScoreImpl(
     return score()?.let { getOption(EventParam.OPTION_SHUFFLE_RHYTHM, it) } ?: false
   }
 
-  override fun setHarmonyPlaybackInstrument(name: String?) {
-    scoreContainer.setOption(EventParam.OPTION_HARMONY_INSTRUMENT, name)
+  override fun setHarmonyPlaybackInstrument(instrument: Instrument?) {
+    scoreContainer.synchronous = true
+    scoreContainer.setOption(EventParam.OPTION_HARMONY_INSTRUMENT, instrument?.name)
     score()?.let { midiPlayer.refresh(it) }
+    scoreContainer.synchronous = false
   }
 
-  override fun getHarmonyPlaybackInstrument(): String? {
-    return scoreContainer.getOption(EventParam.OPTION_HARMONY_INSTRUMENT)
+  override fun getHarmonyPlaybackInstrument(): Instrument? {
+    return scoreContainer.getOption<String?>(EventParam.OPTION_HARMONY_INSTRUMENT)?.let { name ->
+      getInstrument(name)
+    }
   }
 
   override fun setHarmonyPlayback(yes: Boolean) {
@@ -1335,7 +1346,7 @@ class KScoreImpl(
   }
 
   override fun getErrorFlow(): Flow<ScoreError> {
-    return scoreContainer.getErrorFlow()
+    return combinedErrorFlow
   }
 
   private fun partEA(part: Int): EventAddress {
@@ -1374,6 +1385,16 @@ class KScoreImpl(
 
   private fun refreshAts() {
     selectionManager.refreshAreas { rep()?.getAreasAtAddress(it) ?: listOf() }
+  }
+
+  private fun tryAction(command: Command? = null, internal:Boolean = true, action: () -> Unit) {
+    try {
+      action()
+    } catch (e:Exception) {
+      coroutineScope.launch {
+        kScoreErrorFlow.emit(ScoreError(e, command, internal))
+      }
+    }
   }
 
 }

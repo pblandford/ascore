@@ -104,7 +104,7 @@ private fun DrawableFactory.paintStartBarLine(
   scoreQuery: ScoreQuery, systemXGeography: SystemXGeography, area: Area
 ): Area {
   return scoreQuery.getEvent(EventType.REPEAT_START, ez(barNum))?.let {
-    val xPos = pos.pos + systemXGeography.startMain - FINAL_BAR_LINE_WIDTH
+    val xPos = pos.pos + systemXGeography.startMain
     val barLine = barLineArea(BarLineType.START, height)
     area.addArea(barLine, Coord(xPos, start), eas(barNum, part, 0))
   } ?: area
@@ -116,7 +116,7 @@ private fun DrawableFactory.paintEndBarLine(
 ): Area {
   val barLine = getBarLine(barNum, height, pos.geog.numBars, scoreQuery)
   val xPos = pos.pos + pos.geog.width + systemXGeography.startMain -
-       pos.geog.barEndGeography.barLineWidth - pos.geog.barEndGeography.keyWidth - pos.geog.barEndGeography.timeWidth
+       pos.geog.barEndGeography.barLineWidth //- pos.geog.barEndGeography.keyWidth - pos.geog.barEndGeography.timeWidth
   return area.addArea(barLine, Coord(xPos, start), eas(barNum + pos.geog.numBars-1, part, 0))
 }
 

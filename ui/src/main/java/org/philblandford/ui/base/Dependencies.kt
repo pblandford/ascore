@@ -3,7 +3,7 @@ package org.philblandford.ui.base
 import ResourceManager
 import SamplerManager
 import TextFontManager
-import com.philblandford.ascore.android.export.AndroidExporter
+import org.philblandford.ascore2.android.export.AndroidExporter
 import com.philblandford.ascore.external.export.Exporter
 import com.philblandford.ascore.external.interfaces.ExporterIf
 import com.philblandford.ascore.external.interfaces.ExternalSaver
@@ -46,10 +46,14 @@ import org.philblandford.ascore2.features.error.GetErrorFlow
 import org.philblandford.ascore2.features.error.GetErrorFlowImpl
 import org.philblandford.ascore2.features.export.ExportScore
 import org.philblandford.ascore2.features.export.ExportScoreImpl
+import org.philblandford.ascore2.features.export.GetExportBytes
+import org.philblandford.ascore2.features.export.GetExportBytesImpl
 import org.philblandford.ascore2.features.file.AutoSave
 import org.philblandford.ascore2.features.gesture.*
 import org.philblandford.ascore2.features.harmony.GetHarmoniesForKey
 import org.philblandford.ascore2.features.harmony.GetHarmoniesForKeyImpl
+import org.philblandford.ascore2.features.harmony.SetHarmonyInstrument
+import org.philblandford.ascore2.features.harmony.SetHarmonyInstrumentImpl
 import org.philblandford.ascore2.features.input.usecases.*
 import org.philblandford.ascore2.features.insert.*
 import org.philblandford.ascore2.features.instruments.*
@@ -126,7 +130,7 @@ object Dependencies {
     single<DrawableGetter> { ComposeDrawableGetter(androidContext(), get()) }
     single<ScoreLoader> { AndroidScoreLoader(get(), get(), get()) }
     single { AndroidImporter(get()) }
-    single { CrashHandler(get(), get()) }
+    single { CrashHandler(get(), get(), get()) }
   }
 
   private val stubModules = module {
@@ -148,7 +152,8 @@ object Dependencies {
     single<ExporterIf> { AndroidExporter(get(), get()) }
     single { Exporter(get(), get(), get(), get()) }
     single<ExportScore> { ExportScoreImpl(get(), get()) }
-    viewModel { ExportViewModel(get(), get(), get()) }
+    single<GetExportBytes> { GetExportBytesImpl(get(), get())}
+    viewModel { ExportViewModel(get(), get(), get(), get()) }
   }
 
   private val loadModule = module {
@@ -369,8 +374,9 @@ object Dependencies {
     single<GetPlaybackState> { GetPlaybackStateImpl(get()) }
     single<ToggleMute> { ToggleMuteImpl(get()) }
     single<ToggleSolo> { ToggleSoloImpl(get()) }
+    single<SetHarmonyInstrument> { SetHarmonyInstrumentImpl(get()) }
     viewModel { PlayViewModel(get(), get(), get(), get()) }
-    viewModel { MixerViewModel(get(), get(), get(), get(), get(), get(), get(), get(), get()) }
+    viewModel { MixerViewModel(get(), get(), get(), get(), get(), get(), get(), get(), get(), get(), get()) }
   }
 
   private val clipboardModule = module {

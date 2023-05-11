@@ -9,6 +9,7 @@ import com.philblandford.kscore.engine.eventadder.*
 import com.philblandford.kscore.engine.eventadder.util.rangeToEventEnd
 import com.philblandford.kscore.engine.pitch.getPitchFromMidiVal
 import com.philblandford.kscore.engine.types.*
+import com.philblandford.kscore.log.ksLoge
 
 internal object NoteSubAdder : BaseEventAdder {
 

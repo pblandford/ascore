@@ -10,9 +10,8 @@ fun NoteHeadSelector(current: NoteHeadType?, onSelect: (NoteHeadType) -> Unit) {
   ImageGridDropdown(
     images = noteHeadIds.map { it.first },
     columns = 1, rows = noteHeadIds.size,
-    selected = {
-      noteHeadIds.indexOfFirst { it.second == current }
-    }, tag = { "NoteHead ${noteHeadIds[it].second}" },
+    selected = noteHeadIds.indexOfFirst { it.second == current }
+    , tag = { "NoteHead ${noteHeadIds[it].second}" },
     onSelect = { onSelect(noteHeadIds[it].second) }
   )
 }

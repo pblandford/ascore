@@ -47,6 +47,7 @@ fun EditPanel(modifier: Modifier, type: EventType, scale: Float) {
         EventType.COMPOSER -> TextEdit(scale)
         EventType.DURATION -> DeleteOnlyEdit()
         EventType.DYNAMIC -> DynamicsEdit(scale)
+        EventType.EXPRESSION_DASH -> TextEdit(scale)
         EventType.EXPRESSION_TEXT -> TextEdit(scale)
         EventType.FERMATA -> FermataEdit(scale)
         EventType.FINGERING -> FingeringEdit(scale)

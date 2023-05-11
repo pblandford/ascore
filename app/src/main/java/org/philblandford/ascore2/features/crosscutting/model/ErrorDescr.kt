@@ -7,5 +7,6 @@ data class ErrorDescr(
   val message: String = "",
   val exception: Throwable? = null,
   val command:Command? = null,
-  val base64:String? = null
+  val base64:String? = null,
+  val internal:Boolean  = false
 )

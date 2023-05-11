@@ -1,5 +1,6 @@
 package org.philblandford.ui.stubs
 
+import com.philblandford.kscore.api.Instrument
 import kotlinx.coroutines.flow.Flow
 import org.philblandford.ui.base.viewmodel.VMSideEffect
 import org.philblandford.ui.play.viewmodel.MixerInterface
@@ -34,6 +35,10 @@ class StubMixerInterface : MixerInterface {
   }
 
   override fun toggleMute(idx:Int) {
+    TODO("Not yet implemented")
+  }
+
+  override fun setHarmonyInstrument(instrument: Instrument) {
     TODO("Not yet implemented")
   }
 }

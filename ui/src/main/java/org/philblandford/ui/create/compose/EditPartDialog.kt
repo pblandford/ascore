@@ -161,18 +161,18 @@ fun ClefRow(instrument: Instrument, onUpdate: (Instrument) -> Unit) {
     horizontalArrangement = Arrangement.SpaceBetween
   ) {
 
-    instrument.clefs.withIndex().toList().forEach { (idx, clef) ->
-      Row {
-        ClefSpinner({ clef }, border = false, tag = "Clef", setClef = { type ->
-          onUpdate(instrument.setClef(idx, type))
-        })
-        SquareButton(R.drawable.eraser, size = 15.dp) {
-          onUpdate(instrument.removeClef(idx))
+    Row(horizontalArrangement = Arrangement.Start) {
+      instrument.clefs.withIndex().toList().forEach { (idx, clef) ->
+        Row {
+          ClefSpinner(clef, border = false, tag = "Clef", setClef = { type ->
+            onUpdate(instrument.setClef(idx, type))
+          })
+          SquareButton(R.drawable.eraser, size = 15.dp) {
+            onUpdate(instrument.removeClef(idx))
+          }
         }
-
       }
     }
-
     SquareButton(R.drawable.plus) { onUpdate(instrument.addClef()) }
 
 

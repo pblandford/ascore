@@ -1,4 +1,4 @@
-package com.philblandford.ascore.android.export
+package org.philblandford.ascore2.android.export
 
 import android.content.Context
 import android.content.Intent
@@ -17,7 +17,7 @@ class AndroidExporter(
 ) : ExporterIf {
 
 
-  override fun export(
+  override fun share(
     bytes: ByteArray, filename: String, type: ExportType
   ) {
     ksLogd("export byte array of ${bytes.size}")
@@ -61,10 +61,10 @@ class AndroidExporter(
   }
 
   private fun share(mimeType: String, outputFile: Uri) {
-    doExport(mimeType, outputFile)
+    doShare(mimeType, outputFile)
   }
 
-  private fun doExport(mime: String, src: Uri) {
+  private fun doShare(mime: String, src: Uri) {
     val shareIntent = Intent().apply {
       action = Intent.ACTION_SEND
       putExtra(Intent.EXTRA_STREAM, src)
@@ -73,4 +73,5 @@ class AndroidExporter(
     }
     context.startActivity(shareIntent)
   }
+
 }

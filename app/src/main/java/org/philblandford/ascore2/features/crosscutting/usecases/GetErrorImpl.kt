@@ -18,13 +18,12 @@ class GetErrorImpl(private val kScore: KScore) : GetError, SetError {
   init {
     coroutineScope.launch {
       kScore.getErrorFlow().collectLatest { error ->
-        val b64 = kScore.getScoreAsB64()
         Timber.e("Received error from kScore $error")
         errorFlow.emit(
           ErrorDescr(
             error.exception.message ?: "Unknown",
             "Command: ${error.command}", error.exception,
-            error.command, b64
+            error.command, internal = error.internal
           )
         )
       }

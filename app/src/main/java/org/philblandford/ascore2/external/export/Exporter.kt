@@ -52,8 +52,13 @@ class Exporter(
   )
 
   fun export(
-    score: Score, filename: String, exportType: ExportType, allParts: Boolean = false,
-    exportDestination: ExportDestination, uri: Uri? = null, progress:ProgressFunc = {_,_,_ -> false},
+    score: Score,
+    filename: String,
+    exportType: ExportType,
+    allParts: Boolean = false,
+    exportDestination: ExportDestination,
+    uri: Uri? = null,
+    progress: ProgressFunc = { _, _, _ -> false },
     onComplete: () -> Unit
   ) {
 
@@ -61,16 +66,23 @@ class Exporter(
 
     uri?.let { externalSaver.setUri(it) }
 
-    if (allParts) {
-      exportAllParts(score, safeFileName, exportType, exportDestination)
+    getExportBytes(score, allParts, safeFileName, exportType)?.let { bytes ->
+      doExport(bytes, exportDestination, exportType, filename)
+      onComplete()
+    }
+  }
+
+  fun getExportBytes(
+    score: Score, allParts: Boolean, filename: String,
+    exportType: ExportType
+  ): ByteArray? {
+    return if (allParts) {
+      getZipBytes(score, filename, exportType)
     } else {
       exportFuncs[exportType]?.let { func ->
-        func(score)?.let { bytes ->
-          doExport(bytes, exportDestination, exportType, filename)
-        }
+        func(score)
       }
     }
-    onComplete()
   }
 
   private fun doExport(
@@ -78,11 +90,12 @@ class Exporter(
     exportType: ExportType, filename: String
   ) {
     when (exportDestination) {
-      ExportDestination.SHARE -> nativeExporter.export(
+      ExportDestination.SHARE -> nativeExporter.share(
         bytes,
         "$filename.${exportType.getExtension()}",
         exportType
       )
+
       ExportDestination.PRIVATE -> resourceManager.saveScore(filename, bytes, FileSource.SAVE)
       ExportDestination.PUBLIC -> resourceManager.saveScore(filename, bytes, FileSource.EXTERNAL)
       ExportDestination.EXTERNAL -> externalSaver.save(bytes)
@@ -93,19 +106,16 @@ class Exporter(
     nativeExporter.printScore(score)
   }
 
-  private fun exportAllParts(
+  private fun getZipBytes(
     score: Score,
     filename: String,
-    exportType: ExportType,
-    exportDestination: ExportDestination
-  ) {
-    exportFuncs[exportType]?.let { func ->
+    exportType: ExportType
+  ): ByteArray? {
+    return exportFuncs[exportType]?.let { func ->
       val bytesNames = getScores(score).mapNotNull { (score, name) ->
         func(score)?.let { it to name }
       }
-      createZip(bytesNames, exportType, filename)?.let {
-        doExport(it, exportDestination, ExportType.ZIP, filename)
-      }
+      createZip(bytesNames, exportType, filename)
     }
   }
 

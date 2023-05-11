@@ -16,7 +16,7 @@ fun AccidentalSpinner(
     rows = if (accidentals.size % 2 == 0) accidentals.size / 2 else accidentals.size,
     columns = if (accidentals.size % 2 == 0) 2 else 1,
     images = ids.map { it.first },
-    selected = { ids.indexOfFirst { it.second == selectedAccidental } },
+    selected =  ids.indexOfFirst { it.second == selectedAccidental },
     onSelect = { setAccidental(ids[it].second) }
   )
 }

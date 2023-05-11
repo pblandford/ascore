@@ -25,6 +25,7 @@ internal fun ScreenViewVertical(
   scale: MutableState<Float>,
   defaultScale: Float,
   viewPortWidth: Dp,
+  currentPage:MutableState<Int>,
   onScoreEmpty: () -> Unit,
   changeMethod:()->Unit
 ) {
@@ -34,6 +35,16 @@ internal fun ScreenViewVertical(
     val lazyListState = rememberLazyListState()
     val coroutineScope = rememberCoroutineScope()
     val scrollX = rememberScrollState()
+    val initPage = remember{ mutableStateOf(currentPage.value) }
+
+    LaunchedEffect(initPage.value) {
+      lazyListState.scrollToItem(initPage.value - 1)
+    }
+
+    val latestIndex = remember {
+      derivedStateOf { lazyListState.firstVisibleItemIndex }
+    }
+    currentPage.value = latestIndex.value + 1
 
     LaunchedEffect(Unit) {
       coroutineScope.launch {
@@ -66,8 +77,6 @@ internal fun ScreenViewVertical(
         }
       }
     }
-
-
 
     key(defaultScale) {
       LazyColumn(Modifier.background(veryLightGray), state = lazyListState) {

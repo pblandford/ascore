@@ -46,7 +46,7 @@ fun barLineWidth(barLineType: BarLineType): Int {
     BarLineType.NORMAL -> 0
     BarLineType.DOUBLE -> LINE_THICKNESS * 2 + DOUBLE_BAR_LINE_GAP
     BarLineType.FINAL -> FINAL_BAR_LINE_THICK + LINE_THICKNESS + DOUBLE_BAR_LINE_GAP
-    BarLineType.START -> FINAL_BAR_LINE_THICK
+    BarLineType.START -> FINAL_BAR_LINE_THICK + LINE_THICKNESS + DOUBLE_BAR_LINE_GAP
     else -> 0
   }
 }
