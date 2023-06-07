@@ -23,7 +23,8 @@ fun Manual() {
   val state = rememberWebViewState(path)
 
   DialogTheme { modifier ->
-    WebView(state, modifier.fillMaxHeight(0.8f).clip(RoundedCornerShape(10)))
+    WebView(state,
+      modifier.fillMaxHeight(0.8f).clip(RoundedCornerShape(10)))
   }
 }
 
