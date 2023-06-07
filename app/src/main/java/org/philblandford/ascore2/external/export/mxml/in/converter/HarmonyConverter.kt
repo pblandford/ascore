@@ -1,13 +1,14 @@
 package com.philblandford.ascore.external.export.mxml.`in`.converter
 
-import com.philblandford.ascore.external.export.mxml.out.MxmlBass
-import com.philblandford.ascore.external.export.mxml.out.MxmlHarmony
-import com.philblandford.ascore.external.export.mxml.out.MxmlRoot
+import org.philblandford.ascore2.external.export.mxml.out.MxmlBass
+import org.philblandford.ascore2.external.export.mxml.out.MxmlHarmony
+import org.philblandford.ascore2.external.export.mxml.out.MxmlRoot
 import com.philblandford.kscore.engine.duration.plus
 import com.philblandford.kscore.engine.pitch.Harmony
 import com.philblandford.kscore.engine.types.Accidental
 import com.philblandford.kscore.engine.types.NoteLetter
 import com.philblandford.kscore.engine.types.Pitch
+import org.philblandford.ascore2.external.export.mxml.`in`.converter.getDuration
 
 internal fun convertHarmony(mxmlHarmony: MxmlHarmony, measureState: MeasureState): MeasureState {
   return getName(mxmlHarmony.kind.text)?.let { name ->

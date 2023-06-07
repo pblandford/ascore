@@ -132,6 +132,7 @@ open class RepTest : ScoreTest() {
     }
   }
 
+
   fun getAreas(tag: String): Map<AreaMapKey, Area> {
     return REP().pages.flatMap {
       it.base.findByTag(tag).toList()

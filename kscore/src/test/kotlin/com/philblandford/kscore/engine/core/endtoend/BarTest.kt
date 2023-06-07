@@ -27,6 +27,6 @@ class BarTest : RepTest() {
   @Test
   fun testCreateScoreZeroBars() {
     RCD(bars = 0)
-    RVNA("Bar", ea(1))
+    assert(sc.currentScoreState.value.representation == null)
   }
 }

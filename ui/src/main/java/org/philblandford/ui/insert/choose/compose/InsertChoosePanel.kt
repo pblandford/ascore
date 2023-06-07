@@ -70,7 +70,7 @@ fun InsertChoosePanel(model: InsertChooseModel, iface: InsertChooseInterface) {
       Row(
         Modifier
           .fillMaxWidth()
-          .height(block(3.5f)), verticalAlignment = Alignment.CenterVertically
+          .height(block(1.75f) * model.rows ), verticalAlignment = Alignment.CenterVertically
       ) {
         Box(Modifier.weight(1f)) {
           SelectionGrid(model, iface, Modifier.align(Alignment.Center))
@@ -83,7 +83,6 @@ fun InsertChoosePanel(model: InsertChooseModel, iface: InsertChooseInterface) {
   }
 }
 
-@OptIn(ExperimentalAnimationApi::class)
 @Composable
 private fun SelectionGrid(
   model: InsertChooseModel,
@@ -106,8 +105,8 @@ private fun SelectionGrid(
 
     GridSelection(
       images = items.map { it.drawable },
-      rows = 2,
-      columns = items.size / 2,
+      rows = model.rows,
+      columns = items.size / model.rows,
       onSelect = {
         items[it].let { item ->
           iface.select(item)

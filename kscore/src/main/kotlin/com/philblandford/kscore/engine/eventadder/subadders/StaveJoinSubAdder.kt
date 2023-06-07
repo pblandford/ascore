@@ -21,7 +21,7 @@ object StaveJoinSubAdder : LineSubAdderIf {
       var map = score.eventMap.adjustExisting(sortedStart.staveId.main, numStaves)
       val address = sortedStart.copy(barNum = 0, offset = dZero(), staveId = StaveId(sortedStart.staveId.main, 0), voice = 0)
       map = map.putEvent(address, Event(EventType.STAVE_JOIN, newParams))
-      Right(Score(score.parts, map))
+      Right(Score(score.parts, map, score.beamDirectory))
     } ?: Left(ParamsMissing(listOf(EventParam.END)))
   }
 

@@ -5,12 +5,12 @@ import com.philblandford.kscore.engine.core.score.ScoreLevelType
 import com.philblandford.kscore.engine.duration.semibreve
 import com.philblandford.kscore.engine.duration.subtractC
 import com.philblandford.kscore.engine.eventadder.EventDestination
-import com.philblandford.kscore.engine.eventadder.BaseEventAdder
+import com.philblandford.kscore.engine.eventadder.BaseSubAdder
 import com.philblandford.kscore.engine.eventadder.ScoreResult
 import com.philblandford.kscore.engine.eventadder.util.addEventToLevel
 import com.philblandford.kscore.engine.types.*
 
-object PlaceHolderSubAdder : BaseEventAdder {
+object PlaceHolderSubAdder : BaseSubAdder {
 
   override fun addEvent(
     score: Score,

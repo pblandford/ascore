@@ -24,9 +24,9 @@ fun alignSegments(
       ?: dZero()
   val allDurations = allSegments.map { it.first.offset }.distinct().sorted().plus(endBar)
 
-  val filtered = segmentStaveMap.map {it.key to it.value.filterNot{it.key.isGrace}}.toMap()
-  var basic = getBasicMap(allDurations, filtered, lyricWidths)
-  basic = addXMarginExtras(basic, filtered)
+  val notGrace = segmentStaveMap.map {it.key to it.value.filterNot{it.key.isGrace}}.toMap()
+  var basic = getBasicMap(allDurations, notGrace, lyricWidths)
+  basic = addXMarginExtras(basic, notGrace)
   basic = addWidths(basic, harmonyWidths)
   basic = addWidths(basic, fermataWidths)
   basic = addWidthsSimple(basic, segmentExtensionWidths)
@@ -41,8 +41,8 @@ private fun getBasicMap(
 ): HorizontalMap {
 
   val widthsByOffset =
-    segmentStaveMap.flatMap { it.value.toList() }.groupBy { it.first.offset }.map {
-      it.key to it.value.maxByOrNull { it.second.width - it.second.xMargin }?.let { it.second.width - it.second.xMargin }
+    segmentStaveMap.flatMap { it.value.toList() }.groupBy { it.first.offset }.map { (offset, list) ->
+      offset to list.maxByOrNull { it.second.width - it.second.xMargin }?.let { it.second.width - it.second.xMargin }
     }.toMap()
 
   var total = 0

@@ -2,6 +2,7 @@ import com.philblandford.kscore.api.Instrument
 import com.philblandford.kscore.api.InstrumentGetter
 import com.philblandford.kscore.api.InstrumentGroup
 import com.philblandford.kscore.api.defaultInstrument
+import com.philblandford.kscore.engine.beam.BeamDirectory
 import com.philblandford.kscore.engine.core.score.*
 import com.philblandford.kscore.engine.types.*
 import com.philblandford.kscore.engine.dsl.dslChord
@@ -48,9 +49,9 @@ fun <T> assertListEqual(expected: List<T>, candidate: List<T>) {
 }
 
 
-private fun Iterable<Event>.compare(other: Iterable<Event>) {
+private fun Iterable<Event>.compareLevel(other: Iterable<Event>) {
   toList().zip(other) { one, two ->
-    one.compare(two)
+    one.compareLevel(two)
   }
 }
 
@@ -58,7 +59,7 @@ private class CompareException(name: String?, msg: String) : java.lang.Exception
 
 private val ignorableTypes = setOf(EventType.UISTATE)
 
-private fun EventMap.compare(name: String?, other: EventMap) {
+private fun EventMap.compareLevel(name: String?, other: EventMap) {
   if (getEventTypes().minus(ignorableTypes).sorted() != other.getEventTypes().minus(ignorableTypes)
       .sorted()
   ) {
@@ -74,11 +75,11 @@ private fun EventMap.compare(name: String?, other: EventMap) {
     throw CompareException(name, "\nthis ${thisEvents.count()}\n${thatEvents.count()}")
   }
   thisEvents.zip(thatEvents) { one, two ->
-    one.second.compare(two.second)
+    one.second.compareLevel(two.second)
   }
 }
 
-private fun Event.compare(other: Event) {
+private fun Event.compareLevel(other: Event) {
   if (eventType != other.eventType) {
     throw CompareException(eventType.toString(), "$eventType != ${other.eventType}")
   }
@@ -90,7 +91,7 @@ private fun Event.compare(other: Event) {
   params.toList().sortedBy { it.first }
     .zip(other.params.toList().sortedBy { it.first }) { one, two ->
       if (one.first == EventParam.NOTES) {
-        (one.second as Iterable<Event>).compare(two.second as Iterable<Event>)
+        (one.second as Iterable<Event>).compareLevel(two.second as Iterable<Event>)
       }
       if (one != two) {
         throw CompareException(eventType.toString(), "\n$one\n$two")
@@ -98,13 +99,15 @@ private fun Event.compare(other: Event) {
     }
 }
 
-fun ScoreLevel.compare(other: ScoreLevel) {
+fun Score.compare(other:Score) {
+  compareLevel(other)
+  beamDirectory.compare(other.beamDirectory)
+}
+
+fun ScoreLevel.compareLevel(other: ScoreLevel) {
   val name = this::class.simpleName
 
-  eventMap.compare(name, other.eventMap)
-  if (this is VoiceMap) {
-    vmCompare(other as VoiceMap)
-  }
+  eventMap.compareLevel(name, other.eventMap)
 
   val children = getAllSubLevels()
   val otherChildren = other.getAllSubLevels()
@@ -112,13 +115,13 @@ fun ScoreLevel.compare(other: ScoreLevel) {
     throw CompareException(name, "${children.count()} != ${otherChildren.count()}")
   }
   children.zip(otherChildren).forEach { (one, two) ->
-    one.compare(two)
+    one.compareLevel(two)
   }
 }
 
-private fun VoiceMap.vmCompare(other: VoiceMap) {
-  val thisBeams = beamMap.toList().sortedBy { it.first }
-  val thatBeams = other.beamMap.toList().sortedBy { it.first }
+private fun BeamDirectory.compare(other: BeamDirectory) {
+  val thisBeams = allBeams.toList().sortedBy { it.first }
+  val thatBeams = other.allBeams.toList().sortedBy { it.first }
 
   if (thisBeams.count() != thatBeams.count()) {
     throw CompareException("BeamMap", "${thisBeams.count()} != ${thatBeams.count()}")
@@ -130,6 +133,7 @@ private fun VoiceMap.vmCompare(other: VoiceMap) {
     }
   }
 }
+
 
 fun voiceMapFromString(
   string: String,

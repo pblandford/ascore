@@ -1,4 +1,4 @@
-package com.philblandford.ascore.external.export.xml
+package org.philblandford.ascore2.external.export.xml
 
 import com.philblandford.ascore.external.export.mxml.setDtd
 import com.philblandford.kscore.log.ksLogt
@@ -15,7 +15,7 @@ internal annotation class Attribute
 internal annotation class Child
 
 @Target(AnnotationTarget.PROPERTY)
-internal annotation class Text
+annotation class Text
 
 @Target(AnnotationTarget.PROPERTY)
 internal annotation class Order(val n: Int)

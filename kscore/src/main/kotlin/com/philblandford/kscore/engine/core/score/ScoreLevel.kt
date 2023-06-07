@@ -87,7 +87,7 @@ interface ScoreLevel : EventGetter {
   fun getAllSubLevels(): Iterable<ScoreLevel>
   fun subLevelIdx(eventAddress: EventAddress): Int
   fun replaceSubLevel(scoreLevel: ScoreLevel, index: Int): ScoreLevel
-  fun replaceSelf(eventMap: EventMap, newSubLevels: Iterable<ScoreLevel>? = null): ScoreLevel
+  fun replaceSelf(eventMap: EventMap, newSubLevels: List<ScoreLevel>? = null): ScoreLevel
 
   fun getAllLevelEvents(): EventHash {
     return eventMap.getAllEvents()

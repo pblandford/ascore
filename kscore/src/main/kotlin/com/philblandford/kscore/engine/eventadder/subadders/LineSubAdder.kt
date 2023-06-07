@@ -11,6 +11,7 @@ import com.philblandford.kscore.engine.map.eventHashOf
 import com.philblandford.kscore.engine.eventadder.*
 import com.philblandford.kscore.engine.eventadder.util.changeSubLevel
 import com.philblandford.kscore.engine.eventadder.util.getLevel
+import com.philblandford.kscore.engine.eventadder.util.strip
 import com.philblandford.kscore.engine.types.*
 
 internal interface LineSubAdderIf : UpDownSubAdderIf {
@@ -81,19 +82,19 @@ internal interface LineSubAdderIf : UpDownSubAdderIf {
     params: ParamMap,
     eventAddress: EventAddress
   ): ScoreResult {
-    return score.getStave(eventAddress.staveId)
-      .ifNullError("Stave not found at $eventAddress") { stave ->
-        val mapAddress = eventAddress.stavelessWithId()
+    return score.getLevel(destination, eventAddress)
+      .ifNullError("Stave not found at $eventAddress") { level ->
+        val mapAddress = eventAddress.strip(level.scoreLevelType, eventType)
 
-        stave.eventMap.getEvent(eventType, mapAddress).ifNullRestore(score) { event ->
-          stave.eventMap.deleteEvent(mapAddress, eventType).ok().then { newMap ->
+        level.eventMap.getEvent(eventType, mapAddress).ifNullRestore(score) { event ->
+          level.eventMap.deleteEvent(mapAddress, eventType).ok().then { newMap ->
             event.getParam<Duration>(EventParam.DURATION)
               .ifNullError("Line has no duration") { duration ->
-                score.addDuration(eventAddress, duration)
+                score.addDuration(mapAddress, duration)
                   .ifNullError("Could not add duration $duration to $eventAddress") { end ->
-                    val em = newMap.deleteEvent(end.stavelessWithId(), eventType)
-                    val newStave = Stave(stave.bars, em)
-                    score.changeSubLevel(newStave, eventAddress)
+                    val em = newMap.deleteEvent(end, eventType)
+                    val newLevel = level.replaceSelf(em, level.subLevels)
+                    score.changeSubLevel(newLevel, eventAddress)
                   }
               }
           }
@@ -188,7 +189,7 @@ internal interface LineSubAdderIf : UpDownSubAdderIf {
     key: EventMapKey, value: Event,
     mutable: MutableMap<EventMapKey, Event>
   ) {
-    if (!value.isTrue(EventParam.END) && key.eventAddress in eventAddress..endAddress) {
+    if (!value.isTrue(EventParam.END) && key.eventAddress.horizontal in eventAddress.horizontal..endAddress.horizontal) {
       getNextStaveSegment(endAddress.copy(staveId = eventAddress.staveId))
         ?.let { newStart ->
           val newDuration = getDuration(key.eventAddress, newStart) ?: value.duration()

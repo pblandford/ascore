@@ -51,7 +51,7 @@ data class Bar(
     return Bar(timeSignature, voiceMaps.replace(index - 1, scoreLevel as VoiceMap), eventMap)
   }
 
-  override fun replaceSelf(eventMap: EventMap, newSubLevels: Iterable<ScoreLevel>?): ScoreLevel {
+  override fun replaceSelf(eventMap: EventMap, newSubLevels: List<ScoreLevel>?): ScoreLevel {
     return Bar(timeSignature, newSubLevels?.map { it as VoiceMap } ?: voiceMaps, eventMap)
   }
 

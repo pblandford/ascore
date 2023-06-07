@@ -1,7 +1,6 @@
 package com.philblandford.kscore.engine.eventadder.subadders
 
 import com.philblandford.kscore.engine.core.score.Score
-import com.philblandford.kscore.engine.core.score.deleteEvent
 import com.philblandford.kscore.engine.eventadder.*
 import com.philblandford.kscore.engine.eventadder.util.deleteEventFromMap
 import com.philblandford.kscore.engine.eventadder.util.nextEvent
@@ -9,7 +8,7 @@ import com.philblandford.kscore.engine.eventadder.util.previousEvent
 import com.philblandford.kscore.engine.eventadder.util.setAccidentals
 import com.philblandford.kscore.engine.types.*
 
-internal object KeySignatureSubAdder : BaseEventAdder {
+internal object KeySignatureSubAdder : BaseSubAdder {
   override fun addEvent(
     score: Score,
     destination: EventDestination,

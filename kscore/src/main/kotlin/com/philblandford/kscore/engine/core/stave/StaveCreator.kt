@@ -24,6 +24,8 @@ import com.philblandford.kscore.engine.core.stave.decoration.decorateStave
 import com.philblandford.kscore.engine.duration.dZero
 import com.philblandford.kscore.engine.types.*
 import com.philblandford.kscore.engine.types.EventType.INSTRUMENT
+import com.philblandford.kscore.log.ksLog
+import com.philblandford.kscore.log.ksLoge
 import java.util.*
 
 data class StaveArea(
@@ -180,23 +182,16 @@ private fun DrawableFactory.addBeams(
   beamQuery: BeamQuery,
   stavePositionFinder: StavePositionFinder
 ): Pair<Area, SegmentLookup> {
-  val filtered = beamQuery.getBeams(
-    EventAddress(stavePositionFinder.getStartBar(), staveId = stavePositionFinder.staveId),
-    EventAddress(
-      stavePositionFinder.getEndBar(),
-      DURATION_WILD,
-      staveId = stavePositionFinder.staveId
-    )
-  ).filter {
-    it.key.barNum >= stavePositionFinder.getStartBar() && it.key.barNum <= stavePositionFinder.getEndBar()
-  }
-  val pair = drawBeams(filtered, stavePositionFinder, area)
+  val filtered = beamQuery.getBeamsForStave(
+    stavePositionFinder.getStartBar(), stavePositionFinder.getEndBar(), stavePositionFinder.staveId
+  )
+  val (newArea, stemLookup) = drawBeams(filtered, stavePositionFinder, area)
 
   val newSegments = getNewSegments(
-    stavePositionFinder.getSegmentLookup(), pair.second,
+    stavePositionFinder.getSegmentLookup(), stemLookup,
     stavePositionFinder.getScoreQuery()
   )
-  return Pair(pair.first, newSegments)
+  return Pair(newArea, newSegments)
 }
 
 private const val replaceStemId = "REPLACE_STEM"

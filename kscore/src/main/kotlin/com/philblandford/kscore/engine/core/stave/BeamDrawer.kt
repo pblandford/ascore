@@ -12,10 +12,15 @@ import com.philblandford.kscore.engine.core.area.factory.DrawableFactory
 import com.philblandford.kscore.engine.core.representation.*
 import com.philblandford.kscore.engine.duration.Offset
 import com.philblandford.kscore.engine.duration.addC
+import com.philblandford.kscore.engine.duration.dZero
+import com.philblandford.kscore.engine.duration.minus
+import com.philblandford.kscore.engine.duration.plus
 import com.philblandford.kscore.engine.types.EventAddress
 import com.philblandford.kscore.engine.types.Lookup
+import com.philblandford.kscore.engine.types.OffsetLookup
 import com.philblandford.kscore.engine.types.StavePositionFinder
 import com.philblandford.kscore.engine.types.lookupOf
+import com.philblandford.kscore.log.ksLoge
 import com.philblandford.kscore.util.highestBit
 import getBeamDescriptors
 import kotlin.math.abs
@@ -43,21 +48,45 @@ fun DrawableFactory.drawBeams(
   staveArea: Area
 ): Pair<Area, Lookup<StemGeography>> {
   var areaCopy = staveArea
+  val offsetLookup = stavePositionFinder.getScoreQuery()
+  val startOffset = offsetLookup.addressToOffset(stavePositionFinder.getFirstSegment()) ?: dZero()
+  val endOffset = offsetLookup.addressToOffset(stavePositionFinder.getLastSegment()) ?: dZero()
   var stemLookup = lookupOf<StemGeography>()
+
   beams.forEach { (eventAddress, beam) ->
-    var offset = eventAddress.ifGraceOffset()
-    val members = beam.members.mapNotNull {
-      val address = eventAddress.setIfGraceOffset(offset)
-      offset = offset.addC(it.realDuration)
+    val (adjustedAddress, adjustedBeam) =
+      if (eventAddress.barNum < stavePositionFinder.getStartBar()) {
+        val beamOffset = offsetLookup.addressToOffset(eventAddress)!!
+        val offsetAdjustment = startOffset - beamOffset
+        val members = beam.members.dropWhile {
+        beamOffset + it.offset < startOffset
+        }.map { it.copy(offset = it.offset - offsetAdjustment ) }
+        stavePositionFinder.getFirstSegment().copy(voice = eventAddress.voice) to Beam(members, up = beam.up)
+      } else if (offsetLookup.addressToOffset(eventAddress)!! + beam.members.last().offset <= endOffset) {
+        eventAddress to beam
+      }
+      else {
+        val (address, members) = eventAddress to beam.members.takeWhile { offsetLookup.addressToOffset(eventAddress)!! + it.offset <= endOffset }
+        address to Beam(members, up = beam.up)
+      }
+
+    val members = adjustedBeam.members.mapNotNull { bm ->
+      val address =
+        if (adjustedAddress.isGrace) adjustedAddress.copy(graceOffset = bm.offset) else stavePositionFinder.getScoreQuery()
+          .addDuration(adjustedAddress, bm.offset) ?: eventAddress
+
       stavePositionFinder.getSlicePosition(address.voiceless())?.let { sp ->
         stavePositionFinder.getStemGeography(address)?.let { sg ->
-          address.ifGraceOffset() to BeamMember(sp, sg)
+          bm.offset to BeamMember(sp, sg)
         }
       }
     }.toMap()
-    val pair = addBeamArea(beam, members, eventAddress, areaCopy)
-    areaCopy = pair.first
-    stemLookup = stemLookup.plus(pair.second)
+    val (area, stemLookupFromBeamArea) = addBeamArea(
+      adjustedBeam, members, adjustedAddress, areaCopy,
+      stavePositionFinder.getScoreQuery()
+    )
+    areaCopy = area
+    stemLookup = stemLookup.plus(stemLookupFromBeamArea)
   }
   return Pair(areaCopy, stemLookup)
 }
@@ -65,7 +94,7 @@ fun DrawableFactory.drawBeams(
 private fun DrawableFactory.addBeamArea(
   beam: Beam, members: Map<Offset, BeamMember>,
   eventAddress: EventAddress,
-  main: Area
+  main: Area, offsetLookup: OffsetLookup
 ): Pair<Area, Lookup<StemGeography>> {
   if (members.isEmpty()) {
     return Pair(main, lookupOf())
@@ -78,31 +107,39 @@ private fun DrawableFactory.addBeamArea(
     var newArea = main
 
     val beamDescriptors = getBeamDescriptors(beam)
-    val beamDimensions = getBeamDimensions(first, last, beamDescriptors.size)
+    val beamDepth = beamDescriptors.groupBy { it.start }.maxBy { it.value.size }.value.size
+    val beamDimensions = getBeamDimensions(first, last, beamDepth)
 
     val extra =
       (beamDescriptors.map { it.duration }.distinct().size - 2) * BEAM_GAP + BEAM_THICKNESS
-    val adjustRes = getStemGeographies(members, beamDimensions, beam.up)
+    val adjustRes = getStemGeographies(members, beamDimensions, beam.up, eventAddress.isGrace)
     val stemGeogsAdjust = adjustRes.first
     val stemAdjustment = abs(adjustRes.second)
 
     beamDescriptors.forEach { descriptor ->
+      val membersForDescriptor = members.filter { it.key in descriptor.members }
       newArea = getBeamDrawable(
         descriptor, beam, beamDimensions, extra + stemAdjustment, eventAddress, stemGeogsAdjust,
-        members, newArea, eventAddress
+        membersForDescriptor, newArea, eventAddress
       )
     }
-    val lookup = addStemExtra(stemGeogsAdjust, extra, eventAddress)
+    val lookup = addStemExtra(stemGeogsAdjust, extra, eventAddress, offsetLookup)
     Pair(newArea, lookup)
   }
 }
 
 private fun addStemExtra(
   stems: Map<Offset, StemGeography>,
-  extra: Int, eventAddress: EventAddress
+  extra: Int, eventAddress: EventAddress,
+  offsetLookup: OffsetLookup
 ): Lookup<StemGeography> {
   return stems.map { (offset, stem) ->
-    eventAddress.setIfGraceOffset(offset) to
+    val address = if (eventAddress.isGrace) {
+      eventAddress.copy(graceOffset = offset)
+    } else {
+      offsetLookup.addDuration(eventAddress, offset) ?: eventAddress
+    }
+    address to
         if (stem.up) {
           stem.copy(tip = stem.tip - extra)
         } else {
@@ -126,13 +163,13 @@ private fun DrawableFactory.getBeamDrawable(
   else -beamNum * (BEAM_GAP + BEAM_THICKNESS) - BEAM_THICKNESS
   val offsetY = if (beam.up) offsetYWithinBeam - extra
   else offsetYWithinBeam + extra
-  members[descriptor.start.addC(beamOffset)]?.let { startMember ->
-    members[descriptor.end.addC(beamOffset)]?.let { endMember ->
-      stemGeogs[descriptor.end.addC(beamOffset)]?.let { endGeog ->
+  members[descriptor.start]?.let { startMember ->
+    members[descriptor.end]?.let { endMember ->
+      stemGeogs[descriptor.end]?.let { endGeog ->
 
         val dimensions = getSingleBeamDimensions(
           descriptor, beamOffset, beamDimensions, startMember,
-          endMember, firstOffset, offsetY
+          endMember, beamOffset + firstOffset, offsetY
         )
 
         getDrawableArea(
@@ -191,12 +228,12 @@ private fun getSingleBeamDimensions(
   endMember: BeamMember, firstOffset: Offset, offsetY: Int
 ): BeamDimensions {
   val miniBeam = descriptor.start == descriptor.end
-  val startX = if (miniBeam && descriptor.start.addC(beamOffset) != firstOffset) {
+  val startX = if (miniBeam &&  firstOffset != beamOffset) {
     startMember.slicePosition.xMargin + startMember.stemGeography.xPos - MINIBEAM_WIDTH
   } else {
     startMember.slicePosition.xMargin + startMember.stemGeography.xPos
   }
-  val endX = if (miniBeam && descriptor.start.addC(beamOffset) == firstOffset) {
+  val endX = if (miniBeam && firstOffset == beamOffset) {
     startMember.slicePosition.xMargin + startMember.stemGeography.xPos + MINIBEAM_WIDTH
   } else {
     endMember.slicePosition.xMargin + endMember.stemGeography.xPos
@@ -220,9 +257,11 @@ private fun getStemGeographies(
   members: Map<Offset, BeamMember>,
   beamDimensions: BeamDimensions,
   up: Boolean,
+  grace:Boolean,
   adjustSoFar: Int = 0,
   numCalls: Int = 0
 ): Pair<Map<Offset, StemGeography>, Int> {
+  val clearance = if (grace) STEM_MIN_CLEAR_GRACE else STEM_MIN_CLEAR
 
   val geogs = members.map { (offset, member) ->
     val absoluteXPos = member.slicePosition.xMargin + member.stemGeography.xPos
@@ -235,9 +274,9 @@ private fun getStemGeographies(
   }.toMap()
   val shortest =
     (geogs.minByOrNull { it.value.exposed }?.value?.exposed ?: 0) - beamDimensions.beamHeight
-  return if (shortest < STEM_MIN_CLEAR) {
+  return if (shortest < clearance) {
     val adjustment =
-      (if (!up) STEM_MIN_CLEAR - shortest else shortest - STEM_MIN_CLEAR)
+      (if (!up) clearance - shortest else shortest - clearance)
     getStemGeographies(
       members,
       beamDimensions.copy(
@@ -245,6 +284,7 @@ private fun getStemGeographies(
         end = Coord(beamDimensions.end.x, beamDimensions.end.y + adjustment)
       ),
       up,
+      grace,
       adjustment + adjustSoFar,
       numCalls + 1
     )

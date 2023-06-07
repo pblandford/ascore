@@ -2,8 +2,6 @@ package core.score
 
 import com.philblandford.kscore.engine.types.*
 import assertEqual
-import com.philblandford.kscore.msq
-import com.philblandford.kscore.engine.core.score.Bar
 import com.philblandford.kscore.engine.core.score.VoiceMap
 import com.philblandford.kscore.engine.dsl.dslBar
 import com.philblandford.kscore.engine.duration.dZero

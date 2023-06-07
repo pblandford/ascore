@@ -2,13 +2,43 @@ package com.philblandford.ascore.external.export.mxml.out.creator.measure
 
 import BeamPos
 import BeamStateQuery
-import com.philblandford.ascore.external.export.mxml.out.*
 import com.philblandford.kscore.engine.core.score.Tuplet
 import com.philblandford.kscore.engine.duration.*
 import com.philblandford.kscore.engine.map.EventList
 import com.philblandford.kscore.engine.pitch.positionToPitch
 import com.philblandford.kscore.engine.types.*
 import com.philblandford.kscore.util.highestBit
+import org.philblandford.ascore2.external.export.mxml.out.MxmlActualNotes
+import org.philblandford.ascore2.external.export.mxml.out.MxmlAlter
+import org.philblandford.ascore2.external.export.mxml.out.MxmlBeam
+import org.philblandford.ascore2.external.export.mxml.out.MxmlChord
+import org.philblandford.ascore2.external.export.mxml.out.MxmlDisplayOctave
+import org.philblandford.ascore2.external.export.mxml.out.MxmlDisplayStep
+import org.philblandford.ascore2.external.export.mxml.out.MxmlDot
+import org.philblandford.ascore2.external.export.mxml.out.MxmlDuration
+import org.philblandford.ascore2.external.export.mxml.out.MxmlForward
+import org.philblandford.ascore2.external.export.mxml.out.MxmlGrace
+import org.philblandford.ascore2.external.export.mxml.out.MxmlInstrument
+import org.philblandford.ascore2.external.export.mxml.out.MxmlLyric
+import org.philblandford.ascore2.external.export.mxml.out.MxmlMeasureElement
+import org.philblandford.ascore2.external.export.mxml.out.MxmlNormalNotes
+import org.philblandford.ascore2.external.export.mxml.out.MxmlNote
+import org.philblandford.ascore2.external.export.mxml.out.MxmlNoteDescriptor
+import org.philblandford.ascore2.external.export.mxml.out.MxmlNotehead
+import org.philblandford.ascore2.external.export.mxml.out.MxmlOctave
+import org.philblandford.ascore2.external.export.mxml.out.MxmlPitch
+import org.philblandford.ascore2.external.export.mxml.out.MxmlRest
+import org.philblandford.ascore2.external.export.mxml.out.MxmlStaff
+import org.philblandford.ascore2.external.export.mxml.out.MxmlStep
+import org.philblandford.ascore2.external.export.mxml.out.MxmlSyllabic
+import org.philblandford.ascore2.external.export.mxml.out.MxmlText
+import org.philblandford.ascore2.external.export.mxml.out.MxmlTie
+import org.philblandford.ascore2.external.export.mxml.out.MxmlTimeModification
+import org.philblandford.ascore2.external.export.mxml.out.MxmlType
+import org.philblandford.ascore2.external.export.mxml.out.MxmlUnpitched
+import org.philblandford.ascore2.external.export.mxml.out.MxmlVoice
+import org.philblandford.ascore2.external.export.mxml.out.accidentalToMxml
+import org.philblandford.ascore2.external.export.mxml.out.durationToMxml
 
 
 internal fun createNotesForEvent(

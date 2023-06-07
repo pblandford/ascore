@@ -3,6 +3,7 @@ package com.philblandford.kscore.engine.core.score
 import com.philblandford.kscore.api.Instrument
 import com.philblandford.kscore.api.InstrumentGetter
 import com.philblandford.kscore.api.instrument
+import com.philblandford.kscore.engine.beam.BeamDirectory
 import com.philblandford.kscore.engine.beam.BeamMap
 import com.philblandford.kscore.engine.beam.beam
 import com.philblandford.kscore.engine.core.LayoutDescriptor
@@ -10,6 +11,9 @@ import com.philblandford.kscore.engine.core.representation.PAGE_RATIO
 import com.philblandford.kscore.engine.core.representation.PAGE_WIDTH
 import com.philblandford.kscore.engine.core.representation.pageWidths
 import com.philblandford.kscore.engine.duration.*
+import com.philblandford.kscore.engine.eventadder.Right
+import com.philblandford.kscore.engine.eventadder.ScoreResult
+import com.philblandford.kscore.engine.eventadder.then
 import com.philblandford.kscore.engine.map.*
 import com.philblandford.kscore.engine.pitch.transposeKey
 import com.philblandford.kscore.engine.tempo.Tempo
@@ -29,6 +33,7 @@ object AllParts : EventGetterOption()
 data class Score(
   val parts: List<Part> = listOf(Part()),
   override val eventMap: EventMap = initEvents(),
+  val beamDirectory: BeamDirectory //= BeamDirectory(mapOf())
 ) : ScoreLevelImpl(), ScoreQuery {
 
   override val subLevels = parts
@@ -53,11 +58,12 @@ data class Score(
     return getParam(UISTATE, MARKER_POSITION)
   }
 
-  override fun getBeams(start: EventAddress?, end: EventAddress?): BeamMap {
-    val events = getEvents(BEAM, start, end)
-    return events?.map {
-      Pair(it.key.eventAddress, beam(it.value))
-    }?.toMap() ?: mapOf()
+  override fun getBeamsForStave(start: Int, end: Int, staveId: StaveId): BeamMap {
+    return beamDirectory.getBeamsForStave(staveId, start, end, this)
+  }
+
+  override fun getBeams(start: EventAddress?, endAddress: EventAddress?): BeamMap {
+    return beamDirectory.getBeams(start, endAddress)
   }
 
   override fun getSubLevel(eventAddress: EventAddress): ScoreLevel? {
@@ -73,7 +79,11 @@ data class Score(
   }
 
   override fun replaceSubLevel(scoreLevel: ScoreLevel, index: Int): Score {
-    return Score(parts.removeAt(index - 1).add(index - 1, scoreLevel as Part), eventMap)
+    return Score(
+      parts.removeAt(index - 1).add(index - 1, scoreLevel as Part),
+      eventMap,
+      beamDirectory
+    )
   }
 
   private val acceptedTypes = setOf(
@@ -100,8 +110,8 @@ data class Score(
     REHEARSAL_MARK
   )
 
-  override fun replaceSelf(eventMap: EventMap, newSubLevels: Iterable<ScoreLevel>?): Score {
-    return Score(newSubLevels?.map { it as Part }?.toList() ?: parts, eventMap)
+  override fun replaceSelf(eventMap: EventMap, newSubLevels: List<ScoreLevel>?): Score {
+    return Score(newSubLevels?.map { it as Part }?.toList() ?: parts, eventMap, beamDirectory)
   }
 
   override fun getSpecialEvent(eventType: EventType, eventAddress: EventAddress): Event? {
@@ -236,7 +246,14 @@ data class Score(
           eventMap.getEvents(BREAK)
         } else {
           /* Otherwise the breaks stored in the selected part */
-          parts.getOrNull(selectedPart - 1)?.getEvents(BREAK)
+          parts.getOrNull(selectedPart - 1)?.getEvents(BREAK)?.map {
+            it.key.copy(
+              eventAddress = badgeEventAddress(
+                it.key.eventAddress,
+                selectedPart
+              )
+            ) to it.value
+          }?.toMap()
         }
       }
 
@@ -284,7 +301,7 @@ data class Score(
   }
 
   override fun singlePartMode(): Boolean {
-    return getParam<Int>(UISTATE, SELECTED_PART, eZero()) ?: 0 != 0
+    return (getParam<Int>(UISTATE, SELECTED_PART, eZero()) ?: 0) != 0
   }
 
   override fun selectedPartName(): String? {
@@ -300,20 +317,24 @@ data class Score(
 
   private val selectedPart = getParam<Int>(UISTATE, SELECTED_PART, eZero()) ?: 0
 
-  private val oLookup:OffsetLookup
-    get() {
-      val timeSignatures = (1..(numBars.coerceAtLeast(1))).mapNotNull { bar ->
-        getEventAt(TIME_SIGNATURE, ez(bar))?.let { (_, ev) -> bar to TimeSignature.fromParams(ev.params) }
-      }
-      val hidden = (getEvents(HIDDEN_TIME_SIGNATURE) ?: eventHashOf()).map { it.key.eventAddress.barNum to TimeSignature.fromParams(it.value.params) }
-      val map = (timeSignatures + hidden).toMap()
-
-      return offsetLookup(map, numBars)
+  private val oLookup: OffsetLookup by lazy {
+    val timeSignatures = (1..(numBars.coerceAtLeast(1))).mapNotNull { bar ->
+      getEventAt(
+        TIME_SIGNATURE,
+        ez(bar)
+      )?.let { (_, ev) -> bar to TimeSignature.fromParams(ev.params) }
     }
+    val hidden = (getEvents(HIDDEN_TIME_SIGNATURE)
+      ?: eventHashOf()).map { it.key.eventAddress.barNum to TimeSignature.fromParams(it.value.params) }
+    val map = (timeSignatures + hidden).toMap()
+
+    offsetLookup(map, numBars)
+  }
 
   override val lastOffset: Duration = oLookup.lastOffset
+  override val totalDuration: Duration = oLookup.totalDuration
 
-  override fun getAllStaves(selected: Boolean): Iterable<StaveId> {
+  override fun getAllStaves(selected: Boolean): List<StaveId> {
     return (allParts(selected)).flatMap { main ->
       (1..numStaves(main)).map {
         StaveId(main, it)
@@ -362,7 +383,7 @@ data class Score(
       getAllEvents(eventType, options)
     } else {
       val key = GEKey(eventType, eventAddress, endAddress)
-       getEventsCache[key] ?: run {
+      getEventsCache[key] ?: run {
 
         val mutable = eventHashOfM()
         parcelRange(eventAddress, endAddress).forEach { (start, end) ->
@@ -371,8 +392,8 @@ data class Score(
           }?.toMap()
           evs?.let { mutable.putAll(it) }
         }
-         getEventsCache[key] = mutable
-         mutable
+        getEventsCache[key] = mutable
+        mutable
       }
     }
   }
@@ -735,6 +756,12 @@ data class Score(
     return getParam<Boolean>(OPTION, OPTION_SHOW_TRANSPOSE_CONCERT) ?: false
   }
 
+  fun refreshBeams(): ScoreResult {
+    val beamDirectory = BeamDirectory.create(this)
+    val newThis = beamDirectory.markBeamGroupMembers(this)
+    return newThis.then { Right(it.copy(beamDirectory = beamDirectory)) }
+  }
+
   companion object {
     fun create(
       instrumentGetter: InstrumentGetter,
@@ -762,7 +789,7 @@ data class Score(
       if (parts.isEmpty()) {
         throw Exception("Could not find any instruments")
       }
-      return Score(parts, events)
+      return Score(parts, events, BeamDirectory(mapOf(), mapOf()))
     }
   }
 }

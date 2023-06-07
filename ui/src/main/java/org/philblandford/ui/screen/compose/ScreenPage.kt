@@ -197,7 +197,6 @@ internal fun ScreenPage(
                     val realHeight = remHeight * density * (newValue / minScale)
                     -offsetAddition.y * density * (realHeight.value / centroid.y)
                   }
-                Timber.e("current $verticalScrollAmount")
                 onVerticalScroll(verticalScrollAmount)
               } else {
                 val verticalScrollTarget = scrollY.value - offsetAddition.y * density

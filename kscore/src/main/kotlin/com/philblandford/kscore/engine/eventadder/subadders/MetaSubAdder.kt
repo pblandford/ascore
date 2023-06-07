@@ -5,7 +5,7 @@ import com.philblandford.kscore.engine.core.score.Score
 import com.philblandford.kscore.engine.eventadder.*
 import com.philblandford.kscore.engine.types.*
 
-object MetaSubAdder : BaseEventAdder {
+object MetaSubAdder : BaseSubAdder {
 
   override fun addEvent(
     score: Score,

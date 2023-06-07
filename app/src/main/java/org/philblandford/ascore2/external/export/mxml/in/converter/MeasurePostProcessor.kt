@@ -47,7 +47,7 @@ private fun createVoiceMap(events: EventMap, ts: TimeSignature): VoiceMap {
       events.deleteAll(EventType.DURATION)
     } else events
   } ?: events
-  var vm = voiceMap(ts, newEvents, listOf(), createBeams = false)
+  var vm = voiceMap(ts, newEvents, listOf())
   vm = setActualTimeSignature(vm, ts)
   vm = createTuplets(vm)
 
@@ -114,7 +114,7 @@ private fun setActualTimeSignature(voiceMap: VoiceMap, timeSignature: TimeSignat
   return if (actualDuration != dZero() && actualDuration != timeSignature.duration) {
     voiceMap(
       TimeSignature(actualDuration.numerator, actualDuration.denominator, hidden = true),
-      voiceMap.eventMap, voiceMap.tuplets, createBeams = false
+      voiceMap.eventMap, voiceMap.tuplets
     )
   } else voiceMap
 }

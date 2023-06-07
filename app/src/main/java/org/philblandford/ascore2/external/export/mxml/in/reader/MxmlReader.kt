@@ -1,8 +1,9 @@
-package com.philblandford.ascore.external.export.mxml.`in`.reader
+package org.philblandford.ascore2.external.export.mxml.`in`.reader
 
 import com.philblandford.ascore.external.export.mxml.`in`.converter.mxmlScoreToScore
-import com.philblandford.ascore.external.export.mxml.out.*
-import com.philblandford.ascore.external.export.xml.readXml
+import com.philblandford.ascore.external.export.mxml.`in`.reader.parsePart
+import com.philblandford.ascore.external.export.mxml.`in`.reader.parsePartList
+import org.philblandford.ascore2.external.export.xml.readXml
 import com.philblandford.kscore.api.InstrumentGetter
 import com.philblandford.kscore.api.ProgressFunc2
 import com.philblandford.kscore.api.noProgress2
@@ -10,6 +11,29 @@ import com.philblandford.kscore.engine.core.score.Score
 import com.philblandford.kscore.engine.util.pMap
 import com.philblandford.kscore.log.ksLogd
 import kotlinx.coroutines.runBlocking
+import org.philblandford.ascore2.external.export.mxml.out.MalformedXmlException
+import org.philblandford.ascore2.external.export.mxml.out.MxmlBottomMargin
+import org.philblandford.ascore2.external.export.mxml.out.MxmlCreator
+import org.philblandford.ascore2.external.export.mxml.out.MxmlCredit
+import org.philblandford.ascore2.external.export.mxml.out.MxmlCreditWords
+import org.philblandford.ascore2.external.export.mxml.out.MxmlDefaults
+import org.philblandford.ascore2.external.export.mxml.out.MxmlIdentification
+import org.philblandford.ascore2.external.export.mxml.out.MxmlLeftMargin
+import org.philblandford.ascore2.external.export.mxml.out.MxmlPageHeight
+import org.philblandford.ascore2.external.export.mxml.out.MxmlPageLayout
+import org.philblandford.ascore2.external.export.mxml.out.MxmlPageMargins
+import org.philblandford.ascore2.external.export.mxml.out.MxmlPageWidth
+import org.philblandford.ascore2.external.export.mxml.out.MxmlRightMargin
+import org.philblandford.ascore2.external.export.mxml.out.MxmlScorePartwise
+import org.philblandford.ascore2.external.export.mxml.out.MxmlStaffDistance
+import org.philblandford.ascore2.external.export.mxml.out.MxmlStaffLayout
+import org.philblandford.ascore2.external.export.mxml.out.MxmlSystemDistance
+import org.philblandford.ascore2.external.export.mxml.out.MxmlSystemLayout
+import org.philblandford.ascore2.external.export.mxml.out.MxmlSystemMargins
+import org.philblandford.ascore2.external.export.mxml.out.MxmlTopMargin
+import org.philblandford.ascore2.external.export.mxml.out.MxmlTopSystemDistance
+import org.philblandford.ascore2.external.export.mxml.out.MxmlWork
+import org.philblandford.ascore2.external.export.mxml.out.MxmlWorkTitle
 import org.w3c.dom.Element
 
 fun scoreFromMxml(

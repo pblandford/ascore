@@ -1,9 +1,9 @@
 package com.philblandford.ascore.external.export.mxml.`in`.converter
 
-import com.philblandford.ascore.external.export.mxml.out.MxmlAttributes
-import com.philblandford.ascore.external.export.mxml.out.MxmlScorePart
+import org.philblandford.ascore2.external.export.mxml.out.MxmlAttributes
+import org.philblandford.ascore2.external.export.mxml.out.MxmlScorePart
 import com.philblandford.ascore.external.export.mxml.out.creator.RepeatBarDesc
-import com.philblandford.ascore.external.export.mxml.out.mxmlToClef
+import org.philblandford.ascore2.external.export.mxml.out.mxmlToClef
 import com.philblandford.kscore.engine.pitch.KeySignature
 import com.philblandford.kscore.engine.pitch.transposeKey
 import com.philblandford.kscore.engine.time.TimeSignature

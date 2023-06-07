@@ -1,10 +1,19 @@
 package com.philblandford.ascore.external.export.mxml.out.creator
 
-import com.philblandford.ascore.external.export.mxml.out.*
 import com.philblandford.kscore.engine.core.score.Score
 import com.philblandford.kscore.engine.types.EventParam
 import com.philblandford.kscore.engine.types.MetaType
 import com.philblandford.kscore.engine.types.eZero
+import org.philblandford.ascore2.external.export.mxml.out.MxmlCreator
+import org.philblandford.ascore2.external.export.mxml.out.MxmlCredit
+import org.philblandford.ascore2.external.export.mxml.out.MxmlCreditWords
+import org.philblandford.ascore2.external.export.mxml.out.MxmlIdentification
+import org.philblandford.ascore2.external.export.mxml.out.MxmlPartList
+import org.philblandford.ascore2.external.export.mxml.out.MxmlScorePartwise
+import org.philblandford.ascore2.external.export.mxml.out.MxmlWork
+import org.philblandford.ascore2.external.export.mxml.out.MxmlWorkTitle
+import org.philblandford.ascore2.external.export.mxml.out.creator.createDefaults
+import org.philblandford.ascore2.external.export.mxml.out.getAlignment
 
 internal fun createMxmlScore(score: Score): MxmlScorePartwise? {
   val work = createWork(score)

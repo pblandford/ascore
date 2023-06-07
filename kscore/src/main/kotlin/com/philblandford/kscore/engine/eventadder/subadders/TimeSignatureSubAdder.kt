@@ -109,7 +109,7 @@ object TimeSignatureSubAdder : RangeSubAdder {
 
     val offsetEvents = originalScore.getEventsAsOffsets(eventAddress, null)
 
-    return calculateNumBars().then { numBars ->
+    return calculateNumBars(originalScore).then { numBars ->
       removeSameLater(EventType.TIME_SIGNATURE, eventAddress) {
         timeSignature(this) == timeSignature
       }
@@ -129,9 +129,9 @@ object TimeSignatureSubAdder : RangeSubAdder {
     }
   }
 
-  private fun Score.calculateNumBars(): AnyResult<Int> {
+  private fun Score.calculateNumBars(originalScore: Score): AnyResult<Int> {
     val tsMap = this.eventMap.getEvents(EventType.TIME_SIGNATURE)?.map { it.key.eventAddress.barNum to timeSignature(it.value)!! }?.toMap() ?: mapOf()
-    val ol = offsetLookup(tsMap, this.lastOffset)
+    val ol = offsetLookup(tsMap, originalScore.totalDuration)
     return ol.numBars.ok()
   }
 

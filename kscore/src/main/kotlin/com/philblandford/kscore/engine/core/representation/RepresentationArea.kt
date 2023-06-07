@@ -158,7 +158,7 @@ internal fun Representation.getAreasAtAddress(eventAddress: EventAddress): List<
             page.geography.pageNum, Rectangle(
               k.coord.x - v.xMargin, k.coord.y + childStart,
               v.width, childEnd - childStart
-            )
+            ), v.tag
           ), k.eventAddress.copy(staveId = address.staveId), ev
         )
       }

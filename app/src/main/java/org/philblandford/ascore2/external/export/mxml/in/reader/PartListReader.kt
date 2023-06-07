@@ -1,6 +1,17 @@
 package com.philblandford.ascore.external.export.mxml.`in`.reader
 
-import com.philblandford.ascore.external.export.mxml.out.*
+import org.philblandford.ascore2.external.export.mxml.`in`.reader.getChild
+import org.philblandford.ascore2.external.export.mxml.`in`.reader.getChildren
+import org.philblandford.ascore2.external.export.mxml.out.MxmlInstrumentName
+import org.philblandford.ascore2.external.export.mxml.out.MxmlMidiChannel
+import org.philblandford.ascore2.external.export.mxml.out.MxmlMidiInstrument
+import org.philblandford.ascore2.external.export.mxml.out.MxmlMidiProgram
+import org.philblandford.ascore2.external.export.mxml.out.MxmlMidiUnpitched
+import org.philblandford.ascore2.external.export.mxml.out.MxmlPartAbbreviation
+import org.philblandford.ascore2.external.export.mxml.out.MxmlPartList
+import org.philblandford.ascore2.external.export.mxml.out.MxmlPartName
+import org.philblandford.ascore2.external.export.mxml.out.MxmlScoreInstrument
+import org.philblandford.ascore2.external.export.mxml.out.MxmlScorePart
 import org.w3c.dom.Element
 
 internal fun parsePartList(partList: Element): MxmlPartList? {

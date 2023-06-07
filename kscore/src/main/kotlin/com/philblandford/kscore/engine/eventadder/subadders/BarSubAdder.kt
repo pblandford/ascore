@@ -15,7 +15,7 @@ private val retainBar1 = setOf(
   EventType.INSTRUMENT, EventType.CLEF, EventType.TEMPO
 )
 
-object BarSubAdder : com.philblandford.kscore.engine.eventadder.BaseEventAdder {
+object BarSubAdder : com.philblandford.kscore.engine.eventadder.BaseSubAdder {
   override fun addEvent(
     score: Score,
     destination: EventDestination,
@@ -61,7 +61,7 @@ object BarSubAdder : com.philblandford.kscore.engine.eventadder.BaseEventAdder {
     val timeSignature = getTimeSignature(ez(from)) ?: TimeSignature(4, 4)
     val newParts = parts.map { it.shiftBars(from, number, timeSignature) }
     val em = eventMap.shiftBars(from, number)
-    return Score(newParts, em)
+    return Score(newParts, em, beamDirectory)
   }
 
   private fun Part.shiftBars(from: BarNum, number: Int, timeSignature: TimeSignature): Part {

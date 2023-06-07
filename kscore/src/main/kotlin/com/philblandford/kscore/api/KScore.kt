@@ -83,7 +83,7 @@ interface KScore {
   fun moveSelection(left: Boolean)
   fun cycleArea()
   fun moveSelectedArea(x: Int, y: Int, eventParam: EventParam = EventParam.HARD_START)
-  fun getLocation(eventAddress: EventAddress):Location?
+  fun getLocation(eventAddress: EventAddress): Location?
 
   fun copy()
   fun cut()
@@ -960,7 +960,7 @@ class KScoreImpl(
   ): ScoreArea? {
     ksLogt("get sa")
     return rep()?.getArea(addressRequirement, eventAddress)?.let { ret ->
-      ksLogt("YES $ret")
+      ksLogt("YES $ret $eventAddress")
       ScoreArea(
         ret.page,
         Rectangle(
@@ -1379,7 +1379,9 @@ class KScoreImpl(
   private fun setAreaToShow(areaToShow: AreaToShow) {
     selectionManager.setSelectedArea(
       areaToShow,
-      rep()?.getAreasAtAddress(areaToShow.eventAddress.voiceIdless()) ?: listOf()
+      rep()?.getAreasAtAddress(areaToShow.eventAddress.voiceIdless())?.filter {
+        it.event.eventType == EventType.DURATION || it.event.eventType == EventType.NOTE
+      } ?: listOf()
     )
   }
 
@@ -1387,10 +1389,10 @@ class KScoreImpl(
     selectionManager.refreshAreas { rep()?.getAreasAtAddress(it) ?: listOf() }
   }
 
-  private fun tryAction(command: Command? = null, internal:Boolean = true, action: () -> Unit) {
+  private fun tryAction(command: Command? = null, internal: Boolean = true, action: () -> Unit) {
     try {
       action()
-    } catch (e:Exception) {
+    } catch (e: Exception) {
       coroutineScope.launch {
         kScoreErrorFlow.emit(ScoreError(e, command, internal))
       }

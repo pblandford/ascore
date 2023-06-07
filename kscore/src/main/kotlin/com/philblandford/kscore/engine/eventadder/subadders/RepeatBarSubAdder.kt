@@ -6,14 +6,14 @@ import com.philblandford.kscore.engine.map.eventMapOf
 import com.philblandford.kscore.engine.eventadder.*
 import com.philblandford.kscore.engine.types.*
 
-object RepeatBarSubAdder : BaseEventAdder {
+object RepeatBarSubAdder : BaseSubAdder {
 
   override fun addEvent(
-      score: Score,
-      destination: EventDestination,
-      eventType: EventType,
-      params: ParamMap,
-      eventAddress: EventAddress
+    score: Score,
+    destination: EventDestination,
+    eventType: EventType,
+    params: ParamMap,
+    eventAddress: EventAddress
   ): ScoreResult {
 
     if (score.getParam<Int>(EventType.REPEAT_BAR, EventParam.NUMBER, eventAddress - 1) == 2) {
@@ -21,18 +21,19 @@ object RepeatBarSubAdder : BaseEventAdder {
     }
     return params.g<Int>(EventParam.NUMBER).ifNullError("Require number parameter") { number ->
       super.addEvent(score, destination, eventType, params, eventAddress.startBar().voiceIdless())
-          .then { it.deleteExisting(number, eventAddress) }
-          .then { it.removeBarEvents(eventAddress, number) }
+        .then { it.deleteExisting(number, eventAddress) }
+        .then { it.removeBarEvents(eventAddress, number) }
+        .then { it.removeBeams(eventAddress) }
     }
   }
 
   override fun addEventRange(
-      score: Score,
-      destination: EventDestination,
-      eventType: EventType,
-      params: ParamMap,
-      eventAddress: EventAddress,
-      endAddress: EventAddress
+    score: Score,
+    destination: EventDestination,
+    eventType: EventType,
+    params: ParamMap,
+    eventAddress: EventAddress,
+    endAddress: EventAddress
   ): ScoreResult {
     val bars = score.getStaveRange(eventAddress.staveId, endAddress.staveId).flatMap { staveId ->
       (eventAddress.barNum..endAddress.barNum).map { bar ->
@@ -46,8 +47,10 @@ object RepeatBarSubAdder : BaseEventAdder {
 
   private fun Score.deleteExisting(number: Int, eventAddress: EventAddress): ScoreResult {
     return if (number == 2) {
-      super.deleteEvent(this, staveDestination, EventType.REPEAT_BAR, paramMapOf(),
-          eventAddress.inc())
+      super.deleteEvent(
+        this, staveDestination, EventType.REPEAT_BAR, paramMapOf(),
+        eventAddress.inc()
+      )
     } else ok()
   }
 
@@ -55,9 +58,16 @@ object RepeatBarSubAdder : BaseEventAdder {
     val endBar = if (number == 1) eventAddress.barNum else eventAddress.barNum + 1
     return transformBars(eventAddress.barNum, endBar) { _, _, _, staveId ->
       if (staveId == eventAddress.staveId) {
-        Bar(timeSignature,
-            eventMap = eventMapOf(eventMap.getEvents(EventType.HARMONY) ?: mapOf())).ok()
+        Bar(
+          timeSignature,
+          eventMap = eventMapOf(eventMap.getEvents(EventType.HARMONY) ?: mapOf())
+        ).ok()
       } else ok()
     }
+  }
+
+  private fun Score.removeBeams(eventAddress: EventAddress):ScoreResult {
+    val beamDirectory = beamDirectory.removeBeamsForBar(eventAddress)
+    return Right(copy(beamDirectory = beamDirectory))
   }
 }

@@ -3,14 +3,14 @@ package com.philblandford.kscore.engine.eventadder.subadders
 import com.philblandford.kscore.engine.core.score.Score
 import com.philblandford.kscore.engine.core.score.ScoreLevelType
 import com.philblandford.kscore.engine.eventadder.EventDestination
-import com.philblandford.kscore.engine.eventadder.BaseEventAdder
+import com.philblandford.kscore.engine.eventadder.BaseSubAdder
 import com.philblandford.kscore.engine.eventadder.ScoreResult
 import com.philblandford.kscore.engine.types.EventAddress
 import com.philblandford.kscore.engine.types.EventParam
 import com.philblandford.kscore.engine.types.EventType
 import com.philblandford.kscore.engine.types.StaveId
 
-object LayoutSubAdder : BaseEventAdder {
+object LayoutSubAdder : BaseSubAdder {
 
   override fun <T> setParam(
     score: Score,

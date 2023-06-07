@@ -3,8 +3,6 @@ package core.score
 import com.philblandford.kscore.engine.types.*
 import assertEqual
 import com.philblandford.kscore.engine.core.score.ScoreLevel
-import com.philblandford.kscore.msq
-import com.philblandford.kscore.engine.core.score.ScoreReturn
 import com.philblandford.kscore.engine.core.score.VoiceMap
 import com.philblandford.kscore.engine.core.score.tuplet
 import com.philblandford.kscore.engine.dsl.dslChord

@@ -1,6 +1,5 @@
 package com.philblandford.ascore.external.export.mxml.out.creator.measure
 
-import com.philblandford.ascore.external.export.mxml.out.*
 import com.philblandford.kscore.engine.duration.Duration
 import com.philblandford.kscore.engine.duration.dZero
 import com.philblandford.kscore.engine.duration.minus
@@ -8,6 +7,15 @@ import com.philblandford.kscore.engine.map.EMK
 import com.philblandford.kscore.engine.map.EventHash
 import com.philblandford.kscore.engine.pitch.harmony
 import com.philblandford.kscore.engine.types.*
+import org.philblandford.ascore2.external.export.mxml.out.MxmlBass
+import org.philblandford.ascore2.external.export.mxml.out.MxmlBassAlter
+import org.philblandford.ascore2.external.export.mxml.out.MxmlBassStep
+import org.philblandford.ascore2.external.export.mxml.out.MxmlHarmony
+import org.philblandford.ascore2.external.export.mxml.out.MxmlKind
+import org.philblandford.ascore2.external.export.mxml.out.MxmlOffset
+import org.philblandford.ascore2.external.export.mxml.out.MxmlRoot
+import org.philblandford.ascore2.external.export.mxml.out.MxmlRootAlter
+import org.philblandford.ascore2.external.export.mxml.out.MxmlRootStep
 
 
 internal class HarmonyLookup(val harmonyEvents: EventHash, durationEvents: EventHash) {

@@ -8,6 +8,7 @@ private fun doScoreOp(
   op: () -> ScoreResult
 ): Score? {
 
+
   return when (val res = op()) {
     is Right -> res.r
     is Warning -> res.r

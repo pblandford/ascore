@@ -208,7 +208,7 @@ class NewAdderTest : ScoreTest() {
   }
 
 
-  internal object TestScoreEventAdder : BaseEventAdder {
+  internal object TestScoreEventAdder : BaseSubAdder {
     override fun addEvent(
       score: Score,
       destination: EventDestination,

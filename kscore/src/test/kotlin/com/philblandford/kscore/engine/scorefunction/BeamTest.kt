@@ -24,8 +24,7 @@ class BeamTest : ScoreTest() {
     SMV(duration = quaver())
     SMV(duration = quaver(), eventAddress = eav(1, quaver()))
     SDE(EventType.DURATION, eav(1))
-    SVNP(EventType.DURATION, EventParam.IS_BEAMED, eav(1))
-    SVNP(EventType.DURATION, EventParam.IS_BEAMED, eav(1, quaver()))
+    SVP(EventType.DURATION, EventParam.IS_BEAMED, false, eav(1, quaver()))
   }
 
   @Test
@@ -91,6 +90,38 @@ class BeamTest : ScoreTest() {
       )
     }
     assertEqual("8:8", EG().getBeams(eav(1), eav(1)).getBeamStrings().first())
+  }
+
+  @Test
+  fun testTupletNotesBeamedOctaves() {
+    SAE(tuplet(dZero(), 3, crotchet()).toEvent())
+    SMV(duration = quaver(), eventAddress = eav(1))
+    SMV(60, duration = quaver(), eventAddress = eav(1))
+    SMV(77, duration = quaver(), eventAddress = eav(1, Duration(1, 12)))
+    SMV(65, duration = quaver(), eventAddress = eav(1, Duration(1, 12)))
+    assertEqual("8:8", EG().getBeams(eav(1), eav(1)).getBeamStrings().first())
+  }
+
+  @Test
+  fun testTupletNotesMarkedOctaves() {
+    SAE(tuplet(dZero(), 3, crotchet()).toEvent())
+    SMV(duration = quaver(), eventAddress = eav(1))
+    SMV(60, duration = quaver(), eventAddress = eav(1))
+    SMV(77, duration = quaver(), eventAddress = eav(1, Duration(1, 12)))
+    SMV(65, duration = quaver(), eventAddress = eav(1, Duration(1, 12)))
+    SVP(EventType.DURATION, EventParam.IS_BEAMED, true, eav(1))
+    SVP(EventType.DURATION, EventParam.IS_BEAMED, true, eav(1, Duration(1, 12)))
+  }
+
+  @Test
+  fun testTupletNotesMarkedUpstemOctaves() {
+    SAE(tuplet(dZero(), 3, crotchet()).toEvent())
+    SMV(duration = quaver(), eventAddress = eav(1))
+    SMV(60, duration = quaver(), eventAddress = eav(1))
+    SMV(77, duration = quaver(), eventAddress = eav(1, Duration(1, 12)))
+    SMV(65, duration = quaver(), eventAddress = eav(1, Duration(1, 12)))
+    SVP(EventType.DURATION, EventParam.IS_UPSTEM_BEAM, true, eav(1))
+    SVP(EventType.DURATION, EventParam.IS_UPSTEM_BEAM, true, eav(1, Duration(1, 12)))
   }
 
   @Test
@@ -198,14 +229,16 @@ class BeamTest : ScoreTest() {
         eventAddress = eav(1, semibreve().div(12).multiply(it))
       )
     }
-    assertEqual("8:8:8:8:8:8:8:8:8:8:8:8",
-      EG().getBeams(eav(1), eav(1)).getBeamStrings().first())
+    assertEqual(
+      "8:8:8:8:8:8:8:8:8:8:8:8",
+      EG().getBeams(eav(1), eav(1)).getBeamStrings().first()
+    )
   }
 
   @Test
   fun testDuodecupletNotesBeamed3_8() {
 
-    SAE(TimeSignature(3,8).toEvent(), ez(1))
+    SAE(TimeSignature(3, 8).toEvent(), ez(1))
     SAE(tuplet(dZero(), 12, crotchet(1)).toEvent())
     repeat(12) {
       SMV(
@@ -214,16 +247,18 @@ class BeamTest : ScoreTest() {
       )
     }
     assertEqual(1, EG().getBeams(eav(1)).size)
-    assertEqual("32:32:32:32:32:32:32:32:32:32:32:32",
-      EG().getBeams(eav(1), eav(1)).getBeamStrings().first())
+    assertEqual(
+      "32:32:32:32:32:32:32:32:32:32:32:32",
+      EG().getBeams(eav(1), eav(1)).getBeamStrings().first()
+    )
   }
 
   @Test
   fun testNotesNotBeamedSeparate() {
     SMV(duration = quaver())
     SMV(duration = quaver(), eventAddress = eav(1, crotchet()))
-    SVNP(EventType.DURATION, EventParam.IS_BEAMED, eav(1))
-    SVNP(EventType.DURATION, EventParam.IS_BEAMED, eav(1, quaver()))
+    SVP(EventType.DURATION, EventParam.IS_BEAMED, false, eav(1))
+    SVP(EventType.DURATION, EventParam.IS_BEAMED, false, eav(1, crotchet()))
   }
 
   @Test
@@ -280,5 +315,72 @@ class BeamTest : ScoreTest() {
     grace()
     grace()
     assertEqual("16:16", EG().getBeams(eav(1)).getBeamStrings().first())
+  }
+
+  @Test
+  fun testBeamCreatedGraceFourNotes() {
+    repeat(4) {
+      grace()
+    }
+    assertEqual("16:16:16:16", EG().getBeams(eav(1)).getBeamStrings().first())
+  }
+
+  @Test
+  fun testBeamRemainsAfterDeletingGrace() {
+    repeat(4) {
+      grace()
+    }
+    SDE(EventType.DURATION, eagv())
+    assertEqual("16:16:16", EG().getBeams(eav(1)).getBeamStrings().first())
+  }
+
+  @Test
+  fun testBeamDoesntAffectNotesInOtherParts() {
+    SCD(instruments = listOf("Violin", "Violin"))
+    repeat(4) {
+      SMV(midiVal = 60, duration = quaver(), eventAddress = eav(1, quaver() * it))
+    }
+    SMV(midiVal = 72, duration = crotchet(), eventAddress = easv(1, 2, 1))
+    val beams = EG().getBeams()
+    assertEqual(1, beams.size)
+    SVP(EventType.DURATION, EventParam.IS_UPSTEM, false, easv(1, 2, 1))
+    SVNP(EventType.DURATION, EventParam.IS_UPSTEM_BEAM, easv(1, 2, 1))
+  }
+
+  @Test
+  fun testBeamsUpdatedAfterClefChange() {
+    SMV(60, quaver())
+    SMV(60, quaver(), eventAddress = eav(1, quaver()))
+    SAE(EventType.CLEF, ea(1), paramMapOf(EventParam.TYPE to ClefType.BASS))
+    val (_, beam) = EG().getBeams().toList().first()
+    assertEqual(false, beam.up)
+  }
+
+  @Test
+  fun testBeamsUpdatedAfterRangeDelete() {
+    repeat(8) {
+      SMV(midiVal = 60, duration = quaver(), eventAddress = eav(1, quaver() * it))
+    }
+    SDE(EventType.DURATION, eav(1, crotchet()), eav(1, minim() + quaver()))
+    val beams = EG().getBeams().toList().sortedBy { it.first }
+    assertEqual(2, beams.size)
+    assertEqual(2, beams[0].second.members.size)
+    assertEqual(2, beams[1].second.members.size)
+  }
+
+  @Test
+  fun testGraceBeamsUpdatedAfterNoteShift() {
+    repeat(3) {
+      grace()
+    }
+    SMV()
+    assertEqual(1, EG().getBeams().size)
+    SAE(
+      EventType.NOTE_SHIFT, eav(1), paramMapOf(
+        EventParam.AMOUNT to 1,
+        EventParam.ACCIDENTAL to Accidental.SHARP
+      )
+    )
+    assertEqual(1, EG().getBeams().size)
   }
 }

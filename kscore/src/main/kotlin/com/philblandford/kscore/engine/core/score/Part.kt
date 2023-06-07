@@ -111,7 +111,7 @@ data class Part(
     return Part(staves.removeAt(index - 1).add(index - 1, scoreLevel as Stave), eventMap)
   }
 
-  override fun replaceSelf(eventMap: EventMap, newSubLevels: Iterable<ScoreLevel>?): ScoreLevel {
+  override fun replaceSelf(eventMap: EventMap, newSubLevels: List<ScoreLevel>?): ScoreLevel {
     return Part(newSubLevels?.map { it as Stave }?.toList() ?: staves, eventMap)
   }
 

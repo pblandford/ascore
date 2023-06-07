@@ -1,10 +1,18 @@
 package com.philblandford.ascore.external.export.mxml.out.creator
 
-import com.philblandford.ascore.external.export.mxml.out.*
 import com.philblandford.kscore.api.Instrument
 import com.philblandford.kscore.api.instrument
 import com.philblandford.kscore.engine.core.score.Part
 import com.philblandford.kscore.engine.types.EventType
+import org.philblandford.ascore2.external.export.mxml.out.MxmlInstrumentName
+import org.philblandford.ascore2.external.export.mxml.out.MxmlMidiChannel
+import org.philblandford.ascore2.external.export.mxml.out.MxmlMidiInstrument
+import org.philblandford.ascore2.external.export.mxml.out.MxmlMidiProgram
+import org.philblandford.ascore2.external.export.mxml.out.MxmlMidiUnpitched
+import org.philblandford.ascore2.external.export.mxml.out.MxmlPartAbbreviation
+import org.philblandford.ascore2.external.export.mxml.out.MxmlPartName
+import org.philblandford.ascore2.external.export.mxml.out.MxmlScoreInstrument
+import org.philblandford.ascore2.external.export.mxml.out.MxmlScorePart
 
 internal fun createScorePart(part: Part, num: Int): MxmlScorePart? {
   val id = "P$num"

@@ -20,7 +20,7 @@ enum class SaveType {
   BREAK, NOTEHEADTYPE, BARLINETYPE, FERMATATYPE, PAUSETYPE, PEDALTYPE, WEDGETYPE, NAVIGATIONTYPE,
   LYRICTYPE, GLISSANDOTYPE, BARNUMBERING,
   PARAM, EVENTADDRESS, DURATION, COORD, META, MODIFIABLE, CHORDDECORATION, PERCUSSIONDESCR, NOTE, NULL, PITCH, TUPLET, VOICEMAP, BAR, STAVE, PART,
-  ITERABLE, BOOL, INT, STRING, PAIR, LONGTRILLTYPE,
+  ITERABLE, BOOL, INT, STRING, PAIR, LONGTRILLTYPE, BEAMTYPE
 }
 
 
@@ -287,6 +287,7 @@ class Saver {
       is NavigationType -> SaveType.NAVIGATIONTYPE to { a -> saveString(a.toString()) }
       is LyricType -> SaveType.LYRICTYPE to { a -> saveString(a.toString()) }
       is GlissandoType -> SaveType.GLISSANDOTYPE to { a -> saveString(a.toString()) }
+      is BeamType -> SaveType.BEAMTYPE to { a -> saveString(a.toString()) }
       is BarNumbering -> SaveType.BARNUMBERING to { a -> saveString(a.toString()) }
       is EventAddress -> SaveType.EVENTADDRESS to { a -> saveEventAddress(a as EventAddress) }
       is Duration -> SaveType.DURATION to { a -> saveDuration(a as Duration) }

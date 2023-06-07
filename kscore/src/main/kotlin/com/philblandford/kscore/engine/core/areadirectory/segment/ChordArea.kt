@@ -9,6 +9,7 @@ import com.philblandford.kscore.engine.core.area.factory.*
 import com.philblandford.kscore.engine.core.representation.*
 import com.philblandford.kscore.engine.duration.*
 import com.philblandford.kscore.engine.types.*
+import com.philblandford.kscore.log.ksLoge
 import com.philblandford.kscore.util.highestBit
 import kotlin.math.abs
 import kotlin.math.max
@@ -60,7 +61,7 @@ private fun DrawableFactory.addNotes(baseArea: Area, notes: Iterable<Event>): Ar
   notes.withIndex().forEach {
     getHead(it.value)?.let { (tArea, offset) ->
       val pos = it.value.getParam<Coord>(EventParam.POSITION) ?: Coord(0, 0)
-      val noteArea = tArea.copy(event = it.value, addressRequirement = AddressRequirement.NONE)
+      val noteArea = tArea.copy(event = it.value, addressRequirement = AddressRequirement.EVENT)
       areaCopy = areaCopy.addArea(
         noteArea, Coord(pos.x * tArea.width, pos.y * BLOCK_HEIGHT - BLOCK_HEIGHT + offset),
         eventAddress = eZero().copy(id = it.index + 1)
@@ -137,6 +138,7 @@ private fun createStemGeography(
   val height = if (small) STEM_HEIGHT_SMALL else STEM_HEIGHT
 
   val up = chord.isUpstem()
+  ksLoge("upstem $up ${chord}")
   val x = if (up) tAreaWidth - baseArea.xMargin - LINE_THICKNESS / 2 else LINE_THICKNESS / 2
   val noteSpan = abs(endNotes - startNotes)
   val tip = if (up) {

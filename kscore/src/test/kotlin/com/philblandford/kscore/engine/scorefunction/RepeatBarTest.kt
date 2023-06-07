@@ -186,4 +186,18 @@ class RepeatBarTest : ScoreTest() {
     val beams = EG().getBeams(eav(2))
     assert(beams.isEmpty())
   }
+
+  @Test
+  fun testAddRepeatBarOverwritesBeams2Bars() {
+    repeat(2) { bar ->
+      repeat(8) { offset ->
+        SMV(duration = quaver(), eventAddress = eav(bar + 1, quaver() * offset))
+      }
+    }
+    SAE(EventType.REPEAT_BAR, ea(3), params = paramMapOf(EventParam.NUMBER to 2))
+    var beams = EG().getBeams(eav(3))
+    assert(beams.isEmpty())
+    beams = EG().getBeams(eav(4))
+    assert(beams.isEmpty())
+  }
 }

@@ -37,9 +37,19 @@ fun geographyXDirectory(
   val preHeaderGeographies = areaDirectoryQuery.getAllPreHeaderGeogs()
   val breaks = getBreaks(scoreQuery)
   val systemGeographies =
-    spaceSystems(directory.barGeographies.toSortedMap(), preHeaderGeographies, headerGeographies, breaks, pageWidth)
+    spaceSystems(
+      directory.barGeographies.toSortedMap(),
+      preHeaderGeographies,
+      headerGeographies,
+      breaks,
+      pageWidth
+    )
 
-  return GeographyXDirectory(systemGeographies, directory.barGeographies, directory.rawBarGeographies)
+  return GeographyXDirectory(
+    systemGeographies,
+    directory.barGeographies,
+    directory.rawBarGeographies
+  )
 }
 
 fun geographyXDirectoryDiff(
@@ -52,9 +62,19 @@ fun geographyXDirectoryDiff(
   val preHeaderGeographies = areaDirectoryQuery.getAllPreHeaderGeogs()
   val breaks = getBreaks(scoreQuery)
   val systemGeographies =
-    spaceSystems(directory.barGeographies.toSortedMap(), preHeaderGeographies, headerGeographies, breaks, pageWidth)
+    spaceSystems(
+      directory.barGeographies.toSortedMap(),
+      preHeaderGeographies,
+      headerGeographies,
+      breaks,
+      pageWidth
+    )
 
-  return GeographyXDirectory(systemGeographies, directory.barGeographies, directory.rawBarGeographies)
+  return GeographyXDirectory(
+    systemGeographies,
+    directory.barGeographies,
+    directory.rawBarGeographies
+  )
 }
 
 /* Get any line/page breaks specified by the user that will override our default bar spacing */
@@ -64,14 +84,19 @@ private fun getBreaks(scoreQuery: ScoreQuery): EventHash {
   return if (barsPerLine != 0) {
     createBreaksPerLine(barsPerLine, scoreQuery)
   } else {
-    scoreQuery.getEvents(EventType.BREAK) ?: eventHashOf()
+    val allBreaks = scoreQuery.getEvents(EventType.BREAK) ?: eventHashOf()
+    allBreaks.filter { it.key.eventAddress.staveId.main == scoreQuery.selectedPart() }
   }
 }
 
 private fun createBreaksPerLine(barsPerLine: Int, scoreQuery: ScoreQuery): EventHash {
   /* Start counting from first non-upbeat bar */
   val start =
-    if (scoreQuery.getEvent(EventType.HIDDEN_TIME_SIGNATURE, ez(1)) != null) barsPerLine + 1 else barsPerLine
+    if (scoreQuery.getEvent(
+        EventType.HIDDEN_TIME_SIGNATURE,
+        ez(1)
+      ) != null
+    ) barsPerLine + 1 else barsPerLine
   return (start..scoreQuery.numBars step barsPerLine).fold(eventHashOf()) { eh, num ->
     eh.plus(
       EMK(EventType.BREAK, ez(num)) to Event(
@@ -88,7 +113,7 @@ private fun getBarGeographies(
   scoreQuery: ScoreQuery,
   bars: List<Int>? = null,
   old: GeographyXDirectory? = null
-):  GeographyXDirectory {
+): GeographyXDirectory {
   val parts = scoreQuery.allParts(true).toSet()
   val isMultiBar = getOption<Boolean>(EventParam.OPTION_SHOW_MULTI_BARS, scoreQuery)
 
@@ -175,9 +200,11 @@ private fun getMultiBarBreakers(scoreQuery: ScoreQuery): Set<Int> {
             NavigationType.CODA -> {
               if (it.value.isTrue(EventParam.START)) barNum else barNum + 1
             }
+
             else -> barNum
           }
         }
+
         else -> it.key.eventAddress.barNum
       }
     }.toSet()
@@ -220,10 +247,10 @@ private fun createBarGeography(
     )
   }.toMap()
   return BarGeography(
-      slicePositions = slicePositions,
-      canBeLast = canBeLast,
-      isEmpty = segmentGeogStaveMap.isEmpty()
-    )
+    slicePositions = slicePositions,
+    canBeLast = canBeLast,
+    isEmpty = segmentGeogStaveMap.isEmpty()
+  )
 
 }
 

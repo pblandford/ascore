@@ -4,6 +4,7 @@ import com.philblandford.kscore.api.Rectangle
 import com.philblandford.kscore.api.ScoreArea
 import com.philblandford.kscore.engine.core.representation.Representation
 import com.philblandford.kscore.engine.core.representation.getArea
+import com.philblandford.kscore.engine.core.representation.getAreasAtAddress
 import com.philblandford.kscore.engine.core.score.Score
 import com.philblandford.kscore.engine.types.Event
 import com.philblandford.kscore.engine.types.EventAddress
@@ -94,23 +95,24 @@ class SelectionManager {
 
 
   fun clearSelection() {
-    setState(SelectState(
-      previousStart = selectState.value.start,
-      previousEnd = selectState.value.end
-    ))
+    setState(
+      SelectState(
+        previousStart = selectState.value.start,
+        previousEnd = selectState.value.end
+      )
+    )
     atsIdx = 0
   }
 
+  fun cycleArea() {
+
+  }
 
   fun cycleArea(getAreasAtAddress: (EventAddress) -> List<AreaToShow>) {
     ksLogv("CycleArea")
 
     getStartSelection()?.let { start ->
-      val areas = getAreasAtAddress(start)
-
-      val chords = areas.filter {
-        it.event.eventType == EventType.DURATION || it.event.eventType == EventType.NOTE
-      }.sortAreas()
+      val chords = getPossibleAreas(start, getAreasAtAddress)
       selectState.value.area?.let { ats ->
         var idx = chords.indexOf(ats) + 1
         if (idx >= chords.size) idx = 0
@@ -121,6 +123,17 @@ class SelectionManager {
         setSelectedArea(chords.first(), chords)
       }
     }
+  }
+
+  private fun getPossibleAreas(
+    address: EventAddress,
+    getAreasAtAddress: (EventAddress) -> List<AreaToShow>
+  ): List<AreaToShow> {
+    val areas = getAreasAtAddress(address)
+
+    return areas.filter {
+      it.event.eventType == EventType.DURATION || it.event.eventType == EventType.NOTE
+    }.sortAreas()
   }
 
   private fun List<AreaToShow>.sortAreas(): List<AreaToShow> {
@@ -170,26 +183,45 @@ class SelectionManager {
 
   fun setSelectedArea(ats: AreaToShow, areas: List<AreaToShow>) {
     setState(SelectState(area = ats))
-    atsIdx = areas.indexOfFirst { it.event.eventType == ats.event.eventType }
-    ksLogt("COORD setSelectedArea ${ats.scoreArea.rectangle}")
+    atsIdx = areas.indexOfFirst {
+      it.eventAddress == ats.eventAddress &&
+          it.event.eventType == ats.event.eventType
+    }
+    ksLogt("COORD setSelectedArea ${ats.scoreArea.rectangle} ${ats.eventAddress}")
   }
 
   fun updateFromScore(score: Score, representation: Representation) {
     getSelectedArea()?.let { ats ->
-      ksLoge("COORD kscore SM Update old ${ats.scoreArea.rectangle}")
+      ksLoge("COORD kscore SM Update old ${ats.scoreArea.rectangle} ${ats.eventAddress}")
 
-      score.tryGetEvent(ats.event.eventType, ats.eventAddress)?.let { (latestEvent, latestAddress) ->
-        representation.getArea(latestEvent.eventType, latestAddress, ats.extra)?.let { area ->
-          ksLoge("COORD kscore update new ${area.x} ${area.y} ${latestEvent.params}")
-          val newAts = ats.copy(event = latestEvent, eventAddress = latestAddress,
-            scoreArea = ats.scoreArea.copy(rectangle = Rectangle(area.x, area.y, area.width, area.height)))
-          setSelectedArea(newAts, listOf(newAts))
+      score.tryGetEvent(ats.event.eventType, ats.eventAddress)
+        ?.let { (latestEvent, latestAddress) ->
+          representation.getArea(latestEvent.eventType, latestAddress, ats.extra)?.let { area ->
+            ksLoge("COORD kscore update new ${area.x} ${area.y} ${latestEvent.params}")
+            val newAts = ats.copy(
+              event = latestEvent, eventAddress = latestAddress,
+              scoreArea = ats.scoreArea.copy(
+                rectangle = Rectangle(
+                  area.x,
+                  area.y,
+                  area.width,
+                  area.height
+                )
+              )
+            )
+            val possible = getPossibleAreas(ats.eventAddress.voiceIdless()) {
+              representation.getAreasAtAddress(it)
+            }
+            setSelectedArea(newAts, possible)
+          }
         }
-      }
     }
   }
 
-  private fun Score.tryGetEvent(eventType:EventType, eventAddress: EventAddress):Pair<Event, EventAddress>? {
+  private fun Score.tryGetEvent(
+    eventType: EventType,
+    eventAddress: EventAddress
+  ): Pair<Event, EventAddress>? {
     return getEvent(eventType, eventAddress)?.let { it to eventAddress } ?: run {
       val adjustedAddress = eventAddress.copy(id = (eventAddress.id + 1) % 2)
       getEvent(eventType, adjustedAddress)?.let { it to adjustedAddress }
@@ -199,12 +231,11 @@ class SelectionManager {
   private fun setState(state: SelectState) {
     selectState.value = state
     coroutineScope.launch {
-      selectState.value = state
       selectState.emit(state)
     }
   }
 
-  private fun updateState(func:SelectState.()->SelectState) {
+  private fun updateState(func: SelectState.() -> SelectState) {
     setState(selectState.value.func())
   }
 }

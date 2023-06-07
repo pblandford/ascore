@@ -144,6 +144,11 @@ internal val pauseIds = listOf(
   R.drawable.caesura to PauseType.CAESURA
 )
 
+internal val beamIds = listOf(
+  R.drawable.beamed_quavers to BeamType.JOIN,
+  R.drawable.beamed_quavers_broken to BeamType.BREAK
+)
+
 internal val numberIds = listOf(
   R.drawable.zero,
   R.drawable.one,

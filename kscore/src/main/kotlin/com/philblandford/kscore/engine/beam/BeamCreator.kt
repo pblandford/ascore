@@ -9,15 +9,16 @@ import com.philblandford.kscore.engine.time.TimeSignature
 import com.philblandford.kscore.engine.types.*
 import com.philblandford.kscore.log.ksLoge
 import com.philblandford.kscore.log.ksLogv
+import com.philblandford.kscore.util.sumOf
 
-data class BeamMember(val duration: Duration, val realDuration: Duration)
+data class BeamMember(val offset:Duration, val duration: Duration, val realDuration: Duration)
 data class SimpleDuration(
   val duration: Duration, val realDuration: Duration,
   val durationType: DurationType, val upstem: Boolean
 )
 
 data class Beam(
-  val members: Iterable<BeamMember>, val duration: Duration, val up: Boolean = true,
+  val members: List<BeamMember>, val duration: Duration = members.sumOf { it.realDuration }, val up: Boolean = true,
   val endMarker: Boolean = false
 ) {
   fun toEvent(): Event {
@@ -30,6 +31,16 @@ data class Beam(
       )
     )
   }
+
+  fun getBeamString(): String {
+    return members.map {
+        if (it.duration.numerator == 1) {
+          it.duration.denominator
+        } else {
+          "${it.duration.numerator}/${it.duration.denominator}"
+        }
+      }.joinToString(":")
+  }
 }
 
 fun beam(event: Event): Beam {
@@ -39,7 +50,7 @@ fun beam(event: Event): Beam {
   }
 
   return Beam(
-    event.params[EventParam.MEMBERS] as Iterable<BeamMember>,
+    event.params[EventParam.MEMBERS] as List<BeamMember>,
     event.params[EventParam.DURATION] as Duration,
     event.params[EventParam.IS_UPSTEM] as Boolean,
     endMarker
@@ -82,7 +93,7 @@ private fun createGrace(eventList: EventList): BeamMap {
 
     groups.fold(bm) { bm2, group ->
       val members = group.map {
-        BeamMember(it.second.duration(), it.second.realDuration())
+        BeamMember(it.first.eventAddress.graceOffset ?: dZero(), it.second.duration(), it.second.realDuration())
       }
       val up = getUp(sorted.toSimple().toList())
       val duration =
@@ -205,8 +216,9 @@ private fun getBeam(
         if (sn == timeSignature.duration.divide(divisor)) {
           val up = getUp(filtered.toList())
           val address = filtered.toList().minByOrNull { it.first }!!.first
+          val startOffset = filtered.toList().first().first
           return address to Beam(
-            filtered.map { BeamMember(it.value.duration, it.value.realDuration) },
+            filtered.map { BeamMember(it.key - startOffset, it.value.duration, it.value.realDuration) },
             timeSignature.duration, up
           )
         }

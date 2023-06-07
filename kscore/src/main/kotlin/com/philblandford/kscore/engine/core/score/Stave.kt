@@ -57,7 +57,7 @@ data class Stave(
     )
   }
 
-  override fun replaceSelf(eventMap: EventMap, newSubLevels: Iterable<ScoreLevel>?): ScoreLevel {
+  override fun replaceSelf(eventMap: EventMap, newSubLevels: List<ScoreLevel>?): ScoreLevel {
     return Stave(newSubLevels?.map { it as Bar }?.toList() ?: bars, eventMap)
   }
 

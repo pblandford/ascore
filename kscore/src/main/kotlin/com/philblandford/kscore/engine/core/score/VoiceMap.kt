@@ -17,7 +17,6 @@ import java.util.*
 
 data class EventListKey(val offset: Duration, val event: Event)
 private typealias EventList = List<EventListKey>
-typealias EventListM = SortedMap<Duration, Event>
 
 typealias VoiceEventMap = SortedMap<Duration, Event>
 
@@ -32,8 +31,7 @@ open class VoiceMap internal constructor(
   open val timeSignature: TimeSignature = TimeSignature(4, 4),
   override val eventMap: EventMap =
     emptyEventMap().putEvent(eZero(), timeSignature.toEvent()),
-  val tuplets: List<Tuplet> = listOf(),
-  open val beamMap: BeamMap = beamMapOf()
+  val tuplets: List<Tuplet> = listOf()
 ) : ScoreLevelImpl() {
 
   override val subLevels = tuplets
@@ -46,7 +44,7 @@ open class VoiceMap internal constructor(
     } ?: dZero()
   }
 
-  override fun replaceSelf(eventMap: EventMap, newSubLevels: Iterable<ScoreLevel>?): ScoreLevel {
+  override fun replaceSelf(eventMap: EventMap, newSubLevels: List<ScoreLevel>?): ScoreLevel {
     val ts = eventMap.getEvent(EventType.TIME_SIGNATURE)?.let { timeSignature(it) } ?: timeSignature
     return voiceMap(ts, eventMap, newSubLevels?.map { it as Tuplet } ?: tuplets)
   }
@@ -72,7 +70,7 @@ open class VoiceMap internal constructor(
         val newTuplets = tuplets.filterNot { it.offset == scoreLevel.offset }.plus(scoreLevel)
           .sortedBy { it.offset }
 
-        VoiceMap(timeSignature, eventMap, newTuplets, beamMap)
+        VoiceMap(timeSignature, eventMap, newTuplets)
       }
       else -> this
     }
@@ -208,7 +206,6 @@ open class VoiceMap internal constructor(
           }
         } ?: listOf()
       }?.toMap()
-      EventType.BEAM -> getBeams()
       EventType.TUPLET -> getTupletEvents()
       else -> super.getSpecialEvents(eventType)
     }
@@ -256,14 +253,7 @@ open class VoiceMap internal constructor(
     return toVoiceEvents(getEvents(EventType.DURATION) ?: eventHashOf())
   }
 
-  fun getGraceGroups(): Map<Duration, EventHash> {
-    return eventMap.getEvents(EventType.DURATION)?.filter { it.key.eventAddress.isGrace }?.toList()
-      ?.groupBy {
-        it.first.eventAddress.offset
-      }?.map { it.key to it.value.toMap() }?.toMap() ?: mapOf()
-  }
-
-  fun replaceVoiceEvents(allEvents: EventHash): VoiceMap {
+  open fun replaceVoiceEvents(allEvents: EventHash): VoiceMap {
     val newTuplets = mutableListOf<Tuplet>()
 
     val sanitised = allEvents.map {
@@ -276,17 +266,13 @@ open class VoiceMap internal constructor(
     }.toMap()
 
     tuplets.forEach { tuplet ->
-      var newTuplet = tuplet
-      tuplet.eventMap.getEvents(EventType.DURATION)?.forEach { (key, _) ->
-        val offset = tuplet.offset.add(tuplet.writtenToReal(key.eventAddress.offset))
-        sanitised[EMK(
-          EventType.DURATION,
-          key.eventAddress.copy(offset = offset)
-        )]?.let {
-          newTuplet = newTuplet.replaceVoiceEvent(ez(0, offset), it)
-        }
-      }
-
+      val forThisTuplet = sanitised.filter { it.value.subType != DurationType.TUPLET_MARKER &&
+          it.key.eventAddress.offset >= tuplet.offset &&
+      it.key.eventAddress.offset < tuplet.offset + tuplet.realDuration }
+      val adjusted = forThisTuplet.map { it.key.copy(eventAddress = it.key.eventAddress.copy(
+        offset = tuplet.realToWritten(it.key.eventAddress.offset - tuplet.offset)
+      )) to it.value }.toMap()
+      val newTuplet = tuplet.replaceVoiceEvents(adjusted)
       newTuplets.add(newTuplet)
     }
 
@@ -304,22 +290,6 @@ open class VoiceMap internal constructor(
     val newMap = eventMap.replaceEvents(EventType.DURATION, remainder)
     return voiceMap(timeSignature, newMap, newTuplets)
   }
-
-  private fun getBeams(): EventHash {
-    val mine = beamMap.map {
-      EMK(EventType.BEAM, it.key) to it.value.toEvent()
-    }.toMap()
-    val tuplets = tuplets.fold(eventHashOf()) { map, tuplet ->
-      val m = tuplet.beamMap.map {
-        val beamOffset = tuplet.writtenToReal(it.key.offset)
-        val key = it.key.copy(offset = tuplet.offset.add(beamOffset))
-        EMK(EventType.BEAM, key) to it.value.toEvent()
-      }.toMap()
-      map.plus(m)
-    }
-    return mine.plus(tuplets)
-  }
-
 
   private fun getTupletEvents(type: EventType = EventType.DURATION): EventHash {
     return tuplets.fold(eventHashOf()) { hash, tuplet ->
@@ -349,7 +319,7 @@ open class VoiceMap internal constructor(
     }.toMap().plus(grace)
     val newMap = eventMap.replaceEvents(EventType.DURATION, hash)
     val tuplets = tuplets.map { it.addEmpties() }
-    return voiceMap(timeSignature, newMap, tuplets, beamMap)
+    return voiceMap(timeSignature, newMap, tuplets)
   }
 
 }
@@ -381,72 +351,23 @@ internal fun addTies(eventMap: EventMap): EventMap {
   return em
 }
 
-fun voiceMap(
-  eventMap: EventMap, tuplets: List<Tuplet>, beamMap: BeamMap? = null,
-  createBeams: Boolean = true
-): VoiceMap {
+fun voiceMap(eventMap: EventMap, tuplets: List<Tuplet>): VoiceMap {
   val ts =
     eventMap.getEvent(EventType.TIME_SIGNATURE)?.let { timeSignature(it) } ?: TimeSignature(4, 4)
-  return voiceMap(ts, eventMap, tuplets, beamMap, createBeams)
+  return voiceMap(ts, eventMap, tuplets)
 }
 
 fun voiceMap(
   timeSignature: TimeSignature = TimeSignature(4, 4),
   eventMap: EventMap = emptyEventMap(),
   tuplets: List<Tuplet> = listOf(),
-  beamMap: BeamMap? = null,
-  createBeams: Boolean = true
 ): VoiceMap {
-  val userBeams = eventMap.getEvents(EventType.BEAM) ?: eventHashOf()
-  val thisBeamMap = if (createBeams) beamMap ?: createBeams(
-    eventMap.getEvents(EventType.DURATION) ?: eventHashOf(),
-    userBeams, timeSignature
-  ) else mapOf()
   val durationEvents = eventMap.getEvents(EventType.DURATION) ?: eventHashOf()
-  val beamedEvents = if (beamMap == null && createBeams) {
-    markBeamGroupMembers(thisBeamMap, userBeams, durationEvents)
-  } else durationEvents
 
-  var map = eventMap.replaceEvents(EventType.DURATION, beamedEvents)
+  var map = eventMap.replaceEvents(EventType.DURATION, durationEvents)
   map = addTies(map)
   map = map.putEvent(eZero(), timeSignature.toEvent())
-  return VoiceMap(timeSignature, map, tuplets, thisBeamMap)
-}
-
-internal fun markBeamGroupMembers(
-  beamMap: BeamMap,
-  userBeams: EventHash,
-  durationEvents: EventHash
-): EventHash {
-  val marked = durationEvents.map {
-    it.key to it.value.removeParam(EventParam.IS_BEAMED).removeParam(EventParam.IS_UPSTEM_BEAM)
-  }.toMap()
-    .toMutableMap()
-
-  val allBeams = beamMap.plus(
-    userBeams.map { it.key.eventAddress to beam(it.value) }
-  )
-
-  allBeams.forEach { entry ->
-    val grace = entry.key.isGrace
-    var total = dZero()
-    entry.value.members.map { member ->
-      val offset = total
-      total = total.add(member.duration)
-      val address = if (grace) {
-        entry.key.copy(graceOffset = entry.key.graceOffset?.add(offset) ?: dZero())
-      } else {
-        entry.key.copy(offset = entry.key.offset.add(offset))
-      }
-      marked[DK(address)]?.let {
-        var new =
-          it.addParam(EventParam.IS_BEAMED, true)
-        new = new.addParam(EventParam.IS_UPSTEM_BEAM, entry.value.up)
-        marked.put(DK(address), new)
-      }
-    }
-  }
-  return marked
+  return VoiceMap(timeSignature, map, tuplets)
 }
 
 fun findGaps(eventList: SortedMap<Duration, Event>, timeSignature: TimeSignature): EventList {

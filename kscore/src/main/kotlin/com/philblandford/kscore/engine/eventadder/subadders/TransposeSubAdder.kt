@@ -15,7 +15,7 @@ import com.philblandford.kscore.engine.pitch.transposeKey
 import com.philblandford.kscore.engine.types.*
 
 
-object TransposeSubAdder : BaseEventAdder {
+object TransposeSubAdder : BaseSubAdder {
 
   override fun addEvent(
     score: Score,
@@ -74,6 +74,7 @@ object TransposeSubAdder : BaseEventAdder {
       }
       .then { it.addStartKeySignature(newKs, start) }
       .then { it.addTerminalKeySignature(score.getKeySignature(eventAddress) ?: 0, endAddress) }
+      .then { it.refreshBeams() }
   }
 
   private fun Score.transposeKeySignatures(
@@ -139,7 +140,11 @@ object TransposeSubAdder : BaseEventAdder {
   }
 
 
-  private fun EventMap.transposeHarmonies(sharps: Int, amount: Int, accidental: Accidental? = null): EventMap {
+  private fun EventMap.transposeHarmonies(
+    sharps: Int,
+    amount: Int,
+    accidental: Accidental? = null
+  ): EventMap {
     return getEvents(EventType.HARMONY)?.let { hash ->
       hash.mapNotNull { (key, value) ->
         harmony(value)?.let { harmony ->

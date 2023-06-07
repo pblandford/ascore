@@ -53,6 +53,7 @@ interface OffsetLookup {
   fun getDuration(from: EventAddress, to: EventAddress): Duration?
   val numBars: Int
   val lastOffset:Duration
+  val totalDuration:Duration
 }
 
 interface ScoreQuery : EventGetter, BeamQuery, OffsetLookup {
@@ -162,7 +163,8 @@ interface EventPutter {
 }
 
 interface BeamQuery {
-  fun getBeams(start: EventAddress? = null, end: EventAddress? = null): BeamMap
+  fun getBeamsForStave(start:Int, end:Int, staveId: StaveId): BeamMap
+  fun getBeams(start: EventAddress? = null, endAddress: EventAddress? = null):BeamMap
 }
 
 typealias Lookup<T> = Map<EventAddress, T>
@@ -216,6 +218,8 @@ interface StavePositionFinder {
   fun getSegmentGeography(eventAddress: EventAddress): SegmentGeography?
   fun getVoiceGeography(eventAddress: EventAddress): VoiceGeography?
   fun getBarPosition(barNum: Int, end: Boolean = false): BarPosition?
+  fun getFirstSegment():EventAddress
+  fun getLastSegment():EventAddress
   fun getStartBars(): Int
   fun getEndBars(): Int
   fun getStartBar(): Int

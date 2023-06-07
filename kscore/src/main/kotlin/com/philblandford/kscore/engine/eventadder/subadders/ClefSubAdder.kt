@@ -77,9 +77,9 @@ object ClefSubAdder : RangeSubAdder {
   private fun Stave.setNotePositions(clefType: ClefType, eventAddress: EventAddress): StaveResult {
     val end = eventMap.getEventAfter(EventType.CLEF, eventAddress)?.first?.eventAddress
       ?: ez(numBars + 1)
-    return transformBars(eventAddress, end, sZero()) { startOffset, endOffset, _, _ ->
-      transformVoiceMaps { voice ->
-        setNotePositions(startOffset, endOffset, clefType, voiceNumberMap, voice)
+    return transformBars(eventAddress, end, sZero()) { startOffset, endOffset, bar, stave ->
+      transformVoiceMaps(EventAddress(bar, staveId = stave)) { eventAddress ->
+        setNotePositions(startOffset, endOffset, clefType, voiceNumberMap, eventAddress.voice)
       }
     }
   }

@@ -1,6 +1,34 @@
 package com.philblandford.ascore.external.export.mxml.`in`.reader
 
-import com.philblandford.ascore.external.export.mxml.out.*
+import org.philblandford.ascore2.external.export.mxml.`in`.reader.getChild
+import org.philblandford.ascore2.external.export.mxml.`in`.reader.getChildren
+import org.philblandford.ascore2.external.export.mxml.`in`.reader.getTextElem
+import org.philblandford.ascore2.external.export.mxml.out.MxmlActualNotes
+import org.philblandford.ascore2.external.export.mxml.out.MxmlAlter
+import org.philblandford.ascore2.external.export.mxml.out.MxmlChord
+import org.philblandford.ascore2.external.export.mxml.out.MxmlDisplayOctave
+import org.philblandford.ascore2.external.export.mxml.out.MxmlDisplayStep
+import org.philblandford.ascore2.external.export.mxml.out.MxmlDot
+import org.philblandford.ascore2.external.export.mxml.out.MxmlDuration
+import org.philblandford.ascore2.external.export.mxml.out.MxmlGrace
+import org.philblandford.ascore2.external.export.mxml.out.MxmlInstrument
+import org.philblandford.ascore2.external.export.mxml.out.MxmlLyric
+import org.philblandford.ascore2.external.export.mxml.out.MxmlNormalNotes
+import org.philblandford.ascore2.external.export.mxml.out.MxmlNote
+import org.philblandford.ascore2.external.export.mxml.out.MxmlNoteDescriptor
+import org.philblandford.ascore2.external.export.mxml.out.MxmlNotehead
+import org.philblandford.ascore2.external.export.mxml.out.MxmlOctave
+import org.philblandford.ascore2.external.export.mxml.out.MxmlPitch
+import org.philblandford.ascore2.external.export.mxml.out.MxmlRest
+import org.philblandford.ascore2.external.export.mxml.out.MxmlStaff
+import org.philblandford.ascore2.external.export.mxml.out.MxmlStep
+import org.philblandford.ascore2.external.export.mxml.out.MxmlSyllabic
+import org.philblandford.ascore2.external.export.mxml.out.MxmlText
+import org.philblandford.ascore2.external.export.mxml.out.MxmlTie
+import org.philblandford.ascore2.external.export.mxml.out.MxmlTimeModification
+import org.philblandford.ascore2.external.export.mxml.out.MxmlType
+import org.philblandford.ascore2.external.export.mxml.out.MxmlUnpitched
+import org.philblandford.ascore2.external.export.mxml.out.MxmlVoice
 import org.w3c.dom.Element
 
 private var cache = mutableMapOf<Element, MxmlNote>()

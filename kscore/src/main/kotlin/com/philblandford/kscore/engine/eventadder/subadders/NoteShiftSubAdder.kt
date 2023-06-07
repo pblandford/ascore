@@ -7,12 +7,9 @@ import com.philblandford.kscore.engine.duration.Note
 import com.philblandford.kscore.engine.duration.chord
 import com.philblandford.kscore.engine.duration.dZero
 import com.philblandford.kscore.engine.eventadder.*
-import com.philblandford.kscore.engine.eventadder.subadders.NoteShiftSubAdder.doHandleChord
-import com.philblandford.kscore.engine.map.EventHash
-import com.philblandford.kscore.engine.map.EventMapKey
 import com.philblandford.kscore.engine.types.*
 
-internal object NoteShiftSubAdder : BaseEventAdder {
+internal object NoteShiftSubAdder : BaseSubAdder {
 
   override fun addEvent(
     score: Score,

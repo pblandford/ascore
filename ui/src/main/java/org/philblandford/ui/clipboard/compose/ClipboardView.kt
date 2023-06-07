@@ -39,6 +39,7 @@ fun ClipboardViewInternal(modifier: Modifier, iface: ClipboardInterface) {
       .background(MaterialTheme.colorScheme.onSurface)
       .padding(2.dp)
   ) {
+    Item(R.drawable.cycle) { iface.cycle() }
     Item(R.drawable.left_arrow) { iface.selectionLeft() }
     Item(R.drawable.right_arrow) { iface.selectionRight() }
     Item(R.drawable.copy) { iface.copy() }

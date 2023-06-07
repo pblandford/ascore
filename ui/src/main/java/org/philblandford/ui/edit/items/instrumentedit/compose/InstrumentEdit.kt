@@ -59,6 +59,7 @@ fun InstrumentEdit() {
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun InstrumentEditInternal(editModel: EditModel, iface: InstrumentEditInterface) {
+
   var instrumentLabel by remember {
     mutableStateOf(
       editModel.editItem.event.getParam<String>(
@@ -73,6 +74,8 @@ private fun InstrumentEditInternal(editModel: EditModel, iface: InstrumentEditIn
   }
   val instrument by iface.selectedInstrument().collectAsState(null)
   var showPopup by remember { mutableStateOf(false) }
+
+  Timber.e("IE ${editModel.editItem.event} $instrument $instrumentLabel $abbreviation")
 
   LaunchedEffect(instrument) {
     instrumentLabel = instrument?.label ?: ""

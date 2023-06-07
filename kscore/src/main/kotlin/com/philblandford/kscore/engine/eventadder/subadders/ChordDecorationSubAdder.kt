@@ -11,7 +11,7 @@ data class ChordDecoration<T>(
   val shift: Coord = Coord()
 )
 
-internal interface ChordDecorationSubAdder<T> : BaseEventAdder {
+internal interface ChordDecorationSubAdder<T> : BaseSubAdder {
   override fun addEvent(
     score: Score,
     destination: EventDestination,

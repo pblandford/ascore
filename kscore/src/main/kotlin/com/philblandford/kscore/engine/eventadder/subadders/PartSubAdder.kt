@@ -11,9 +11,8 @@ import com.philblandford.kscore.engine.eventadder.*
 import com.philblandford.kscore.engine.time.TimeSignature
 import com.philblandford.kscore.engine.types.*
 import com.philblandford.kscore.engine.util.add
-import com.philblandford.kscore.log.ksLogt
 
-object PartSubAdder : BaseEventAdder {
+object PartSubAdder : BaseSubAdder {
 
   override fun addEvent(
     score: Score,
@@ -23,9 +22,7 @@ object PartSubAdder : BaseEventAdder {
     eventAddress: EventAddress
   ): ScoreResult {
 
-    ksLogt("here $params")
     return instrument(Event(EventType.INSTRUMENT, params))?.let {
-      ksLogt("Adding $it")
       if (score.singlePartMode()) {
         return Warning(HarmlessFailure("Can't add parts in single part mode"), score)
       }
@@ -45,7 +42,7 @@ object PartSubAdder : BaseEventAdder {
     var part = part(instrument, numBars)
     part = addTimeSignatures(part, this)
     list.add(idx, part)
-    return Right(Score(list, eventMap))
+    return Right(Score(list, eventMap, beamDirectory))
   }
 
   private fun Score.setPartParam(eventAddress: EventAddress, params: ParamMap): ScoreResult {
@@ -60,7 +57,7 @@ object PartSubAdder : BaseEventAdder {
       val newMap = part.eventMap.putEvent(eZero(), Event(EventType.PART, newParams))
       val subLevels = subLevels.minus(part)
         .add(eventAddress.staveId.main - 1, Part(part.staves, newMap))
-      Right(Score(subLevels, eventMap))
+      Right(Score(subLevels, eventMap, beamDirectory))
     } ?: Left(NotFound("Could not find part at $eventAddress"))
   }
 
@@ -86,7 +83,7 @@ object PartSubAdder : BaseEventAdder {
     val list = score.subLevels.toMutableList()
     return if (list.size > 1 && !score.singlePartMode()) {
       list.removeAt(eventAddress.staveId.main - 1)
-      Right(Score(list, score.eventMap))
+      Right(Score(list, score.eventMap, score.beamDirectory))
     } else {
       Right(score)
     }

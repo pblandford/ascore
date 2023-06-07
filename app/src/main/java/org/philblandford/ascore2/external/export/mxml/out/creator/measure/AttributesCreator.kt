@@ -1,6 +1,5 @@
 package com.philblandford.ascore.external.export.mxml.out.creator.measure
 
-import com.philblandford.ascore.external.export.mxml.out.*
 import com.philblandford.ascore.external.export.mxml.out.creator.RepeatBarQuery
 import com.philblandford.kscore.api.instrument
 import com.philblandford.kscore.engine.duration.Duration
@@ -12,6 +11,22 @@ import com.philblandford.kscore.engine.pitch.transposeKey
 import com.philblandford.kscore.engine.time.timeSignature
 import com.philblandford.kscore.engine.types.*
 import com.philblandford.kscore.util.lcm
+import org.philblandford.ascore2.external.export.mxml.out.MxmlAttributes
+import org.philblandford.ascore2.external.export.mxml.out.MxmlBeatType
+import org.philblandford.ascore2.external.export.mxml.out.MxmlBeats
+import org.philblandford.ascore2.external.export.mxml.out.MxmlChromatic
+import org.philblandford.ascore2.external.export.mxml.out.MxmlClef
+import org.philblandford.ascore2.external.export.mxml.out.MxmlDivisions
+import org.philblandford.ascore2.external.export.mxml.out.MxmlFifths
+import org.philblandford.ascore2.external.export.mxml.out.MxmlKey
+import org.philblandford.ascore2.external.export.mxml.out.MxmlMeasureRepeat
+import org.philblandford.ascore2.external.export.mxml.out.MxmlMeasureStyle
+import org.philblandford.ascore2.external.export.mxml.out.MxmlStaffDetails
+import org.philblandford.ascore2.external.export.mxml.out.MxmlStaffLines
+import org.philblandford.ascore2.external.export.mxml.out.MxmlStaves
+import org.philblandford.ascore2.external.export.mxml.out.MxmlTime
+import org.philblandford.ascore2.external.export.mxml.out.MxmlTranspose
+import org.philblandford.ascore2.external.export.mxml.out.clefToMxml
 import kotlin.math.max
 
 

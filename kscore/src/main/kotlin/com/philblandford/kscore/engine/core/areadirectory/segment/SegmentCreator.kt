@@ -47,7 +47,7 @@ private fun DrawableFactory.createSegmentAreas(
       createSegmentsForBar(bar, scoreQuery)
     }
   }.toMap()
-  val existingSegments = existing?.segmentLookup ?: mapOf()
+  val existingSegments = existing?.segmentLookup ?: persistentMapOf()
   val previous = changedBars?.let {
     existingSegments.filterNot { changedBars.contains(it.key.startBar()) }
   } ?: existingSegments

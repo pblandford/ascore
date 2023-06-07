@@ -1,6 +1,28 @@
 package com.philblandford.ascore.external.export.mxml.`in`.reader
 
-import com.philblandford.ascore.external.export.mxml.out.*
+import org.philblandford.ascore2.external.export.mxml.`in`.reader.getChild
+import org.philblandford.ascore2.external.export.mxml.`in`.reader.getChildren
+import org.philblandford.ascore2.external.export.mxml.`in`.reader.getTextElem
+import org.philblandford.ascore2.external.export.mxml.out.MxmlAttributes
+import org.philblandford.ascore2.external.export.mxml.out.MxmlBeatType
+import org.philblandford.ascore2.external.export.mxml.out.MxmlBeats
+import org.philblandford.ascore2.external.export.mxml.out.MxmlChromatic
+import org.philblandford.ascore2.external.export.mxml.out.MxmlClef
+import org.philblandford.ascore2.external.export.mxml.out.MxmlClefOctaveChange
+import org.philblandford.ascore2.external.export.mxml.out.MxmlDiatonic
+import org.philblandford.ascore2.external.export.mxml.out.MxmlDivisions
+import org.philblandford.ascore2.external.export.mxml.out.MxmlFifths
+import org.philblandford.ascore2.external.export.mxml.out.MxmlKey
+import org.philblandford.ascore2.external.export.mxml.out.MxmlLine
+import org.philblandford.ascore2.external.export.mxml.out.MxmlMeasureRepeat
+import org.philblandford.ascore2.external.export.mxml.out.MxmlMeasureStyle
+import org.philblandford.ascore2.external.export.mxml.out.MxmlSign
+import org.philblandford.ascore2.external.export.mxml.out.MxmlStaffDetails
+import org.philblandford.ascore2.external.export.mxml.out.MxmlStaffLines
+import org.philblandford.ascore2.external.export.mxml.out.MxmlStaves
+import org.philblandford.ascore2.external.export.mxml.out.MxmlTime
+import org.philblandford.ascore2.external.export.mxml.out.MxmlTranspose
+import org.philblandford.ascore2.external.export.mxml.out.getAttributeOrNull
 import org.w3c.dom.Element
 
 

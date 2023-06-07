@@ -1,6 +1,7 @@
 package com.philblandford.kscore.engine.eventadder.subadders
 
 import com.philblandford.kscore.engine.core.score.Bar
+import com.philblandford.kscore.engine.core.score.Part
 import com.philblandford.kscore.engine.core.score.Score
 import com.philblandford.kscore.engine.core.score.ScoreLevelType
 import com.philblandford.kscore.engine.core.score.VoiceMap
@@ -15,7 +16,7 @@ import com.philblandford.kscore.engine.eventadder.util.*
 import com.philblandford.kscore.engine.types.*
 import com.philblandford.kscore.util.isPower2
 
-object DurationSubAdder : BaseEventAdder {
+object DurationSubAdder : BaseSubAdder {
 
   override fun addEvent(
     score: Score,
@@ -328,17 +329,18 @@ object DurationSubAdder : BaseEventAdder {
     val destination = EventDestination(listOf(ScoreLevelType.VOICEMAP))
     return getEvent(EventType.DURATION, eventAddress)?.let { chord(it) }?.let {
       getPreviousStaveSegment(eventAddress)?.let { previous ->
-        getEvent(EventType.DURATION, previous.copy(voice = eventAddress.voice))?.let { chord(it) }?.let { chord ->
-          chord.notes.withIndex().filter { it.value.isStartTie }
-            .fold(Right(this) as ScoreResult) { s, iv ->
-              s.then {
-                NoteSubAdder.setParam(
-                  it, destination, EventType.NOTE, EventParam.IS_START_TIE, false,
-                  previous.copy(voice = eventAddress.voice, id = iv.index + 1)
-                )
+        getEvent(EventType.DURATION, previous.copy(voice = eventAddress.voice))?.let { chord(it) }
+          ?.let { chord ->
+            chord.notes.withIndex().filter { it.value.isStartTie }
+              .fold(Right(this) as ScoreResult) { s, iv ->
+                s.then {
+                  NoteSubAdder.setParam(
+                    it, destination, EventType.NOTE, EventParam.IS_START_TIE, false,
+                    previous.copy(voice = eventAddress.voice, id = iv.index + 1)
+                  )
+                }
               }
-            }
-        }
+          }
       }
     } ?: Right(this)
   }

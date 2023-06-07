@@ -55,8 +55,8 @@ internal fun DrawableFactory.segmentArea(
   val pair = createGraceArea(graceSegments, base)
   base = pair.first
   val graceSlices = pair.second
-  val graceSlicesRelToXMargin = graceSlices.map { (k, v) ->
-    k to SlicePosition(base.xMargin - v.start, base.xMargin - v.xMargin, v.width)
+  val graceSlicesRelToXMargin = graceSlices.map { (k, graceSlice) ->
+    k to SlicePosition(base.xMargin - graceSlice.start, base.xMargin - graceSlice.xMargin, graceSlice.width)
   }.toMap()
 
   base = base.transformEventAddress { ea, _ ->
@@ -134,7 +134,7 @@ internal fun SegmentArea.replaceGraceArea(
         } ?: childMap
       }
     val graceArea = oldGrace.copy(childMap = newGraceChildMap)
-    val newMap = base.childMap.plus(ogKey to graceArea)
+    val newMap = base.childMap.filterNot { it.first == ogKey }.plus(ogKey to graceArea)
 
     var newBase = base.copy(childMap = newMap)
     newBase =
@@ -189,6 +189,7 @@ private fun createGraceArea(
   segments: Map<Offset, SegmentArea>,
   base: Area
 ): Pair<Area, Map<Offset, SlicePosition>> {
+  if (segments.isEmpty()) return base to mapOf()
   val graceArea = graceArea(segments)
   val slicePositions =
     graceArea.childMap.filter { it.second.tag == "Segment" }

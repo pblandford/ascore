@@ -1,6 +1,27 @@
 package com.philblandford.ascore.external.export.mxml.`in`.reader
 
-import com.philblandford.ascore.external.export.mxml.out.*
+import org.philblandford.ascore2.external.export.mxml.`in`.reader.getChild
+import org.philblandford.ascore2.external.export.mxml.`in`.reader.getChildren
+import org.philblandford.ascore2.external.export.mxml.`in`.reader.getTextElem
+import org.philblandford.ascore2.external.export.mxml.out.MxmlBackup
+import org.philblandford.ascore2.external.export.mxml.out.MxmlBarStyle
+import org.philblandford.ascore2.external.export.mxml.out.MxmlBarline
+import org.philblandford.ascore2.external.export.mxml.out.MxmlBass
+import org.philblandford.ascore2.external.export.mxml.out.MxmlBassAlter
+import org.philblandford.ascore2.external.export.mxml.out.MxmlBassStep
+import org.philblandford.ascore2.external.export.mxml.out.MxmlDuration
+import org.philblandford.ascore2.external.export.mxml.out.MxmlEnding
+import org.philblandford.ascore2.external.export.mxml.out.MxmlForward
+import org.philblandford.ascore2.external.export.mxml.out.MxmlHarmony
+import org.philblandford.ascore2.external.export.mxml.out.MxmlKind
+import org.philblandford.ascore2.external.export.mxml.out.MxmlMeasure
+import org.philblandford.ascore2.external.export.mxml.out.MxmlMeasureElement
+import org.philblandford.ascore2.external.export.mxml.out.MxmlOffset
+import org.philblandford.ascore2.external.export.mxml.out.MxmlPrint
+import org.philblandford.ascore2.external.export.mxml.out.MxmlRepeat
+import org.philblandford.ascore2.external.export.mxml.out.MxmlRoot
+import org.philblandford.ascore2.external.export.mxml.out.MxmlRootAlter
+import org.philblandford.ascore2.external.export.mxml.out.MxmlRootStep
 import org.w3c.dom.Element
 
 internal fun Element.parseMeasure(): MxmlMeasure {

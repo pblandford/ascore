@@ -77,8 +77,16 @@ internal class StavePositionFinderImpl(
   }
 
   override fun getLastSegmentGeography(): SegmentGeography? {
-    val end = eas(systemXGeography.endBar, systemXGeography.lastSlice.offset, staveId)
+    val end = getLastSegment()
     return getSegmentGeography(end)
+  }
+
+  override fun getFirstSegment(): EventAddress {
+    return eas(systemXGeography.startBar, staveId = staveId)
+  }
+
+  override fun getLastSegment(): EventAddress {
+    return eas(systemXGeography.endBar, systemXGeography.lastSlice.offset, staveId)
   }
 
   override fun getStemGeography(eventAddress: EventAddress): StemGeography? {

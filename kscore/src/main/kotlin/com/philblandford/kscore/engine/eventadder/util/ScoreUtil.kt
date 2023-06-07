@@ -102,27 +102,32 @@ internal fun Score.changeSubLevel(
     ScoreLevelType.SCORE -> Right(
       subLevel as Score
     )
+
     ScoreLevelType.PART -> Right(
       replaceSubLevel(subLevel, eventAddress.staveId.main) as Score
     )
+
     ScoreLevelType.STAVE -> {
       getPart(eventAddress.staveId.main)?.replaceSubLevel(subLevel, eventAddress.staveId.sub)
         ?.let { part ->
           changeSubLevel(part, eventAddress)
         }
     }
+
     ScoreLevelType.BAR -> {
       getStave(eventAddress.staveId)?.replaceSubLevel(subLevel, eventAddress.barNum)
         ?.let { stave ->
           changeSubLevel(stave, eventAddress)
         }
     }
+
     ScoreLevelType.VOICEMAP -> {
       getBar(eventAddress)?.replaceSubLevel(subLevel, eventAddress.voice)
         ?.let { bar ->
           changeSubLevel(bar, eventAddress)
         }
     }
+
     else -> null
   }
   return result ?: Left(
@@ -136,7 +141,10 @@ internal fun EventAddress.strip(
 ): EventAddress {
   return when (scoreLevelType) {
     ScoreLevelType.SCORE -> scoreStrip(eventType)
-    ScoreLevelType.PART -> staveless()
+    ScoreLevelType.PART -> when (eventType) {
+      EventType.BEAM -> copy(staveId = StaveId(0, staveId.sub))
+      else -> staveless()
+    }
     ScoreLevelType.STAVE -> stavelessWithId()
     ScoreLevelType.BAR -> eZero().copy(offset = offset, graceOffset = graceOffset, voice = 0)
     ScoreLevelType.VOICEMAP -> eZero().copy(offset = offset, graceOffset = graceOffset, id = id)
@@ -151,6 +159,7 @@ private fun EventAddress.scoreStrip(eventType: EventType): EventAddress =
       offset = dZero(),
       graceOffset = null
     )
+
     EventType.FERMATA -> staveless()
     else -> staveless().startBar()
   }
@@ -170,6 +179,7 @@ internal fun EventAddress.badge(
       staveId = levelAddress.staveId,
       voice = levelAddress.voice
     )
+
     else -> this
   }
 }

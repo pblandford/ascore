@@ -131,6 +131,7 @@ fun <R, I> R.fold(items: Iterable<I>, action: R.(I) -> AnyResult<R>): AnyResult<
   }
 }
 
+
 fun <R> AnyResult<R>.rightOrThrow(): R {
   return when (this) {
     is Left -> throw Exception(this.l.message, this.l.exception)

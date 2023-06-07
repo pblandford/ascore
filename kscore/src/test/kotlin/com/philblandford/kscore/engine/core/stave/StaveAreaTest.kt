@@ -1,7 +1,6 @@
-package core.stave
+package com.philblandford.kscore.engine.core.stave
 
 import assertEqual
-import com.philblandford.kscore.msq
 import com.philblandford.kscore.engine.core.areadirectory.segment.SegmentArea
 import com.philblandford.kscore.engine.core.areadirectory.segment.segmentArea
 import com.philblandford.kscore.engine.core.representation.BLOCK_HEIGHT
@@ -12,10 +11,10 @@ import com.philblandford.kscore.engine.types.*
 import com.philblandford.kscore.engine.core.*
 import com.philblandford.kscore.engine.core.areadirectory.barstartend.BarEndAreaPair
 import com.philblandford.kscore.engine.core.areadirectory.barstartend.BarStartAreaPair
-import com.philblandford.kscore.engine.core.stave.StaveArea
-import com.philblandford.kscore.engine.core.stave.createStave
 import com.philblandford.kscore.engine.dsl.dslChord
 import com.philblandford.kscore.engine.core.representation.RepTest
+import com.philblandford.kscore.engine.dsl.createScoreOneNote
+import com.philblandford.kscore.engine.dsl.score
 
 class StaveAreaTest : RepTest() {
 
@@ -33,7 +32,8 @@ class StaveAreaTest : RepTest() {
         val sl = mapOf(ea(1) to crotchetSegment())
         val sg = SystemXGeography(1, 1, 0, 0,
                 sortedMapOf(1 to BarPosition(0, ResolvedBarGeography())), 1.0f)
-        return drawableFactory.createStave(sl, mapOf(), bsl(), bel(), sg, msq(), ea(1), true)!!
+      val sq = createScoreOneNote()
+        return drawableFactory.createStave(sl, mapOf(), bsl(), bel(), sg, sq, ea(1), true)!!
     }
 
     private fun crotchetSegment(): SegmentArea {

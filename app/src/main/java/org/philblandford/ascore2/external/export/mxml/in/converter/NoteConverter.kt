@@ -1,6 +1,9 @@
-package com.philblandford.ascore.external.export.mxml.`in`.converter
+package org.philblandford.ascore2.external.export.mxml.`in`.converter
 
-import com.philblandford.ascore.external.export.mxml.out.*
+import com.philblandford.ascore.external.export.mxml.`in`.converter.ChordDecorationState
+import com.philblandford.ascore.external.export.mxml.`in`.converter.MeasureState
+import com.philblandford.ascore.external.export.mxml.`in`.converter.OngoingAttributes
+import com.philblandford.ascore.external.export.mxml.`in`.converter.getNotations
 import com.philblandford.kscore.api.PercussionDescr
 import com.philblandford.kscore.engine.core.area.Coord
 import com.philblandford.kscore.engine.dsl.rest
@@ -10,6 +13,14 @@ import com.philblandford.kscore.engine.types.*
 import com.philblandford.kscore.log.ksLogv
 import com.philblandford.kscore.util.isPower2
 import org.apache.commons.math3.fraction.Fraction
+import org.philblandford.ascore2.external.export.mxml.out.MxmlInstrument
+import org.philblandford.ascore2.external.export.mxml.out.MxmlLyric
+import org.philblandford.ascore2.external.export.mxml.out.MxmlNote
+import org.philblandford.ascore2.external.export.mxml.out.MxmlPitch
+import org.philblandford.ascore2.external.export.mxml.out.MxmlRest
+import org.philblandford.ascore2.external.export.mxml.out.MxmlScorePart
+import org.philblandford.ascore2.external.export.mxml.out.MxmlUnpitched
+import org.philblandford.ascore2.external.export.mxml.out.mxmlToAccidental
 
 
 internal data class NoteConverterReturn(

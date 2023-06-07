@@ -1,7 +1,7 @@
 package com.philblandford.ascore.external.export.mxml.`in`.converter
 
-import com.philblandford.ascore.external.export.mxml.out.MxmlPart
-import com.philblandford.ascore.external.export.mxml.out.MxmlScorePart
+import org.philblandford.ascore2.external.export.mxml.out.MxmlPart
+import org.philblandford.ascore2.external.export.mxml.out.MxmlScorePart
 import com.philblandford.kscore.api.PercussionDescr
 import com.philblandford.kscore.engine.core.score.*
 import com.philblandford.kscore.engine.duration.dZero

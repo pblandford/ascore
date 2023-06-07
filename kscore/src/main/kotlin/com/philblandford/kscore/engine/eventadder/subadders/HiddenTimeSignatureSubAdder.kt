@@ -6,7 +6,7 @@ import com.philblandford.kscore.engine.core.score.VoiceMap
 import com.philblandford.kscore.engine.core.score.voiceMap
 import com.philblandford.kscore.engine.dsl.rest
 import com.philblandford.kscore.engine.eventadder.EventDestination
-import com.philblandford.kscore.engine.eventadder.BaseEventAdder
+import com.philblandford.kscore.engine.eventadder.BaseSubAdder
 import com.philblandford.kscore.engine.eventadder.Right
 import com.philblandford.kscore.engine.eventadder.ScoreResult
 import com.philblandford.kscore.engine.eventadder.VoiceMapResult
@@ -22,7 +22,7 @@ import com.philblandford.kscore.engine.types.EventType
 import com.philblandford.kscore.engine.types.ParamMap
 import com.philblandford.kscore.engine.types.ez
 
-object HiddenTimeSignatureSubAdder : BaseEventAdder {
+object HiddenTimeSignatureSubAdder : BaseSubAdder {
 
   override fun addEvent(
     score: Score,

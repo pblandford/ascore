@@ -80,9 +80,8 @@ class LyricInsertViewModel(
 
 
   override fun nextSyllable() {
-    getInsertItem()?.let { insertItem ->
-      val text = insertItem.getParam<String>(EventParam.TEXT) + " -"
-      insertLyricAtMarker(text, getState().value?.number ?: 1, true)
+    getInsertItem()?.getParam<String>(EventParam.TEXT)?.let { text ->
+      insertLyricAtMarker("$text -", getState().value?.number ?: 1, true)
     }
   }
 

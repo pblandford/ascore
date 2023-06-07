@@ -25,16 +25,15 @@ data class Tuplet(
   val hidden: Boolean,
   val events: EventMap = emptyEventMap(),
   val hardStart:Coord = cZero(),
-  override val beamMap: BeamMap = mapOf()
 ) :
-  VoiceMap(timeSignature, events.putEvent(eZero(), timeSignature.toEvent()), beamMap = beamMap) {
+  VoiceMap(timeSignature, events.putEvent(eZero(), timeSignature.toEvent())) {
   val duration = timeSignature.duration
 
   private val ratioToReal: Duration = realDuration / timeSignature.duration
   val members = getVoiceEvents().keys.sorted()
   val lastMember = members.maxOrNull() ?: dZero()
 
-  override fun replaceSelf(eventMap: EventMap, newSubLevels: Iterable<ScoreLevel>?): ScoreLevel {
+  override fun replaceSelf(eventMap: EventMap, newSubLevels: List<ScoreLevel>?): ScoreLevel {
     return if (eventMap.getEvents(EventType.DURATION)?.isEmpty() != false) {
       /* if we have lost all our events, recreate our rests */
       tuplet(offset, timeSignature.numerator, timeSignature.denominator, hidden).copy(hardStart = hardStart)
@@ -99,6 +98,11 @@ data class Tuplet(
   override fun addEmpties(): Tuplet {
     val map = super.addEmpties().eventMap
     return Tuplet(offset, timeSignature, childDivisor, realDuration, hidden, map)
+  }
+
+  override fun replaceVoiceEvents(allEvents: EventHash): Tuplet {
+    val newMap = eventMap.replaceEvents(EventType.DURATION, allEvents)
+    return copy(events = newMap)
   }
 
   fun replaceVoiceEvent(absoluteAddress: EventAddress, event: Event): Tuplet {
@@ -227,15 +231,12 @@ fun tuplet(
 
 fun tuplet(tuplet: Tuplet, eventMap: EventMap): Tuplet {
   var newMap = transformDurations(eventMap, tuplet)
-  val beamMap = createTupletBeams(newMap.getEvents(EventType.DURATION) ?: eventHashOf(), tuplet)
-  newMap = markBeams(newMap, beamMap)
   newMap = addTies(newMap)
   return Tuplet(
     tuplet.offset, tuplet.timeSignature, tuplet.childDivisor, tuplet.realDuration, tuplet.hidden,
-    newMap, tuplet.hardStart, beamMap
+    newMap, tuplet.hardStart
   )
 }
-
 
 private fun createRests(eventMap: EventMap, timeSignature: TimeSignature): EventMap {
   val beatDuration = Duration(1, timeSignature.denominator)
@@ -253,50 +254,16 @@ private fun transformDurations(eventMap: EventMap, tuplet: Tuplet): EventMap {
   return eventMap.getEvents(EventType.DURATION)?.let { durationEvents ->
     val fixed = durationEvents.map { (k, v) ->
       val realDuration = tuplet.writtenToReal(v.duration())
-      val event =
-        chord(v)?.let { it.transformNotes { it.copy(realDuration = realDuration) } }?.toEvent() ?: v
+      val event = v.getParam<List<Event>>(EventParam.NOTES)?.let { noteEvents ->
+        val newNotes = noteEvents.map {
+          it.addParam(EventParam.REAL_DURATION to realDuration)
+        }
+       v.addParam(EventParam.NOTES to newNotes)
+      } ?: v
       k to event.addParam(EventParam.REAL_DURATION, realDuration)
+
+
     }.toMap()
     eventMap.replaceEvents(EventType.DURATION, fixed)
   } ?: eventMap
-}
-
-private fun markBeams(eventMap: EventMap, beamMap: BeamMap): EventMap {
-  val beamedEvents = eventMap.getEvents(EventType.DURATION)?.let {
-    markBeamGroupMembers(beamMap, eventHashOf(), it)
-  } ?: eventHashOf()
-  return eventMap.replaceEvents(EventType.DURATION, beamedEvents)
-}
-
-private fun createTupletBeams(durationEvents: EventHash, tuplet: Tuplet): BeamMap {
-  if (durationEvents.count { it.value.subType == DurationType.CHORD } <= 1) {
-    return mapOf()
-  }
-  val groups = getSubCrotchetGroups(durationEvents)
-  return groups.map { events ->
-    val members = events.map { BeamMember(it.second.duration(), it.second.realDuration()) }
-    val up = getUp(durationEvents)
-    events.first().first.eventAddress to Beam(members, tuplet.duration, up)
-  }.toMap()
-}
-
-private fun getSubCrotchetGroups(durationEvents: EventHash): Iterable<EventList> {
-  val groups = mutableListOf<EventList>()
-
-  var list = durationEvents.toList()
-  while (list.isNotEmpty()) {
-    val group =
-      list.takeWhile { it.second.duration() < crotchet() && it.second.subType == DurationType.CHORD }
-    if (group.size > 1) {
-      groups.add(group)
-    }
-    list = list.drop(group.size + 1)
-  }
-  return groups
-}
-
-private fun getUp(members: EventHash): Boolean {
-  val noRest = members.filterNot { it.value.subType == DurationType.REST }.toList()
-  val grouping = noRest.groupingBy { it.second.isTrue(EventParam.IS_UPSTEM) }.eachCount()
-  return (grouping[true] ?: 0) >= (grouping[false] ?: 0)
 }

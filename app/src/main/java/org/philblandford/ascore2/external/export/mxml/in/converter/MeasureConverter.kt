@@ -1,6 +1,5 @@
 package com.philblandford.ascore.external.export.mxml.`in`.converter
 
-import com.philblandford.ascore.external.export.mxml.out.*
 import com.philblandford.ascore.external.export.mxml.out.creator.RepeatBarDesc
 import com.philblandford.kscore.api.PercussionDescr
 import com.philblandford.kscore.engine.core.area.Coord
@@ -15,6 +14,20 @@ import com.philblandford.kscore.engine.types.*
 import com.philblandford.kscore.log.ksLoge
 import com.philblandford.kscore.log.ksLogv
 import com.philblandford.kscore.util.isPower2
+import org.philblandford.ascore2.external.export.mxml.`in`.converter.getDuration
+import org.philblandford.ascore2.external.export.mxml.`in`.converter.mxmlToNote
+import org.philblandford.ascore2.external.export.mxml.out.MxmlAttributes
+import org.philblandford.ascore2.external.export.mxml.out.MxmlBackup
+import org.philblandford.ascore2.external.export.mxml.out.MxmlBarline
+import org.philblandford.ascore2.external.export.mxml.out.MxmlDirection
+import org.philblandford.ascore2.external.export.mxml.out.MxmlEnding
+import org.philblandford.ascore2.external.export.mxml.out.MxmlForward
+import org.philblandford.ascore2.external.export.mxml.out.MxmlHarmony
+import org.philblandford.ascore2.external.export.mxml.out.MxmlMeasure
+import org.philblandford.ascore2.external.export.mxml.out.MxmlMeasureElement
+import org.philblandford.ascore2.external.export.mxml.out.MxmlNote
+import org.philblandford.ascore2.external.export.mxml.out.MxmlPrint
+import org.philblandford.ascore2.external.export.mxml.out.MxmlScorePart
 
 internal data class OngoingAttributes(
   val divisions: Int = 1,

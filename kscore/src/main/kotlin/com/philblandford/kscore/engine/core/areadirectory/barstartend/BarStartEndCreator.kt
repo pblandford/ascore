@@ -9,6 +9,7 @@ import com.philblandford.kscore.engine.core.area.Coord
 import com.philblandford.kscore.engine.core.area.factory.DrawableFactory
 import com.philblandford.kscore.engine.core.areadirectory.AreaDirectory
 import com.philblandford.kscore.engine.core.representation.BLOCK_HEIGHT
+import com.philblandford.kscore.engine.core.representation.REPEAT_BAR_DOT_WIDTH
 import com.philblandford.kscore.engine.core.representation.REPEAT_DOT_WIDTH
 import com.philblandford.kscore.engine.duration.dZero
 import com.philblandford.kscore.engine.map.EventHashSimple
@@ -17,8 +18,10 @@ import com.philblandford.kscore.engine.types.*
 data class BarStartArea(val base: Area)
 data class BarEndArea(val base: Area)
 
-fun DrawableFactory.createBarStarts(scoreQuery: ScoreQuery, existing: AreaDirectory?,
-                    updateHeaders: Boolean): Pair<Lookup<BarStartAreaPair>, Lookup<BarStartGeographyPair>> {
+fun DrawableFactory.createBarStarts(
+  scoreQuery: ScoreQuery, existing: AreaDirectory?,
+  updateHeaders: Boolean
+): Pair<Lookup<BarStartAreaPair>, Lookup<BarStartGeographyPair>> {
 
   existing?.let {
     if (!updateHeaders) {
@@ -107,8 +110,10 @@ private fun alignBarStart(
 }
 
 
-fun DrawableFactory.createBarEnds(scoreQuery: ScoreQuery, existing:AreaDirectory?,
-                  updateHeaders:Boolean): Pair<Lookup<BarEndAreaPair>, Lookup<BarEndGeographyPair>> {
+fun DrawableFactory.createBarEnds(
+  scoreQuery: ScoreQuery, existing: AreaDirectory?,
+  updateHeaders: Boolean
+): Pair<Lookup<BarEndAreaPair>, Lookup<BarEndGeographyPair>> {
 
   existing?.let {
     if (!updateHeaders) {
@@ -151,8 +156,8 @@ private fun createBarStartGeography(
   events: EventHashSimple
 ): BarStartGeography {
   val isRepeat = events.containsKey(EventType.REPEAT_START)
-  val barLineDotWidth = if (isRepeat) {
-    Pair(barLineWidth(BarLineType.START), REPEAT_DOT_WIDTH * 2)
+  val (barLineWidth, dotAndGapWidth) = if (isRepeat) {
+    Pair(barLineWidth(BarLineType.START) + REPEAT_BAR_DOT_WIDTH/2 , REPEAT_DOT_WIDTH)
   } else {
     Pair(0, 0)
   }
@@ -161,7 +166,7 @@ private fun createBarStartGeography(
   val keyWidth = keyAreas.toList().maxByOrNull { it.width }?.width ?: 0
   val timeWidth = timeAreas.toList().maxByOrNull { it.width }?.width ?: 0
 
-  return BarStartGeography(barLineDotWidth.first, barLineDotWidth.second, keyWidth, timeWidth)
+  return BarStartGeography(barLineWidth, dotAndGapWidth, keyWidth, timeWidth)
 }
 
 

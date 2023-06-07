@@ -1,11 +1,5 @@
 package org.philblandford.ascore2.external.export.xml
 
-import com.philblandford.ascore.external.export.xml.*
-import com.philblandford.ascore.external.export.xml.Attribute
-import com.philblandford.ascore.external.export.xml.Child
-import com.philblandford.ascore.external.export.xml.KxmlBase
-import com.philblandford.ascore.external.export.xml.Order
-import com.philblandford.ascore.external.export.xml.Text
 import kotlin.reflect.KCallable
 import kotlin.reflect.KProperty1
 import kotlin.reflect.full.findAnnotation

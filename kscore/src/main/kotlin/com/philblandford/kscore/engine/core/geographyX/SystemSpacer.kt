@@ -16,6 +16,9 @@ fun spaceSystems(
   available: Int
 ): List<SystemXGeography> {
 
+  if (barGeographies.isEmpty()) {
+    return listOf()
+  }
   val preHeadersGrouped = preHeaderGeographies.toList().groupBy { it.first.barNum }
   val headersGrouped = headerGeographies.toList().groupBy { it.first.barNum }
   val systemGeographies = mutableListOf<SystemXGeography>()

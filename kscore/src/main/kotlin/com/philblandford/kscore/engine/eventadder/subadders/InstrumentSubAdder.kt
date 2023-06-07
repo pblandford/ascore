@@ -9,7 +9,7 @@ import com.philblandford.kscore.engine.eventadder.subadders.TransposeSubAdder.tr
 import com.philblandford.kscore.engine.pitch.transposeKey
 import com.philblandford.kscore.engine.types.*
 
-object InstrumentSubAdder : BaseEventAdder {
+object InstrumentSubAdder : BaseSubAdder {
   override fun addEvent(
     score: Score,
     destination: EventDestination,

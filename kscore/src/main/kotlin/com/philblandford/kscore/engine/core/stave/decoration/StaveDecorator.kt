@@ -9,7 +9,7 @@ import com.philblandford.kscore.engine.types.StaveId
 import com.philblandford.kscore.engine.types.StavePositionFinder
 import com.philblandford.kscore.engine.types.sZero
 
-interface  Decorator {
+interface Decorator {
   fun decorate(
     eventHash: EventHash,
     stavePositionFinder: StavePositionFinder,

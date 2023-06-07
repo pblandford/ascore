@@ -10,7 +10,7 @@ import com.philblandford.kscore.engine.types.*
 import com.philblandford.kscore.option.getAllDefaults
 
 
-internal object OptionSubAdder : BaseEventAdder {
+internal object OptionSubAdder : BaseSubAdder {
 
   override fun addEvent(
     score: Score,
@@ -45,7 +45,7 @@ internal object OptionSubAdder : BaseEventAdder {
         part.transpose(from, to, instrument, numBars, partNum, this, originalScore)
       } ?: Left(NotFound("Instrument not found"))
     }
-    return parts.then { Right(Score(it, eventMap)) }
+    return parts.then { Right(Score(it, eventMap, beamDirectory)) }
   }
 
   private fun Part.transpose(

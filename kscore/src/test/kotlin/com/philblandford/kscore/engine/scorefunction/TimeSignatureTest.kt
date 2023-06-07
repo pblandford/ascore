@@ -504,7 +504,7 @@ class TimeSignatureTest : ScoreTest() {
   }
 
   @Test
-  fun testAddTimeSignatureWithTupletCrossingBar() {
+  fun testAddTimeSignatureWithTupletCrossingBarIsSafe() {
     SAE(
       tuplet(dZero(), 3, 8).toEvent(),
       eav(1)
@@ -513,16 +513,11 @@ class TimeSignatureTest : ScoreTest() {
       tuplet(crotchet(), 3, 8).toEvent(),
       eav(1, crotchet())
     )
-    var thrown = false
-    try {
       SAE(
         TimeSignature(5, 16).toEvent(),
         ez(1)
       )
-    } catch (e: Exception) {
-      thrown = !(e is MathArithmeticException)
-    }
-    assert(thrown)
+    SVP(EventType.TIME_SIGNATURE, EventParam.NUMERATOR, 5, ez(1))
   }
 
   @Test

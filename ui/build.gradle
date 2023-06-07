@@ -15,8 +15,8 @@ android {
         applicationId "com.philblandford.ascore"
         minSdkVersion "$min_sdk"
         targetSdkVersion "$target_sdk"
-        versionCode 132
-        versionName "1.0.2 Platinum"
+        versionCode 133
+        versionName "1.1 Platinum"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables {
@@ -97,6 +97,7 @@ dependencies {
     implementation 'androidx.lifecycle:lifecycle-runtime-ktx:2.6.1'
     implementation 'androidx.activity:activity-compose:1.7.1'
     testImplementation 'junit:junit:4.13.2'
+    testImplementation project(path: ':kscore')
     androidTestImplementation "androidx.compose.ui:ui"
     androidTestImplementation "androidx.compose.material3:material3"
     androidTestImplementation "androidx.compose.material3:material3-window-size-class"

@@ -7,7 +7,7 @@ import com.philblandford.kscore.engine.eventadder.*
 import com.philblandford.kscore.engine.types.*
 import com.philblandford.kscore.engine.util.replace
 
-object StaveSubAdder : BaseEventAdder {
+object StaveSubAdder : BaseSubAdder {
 
   override fun addEvent(
     score: Score,

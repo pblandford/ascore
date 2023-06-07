@@ -6,7 +6,7 @@ import com.philblandford.kscore.engine.types.EventAddress
 import com.philblandford.kscore.engine.types.EventType
 import com.philblandford.kscore.engine.types.ParamMap
 
-interface RangeSubAdder : BaseEventAdder {
+interface RangeSubAdder : BaseSubAdder {
 
   override fun addEventRange(
     score: Score,

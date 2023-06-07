@@ -17,7 +17,7 @@ import com.philblandford.kscore.engine.eventadder.util.getOrCreateVoiceMap
 import com.philblandford.kscore.engine.eventadder.util.strip
 import com.philblandford.kscore.engine.types.*
 
-object GraceSubAdder : BaseEventAdder {
+object GraceSubAdder : BaseSubAdder {
 
   override fun addEvent(
     score: Score,

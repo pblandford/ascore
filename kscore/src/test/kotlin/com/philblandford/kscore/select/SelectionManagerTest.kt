@@ -34,6 +34,7 @@ class SelectionManagerTest {
   fun testSetEndSelection() {
     sm.setStartSelect(ea(1))
     sm.setEndSelect(ea(2))
+    Thread.sleep(500)
     assertThat(sm.getEndSelection(), `is`(ea(2)))
   }
 
@@ -83,6 +84,7 @@ class SelectionManagerTest {
     sm.setStartSelect(ea(2))
     sm.setEndSelect(ea(4))
     sm.moveSelection { ea -> ea(ea.barNum - 1) }
+    Thread.sleep(500)
     assertEqual(ea(2), sm.getStartSelection())
     assertEqual(ea(3), sm.getEndSelection())
   }
@@ -92,6 +94,7 @@ class SelectionManagerTest {
     sm.setStartSelect(ea(2))
     sm.setEndSelect(ea(4))
     sm.moveSelection { ea -> ea(ea.barNum + 1) }
+    Thread.sleep(500)
     assertEqual(ea(2), sm.getStartSelection())
     assertEqual(ea(5), sm.getEndSelection())
   }
@@ -127,6 +130,7 @@ class SelectionManagerTest {
   fun testClearSelection() {
     sm.setStartSelect(ea(1))
     sm.clearSelection()
+    Thread.sleep(500)
     assertThat(sm.getStartSelection(), `is`(null as EventAddress?))
     assertThat(sm.getEndSelection(), `is`(null as EventAddress?))
   }
@@ -135,8 +139,10 @@ class SelectionManagerTest {
   fun testClearSelectionClearsATS() {
     sm.setSelectedArea(getAts(), listOf(getAts()))
     sm.clearSelection()
+    Thread.sleep(500)
     assertThat(sm.getSelectedArea(), `is`(null as AreaToShow?))
   }
+
 
   private fun getAts(): AreaToShow {
     return AreaToShow(
@@ -145,8 +151,6 @@ class SelectionManagerTest {
     )
   }
 
-
-
   private fun getAtsMixture(): List<AreaToShow> {
     return listOf(EventType.DURATION, EventType.TEMPO).map {
       AreaToShow(
@@ -154,6 +158,17 @@ class SelectionManagerTest {
         Event(it, paramMapOf(EventParam.SECTIONS to Meta()))
       )
     }
+  }
+
+  private fun getChordArea():AreaToShow {
+    return AreaToShow(
+      ScoreArea(1, Rectangle(50, 50, 50, 50)), ea(1),
+      dslChord {
+        pitch(NoteLetter.A)
+        pitch(NoteLetter.B)
+        pitch(NoteLetter.C)
+      }
+    )
   }
 
 

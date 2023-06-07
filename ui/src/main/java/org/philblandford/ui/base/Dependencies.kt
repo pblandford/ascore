@@ -387,7 +387,8 @@ object Dependencies {
     single<GetSelection> { GetSelectionImpl(get()) }
     single<SelectionUpdate> { SelectionUpdateImpl(get()) }
     single<DeleteSelection> { DeleteSelectionImpl(get(), get()) }
-    viewModel { ClipboardViewModel(get(), get(), get(), get(), get(), get(), get(), get(), get(), get(), get()) }
+    single<CycleArea> { CycleAreaImpl(get()) }
+    viewModel { ClipboardViewModel(get(), get(), get(), get(), get(), get(), get(), get(), get(), get(), get(), get()) }
   }
 
   private val settingsModule = module {

@@ -1,11 +1,12 @@
 package com.philblandford.ascore.external.export.mxml.`in`.converter
 
-import com.philblandford.ascore.external.export.mxml.out.MxmlPageMargins
-import com.philblandford.ascore.external.export.mxml.out.MxmlScorePartwise
-import com.philblandford.ascore.external.export.mxml.out.MxmlSystemMargins
+import org.philblandford.ascore2.external.export.mxml.out.MxmlPageMargins
+import org.philblandford.ascore2.external.export.mxml.out.MxmlScorePartwise
+import org.philblandford.ascore2.external.export.mxml.out.MxmlSystemMargins
 import com.philblandford.kscore.api.InstrumentGetter
 import com.philblandford.kscore.api.ProgressFunc2
 import com.philblandford.kscore.api.noProgress2
+import com.philblandford.kscore.engine.beam.BeamDirectory
 import com.philblandford.kscore.engine.core.LayoutDescriptor
 import com.philblandford.kscore.engine.core.area.Coord
 import com.philblandford.kscore.engine.core.representation.BLOCK_HEIGHT
@@ -86,7 +87,7 @@ internal fun mxmlScoreToScore(
 
   progress("Tidying", 80f)
 
-  var score = Score(parts.toList(), scoreEvents)
+  var score = Score(parts.toList(), scoreEvents, BeamDirectory(mapOf()))
   score = score.transformStaves { _, _, staveId ->
     setTies(score)
   }.rightOrThrow()
@@ -101,6 +102,9 @@ internal fun mxmlScoreToScore(
   score = getLayout(score, mxmlScore)
   score = getSystemLayout(score, mxmlScore)
   score = getStaffLayout(score, mxmlScore)
+  score = score.copy(beamDirectory = BeamDirectory.create(score))
+  score = score.beamDirectory.markBeamGroupMembers(score).rightOrThrow()
+
   return score
 }
 
@@ -195,10 +199,8 @@ private fun findHiddenTimeSignatures(score: Score): Score {
                 if (ts.duration != actualTs.duration) {
                   eventMap = eventMap.putEvent(
                     ez(barIv.index + 1),
-                    actualTs.copy(hidden = true).toEvent()
+                    actualTs.copy(hidden = true).toHiddenEvent()
                   )
-                  eventMap =
-                    eventMap.putEvent(ez(barIv.index + 2), event.addParam(EventParam.HIDDEN, true))
                 }
               }
           }

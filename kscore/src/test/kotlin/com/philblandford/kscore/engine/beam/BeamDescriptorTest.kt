@@ -104,8 +104,8 @@ class BeamDescriptorTest {
 
   private fun getBeam(string: String): Beam {
     val fields = string.split(":")
-    val durations = fields.map { BeamMember(getDuration(it), getDuration(it)) }
-    val duration = durations.reduce { x, y -> val d = x.duration.add(y.duration); BeamMember(d,d) }
+    val durations = fields.map { BeamMember(dZero(),getDuration(it), getDuration(it)) }
+    val duration = durations.reduce { x, y -> val d = x.duration.add(y.duration); BeamMember(dZero(), d,d) }
 
     return Beam(durations, duration.duration)
   }

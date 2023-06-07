@@ -132,10 +132,26 @@ data class Horizontal(
   override fun compareTo(other: Horizontal): Int {
     var ret = barNum - other.barNum
     if (ret == 0) ret = offset.compareTo(other.offset)
-    if (ret == 0) ret = (graceOffset ?: dZero()).compareTo(other.graceOffset ?: dZero())
+    if (ret == 0) ret = (graceOffset ?: dMax()).compareTo(other.graceOffset ?: dMax())
     return ret
   }
 }
+
+data class HorizontalGraceless(
+  val barNum: Int = 1,
+  val offset: Offset = dZero(),
+) : Comparable<HorizontalGraceless> {
+  override fun compareTo(other: HorizontalGraceless): Int {
+    var ret = barNum - other.barNum
+    if (ret == 0) ret = offset.compareTo(other.offset)
+    return ret
+  }
+}
+
+data class Vertical(
+  val staveId: StaveId = StaveId(1,1),
+  val voice:Int = 1
+)
 
 fun hz(offset: Offset) = Horizontal(0, offset)
 val HZERO = hz(DZERO)
@@ -200,6 +216,8 @@ data class EventAddress(
   fun isWild() = this.voiceIdless() == EWILD
 
   val horizontal = Horizontal(barNum, offset, graceOffset)
+  val horizontalGraceless = HorizontalGraceless(barNum, offset)
+  val vertical = Vertical(staveId, voice)
 
   fun ifGraceOffset(): Offset = if (isGrace) graceOffset ?: dZero() else offset
   fun setIfGraceOffset(offset: Duration): EventAddress {
@@ -648,6 +666,10 @@ enum class BarNumbering {
   EVERY_SYSTEM,
   EVERY_BAR,
   NONE
+}
+
+enum class BeamType {
+  JOIN, BREAK
 }
 
 enum class ExportType {

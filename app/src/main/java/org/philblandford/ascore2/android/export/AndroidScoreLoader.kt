@@ -1,7 +1,7 @@
 package org.philblandford.ascore2.android.export
 
 import ResourceManager
-import com.philblandford.ascore.external.export.mxml.`in`.reader.scoreFromMxml
+import org.philblandford.ascore2.external.export.mxml.`in`.reader.scoreFromMxml
 import com.philblandford.ascore.external.interfaces.ScoreLoader
 import com.philblandford.kscore.api.InstrumentGetter
 import com.philblandford.kscore.api.KScore
@@ -9,7 +9,6 @@ import com.philblandford.kscore.api.ProgressFunc
 import com.philblandford.kscore.engine.core.score.Score
 import com.philblandford.kscore.engine.types.FileSource
 import com.philblandford.kscore.engine.types.ImportType
-import com.philblandford.kscore.log.ksLoge
 import com.philblandford.kscore.log.ksLogt
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext

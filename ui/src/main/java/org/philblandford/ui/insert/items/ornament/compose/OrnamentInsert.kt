@@ -6,6 +6,8 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Checkbox
+import androidx.compose.material3.CheckboxDefaults
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -105,7 +107,11 @@ private fun AccidentalCheckbox(
     } else {
       iface.setParam(param, null)
     }
-  })
+  }, colors = CheckboxDefaults.colors(
+    checkedColor = MaterialTheme.colorScheme.onSurface,
+    checkmarkColor = MaterialTheme.colorScheme.onSurface,
+    uncheckedColor = MaterialTheme.colorScheme.onSurface
+  ))
 
   AccidentalChooser(selectedAccidental.value) {
     selectedAccidental.value = it

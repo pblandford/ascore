@@ -10,7 +10,7 @@ import com.philblandford.kscore.engine.types.*
 
 data class Location(val page: Int, val x: Int, val y: Int)
 data class Rectangle(val x: Int, val y: Int, val width: Int, val height: Int)
-data class ScoreArea(val page: Int, val rectangle: Rectangle) {
+data class ScoreArea(val page: Int, val rectangle: Rectangle, val tag:String = "") {
   val x = rectangle.x
   val y = rectangle.y
   val width = rectangle.width

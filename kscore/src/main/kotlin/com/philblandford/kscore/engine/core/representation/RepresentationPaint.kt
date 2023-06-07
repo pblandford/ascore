@@ -13,6 +13,7 @@ import com.philblandford.kscore.engine.types.EventAddress
 import com.philblandford.kscore.engine.types.StaveId
 import com.philblandford.kscore.engine.types.ez
 import com.philblandford.kscore.engine.util.blue
+import com.philblandford.kscore.engine.util.borderedSelectionColor
 import com.philblandford.kscore.engine.util.lightGrey
 import com.philblandford.kscore.engine.util.selectionColor
 import com.philblandford.kscore.log.ksLogt
@@ -105,7 +106,7 @@ internal fun DrawableFactory.paintSelectedArea(
   return selectState?.area?.let { ats ->
     if ((ats.scoreArea.page == pageGeography.pageNum)) {
       getDrawableArea(
-        RectArgs(ats.width, ats.height, false, selectionColor(), 16)
+        RectArgs(ats.width, ats.height, false, borderedSelectionColor(), 8)
       )?.let { rect ->
         page.addArea(rect, Coord(ats.x, ats.y))
       }

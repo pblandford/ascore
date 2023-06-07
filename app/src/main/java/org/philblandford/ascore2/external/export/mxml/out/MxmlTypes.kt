@@ -1,12 +1,27 @@
-package com.philblandford.ascore.external.export.mxml.out
+package org.philblandford.ascore2.external.export.mxml.out
+
 
 import com.philblandford.ascore.external.export.mxml.out.creator.createMxmlScore
-import com.philblandford.ascore.external.export.xml.*
 import com.philblandford.kscore.engine.core.score.Score
-import com.philblandford.kscore.engine.duration.*
+import com.philblandford.kscore.engine.duration.Duration
+import com.philblandford.kscore.engine.duration.breve
+import com.philblandford.kscore.engine.duration.crotchet
+import com.philblandford.kscore.engine.duration.demisemiquaver
+import com.philblandford.kscore.engine.duration.hemidemisemiquaver
+import com.philblandford.kscore.engine.duration.longa
+import com.philblandford.kscore.engine.duration.minim
+import com.philblandford.kscore.engine.duration.quaver
+import com.philblandford.kscore.engine.duration.semibreve
+import com.philblandford.kscore.engine.duration.semiquaver
+import com.philblandford.kscore.engine.duration.undot
 import com.philblandford.kscore.engine.types.Accidental
 import com.philblandford.kscore.engine.types.ClefType
 import com.philblandford.kscore.engine.types.MetaType
+import org.philblandford.ascore2.external.export.xml.Attribute
+import org.philblandford.ascore2.external.export.xml.Child
+import org.philblandford.ascore2.external.export.xml.KxmlBase
+import org.philblandford.ascore2.external.export.xml.Order
+import org.philblandford.ascore2.external.export.xml.Text
 import org.philblandford.ascore2.external.export.xml.write
 import org.w3c.dom.Element
 
@@ -36,7 +51,7 @@ internal abstract class MxmlBase : KxmlBase() {
 
 internal data class MxmlScorePartwise(
   @Attribute val version: String = VERSION,
-  @Child @Order(0)  val work:MxmlWork?,
+  @Child @Order(0)  val work: MxmlWork?,
   @Child @Order(1)  val identification: MxmlIdentification?,
 
   @Child @Order(2) val defaults: MxmlDefaults?,
@@ -224,7 +239,7 @@ internal data class MxmlDiatonic(@Text val num: Int) : MxmlBase()
 internal data class MxmlChromatic(@Text val num: Int) : MxmlBase()
 
 internal data class MxmlMeasureStyle(@Attribute val staff:Int?,
-                            @Child @Order(0) val measureRepeat: MxmlMeasureRepeat?) : MxmlBase()
+                                     @Child @Order(0) val measureRepeat: MxmlMeasureRepeat?) : MxmlBase()
 
 internal data class MxmlMeasureRepeat(@Attribute val type: String, @Attribute val slashes: Int) : MxmlBase()
 

@@ -6,6 +6,7 @@ import com.philblandford.kscore.engine.map.EventMapKey
 import com.philblandford.kscore.engine.map.eventHashOf
 import com.philblandford.kscore.engine.eventadder.*
 import com.philblandford.kscore.engine.types.*
+import com.philblandford.kscore.log.ksLoge
 
 fun <T : ScoreLevel> T.removeSameLater(
   eventType: EventType, eventAddress: EventAddress,
@@ -19,16 +20,27 @@ fun <T : ScoreLevel> T.removeSameLater(
   return Right(res as T)
 }
 
+fun Score.transformVoiceMaps(
+  start: BarNum = 1, end: BarNum = numBars,
+  staves: List<StaveId> = getAllStaves(true),
+  action: VoiceMap.(EventAddress) -> VoiceMapResult
+): ScoreResult {
+  return transformBars(start, end, staves) { _, _, bar, staveId ->
+    this.transformVoiceMaps(EventAddress(bar, staveId = staveId), action)
+  }
+}
+
 fun Score.transformBars(
   start: BarNum = 1, end: BarNum = numBars,
+  staves: List<StaveId> = getAllStaves(true),
   action: Bar.(start: Offset?, end: Offset?, barNum: Int, staveId: StaveId) -> BarResult
 ): ScoreResult {
-  return transformStaves(start, end) { _, _, si ->
+  return transformStaves(start, end, staves) { _, _, si ->
     this.transformBars(eas(start, dZero(), si), eas(end, dZero(), si), si, action)
   }
 }
 
- fun Part.transformBars(
+fun Part.transformBars(
   start: BarNum, end: BarNum,
   part: PartNum,
   action: Bar.(start: Offset?, end: Offset?, barNum: Int, staveId: StaveId) -> BarResult
@@ -39,30 +51,64 @@ fun Score.transformBars(
 }
 
 
- fun Score.transformStaves(
+fun Score.transformParts(
   start: BarNum = 1,
   end: BarNum = numBars,
-  action: Stave.(BarNum, BarNum, StaveId) -> StaveResult
+  partIds:List<Int> = subLevels.indices.toList().map { it + 1 },
+  action: Part.(BarNum, BarNum) -> PartResult
 ): ScoreResult {
-  val parts = subLevels.withIndex().mapOrFail { iv ->
-    iv.value.transformStaves(start, end, iv.index + 1, action)
+  val parts = subLevels.withIndex()
+    .mapOrFail { (idx, part) ->
+      if (idx + 1 in partIds) {
+        part.action(start, end)
+      } else {
+        part.ok()
+      }
+    }
+  return parts.then {
+    if (it == this.subLevels) this.ok()
+    else Right(replaceSelf(eventMap, it))
   }
-  return parts.then { Right(Score(it, eventMap)) }
 }
 
- fun Part.transformStaves(
+
+fun Score.transformStaves(
+  start: BarNum = 1,
+  end: BarNum = numBars,
+  staves: List<StaveId> = getAllStaves(true),
+  action: Stave.(BarNum, BarNum, StaveId) -> StaveResult
+): ScoreResult {
+  val parts = subLevels.withIndex()
+    .mapOrFail { (idx, part) ->
+      if (staves.any { it.main == idx + 1 })
+        part.transformStaves(
+        start, end, idx + 1,
+        part.staves.indices.filter { StaveId(idx + 1, it + 1) in staves }, action
+      )
+      else
+        part.ok()
+    }
+  return parts.then {
+    if (it == this.subLevels) this.ok()
+    else Right(replaceSelf(eventMap, it))
+  }
+}
+
+fun Part.transformStaves(
   start: BarNum,
   end: BarNum,
   part: PartNum,
+  staveIdxes: List<Int> = (staves.indices).toList(),
   action: Stave.(BarNum, BarNum, StaveId) -> StaveResult
 ): PartResult {
-  val transformed = staves.withIndex().mapOrFail { iv ->
-    iv.value.action(start, end, StaveId(part, iv.index + 1))
+  val transformed = staves.withIndex().mapOrFail { (idx, stave) ->
+    if (idx in staveIdxes) stave.action(start, end, StaveId(part, idx + 1))
+    else stave.ok()
   }
   return transformed.then { Right(Part(it, eventMap)) }
 }
 
- fun Stave.transformBars(
+fun Stave.transformBars(
   startInclusive: EventAddress, endExclusive: EventAddress,
   staveId: StaveId,
   action: Bar.(start: Offset?, end: Offset?, barNum: Int, staveId: StaveId) -> BarResult
@@ -72,7 +118,7 @@ fun Score.transformBars(
   val endBar =
     if (endExclusive.barNum.isWild() || endExclusive.barNum > numBars) numBars else endExclusive.barNum
   val bars =
-    (startBar..endBar).mapNotNull { num -> bars[num-1]?.let { num to it } }
+    (startBar..endBar).mapNotNull { num -> bars[num - 1]?.let { num to it } }
 
   val transformed = bars.mapOrFail { (num, bar) ->
     val startOffset = if (num == startBar) startInclusive.offset else null
@@ -84,15 +130,19 @@ fun Score.transformBars(
   return transformed.then { list ->
     val allBars = this.bars.take(startBar - 1).plus(list.map { it.second })
       .plus(this.bars.takeLast(numBars - endBar))
+    ksLoge("Create new stave vea $startBar $endBar $staveId")
     val res = Stave(allBars, eventMap)
     Right(res)
   }
 }
 
- fun Bar.transformVoiceMaps(action: VoiceMap.(Voice) -> VoiceMapResult): BarResult {
+fun Bar.transformVoiceMaps(
+  eventAddress: EventAddress,
+  action: VoiceMap.(EventAddress) -> VoiceMapResult
+): BarResult {
 
-  val transformed = voiceMaps.withIndex().mapOrFail { iv ->
-    iv.value.action(iv.index + 1).then { Right(iv.index + 1 to it) }
+  val transformed = voiceMaps.withIndex().mapOrFail { (idx, voiceMap) ->
+    voiceMap.action(eventAddress.copy(voice = idx + 1)).then { Right(idx + 1 to it) }
   }
   return transformed.then {
     val res = it.fold(this) { bar, (voiceNum, voice) ->
@@ -102,7 +152,7 @@ fun Score.transformBars(
   }
 }
 
- fun VoiceMap.transformDurationEvents(
+fun VoiceMap.transformDurationEvents(
   startInclusive: Offset?, endExclusive: Offset?,
   action: (EventMapKey, Event) -> Event
 ): VoiceMapResult {

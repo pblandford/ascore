@@ -2,6 +2,7 @@ package com.philblandford.kscore.engine.dsl
 
 import com.philblandford.kscore.api.Instrument
 import com.philblandford.kscore.api.defaultInstrument
+import com.philblandford.kscore.engine.beam.BeamDirectory
 import com.philblandford.kscore.engine.core.area.Coord
 import com.philblandford.kscore.engine.core.score.*
 import com.philblandford.kscore.engine.duration.*
@@ -49,7 +50,8 @@ class ScoreBuilder(
       events.putEvent(
         ez(1),
         Event(EventType.KEY_SIGNATURE, paramMapOf(EventParam.SHARPS to sharps))
-      ).putEvent(ez(1), timeSignature.toEvent()).putEvent(ez(1), tempo.toEvent())
+      ).putEvent(ez(1), timeSignature.toEvent()).putEvent(ez(1), tempo.toEvent()),
+      BeamDirectory(mapOf(), mapOf())
     )
     val metaEvent = meta.toEvent()
     return NewEventAdder.addEvent(score, metaEvent.eventType, metaEvent.params, eZero())

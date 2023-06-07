@@ -3,6 +3,7 @@ package core.score
 import TestInstrumentGetter
 import com.philblandford.kscore.engine.types.*
 import assertEqual
+import com.philblandford.kscore.engine.beam.BeamDirectory
 import com.philblandford.kscore.engine.core.score.Part
 import com.philblandford.kscore.engine.core.score.Score
 import com.philblandford.kscore.engine.duration.crotchet
@@ -36,7 +37,7 @@ class ScoreBasicTest : ScoreTest() {
 
   @Test
   fun testGetParts() {
-    val score = Score(listOf(Part(), Part()))
+    val score = Score(listOf(Part(), Part()), beamDirectory = BeamDirectory(mapOf()))
     assertEqual(2, score.getEvents(EventType.PART)?.count())
   }
 }

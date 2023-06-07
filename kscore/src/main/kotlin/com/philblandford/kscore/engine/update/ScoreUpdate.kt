@@ -83,7 +83,7 @@ private fun Score.getOptionDiff(oldScore: Score): ScoreDiff {
     return noRecreate
   }
 
-  for (type in listOf(EventType.UISTATE, EventType.LAYOUT)) {
+  for (type in listOf(EventType.UISTATE, EventType.LAYOUT, EventType.BREAK)) {
     ksLoge("optionDiff pondering $type")
     if (eventMap.eventChanged(oldScore.eventMap, type)) {
       ksLoge("optionDiff changed $type")
@@ -96,6 +96,9 @@ private fun Score.getOptionDiff(oldScore: Score): ScoreDiff {
       if (a.eventMap.getEvent(type) != b.eventMap.getEvent(type)) {
         return noRecreate
       }
+    }
+    if (a.eventMap.eventChanged(b.eventMap, EventType.BREAK)) {
+      return createParts
     }
   }
 

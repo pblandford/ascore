@@ -8,7 +8,7 @@ import com.philblandford.kscore.engine.eventadder.util.addEventToLevel
 import com.philblandford.kscore.engine.time.TimeSignature
 import com.philblandford.kscore.engine.types.*
 
-object BarBreakSubAdder : BaseEventAdder {
+object BarBreakSubAdder : BaseSubAdder {
 
   override fun addEvent(
     score: Score,

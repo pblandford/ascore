@@ -1,7 +1,8 @@
 package com.philblandford.ascore.external.export.mxml.`in`.reader
 
-import com.philblandford.ascore.external.export.mxml.out.MxmlPart
+import org.philblandford.ascore2.external.export.mxml.out.MxmlPart
 import com.philblandford.kscore.log.ksLogd
+import org.philblandford.ascore2.external.export.mxml.`in`.reader.getChildren
 import org.w3c.dom.Element
 
 

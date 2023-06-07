@@ -213,6 +213,17 @@ internal val insertItems = listOf(
     rangeCapable = true
   ),
   InsertItem(
+    R.drawable.beamed_quavers,
+    R.string.beams,
+    "insert_beam_notes",
+    LayoutID.BEAM,
+    EventType.BEAM,
+    paramMapOf(EventParam.TYPE to BeamType.JOIN),
+    typeParam = EventParam.TYPE,
+    rangeCapable = true,
+    line = true
+  ),
+  InsertItem(
     R.drawable.tremolo,
     R.string.tremolo,
     "insert_tremolo",
@@ -258,14 +269,14 @@ internal val insertItems = listOf(
     LayoutID.SCORE_BREAK,
     EventType.BREAK
   ),
-  InsertItem(
-    R.drawable.segment,
-    R.string.segment_width,
-    "segment_width",
-    LayoutID.SEGMENT_WIDTH,
-    EventType.BREAK,
-    tapInsertBehaviour = TapInsertBehaviour.SET_MARKER
-  ),
+//  InsertItem(
+//    R.drawable.segment,
+//    R.string.segment_width,
+//    "segment_width",
+//    LayoutID.SEGMENT_WIDTH,
+//    EventType.BREAK,
+//    tapInsertBehaviour = TapInsertBehaviour.SET_MARKER
+//  ),
   InsertItem(
     R.drawable.indent, R.string.page_margins, "page_margin", LayoutID.MARGIN,
     EventType.LAYOUT

@@ -87,7 +87,7 @@ private fun DrawableFactory.createParts(
   scoreQuery: ScoreQuery, areaDirectoryQuery: AreaDirectoryQuery,
   geogs: List<SystemXGeography>, layoutDescriptor: LayoutDescriptor,
   progress: ProgressFunc2 = noProgress2
-): PartDirectory? {
+): PartDirectory {
   var num = 0
   val partMap = createPartMap(areaDirectoryQuery, geogs, scoreQuery)
 

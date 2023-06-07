@@ -37,14 +37,6 @@ class ScoreQueryTest : ScoreTest() {
     assertEqual(2, EG().numBars)
   }
 
-  @Test
-  fun testGetBeamsForVoice() {
-    val score = scoreQuavers()
-    sc.setNewScoreNoRepresentation(score)
-    val events = EG().getEvents(EventType.BEAM, eav(1))
-    assertEqual(2, events?.size)
-  }
-
 
   @Test
   fun testGetEmptyVoiceMaps() {

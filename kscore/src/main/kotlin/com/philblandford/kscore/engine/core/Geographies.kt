@@ -83,8 +83,8 @@ data class SegmentGeography(
   val topNote = topGeog?.value?.topNote ?: 0
   val bottomGeog = voiceGeographies.maxByOrNull { it.value.bottomNote }
   val bottomNote = bottomGeog?.value?.bottomNote ?: 0
-  val graceWidth = graceSlicePositions.toSortedMap().toList().lastOrNull()
-    ?.let { it.second.start + it.second.width } ?: 0
+  val graceWidth = graceSlicePositions.toSortedMap().toList().firstOrNull()?.second?.start ?: 0
+   // ?.let { it.second.start + it.second.width } ?: 0
   val hasUpStem =
     voiceGeographies.count { it.value.duration < semibreve() && it.value.stemGeography?.up == true } > 0
   val hasDownStem =

@@ -5,6 +5,7 @@ import com.philblandford.kscore.engine.types.*
 import com.philblandford.kscore.engine.core.representation.BEAM_MAX_GRADIENT
 import com.philblandford.kscore.engine.core.representation.LINE_THICKNESS
 import com.philblandford.kscore.engine.core.representation.RepTest
+import com.philblandford.kscore.engine.core.representation.getAreasAtAddress
 
 
 import com.philblandford.kscore.engine.duration.*
@@ -43,6 +44,8 @@ class BeamTest : RepTest() {
     RVNA("Tail", eav(1))
     RVNA("Tail", eav(1, quaver()))
   }
+
+
 
   @Test
   fun testBeamCreatedTuplet() {
@@ -124,6 +127,15 @@ class BeamTest : RepTest() {
     val beam = getArea("Beam", eav(1))!!.coord
     val stem = getArea("Stem", eav(1))!!.coord
     assertEqual(beam.y, stem.y)
+  }
+
+  @Test
+  fun testBeamCreatedDottedNotes() {
+    SMV(duration = quaver(1), eventAddress = eav(1))
+    SMV(duration = semiquaver(), eventAddress = eav(1, quaver(1)))
+    val areas = REP().pages.first().base.findByTag("Beam").toList().sortedBy { -it.first.coord.y }
+    assertEqual(2,areas.size)
+    assert(areas[1].second.width < areas[0].second.width)
   }
   
   @Test
@@ -216,5 +228,38 @@ class BeamTest : RepTest() {
     assertEqual(tadpole.x + LINE_THICKNESS/2, stem.x)
   }
 
+  @Test
+  fun testBeamsCreatedUserBeam() {
+    repeat(4) {
+      SMV(duration = quaver(), eventAddress = eav(1, quaver() * it))
+    }
+    SAE(EventType.BEAM, eav(1), paramMapOf(EventParam.END to eav(1, quaver())))
+    RVA("Beam", eav(1))
+    RVA("Beam", eav(1, crotchet()))
+  }
+
+  @Test
+  fun testBeamsCreatedUserBeamOverSystemEnd() {
+    repeat(32) { bar ->
+      repeat(8) {
+        SMV(duration = quaver(), eventAddress = eav(bar + 1, quaver() * it))
+      }
+    }
+    SAE(EventType.BREAK, eav(4), paramMapOf(EventParam.TYPE to BreakType.SYSTEM))
+    SAE(EventType.BEAM, eav(4, minim()), paramMapOf(EventParam.END to eav(5, minim())))
+    RVA("Beam", eav(4, minim()))
+    RVA("Beam", eav(5))
+  }
+
+  @Test
+  fun testBeamsCreatedUserBeamAcrossBars() {
+    repeat(2) { bar ->
+      repeat(8) {
+        SMV(duration = quaver(), eventAddress = eav(bar + 1, quaver() * it))
+      }
+    }
+    SAE(EventType.BEAM, eav(1, minim()), paramMapOf(EventParam.END to eav(2, crotchet(1))))
+    RVA("Beam", eav(1, minim()))
+  }
 
 }

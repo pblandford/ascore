@@ -46,22 +46,24 @@ data class SetCommand<T>(
 
 data class UndoCommand(val undo: Boolean) : Command()
 
-data class BatchCommand(val commands:List<Command>) : Command()
+data class BatchCommand(val commands: List<Command>) : Command()
 
-data class PasteCommand(val start:EventAddress) : Command()
+data class PasteCommand(val start: EventAddress) : Command()
 
 data class ScoreState(val score: Score?, val representation: Representation?)
 
-data class ScoreError(val exception:Exception, val command: Command?, val internal:Boolean = true)
+data class ScoreError(val exception: Exception, val command: Command?, val internal: Boolean = true)
 
 
 class ScoreContainer(private val drawableFactory: DrawableFactory) {
 
   private val coroutineScope = CoroutineScope(Dispatchers.Default)
   val currentScoreState = MutableStateFlow(ScoreState(null, null))
-  var currentScore = currentScoreState.map { it.score }.stateIn(coroutineScope, SharingStarted.Eagerly, null)
-  var currentRepresentation = currentScoreState.map { it.representation }.stateIn(coroutineScope, SharingStarted.Eagerly, null)
-  private var exceptionHandler:(Exception)->Unit  = {}
+  var currentScore =
+    currentScoreState.map { it.score }.stateIn(coroutineScope, SharingStarted.Eagerly, null)
+  var currentRepresentation = currentScoreState.map { it.representation }
+    .stateIn(coroutineScope, SharingStarted.Eagerly, null)
+  private var exceptionHandler: (Exception) -> Unit = {}
   private val errorFlow = MutableSharedFlow<ScoreError>()
   private val undoStack = UndoStack()
   private val commandHistory = mutableListOf<Command>()
@@ -75,7 +77,7 @@ class ScoreContainer(private val drawableFactory: DrawableFactory) {
     listenForCommands()
   }
 
-  fun setExceptionHandler(handler:(Exception)->Unit) {
+  fun setExceptionHandler(handler: (Exception) -> Unit) {
     exceptionHandler = handler
   }
 
@@ -99,7 +101,7 @@ class ScoreContainer(private val drawableFactory: DrawableFactory) {
     commandHistory.clear()
   }
 
-  fun getErrorFlow():Flow<ScoreError> = errorFlow
+  fun getErrorFlow(): Flow<ScoreError> = errorFlow
 
   fun addEvent(
     event: Event,
@@ -148,14 +150,14 @@ class ScoreContainer(private val drawableFactory: DrawableFactory) {
     }
   }
 
-  fun batch(vararg cmds:()->Unit) {
+  fun batch(vararg cmds: () -> Unit) {
     startBatch()
     cmds.forEach { it.invoke() }
     endBatch()
     addCommand(BatchCommand(batchQueue))
   }
 
-  private fun ScoreState.runBatch(commands:List<Command>):ScoreState {
+  private fun ScoreState.runBatch(commands: List<Command>): ScoreState {
     return commands.toList().fold(this) { score, cmd ->
       score.applyCommand(cmd)
     }
@@ -206,15 +208,16 @@ class ScoreContainer(private val drawableFactory: DrawableFactory) {
     ksLoge("Double note SC dequeue $command")
 
     try {
-        val newScoreState = currentScoreState.value.applyCommand(command)
-        currentScoreState.emit(newScoreState)
-    } catch (e:Exception) {
+      val newScoreState = currentScoreState.value.applyCommand(command)
+      currentScoreState.emit(newScoreState)
+    } catch (e: Exception) {
       ksLoge("SC caught error", e)
-        errorFlow.emit(ScoreError(e, command))
+      exceptionHandler(e)
+      errorFlow.emit(ScoreError(e, command))
     }
   }
 
-  private fun ScoreState.applyCommand(command: Command):ScoreState {
+  private fun ScoreState.applyCommand(command: Command): ScoreState {
     return try {
       when (command) {
         is AddCommand -> {
@@ -252,9 +255,10 @@ class ScoreContainer(private val drawableFactory: DrawableFactory) {
         is UndoCommand -> {
           if (command.undo) doUndo() else doRedo()
         }
+
         else -> this
       }
-    } catch (e:Exception) {
+    } catch (e: Exception) {
       ksLoge("Failed applying $command", e)
       coroutineScope.launch {
         errorFlow.emit(ScoreError(e, command))
@@ -269,7 +273,8 @@ class ScoreContainer(private val drawableFactory: DrawableFactory) {
     endAddress: EventAddress? = null,
   ): ScoreState {
     return score?.let { score ->
-      val address = if (eventAddress.isWild()) score.getMarker()?.copy(voice = eventAddress.voice) else eventAddress
+      val address = if (eventAddress.isWild()) score.getMarker()
+        ?.copy(voice = eventAddress.voice) else eventAddress
       address?.let {
         val sr = if (add) {
           score.addEvent(event, address, endAddress)
@@ -288,7 +293,7 @@ class ScoreContainer(private val drawableFactory: DrawableFactory) {
     } ?: this
   }
 
-  private fun ScoreState.doDeleteRange(start: EventAddress, end: EventAddress):ScoreState {
+  private fun ScoreState.doDeleteRange(start: EventAddress, end: EventAddress): ScoreState {
 
     return score?.let { score ->
       val newScore = when (val res = NewEventAdder.deleteRange(score, start, end)) {
@@ -309,14 +314,14 @@ class ScoreContainer(private val drawableFactory: DrawableFactory) {
   }
 
   private fun ScoreState.updateScore(
-    newScore:Score,
+    newScore: Score,
     repUpdate: RepUpdate = RepUpdateFull
-  ):ScoreState {
+  ): ScoreState {
     val newRep = score?.let { oldScore ->
-        if (repUpdate is RepUpdateNone) representation else representation?.update(
-          oldScore,
-          newScore
-        )
+      if (repUpdate is RepUpdateNone) representation else representation?.update(
+        oldScore,
+        newScore
+      )
     }
     return ScoreState(newScore, newRep)
   }
@@ -325,7 +330,7 @@ class ScoreContainer(private val drawableFactory: DrawableFactory) {
   private fun <T> ScoreState.doSetParam(
     eventType: EventType, eventParam: EventParam, value: T,
     eventAddress: EventAddress, endAddress: EventAddress? = null, repUpdate: Boolean = true
-  ):ScoreState {
+  ): ScoreState {
 
     ksLogt("SetParam $eventType $eventParam $value $eventAddress $endAddress")
     return score?.let { score ->
@@ -341,7 +346,7 @@ class ScoreContainer(private val drawableFactory: DrawableFactory) {
     } ?: this
   }
 
-  private fun ScoreState.doUndo():ScoreState {
+  private fun ScoreState.doUndo(): ScoreState {
     return yes { s, r ->
       undoStack.undo(s, r)?.let {
         ScoreState(it.score, it.representation)
@@ -349,7 +354,7 @@ class ScoreContainer(private val drawableFactory: DrawableFactory) {
     }
   }
 
-  private fun ScoreState.doRedo():ScoreState {
+  private fun ScoreState.doRedo(): ScoreState {
     return yes { s, r ->
       undoStack.redo(s, r)?.let {
         ScoreState(it.score, it.representation)
@@ -365,7 +370,8 @@ class ScoreContainer(private val drawableFactory: DrawableFactory) {
     eventAddress: EventAddress,
     default: T?
   ): T? {
-    return currentScoreState.value.score?.getParam<T>(eventType, eventParam, eventAddress) ?: default
+    return currentScoreState.value.score?.getParam<T>(eventType, eventParam, eventAddress)
+      ?: default
   }
 
   fun setOption(option: EventParam, value: Any?) {
@@ -392,7 +398,7 @@ class ScoreContainer(private val drawableFactory: DrawableFactory) {
     pauseUndo(false)
   }
 
-  private fun ScoreState.yes(cmd: (Score, Representation) -> ScoreState):ScoreState {
+  private fun ScoreState.yes(cmd: (Score, Representation) -> ScoreState): ScoreState {
     return score?.let { s ->
       representation?.let { r ->
         cmd(s, r)

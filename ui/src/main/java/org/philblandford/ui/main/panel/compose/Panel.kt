@@ -17,6 +17,7 @@ import org.philblandford.ui.insert.items.articulation.compose.ArticulationInsert
 import org.philblandford.ui.insert.items.barline.compose.BarLineInsert
 import org.philblandford.ui.insert.items.barnumbering.compose.BarNumberingInsert
 import org.philblandford.ui.insert.items.bars.compose.BarInsert
+import org.philblandford.ui.insert.items.beam.compose.BeamInsert
 import org.philblandford.ui.insert.items.bowing.compose.BowingInsert
 import org.philblandford.ui.insert.items.clef.compose.ClefInsert
 import org.philblandford.ui.insert.items.dynamic.compose.DynamicInsert
@@ -85,6 +86,7 @@ private fun PanelInternal(model: PanelModel) {
         LayoutID.BAR -> BarInsert()
         LayoutID.BARLINE -> BarLineInsert()
         LayoutID.BAR_NUMBERING -> BarNumberingInsert()
+        LayoutID.BEAM -> BeamInsert()
         LayoutID.BOWING -> BowingInsert()
         LayoutID.CLEF -> ClefInsert()
         LayoutID.DYNAMIC -> DynamicInsert()

@@ -11,7 +11,7 @@ import com.philblandford.kscore.engine.types.ParamMap
 import com.philblandford.kscore.log.ksLogt
 
 
-object TieSubAdder : BaseEventAdder {
+object TieSubAdder : BaseSubAdder {
 
   override fun addEvent(
     score: Score,

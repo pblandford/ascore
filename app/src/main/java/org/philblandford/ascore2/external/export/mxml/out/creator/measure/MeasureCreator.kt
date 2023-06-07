@@ -1,8 +1,6 @@
 package com.philblandford.ascore.external.export.mxml.out.creator.measure
 
 import BeamStateQuery
-import beamStateQuery
-import com.philblandford.ascore.external.export.mxml.out.*
 import com.philblandford.ascore.external.export.mxml.out.creator.RepeatBarQuery
 import com.philblandford.kscore.engine.core.score.Bar
 import com.philblandford.kscore.engine.core.score.Tuplet
@@ -16,6 +14,15 @@ import com.philblandford.kscore.engine.map.EventHash
 import com.philblandford.kscore.engine.map.EventMapKey
 import com.philblandford.kscore.engine.map.eventHashOf
 import com.philblandford.kscore.engine.types.*
+import org.philblandford.ascore2.external.export.mxml.out.MxmlBackup
+import org.philblandford.ascore2.external.export.mxml.out.MxmlBarStyle
+import org.philblandford.ascore2.external.export.mxml.out.MxmlBarline
+import org.philblandford.ascore2.external.export.mxml.out.MxmlDuration
+import org.philblandford.ascore2.external.export.mxml.out.MxmlEnding
+import org.philblandford.ascore2.external.export.mxml.out.MxmlMeasure
+import org.philblandford.ascore2.external.export.mxml.out.MxmlMeasureElement
+import org.philblandford.ascore2.external.export.mxml.out.MxmlPrint
+import org.philblandford.ascore2.external.export.mxml.out.MxmlRepeat
 
 private data class StaffVoice(val staveNum: StaveNum, val voice: Voice)
 
@@ -155,11 +162,12 @@ private fun createNotesAtOffset(
 
 private fun createStateBeamQueries(barMap: Map<StaveNum, Bar>): Map<StaffVoice, BeamStateQuery> {
 
-  return barMap.flatMap { (staff, bar) ->
-    bar.voiceMaps.withIndex().map { iv ->
-      StaffVoice(staff, iv.index + 1) to beamStateQuery(iv.value.beamMap)
-    }
-  }.toMap()
+  return mapOf()
+//  return barMap.flatMap { (staff, bar) ->
+//    bar.voiceMaps.withIndex().map { iv ->
+//      StaffVoice(staff, iv.index + 1) to beamStateQuery(iv.value.beamMap)
+//    }
+//  }.toMap()
 }
 
 private fun getBarVoiceEvents(bars: Map<StaveNum, Bar>): List<Pair<StaffVoice, VoiceMap>> {

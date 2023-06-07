@@ -7,7 +7,7 @@ import com.philblandford.kscore.engine.duration.plus
 import com.philblandford.kscore.engine.eventadder.*
 import com.philblandford.kscore.engine.types.*
 
-internal object MarkerSubAdder : BaseEventAdder {
+internal object MarkerSubAdder : BaseSubAdder {
 
   override fun addEvent(
     score: Score,

@@ -3,7 +3,7 @@ package com.philblandford.ascore.external.export
 import ResourceManager
 import android.net.Uri
 import org.philblandford.ascore2.external.export.mp3.writeAudio
-import com.philblandford.ascore.external.export.mxml.out.createMxml
+import org.philblandford.ascore2.external.export.mxml.out.createMxml
 import com.philblandford.ascore.external.export.out.writeMidi
 import com.philblandford.ascore.external.interfaces.ExportDestination
 import com.philblandford.ascore.external.interfaces.ExporterIf

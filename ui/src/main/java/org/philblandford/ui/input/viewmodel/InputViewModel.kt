@@ -56,12 +56,14 @@ class InputViewModel(
         .collectLatest { (key, instrument) ->
           val accidental = if (key >= 0) Accidental.SHARP else Accidental.FLAT
           val descrs = getInstrumentAtMarker()?.percussionDescrs ?: listOf()
-          update {
+
+          update{
             copy(
               noteInputDescriptor = noteInputDescriptor.copy(accidental = accidental),
               percussionDescrs = descrs
             )
           }
+          updateState { copy(accidental = accidental) }
         }
     }
   }

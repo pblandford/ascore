@@ -13,6 +13,7 @@ import com.philblandford.kscore.engine.eventadder.subadders.DurationSubAdder.del
 import com.philblandford.kscore.engine.eventadder.util.changeSubLevel
 import com.philblandford.kscore.engine.eventadder.util.getOrCreateVoiceMap
 import com.philblandford.kscore.engine.types.*
+import com.philblandford.kscore.log.ksLoge
 import com.philblandford.kscore.log.ksLogt
 
 object TupletSubAdder : MoveableSubAdderIf {
@@ -75,7 +76,6 @@ object TupletSubAdder : MoveableSubAdderIf {
             }
         }
         events = events.plus(wholeRests)
-        ksLogt("Fuck you ${events}")
         return events.toList().fold(Right(score) as ScoreResult) { sr, (k, v) ->
             sr.then { addEvent(it, destination, eventType, params, k.eventAddress) }
         }
@@ -154,7 +154,10 @@ object TupletSubAdder : MoveableSubAdderIf {
     private fun Score.addTuplet(tuplet: Tuplet, eventAddress: EventAddress): ScoreResult {
         val voiceMap = getOrCreateVoiceMap(eventAddress)
         val sls = voiceMap.subLevels.filterNot { it.offset == tuplet.offset }.plus(tuplet)
+        ksLoge("a $voiceMap")
         val newVm = voiceMap.replaceSelf(voiceMap.eventMap, sls)
+        ksLoge("b $newVm")
+
         return changeSubLevel(newVm, eventAddress)
     }
 

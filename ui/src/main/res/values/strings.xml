@@ -220,6 +220,7 @@
     <string name="navigation">Navigation</string>
     <string name="volta">Volta Brackets</string>
     <string name="repeat_bar">Repeat Bar</string>
+    <string name="beams">Beam</string>
     <string name="articulation">Articulation</string>
     <string name="bowing">Bowing</string>
     <string name="dynamic">Dynamic</string>

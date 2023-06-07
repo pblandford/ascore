@@ -10,6 +10,9 @@ import com.philblandford.kscore.engine.core.area.factory.RectArgs
 import com.philblandford.kscore.engine.core.representation.*
 import com.philblandford.kscore.engine.types.*
 import com.philblandford.kscore.engine.util.blue
+import com.philblandford.kscore.engine.util.green
+import com.philblandford.kscore.engine.util.red
+import com.philblandford.kscore.log.ksLoge
 
 fun DrawableFactory.placeholderBarLine(height: Int): Area? {
   return getDrawableArea(
@@ -78,7 +81,7 @@ private fun DrawableFactory.startBarLineArea(height: Int): Area {
   var base = Area()
   val thinBit = normalBarLineArea(height)
   val thickBit = getDrawableArea(RectArgs(FINAL_BAR_LINE_THICK, height, true)) ?: Area()
-  base = base.addArea(thickBit, Coord(thickBit.width / 2))
+  base = base.addArea(thickBit)
   base = base.addRight(thinBit, gap = DOUBLE_BAR_LINE_GAP)
   return base
 }

@@ -5,6 +5,7 @@ import com.philblandford.kscore.engine.types.EventType
 import com.philblandford.kscore.engine.types.NoteHeadType
 import org.philblandford.ascore2.features.clipboard.usecases.Copy
 import org.philblandford.ascore2.features.clipboard.usecases.Cut
+import org.philblandford.ascore2.features.clipboard.usecases.CycleArea
 import org.philblandford.ascore2.features.clipboard.usecases.DeleteSelection
 import org.philblandford.ascore2.features.clipboard.usecases.MoveSelection
 import org.philblandford.ascore2.features.clipboard.usecases.Paste
@@ -28,6 +29,7 @@ interface ClipboardInterface : VMInterface {
   fun noteUp(octave:Boolean)
   fun noteDown(octave: Boolean)
   fun addTies()
+  fun cycle()
   fun selectionLeft()
   fun selectionRight()
   fun copy()
@@ -47,6 +49,7 @@ class ClipboardViewModel(
   private val moveSelection: MoveSelection,
   private val moveSelectedNote: MoveSelectedNote,
   private val deleteSelection: DeleteSelection,
+  private val cycleArea: CycleArea,
   private val setParamForSelected: SetParamForSelected,
   private val toggleBooleanForNotes: ToggleBooleanForNotes,
   private val insertTiesAtSelection: InsertTiesAtSelection,
@@ -82,6 +85,10 @@ class ClipboardViewModel(
 
   override fun delete() {
     deleteSelection()
+  }
+
+  override fun cycle() {
+    cycleArea()
   }
 
   override fun noteUp(octave: Boolean) {

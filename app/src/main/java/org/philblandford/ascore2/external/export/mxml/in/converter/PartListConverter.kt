@@ -1,7 +1,7 @@
 package com.philblandford.ascore.external.export.mxml.`in`.converter
 
-import com.philblandford.ascore.external.export.mxml.out.MxmlPartList
-import com.philblandford.ascore.external.export.mxml.out.MxmlScorePart
+import org.philblandford.ascore2.external.export.mxml.out.MxmlPartList
+import org.philblandford.ascore2.external.export.mxml.out.MxmlScorePart
 import com.philblandford.kscore.api.Instrument
 import com.philblandford.kscore.api.InstrumentGetter
 import com.philblandford.kscore.api.PercussionDescr
@@ -15,15 +15,20 @@ internal data class PartDesc(
   val instruments: Map<String, Instrument>
 )
 
-internal fun mxmlPartListToParts(mxmlPartList: MxmlPartList, instrumentGetter: InstrumentGetter): Map<String, PartDesc> {
+internal fun mxmlPartListToParts(
+  mxmlPartList: MxmlPartList,
+  instrumentGetter: InstrumentGetter
+): Map<String, PartDesc> {
 
   return mxmlPartList.scoreParts.map { mxmlScorePart ->
     mxmlScorePart.toPart(instrumentGetter)
       .let { instrMap ->
+        val label = mxmlScorePart.partName.name.trim()
+        val abbr = mxmlScorePart.partAbbreviation?.name?.trim() ?: label
         mxmlScorePart.id to PartDesc(
-          mxmlScorePart.id, mxmlScorePart.partName.name.trim(),
-          mxmlScorePart.partAbbreviation?.name?.trim() ?: mxmlScorePart.partName.name.trim(),
-          instrMap
+          mxmlScorePart.id, label,
+          abbr,
+          instrMap.map { it.key to it.value.copy(label = label, abbreviation = abbr) }.toMap()
         )
       }
   }.toMap()

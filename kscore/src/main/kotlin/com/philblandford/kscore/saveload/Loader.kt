@@ -1,6 +1,7 @@
 package com.philblandford.kscore.saveload
 
 import com.philblandford.kscore.api.PercussionDescr
+import com.philblandford.kscore.engine.beam.BeamDirectory
 import com.philblandford.kscore.engine.core.area.Coord
 import com.philblandford.kscore.engine.core.score.*
 import com.philblandford.kscore.engine.duration.Duration
@@ -26,7 +27,9 @@ class Loader {
     loadVersion(mutable)
     return loadIterable<Part>(mutable)?.let { parts ->
       loadEventHash(mutable)?.let { events ->
-        val score = Score(parts.toList(), eventMapOf(events))
+        var score = Score(parts.toList(), eventMapOf(events), BeamDirectory(mapOf(), mapOf()))
+        val beamDirectory = BeamDirectory.create(score)
+        score = score.copy(beamDirectory = beamDirectory)
         score.readdMeta().setLyricOffset()
       }
     }
@@ -406,8 +409,10 @@ class Loader {
     SaveType.BOOL to { b -> loadBool(b) },
     SaveType.INT to { b -> loadInt(b) },
     SaveType.STRING to { b -> loadString(b) },
-    SaveType.NULL to { b -> null }
-  )
+    SaveType.NULL to { b -> null },
+    SaveType.BEAMTYPE to { b -> loadEnum(b) { BeamType.valueOf(it) } },
+
+    )
 
   private inline fun <reified E : Enum<E>> loadEnum(byteArray: LinkedList<Byte>, conv: (String) -> E): E? {
     return loadString(byteArray)?.let { str ->

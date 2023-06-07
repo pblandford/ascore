@@ -12,7 +12,8 @@ data class InsertChooseModel(
   val page: Int,
   val items: List<InsertItem>,
   val searchItems: List<InsertItem>,
-  val showNext: Boolean
+  val showNext: Boolean,
+  val rows:Int
 ) : VMModel()
 
 enum class GroupSize {
@@ -35,7 +36,7 @@ class InsertChooseViewModel(private val selectInsertItem: SelectInsertItem) :
   override val resetOnLoad = false
 
   override suspend fun initState(): Result<InsertChooseModel> {
-    return InsertChooseModel(0, grouped[0], insertItems, true).ok()
+    return InsertChooseModel(0, grouped[0], insertItems, true, 2).ok()
   }
 
   override fun getInterface() = this
@@ -57,14 +58,15 @@ class InsertChooseViewModel(private val selectInsertItem: SelectInsertItem) :
 
   override fun setGroupSize(groupSize: GroupSize) {
     grouped = groupItems(groupSize)
-    update { copy(items = grouped[0], showNext = grouped.size > 1) }
+    val rows = if (groupSize == GroupSize.EXPANDED) 1 else 2
+    update { copy(items = grouped[0], showNext = grouped.size > 1, rows = rows) }
   }
 
   private fun groupItems(groupSize: GroupSize): List<List<InsertItem>> {
     val perPage = when (groupSize) {
       GroupSize.COMPACT -> 12
       GroupSize.MEDIUM -> 18
-      GroupSize.EXPANDED -> 36
+      GroupSize.EXPANDED -> 14
     }
     return insertItems.chunked(perPage)
   }

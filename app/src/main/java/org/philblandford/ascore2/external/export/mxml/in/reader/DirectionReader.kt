@@ -1,6 +1,46 @@
 package com.philblandford.ascore.external.export.mxml.`in`.reader
 
-import com.philblandford.ascore.external.export.mxml.out.*
+import org.philblandford.ascore2.external.export.mxml.`in`.reader.getAttrOrNull
+import org.philblandford.ascore2.external.export.mxml.`in`.reader.getChild
+import org.philblandford.ascore2.external.export.mxml.`in`.reader.getChildren
+import org.philblandford.ascore2.external.export.mxml.out.MxmlBeatUnit
+import org.philblandford.ascore2.external.export.mxml.out.MxmlBeatUnitDot
+import org.philblandford.ascore2.external.export.mxml.out.MxmlDashes
+import org.philblandford.ascore2.external.export.mxml.out.MxmlDirection
+import org.philblandford.ascore2.external.export.mxml.out.MxmlDirectionType
+import org.philblandford.ascore2.external.export.mxml.out.MxmlDynamics
+import org.philblandford.ascore2.external.export.mxml.out.MxmlDynamicsComponent
+import org.philblandford.ascore2.external.export.mxml.out.MxmlF
+import org.philblandford.ascore2.external.export.mxml.out.MxmlFf
+import org.philblandford.ascore2.external.export.mxml.out.MxmlFff
+import org.philblandford.ascore2.external.export.mxml.out.MxmlFfff
+import org.philblandford.ascore2.external.export.mxml.out.MxmlFffff
+import org.philblandford.ascore2.external.export.mxml.out.MxmlFfffff
+import org.philblandford.ascore2.external.export.mxml.out.MxmlFp
+import org.philblandford.ascore2.external.export.mxml.out.MxmlFz
+import org.philblandford.ascore2.external.export.mxml.out.MxmlMetronome
+import org.philblandford.ascore2.external.export.mxml.out.MxmlMf
+import org.philblandford.ascore2.external.export.mxml.out.MxmlMp
+import org.philblandford.ascore2.external.export.mxml.out.MxmlOctaveShift
+import org.philblandford.ascore2.external.export.mxml.out.MxmlP
+import org.philblandford.ascore2.external.export.mxml.out.MxmlPedal
+import org.philblandford.ascore2.external.export.mxml.out.MxmlPerMinute
+import org.philblandford.ascore2.external.export.mxml.out.MxmlPp
+import org.philblandford.ascore2.external.export.mxml.out.MxmlPpp
+import org.philblandford.ascore2.external.export.mxml.out.MxmlPppp
+import org.philblandford.ascore2.external.export.mxml.out.MxmlPpppp
+import org.philblandford.ascore2.external.export.mxml.out.MxmlPppppp
+import org.philblandford.ascore2.external.export.mxml.out.MxmlRehearsal
+import org.philblandford.ascore2.external.export.mxml.out.MxmlRf
+import org.philblandford.ascore2.external.export.mxml.out.MxmlRfz
+import org.philblandford.ascore2.external.export.mxml.out.MxmlSf
+import org.philblandford.ascore2.external.export.mxml.out.MxmlSffz
+import org.philblandford.ascore2.external.export.mxml.out.MxmlSfp
+import org.philblandford.ascore2.external.export.mxml.out.MxmlSfpp
+import org.philblandford.ascore2.external.export.mxml.out.MxmlSfz
+import org.philblandford.ascore2.external.export.mxml.out.MxmlStaff
+import org.philblandford.ascore2.external.export.mxml.out.MxmlWedge
+import org.philblandford.ascore2.external.export.mxml.out.MxmlWords
 import org.w3c.dom.Element
 
 internal fun Element.parseDirection(): MxmlDirection? {

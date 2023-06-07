@@ -4,7 +4,7 @@ import com.philblandford.kscore.engine.core.score.Score
 import com.philblandford.kscore.engine.eventadder.*
 import com.philblandford.kscore.engine.types.*
 
-object BarLineSubAdder : BaseEventAdder {
+object BarLineSubAdder : BaseSubAdder {
 
   override fun addEvent(
     score: Score,

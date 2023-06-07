@@ -1,7 +1,7 @@
 package com.philblandford.ascore.external.export.mxml.out.creator
 
-import com.philblandford.ascore.external.export.mxml.out.MxmlPart
-import com.philblandford.ascore.external.export.mxml.out.MxmlScorePart
+import org.philblandford.ascore2.external.export.mxml.out.MxmlPart
+import org.philblandford.ascore2.external.export.mxml.out.MxmlScorePart
 import com.philblandford.ascore.external.export.mxml.out.creator.measure.createMeasure
 import com.philblandford.kscore.engine.core.score.Part
 import com.philblandford.kscore.engine.types.EventAddress
