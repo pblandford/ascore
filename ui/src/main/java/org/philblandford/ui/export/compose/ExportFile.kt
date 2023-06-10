@@ -89,19 +89,24 @@ fun ExportFile(exportType: ExportType, dismiss: () -> Unit) {
 @Composable
 private fun Confirm(modifier: Modifier, state: ExportModel, dismiss: () -> Unit) {
   val activity = LocalActivity.current
-  val reviewManager = activity?.let {  ReviewManagerFactory.create(activity) }
+  val reviewManager = activity?.let {
+    remember {
+      ReviewManagerFactory.create(activity)
+    }
+  }
 
 
   Column(
     modifier
       .fillMaxWidth()
-      .padding(10.dp)) {
+      .padding(10.dp)
+  ) {
     Text(stringResource(R.string.file_export_confirm, state.fileName))
     Gap(0.5f)
     Button({
       reviewManager?.requestReviewFlow()?.addOnCompleteListener { task ->
-          reviewManager.launchReviewFlow(activity, task.result).addOnCompleteListener {
-            dismiss()
+        reviewManager.launchReviewFlow(activity, task.result).addOnCompleteListener {
+          dismiss()
         }
       } ?: run {
         dismiss()

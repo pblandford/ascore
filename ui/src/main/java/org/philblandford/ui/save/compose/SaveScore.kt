@@ -19,6 +19,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import com.google.android.play.core.review.ReviewManagerFactory
 import com.philblandford.kscore.engine.types.FileSource
 import kotlinx.coroutines.flow.Flow
+import org.philblandford.ui.LocalActivity
 import org.philblandford.ui.R
 import org.philblandford.ui.base.compose.VMView
 import org.philblandford.ui.base.viewmodel.VMSideEffect
@@ -45,10 +46,12 @@ fun SaveScore(dismiss: () -> Unit) {
 private fun SaveFileInternal(modifier: Modifier, model: SaveModel, iface: SaveInterface, dismiss: () -> Unit) {
 
 
-  val localContext = LocalContext.current
+  val activity = LocalActivity.current
 
-  val reviewManager = remember {
-    ReviewManagerFactory.create(localContext)
+  val reviewManager = activity?.let {
+    remember {
+      ReviewManagerFactory.create(activity)
+    }
   }
 
   val title = remember { mutableStateOf(model.scoreTitle) }
@@ -67,8 +70,10 @@ private fun SaveFileInternal(modifier: Modifier, model: SaveModel, iface: SaveIn
     Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceEvenly) {
       Button(onClick = {
         iface.saveInternal(title.value)
-        reviewManager.requestReviewFlow().addOnCompleteListener {
-          dismiss()
+        reviewManager?.requestReviewFlow()?.addOnCompleteListener { task ->
+          reviewManager.launchReviewFlow(activity, task.result).addOnCompleteListener {
+            dismiss()
+          }
         }
       }, enabled = title.value.isNotEmpty()) {
         Text(stringResource(R.string.save_score_save))
