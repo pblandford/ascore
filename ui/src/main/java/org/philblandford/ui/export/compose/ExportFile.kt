@@ -18,11 +18,14 @@ import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.google.android.play.core.review.ReviewManagerFactory
+import com.google.android.play.core.review.testing.FakeReviewManager
 import org.philblandford.ascore2.external.export.getExtension
 import com.philblandford.ascore.external.interfaces.ExportDestination
 import com.philblandford.kscore.engine.types.ExportType
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.collectLatest
+import org.philblandford.ui.LocalActivity
 import org.philblandford.ui.R
 import org.philblandford.ui.base.compose.VMView
 import org.philblandford.ui.base.viewmodel.VMSideEffect
@@ -33,6 +36,7 @@ import org.philblandford.ui.export.viewmodel.ExportModel
 import org.philblandford.ui.export.viewmodel.ExportViewModel
 import org.philblandford.ui.theme.DialogButton
 import org.philblandford.ui.theme.DialogTheme
+import org.philblandford.ui.util.Gap
 import org.philblandford.ui.util.StandardAlert
 import java.io.OutputStream
 
@@ -54,7 +58,7 @@ fun ExportFile(exportType: ExportType, dismiss: () -> Unit) {
 
   VMView(ExportViewModel::class.java) { state, iface, effects ->
 
-    var showConfirm by remember{ mutableStateOf(false) }
+    var showConfirm by remember { mutableStateOf(false) }
 
     LaunchedEffect(exportType) {
       iface.setExportType(exportType)
@@ -64,29 +68,54 @@ fun ExportFile(exportType: ExportType, dismiss: () -> Unit) {
       effects.collectLatest { effect ->
         when (effect) {
           ExportEffect.Complete -> {
-             showConfirm = true
+            showConfirm = true
           }
+
           ExportEffect.Error -> dismiss()
         }
       }
     }
 
-    if (showConfirm) {
-      StandardAlert(stringResource(R.string.file_export_confirm, state.fileName)) {
-        showConfirm = false
-        dismiss()
+    DialogTheme {
+      if (showConfirm) {
+        Confirm(it, state, dismiss)
+      } else {
+        ExportFileInternal(it, state, iface)
       }
     }
+  }
+}
 
-    DialogTheme {
-      ExportFileInternal(it, state, iface)
+@Composable
+private fun Confirm(modifier: Modifier, state: ExportModel, dismiss: () -> Unit) {
+  val activity = LocalActivity.current
+  val reviewManager = activity?.let {  ReviewManagerFactory.create(activity) }
+
+
+  Column(
+    modifier
+      .fillMaxWidth()
+      .padding(10.dp)) {
+    Text(stringResource(R.string.file_export_confirm, state.fileName))
+    Gap(0.5f)
+    Button({
+      reviewManager?.requestReviewFlow()?.addOnCompleteListener { task ->
+          reviewManager.launchReviewFlow(activity, task.result).addOnCompleteListener {
+            dismiss()
+        }
+      } ?: run {
+        dismiss()
+      }
+    }, Modifier.align(Alignment.CenterHorizontally)) {
+      Text(stringResource(R.string.ok))
     }
   }
 }
 
 @Composable
 private fun ExportFileInternal(
-  modifier: Modifier, model: ExportModel, iface: ExportInterface) {
+  modifier: Modifier, model: ExportModel, iface: ExportInterface
+) {
 
   Box(modifier) {
     Main(model, iface)
@@ -101,13 +130,14 @@ private fun ExportFileInternal(
 private fun Main(model: ExportModel, iface: ExportInterface) {
 
   val context = LocalContext.current
-  val launcher = rememberLauncherForActivityResult(ActivityResultContracts.CreateDocument("*/*")) { uri ->
-    uri?.let {
-       context.contentResolver.openOutputStream(uri)?.let { stream ->
-         iface.getBytes(stream)
+  val launcher =
+    rememberLauncherForActivityResult(ActivityResultContracts.CreateDocument("*/*")) { uri ->
+      uri?.let {
+        context.contentResolver.openOutputStream(uri)?.let { stream ->
+          iface.getBytes(stream)
+        }
       }
     }
-  }
 
 
   Column(Modifier.padding(10.dp), horizontalAlignment = Alignment.CenterHorizontally) {
@@ -138,8 +168,10 @@ private fun Main(model: ExportModel, iface: ExportInterface) {
       }
       Spacer(Modifier.height(block()))
     }
-    Row(Modifier.fillMaxWidth(),
-      horizontalArrangement = Arrangement.SpaceBetween) {
+    Row(
+      Modifier.fillMaxWidth(),
+      horizontalArrangement = Arrangement.SpaceBetween
+    ) {
 
       DialogButton(stringResource(R.string.export), enabled = model.fileName.isNotEmpty())
       {

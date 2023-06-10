@@ -78,8 +78,8 @@
     <string name="hidden">Hidden</string>
     <string name="community">Community</string>
     <string name="file_delete_confirm">Really delete %1$s?</string>
-    <string name="file_import_confirm">Successfully imported %s</string>
-    <string name="file_export_confirm">Successfully exported %s</string>
+    <string name="file_import_confirm">Successfully imported \'%s\'</string>
+    <string name="file_export_confirm">Successfully exported \'%s\'</string>
     <string name="soundfont_delete_confirm">Really delete soundfont %1$s?</string>
     <string name="dialog_yes">Yes</string>
     <string name="dialog_no">No</string>
