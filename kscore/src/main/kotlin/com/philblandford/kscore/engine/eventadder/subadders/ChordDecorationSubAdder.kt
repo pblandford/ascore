@@ -133,6 +133,12 @@ internal interface ChordDecorationSubAdder<T> : BaseSubAdder {
     params: ParamMap,
     eventAddress: EventAddress
   ): ScoreResult {
+    if (score.getEvent(EventType.DURATION, eventAddress) == null ||
+        score.getParam<DurationType>(EventType.DURATION, EventParam.TYPE, eventAddress) !=
+        DurationType.CHORD) {
+      return score.ok()
+    }
+
     return GenericSubAdder.setParam(
       score,
       destination,

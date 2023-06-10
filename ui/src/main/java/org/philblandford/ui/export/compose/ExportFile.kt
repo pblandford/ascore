@@ -18,14 +18,11 @@ import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.core.net.toFile
-import com.philblandford.ascore.external.export.getExtension
+import org.philblandford.ascore2.external.export.getExtension
 import com.philblandford.ascore.external.interfaces.ExportDestination
 import com.philblandford.kscore.engine.types.ExportType
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.collectLatest
-import org.apache.commons.io.FileUtils
-import org.apache.commons.io.IOUtils
 import org.philblandford.ui.R
 import org.philblandford.ui.base.compose.VMView
 import org.philblandford.ui.base.viewmodel.VMSideEffect
@@ -144,16 +141,12 @@ private fun Main(model: ExportModel, iface: ExportInterface) {
     Row(Modifier.fillMaxWidth(),
       horizontalArrangement = Arrangement.SpaceBetween) {
 
-      DialogButton(
-        stringResource(
-          R.string.export
-        )
-      )
+      DialogButton(stringResource(R.string.export), enabled = model.fileName.isNotEmpty())
       {
         val extension = if (model.allParts == true) "zip" else model.exportType.getExtension()
         launcher.launch("${model.fileName}.${extension}")
       }
-      DialogButton(stringResource(R.string.share)) {
+      DialogButton(stringResource(R.string.share), enabled = model.fileName.isNotEmpty()) {
         iface.export(ExportDestination.SHARE)
       }
     }

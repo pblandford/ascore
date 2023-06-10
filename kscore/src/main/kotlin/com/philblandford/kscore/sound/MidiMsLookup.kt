@@ -13,7 +13,7 @@ fun midiMsLookup(eventLookup: EventLookup): MsLookup {
   val complete = mutableMapOf<Int, Offset>()
   val eventList = eventLookup.toList()
   var currentTempo =
-    eventList.firstOrNull()?.let { getTempo(it.second) } ?: Tempo(crotchet(120), 120)
+    eventList.firstOrNull()?.let { getTempo(it.second) } ?: Tempo(crotchet(), 120)
   var currentMs = 0
   var lastLocation = dZero()
 

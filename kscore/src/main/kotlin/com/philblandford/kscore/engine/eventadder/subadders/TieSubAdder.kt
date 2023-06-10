@@ -20,7 +20,6 @@ object TieSubAdder : BaseSubAdder {
     params: ParamMap,
     eventAddress: EventAddress
   ): ScoreResult {
-    ksLogt("OI")
     return score.fold(score.getNotes(eventAddress).toList()) { (address, note) ->
       findEndAndAdd(address, note)
     }
@@ -68,7 +67,7 @@ object TieSubAdder : BaseSubAdder {
 
   private fun Score.getNotes(eventAddress: EventAddress): Map<EventAddress, Note> {
     return if (eventAddress.id == 0) {
-     getAllNotes(eventAddress)
+      getAllNotes(eventAddress)
     } else {
       getEvent(EventType.NOTE, eventAddress)?.let { note(it)?.let { mapOf(eventAddress to it) } }
     } ?: mapOf()
@@ -121,10 +120,8 @@ object TieSubAdder : BaseSubAdder {
     if (eventAddress.id != 0) {
       return score.getEvent(EventType.NOTE, eventAddress).ifNullError("Note not found") {
         note(it).ifNullError("Note not parseable") { note ->
-          score.getEndNote(eventAddress, note)
-            .then { end ->
-              score.deleteTie(eventAddress, end)
-            }
+          val end = score.getEndNote(eventAddress, note).rightOrNull() ?: eventAddress
+          score.deleteTie(eventAddress, end)
         }
       }
     } else {

@@ -90,8 +90,10 @@ dependencies {
     implementation("com.squareup.moshi:moshi-kotlin:1.9.3")
 
     implementation project(path: ':kscore')
-   // implementation 'com.philblandford:KScore:1.0.1.46'
-    api 'com.philblandford:mp3converter:1.0.0'
+    implementation project(path: ':mp3converter')
+
+    // implementation 'com.philblandford:KScore:1.0.1.46'
+  //  api 'com.philblandford:mp3converter:1.0.0'
 
     testImplementation 'junit:junit:4.+'
     androidTestImplementation 'androidx.test.ext:junit:1.1.3'

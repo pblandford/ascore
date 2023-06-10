@@ -9,6 +9,19 @@ import com.philblandford.kscore.engine.types.*
 
 internal object MarkerSubAdder : BaseSubAdder {
 
+  override val addListeners: Map<EventType, AddListener> =
+    mapOf(
+      EventType.STAVE to { score, _, _, _, ea ->
+        handleStaveChange(score, ea)
+      },
+    )
+
+  override val deleteListeners:Map<EventType, DeleteListener> = mapOf(
+    EventType.PART to { score, _, _, _, ea ->
+      handlePartChange(score, ea)
+    },
+  )
+
   override fun addEvent(
     score: Score,
     destination: EventDestination,
@@ -18,14 +31,18 @@ internal object MarkerSubAdder : BaseSubAdder {
   ): ScoreResult {
     return if (!params.isTrue(EventParam.HOLD)) {
       score.getNextSegmentAdd(eventAddress, params).ifNullRestore(score) { next ->
-        GenericSubAdder.setParam(
-          score, EventDestination(listOf(ScoreLevelType.SCORE)),
-          EventType.UISTATE, EventParam.MARKER_POSITION, next, eZero()
-        )
+        doSetMarker(score, next)
       }
     } else {
       score.ok()
     }
+  }
+
+  private fun doSetMarker(score: Score, eventAddress: EventAddress): ScoreResult {
+    return GenericSubAdder.setParam(
+      score, EventDestination(listOf(ScoreLevelType.SCORE)),
+      EventType.UISTATE, EventParam.MARKER_POSITION, eventAddress, eZero()
+    )
   }
 
   override fun deleteEvent(
@@ -51,7 +68,7 @@ internal object MarkerSubAdder : BaseSubAdder {
     value: T,
     eventAddress: EventAddress
   ): ScoreResult {
-    return    GenericSubAdder.setParam(
+    return GenericSubAdder.setParam(
       score, EventDestination(listOf(ScoreLevelType.SCORE)),
       EventType.UISTATE, EventParam.MARKER_POSITION, value, eZero()
     )
@@ -98,5 +115,28 @@ internal object MarkerSubAdder : BaseSubAdder {
         getNextVoiceSegment(eventAddress)?.copy(voice = 0)
       }
     }?.voiceless()
+  }
+
+  private fun handleStaveChange(score: Score, eventAddress: EventAddress): ScoreResult {
+    return score.getMarker()?.let { marker ->
+      score.getPart(eventAddress.staveId.main)?.let { part ->
+        if (marker.staveId.sub >= part.staves.size) {
+          doSetMarker(
+            score,
+            eventAddress.copy(staveId = StaveId(eventAddress.staveId.main, part.staves.size))
+          )
+        } else score.ok()
+      }
+    } ?: score.ok()
+  }
+
+  private fun handlePartChange(score: Score, eventAddress: EventAddress): ScoreResult {
+    return score.getMarker()?.let { marker ->
+      if (marker.staveId.main == eventAddress.staveId.main && eventAddress.staveId.main > score.parts.size) {
+        doSetMarker(score, eventAddress.copy(staveId = StaveId(score.parts.size, 1)))
+      } else {
+        score.ok()
+      }
+    } ?: score.ok()
   }
 }

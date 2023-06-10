@@ -42,6 +42,7 @@ android {
             excludes += '/META-INF/{AL2.0,LGPL2.1}'
         }
     }
+
     namespace 'org.philblandford.ascore2'
 }
 
@@ -70,6 +71,8 @@ dependencies {
     implementation "commons-io:commons-io:${io_version}"
     implementation project(path: ':kscore')
     implementation project(path: ':kscoreandroid')
+    implementation project(path: ':mp3converter')
+
 
 
     testImplementation 'junit:junit:4.13.2'

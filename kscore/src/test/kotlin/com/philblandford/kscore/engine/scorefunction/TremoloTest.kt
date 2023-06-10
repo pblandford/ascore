@@ -1,5 +1,6 @@
 package com.philblandford.kscore.engine.scorefunction
 
+import com.philblandford.kscore.engine.dsl.rest
 import com.philblandford.kscore.engine.types.*
 
 import com.philblandford.kscore.engine.duration.Duration
@@ -27,6 +28,20 @@ class TremoloTest : ScoreTest() {
   @Test
   fun testSetZeroBeatsDeletes() {
     SMV()
+    SAE(EventType.TREMOLO, eav(1), paramMapOf(EventParam.TREMOLO_BEATS to Duration(1,16)))
+    SSP(EventType.TREMOLO, EventParam.TREMOLO_BEATS, dZero(), eav(1))
+    SVNP(EventType.DURATION, EventParam.TREMOLO_BEATS, eav(1))
+  }
+
+  @Test
+  fun testAddToRestIsNoop() {
+    SAE(rest(), eav(1))
+    SAE(EventType.TREMOLO, eav(1), paramMapOf(EventParam.TREMOLO_BEATS to Duration(1,16)))
+    SVNP(EventType.DURATION, EventParam.TREMOLO_BEATS, eav(1))
+  }
+
+  @Test
+  fun testSetToRestIsNoop() {
     SAE(EventType.TREMOLO, eav(1), paramMapOf(EventParam.TREMOLO_BEATS to Duration(1,16)))
     SSP(EventType.TREMOLO, EventParam.TREMOLO_BEATS, dZero(), eav(1))
     SVNP(EventType.DURATION, EventParam.TREMOLO_BEATS, eav(1))

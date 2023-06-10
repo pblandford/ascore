@@ -41,4 +41,12 @@ class StaveTest : ScoreTest() {
     assertEqual(EG().getPart(1)?.label, "Piano")
   }
 
+  @Test
+  fun testDeleteStaveMarkerMoves() {
+    SCD(instruments = listOf("Piano"))
+    setMarker(ea(1).copy(staveId = StaveId(1,2)))
+    SAE(EventType.STAVE, ea(1), paramMapOf(EventParam.CLEF to listOf(ClefType.TREBLE)))
+    assertEqual(eas(1, staveId = StaveId(1,1)), getMarker())
+  }
+
 }

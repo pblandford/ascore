@@ -19,7 +19,7 @@ typealias OTAMap = Map<Duration, EventAddress>
 fun midiBarList(scoreQuery: ScoreQuery, start: Int? = null, end: Int? = null): Iterable<Int> {
   ksLogv("Creating barList")
   var events =
-    scoreQuery.collateEvents(listOf(NAVIGATION, REPEAT_END, REPEAT_START, VOLTA)) ?: eventHashOf()
+    scoreQuery.collateEvents(listOf(NAVIGATION, REPEAT_END, REPEAT_START, VOLTA))?.filterNot { it.key.eventAddress.barNum < 1 } ?: eventHashOf()
   events = events.filterNot { it.value.isTrue(EventParam.END) && it.value.getInt(EventParam.NUM_BARS, 1) > 1 }
   return midiBarList(events, scoreQuery.numBars, start, end)
 }

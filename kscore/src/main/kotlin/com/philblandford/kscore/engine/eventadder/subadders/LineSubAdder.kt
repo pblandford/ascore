@@ -64,10 +64,12 @@ internal interface LineSubAdderIf : UpDownSubAdderIf {
       val endParams =
         swapped.second.plus(EventParam.END to true).plus(EventParam.DURATION to duration)
       val adjusted = adjustAddress(swapped.first, endParams)
-      var newMap = score.adjustExisting(eventMap, adjusted, swapped.first, end, eventType)
+      val endAdjusted = adjustAddress(end, endParams)
+      var newMap = eventMap.deleteEvent(adjusted.adjustForDestination(), eventType).deleteEvent(endAdjusted.adjustForDestination(), eventType)
+      newMap = score.adjustExisting(newMap, adjusted, swapped.first, end, eventType)
       newMap = newMap.putEvent(adjusted.adjustForDestination(), Event(eventType, newParams))
       newMap = newMap.putEvent(
-        adjustAddress(end, endParams).adjustForDestination(),
+        endAdjusted.adjustForDestination(),
         Event(eventType, endParams)
       )
 

@@ -15,8 +15,8 @@ android {
         applicationId "com.philblandford.ascore"
         minSdkVersion "$min_sdk"
         targetSdkVersion "$target_sdk"
-        versionCode 134
-        versionName "1.1a Platinum"
+        versionCode 135
+        versionName "1.1.1 Platinum"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables {

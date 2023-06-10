@@ -141,6 +141,15 @@ fun <R> AnyResult<R>.rightOrThrow(): R {
   }
 }
 
+fun <R> AnyResult<R>.rightOrNull(): R? {
+  return when (this) {
+    is Left -> null
+    is AbortNoError -> null
+    is Warning -> this.r
+    is Right -> this.r
+  }
+}
+
 fun <R> R?.notNull(): AnyResult<R> {
   return this?.let { Right(it) } ?: asError("Got null")
 }

@@ -46,8 +46,8 @@ fun DialogTheme(dismiss:(()->Unit)? = null,
 }
 
 @Composable
-fun DialogButton(text: String, modifier: Modifier = Modifier, action: () -> Unit) {
-  Button(action, modifier, shape = CircleShape) {
+fun DialogButton(text: String, modifier: Modifier = Modifier, enabled:Boolean = true, action: () -> Unit) {
+  Button(action, modifier, shape = CircleShape, enabled = enabled) {
     Text(text, style = MaterialTheme.typography.bodyLarge)
   }
 }

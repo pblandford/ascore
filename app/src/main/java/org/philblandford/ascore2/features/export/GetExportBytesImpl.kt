@@ -1,6 +1,6 @@
 package org.philblandford.ascore2.features.export
 
-import com.philblandford.ascore.external.export.Exporter
+import org.philblandford.ascore2.external.export.Exporter
 import com.philblandford.kscore.api.KScore
 import com.philblandford.kscore.engine.types.ExportType
 

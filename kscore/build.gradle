@@ -1,16 +1,12 @@
-buildscript {
-    ext {
-        kotlin_version = '1.8.20'
-        kotlin_coroutines_version = '1.7.0-RC'
-    }
-}
 
 
 plugins {
     id 'java'
-    id 'org.jetbrains.kotlin.jvm' version "$kotlin_version"
+    id 'org.jetbrains.kotlin.jvm' version "1.8.20"
     id 'maven-publish'
 }
+
+apply from: "../versions.gradle"
 
 
 sourceCompatibility = 1.8

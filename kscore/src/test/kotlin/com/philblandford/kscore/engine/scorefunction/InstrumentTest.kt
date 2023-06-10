@@ -107,4 +107,13 @@ class InstrumentTest : ScoreTest(){
     addParam(EventParam.IS_UP, false).params)
     SVP(EventType.PART, EventParam.LABEL, "Trumpet", ea(1).copy(staveId = StaveId(1,0)))
   }
+
+  @Test
+  fun testDeleteInstrumentMarkerMoves() {
+    SCD(instruments = listOf("Violin", "Viola"))
+    setMarker(ea(1).copy(staveId = StaveId(2,1)))
+    SDE(EventType.PART, eas(1, staveId = StaveId(2,1)))
+    assertEqual(eas(1, staveId = StaveId(1,1)), getMarker())
+  }
+
 }

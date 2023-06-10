@@ -153,4 +153,22 @@ class SlurTest : ScoreTest() {
     SVP(EventType.SLUR, EventParam.DURATION, dZero(), eag(1, graceOffset = semiquaver()))
   }
 
+  @Test
+  fun testSetSlurMidPoint() {
+    SAE(EventType.SLUR, ea(1), paramMapOf(EventParam.END to ea(2), EventParam.IS_UP to true))
+    SSP(EventType.SLUR, EventParam.HARD_MID, Coord(20,20), ea(1))
+    SVP(EventType.SLUR, EventParam.HARD_MID, Coord(20, 20), ea(1))
+  }
+
+  @Test
+  fun testSetSlurMidPointDoesntDuplicateSlur() {
+    repeat(8) {
+      SMV(duration = semiquaver(), eventAddress = ea(1, semiquaver() * it))
+    }
+    SAE(EventType.SLUR, ea(1), paramMapOf(EventParam.END to ea(1, quaver(1)), EventParam.IS_UP to true))
+  //  SAE(EventType.SLUR, ea(1, crotchet()), paramMapOf(EventParam.END to ea(1, crotchet() +  quaver(1)), EventParam.IS_UP to true))
+    SSP(EventType.SLUR, EventParam.HARD_MID, Coord(20,20), ea(1))
+    SVNE(EventType.SLUR, ea(1, crotchet()))
+  }
+
 }

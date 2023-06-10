@@ -4,7 +4,7 @@ import ResourceManager
 import SamplerManager
 import TextFontManager
 import org.philblandford.ascore2.android.export.AndroidExporter
-import com.philblandford.ascore.external.export.Exporter
+import org.philblandford.ascore2.external.export.Exporter
 import com.philblandford.ascore.external.interfaces.ExporterIf
 import com.philblandford.ascore.external.interfaces.ExternalSaver
 import com.philblandford.ascore.external.interfaces.PdfCreator

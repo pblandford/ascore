@@ -7,7 +7,6 @@ import com.philblandford.kscore.api.InstrumentGroup
 import com.philblandford.kscore.engine.types.ClefType
 import com.philblandford.kscore.log.ksLoge
 import com.philblandford.mp3converter.ISampler
-import com.philblandford.mp3converter.engine.sample.FluidConvertSampler
 import com.philblandford.mp3converter.engine.sample.FluidSampler
 import org.apache.commons.io.FilenameUtils
 import java.io.File
@@ -51,7 +50,7 @@ class FluidSamplerManager(private val resourceManager: ResourceManager):SamplerM
 
   private fun createSampler(soundFontPath: String, bank: Int, withDriver:Boolean = true): FluidSampler? {
     return try {
-      val sampler = if (withDriver) FluidSampler(soundFontPath) else FluidConvertSampler(soundFontPath)
+      val sampler = FluidSampler(soundFontPath) // if (withDriver) FluidSampler(soundFontPath) else FluidConvertSampler(soundFontPath)
       sampler.open()
       sampler
     } catch (e: Exception) {

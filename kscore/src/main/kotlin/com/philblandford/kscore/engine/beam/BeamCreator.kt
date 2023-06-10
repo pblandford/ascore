@@ -140,12 +140,14 @@ private fun doCreateBeams(
 }
 
 private fun EventList.toSimple(): Map<Offset, SimpleDuration> {
-  return map {
-    it.first.eventAddress.offset to
-        SimpleDuration(
-          it.second.duration(), it.second.realDuration(),
-          it.second.subType as DurationType, it.second.isTrue(EventParam.IS_UPSTEM)
-        )
+  return mapNotNull {
+        (it.second.subType as? DurationType)?.let { type ->
+          it.first.eventAddress.offset to
+              SimpleDuration(
+            it.second.duration(), it.second.realDuration(),
+            type, it.second.isTrue(EventParam.IS_UPSTEM)
+          )
+        }
   }.sortedBy { it.first }.toMap()
 }
 

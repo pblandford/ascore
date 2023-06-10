@@ -21,13 +21,19 @@ internal val destinations = mapOf(
   EventType.DURATION to EventDestination(listOf(ScoreLevelType.VOICEMAP), DurationSubAdder),
   EventType.DYNAMIC to EventDestination(listOf(ScoreLevelType.STAVE), DynamicSubAdder),
   EventType.EXPRESSION_DASH to EventDestination(listOf(ScoreLevelType.STAVE), LineSubAdder),
-  EventType.EXPRESSION_TEXT to EventDestination(listOf(ScoreLevelType.STAVE), ExpressionTextSubAdder),
+  EventType.EXPRESSION_TEXT to EventDestination(
+    listOf(ScoreLevelType.STAVE),
+    ExpressionTextSubAdder
+  ),
   EventType.FERMATA to EventDestination(listOf(ScoreLevelType.SCORE), MoveableSubAdder),
   EventType.FILENAME to EventDestination(listOf(ScoreLevelType.SCORE), GenericSubAdder),
   EventType.FINGERING to EventDestination(listOf(ScoreLevelType.VOICEMAP), FingeringSubAdder),
   EventType.FREE_TEXT to EventDestination(listOf(ScoreLevelType.SCORE), GenericSubAdder),
   EventType.GLISSANDO to EventDestination(listOf(ScoreLevelType.STAVE), GlissandoSubAdder),
-  EventType.HIDDEN_TIME_SIGNATURE to EventDestination(listOf(ScoreLevelType.SCORE), HiddenTimeSignatureSubAdder),
+  EventType.HIDDEN_TIME_SIGNATURE to EventDestination(
+    listOf(ScoreLevelType.SCORE),
+    HiddenTimeSignatureSubAdder
+  ),
   EventType.INSTRUMENT to EventDestination(listOf(ScoreLevelType.PART), InstrumentSubAdder),
   EventType.KEY_SIGNATURE to EventDestination(listOf(ScoreLevelType.SCORE), KeySignatureSubAdder),
   EventType.HARMONY to EventDestination(listOf(ScoreLevelType.BAR), HarmonySubAdder),
@@ -47,7 +53,10 @@ internal val destinations = mapOf(
   EventType.PAUSE to EventDestination(listOf(ScoreLevelType.BAR), MoveableSubAdder),
   EventType.PEDAL to EventDestination(listOf(ScoreLevelType.STAVE), PedalSubAdder),
   EventType.PLACE_HOLDER to EventDestination(listOf(ScoreLevelType.BAR), PlaceHolderSubAdder),
-  EventType.PLAYBACK_STATE to EventDestination(listOf(ScoreLevelType.PART, ScoreLevelType.SCORE), PlaybackStateSubAdder),
+  EventType.PLAYBACK_STATE to EventDestination(
+    listOf(ScoreLevelType.PART, ScoreLevelType.SCORE),
+    PlaybackStateSubAdder
+  ),
   EventType.REHEARSAL_MARK to EventDestination(listOf(ScoreLevelType.SCORE), MoveableSubAdder),
   EventType.REPEAT_BAR to EventDestination(listOf(ScoreLevelType.STAVE), RepeatBarSubAdder),
   EventType.REPEAT_END to EventDestination(listOf(ScoreLevelType.SCORE), GenericSubAdder),
@@ -69,3 +78,7 @@ internal val destinations = mapOf(
   EventType.VOLTA to EventDestination(listOf(ScoreLevelType.SCORE), VoltaSubAdder),
   EventType.WEDGE to EventDestination(listOf(ScoreLevelType.STAVE), LineSubAdder)
 )
+
+val allDestinations =
+  destinations.map { it.value } + EventDestination(listOf(ScoreLevelType.PART), BeamSubAdder) +
+      EventDestination(listOf(ScoreLevelType.SCORE), MarkerSubAdder)

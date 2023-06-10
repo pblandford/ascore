@@ -1,4 +1,4 @@
-package com.philblandford.ascore.external.export
+package org.philblandford.ascore2.external.export
 
 import ResourceManager
 import android.net.Uri
@@ -137,7 +137,13 @@ class Exporter(
 
   private fun exportSound(score: Score, type: ExportType): ByteArray? {
     val path = "${resourceManager.getSoundFontPath()}/${resourceManager.getDefaultSoundFont()}"
-    return writeAudio(score, instrumentGetter, type, path)
+    val outputType = when (type) {
+      ExportType.MIDI -> com.philblandford.mp3converter.api.ExportType.MIDI
+      ExportType.MP3 -> com.philblandford.mp3converter.api.ExportType.MP3
+      ExportType.WAV -> com.philblandford.mp3converter.api.ExportType.WAV
+      else -> com.philblandford.mp3converter.api.ExportType.MP3
+    }
+    return writeAudio(score, instrumentGetter, outputType, path)
   }
 
   private fun exportMXML(score: Score): ByteArray? {

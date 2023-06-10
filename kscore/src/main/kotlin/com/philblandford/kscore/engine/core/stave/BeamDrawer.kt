@@ -118,10 +118,12 @@ private fun DrawableFactory.addBeamArea(
 
     beamDescriptors.forEach { descriptor ->
       val membersForDescriptor = members.filter { it.key in descriptor.members }
-      newArea = getBeamDrawable(
-        descriptor, beam, beamDimensions, extra + stemAdjustment, eventAddress, stemGeogsAdjust,
-        membersForDescriptor, newArea, eventAddress
-      )
+      if (membersForDescriptor.isNotEmpty()) {
+        newArea = getBeamDrawable(
+          descriptor, beam, beamDimensions, extra + stemAdjustment, eventAddress, stemGeogsAdjust,
+          membersForDescriptor, newArea, eventAddress
+        )
+      }
     }
     val lookup = addStemExtra(stemGeogsAdjust, extra, eventAddress, offsetLookup)
     Pair(newArea, lookup)

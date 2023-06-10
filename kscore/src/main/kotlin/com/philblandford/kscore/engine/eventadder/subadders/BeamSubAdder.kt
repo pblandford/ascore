@@ -17,10 +17,14 @@ object BeamSubAdder : BaseSubAdder {
   override val addListeners: Map<EventType, AddListener> =
     mapOf(
       EventType.CLEF to ::handleRangeChange,
+      EventType.ARTICULATION to ::handleDurationEventChange,
+      EventType.BOWING to ::handleDurationEventChange,
       EventType.DURATION to ::handleDurationEventChange,
+      EventType.FINGERING to ::handleDurationEventChange,
       EventType.NOTE to ::handleDurationEventChange,
-      EventType.NOTE_SHIFT to ::handleDurationEventChange
-    )
+      EventType.NOTE_SHIFT to ::handleDurationEventChange,
+      EventType.ORNAMENT to ::handleDurationEventChange,
+      )
 
   override val deleteListeners: Map<EventType, AddListener> =
     mapOf(
@@ -29,8 +33,9 @@ object BeamSubAdder : BaseSubAdder {
       EventType.NOTE to ::handleDurationEventChange,
     )
 
-  override val rangeListeners:Map<EventType, RangeListener> =
-    mapOf(EventType.DURATION to ::handleRangeSetChange,
+  override val rangeListeners: Map<EventType, RangeListener> =
+    mapOf(
+      EventType.DURATION to ::handleRangeSetChange,
       EventType.NOTE_SHIFT to ::handleRangeSetChange
     )
 
@@ -56,13 +61,13 @@ object BeamSubAdder : BaseSubAdder {
   }
 
   private fun handleRangeSetChange(
-    score:Score,
+    score: Score,
     destination: EventDestination,
     eventType: EventType,
-    params:ParamMap,
-    start:EventAddress,
-    end:EventAddress
-  ):ScoreResult {
+    params: ParamMap,
+    start: EventAddress,
+    end: EventAddress
+  ): ScoreResult {
     return score.updateBeams(start, end)
   }
 

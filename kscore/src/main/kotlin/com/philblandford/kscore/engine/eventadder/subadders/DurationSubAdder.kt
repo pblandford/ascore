@@ -408,6 +408,6 @@ internal fun Score.postAddStave(eventAddress: EventAddress): ScoreResult {
       }
     }
     changeSubLevel(newStave, eventAddress)
-  } ?: Left(NotFound("Stave not found"))
+  } ?: Left(HarmlessFailure("Stave not found"))
 }
 
