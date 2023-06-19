@@ -205,8 +205,6 @@ class ScoreContainer(private val drawableFactory: DrawableFactory) {
   }
 
   private suspend fun receiveCommand(command: Command) {
-    ksLoge("Double note SC dequeue $command")
-
     try {
       val newScoreState = currentScoreState.value.applyCommand(command)
       currentScoreState.emit(newScoreState)
