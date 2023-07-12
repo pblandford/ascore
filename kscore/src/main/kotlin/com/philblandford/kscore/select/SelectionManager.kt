@@ -120,7 +120,9 @@ class SelectionManager {
         atsIdx = idx
       } ?: run {
         atsIdx = 0
-        setSelectedArea(chords.first(), chords)
+        chords.firstOrNull()?.let { chordArea ->
+          setSelectedArea(chordArea, chords)
+        }
       }
     }
   }
