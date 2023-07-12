@@ -1,6 +1,7 @@
 package com.philblandford.kscore.engine.scorefunction
 
 import assertEqual
+import com.philblandford.kscore.engine.core.representation.LINE_THICKNESS
 
 import com.philblandford.kscore.engine.core.score.*
 import com.philblandford.kscore.engine.duration.*
@@ -382,5 +383,17 @@ class BeamTest : ScoreTest() {
       )
     )
     assertEqual(1, EG().getBeams().size)
+  }
+
+
+  @Test
+  fun testChangeTransposeOptionDirectionCorrect() {
+    SCD(instruments = listOf("Trumpet"))
+    SMV(69, duration = quaver())
+    SMV(72, duration = quaver(), eventAddress = eav(1, quaver()))
+
+    SSO(EventParam.OPTION_SHOW_TRANSPOSE_CONCERT, true)
+    SVP(EventType.DURATION, EventParam.IS_UPSTEM_BEAM, true, eav(1).copy(id = 1))
+    SVP(EventType.DURATION, EventParam.IS_UPSTEM_BEAM, true, eav(1, quaver()).copy(id = 1))
   }
 }

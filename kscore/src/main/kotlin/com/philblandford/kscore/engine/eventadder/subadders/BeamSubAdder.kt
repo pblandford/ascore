@@ -7,10 +7,14 @@ import com.philblandford.kscore.engine.eventadder.BaseSubAdder
 import com.philblandford.kscore.engine.eventadder.EventDestination
 import com.philblandford.kscore.engine.eventadder.RangeListener
 import com.philblandford.kscore.engine.eventadder.ScoreResult
+import com.philblandford.kscore.engine.eventadder.ok
 import com.philblandford.kscore.engine.types.EventAddress
 import com.philblandford.kscore.engine.types.EventParam
 import com.philblandford.kscore.engine.types.EventType
 import com.philblandford.kscore.engine.types.ParamMap
+import com.philblandford.kscore.engine.types.StaveId
+import com.philblandford.kscore.engine.types.eav
+import com.philblandford.kscore.engine.types.ez
 
 object BeamSubAdder : BaseSubAdder {
 
@@ -24,6 +28,7 @@ object BeamSubAdder : BaseSubAdder {
       EventType.NOTE to ::handleDurationEventChange,
       EventType.NOTE_SHIFT to ::handleDurationEventChange,
       EventType.ORNAMENT to ::handleDurationEventChange,
+      EventType.OPTION to ::handleOptionChange
       )
 
   override val deleteListeners: Map<EventType, AddListener> =
@@ -71,7 +76,31 @@ object BeamSubAdder : BaseSubAdder {
     return score.updateBeams(start, end)
   }
 
-  private fun Score.updateBeams(start: EventAddress, end: EventAddress): ScoreResult {
+  private fun handleOptionChange(
+    score: Score,
+    destination: EventDestination,
+    eventType: EventType,
+    params: ParamMap,
+    eventAddress: EventAddress
+  ):ScoreResult {
+    return if (params.containsKey(EventParam.OPTION_SHOW_TRANSPOSE_CONCERT)) {
+      handleAllChange(score)
+    } else {
+      score.ok()
+    }
+  }
+
+  private fun handleAllChange(
+    score: Score,
+  ): ScoreResult {
+    return score.updateBeams(ez(1), ez(score.numBars), score.getAllStaves(false))
+  }
+
+  private fun Score.updateBeams(
+    start: EventAddress,
+    end: EventAddress,
+    staves: List<StaveId> = listOf(start.staveId)
+  ): ScoreResult {
     val addresses = (start.barNum..end.barNum).flatMap { bar ->
       (1..MAX_VOICE).map { voice -> start.copy(barNum = bar, voice = voice) }
     }
@@ -81,7 +110,7 @@ object BeamSubAdder : BaseSubAdder {
       newScore,
       start.barNum,
       end.barNum,
-      listOf(start.staveId)
+      staves
     )
   }
 }

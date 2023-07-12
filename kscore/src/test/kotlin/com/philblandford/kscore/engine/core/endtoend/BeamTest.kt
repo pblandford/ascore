@@ -262,4 +262,5 @@ class BeamTest : RepTest() {
     RVA("Beam", eav(1, minim()))
   }
 
+
 }
