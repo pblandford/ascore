@@ -67,7 +67,7 @@ class Exporter(
     uri?.let { externalSaver.setUri(it) }
 
     getExportBytes(score, allParts, safeFileName, exportType)?.let { bytes ->
-      doExport(bytes, exportDestination, exportType, filename)
+      doExport(bytes, exportDestination, if (allParts) ExportType.ZIP else exportType, filename)
       onComplete()
     }
   }

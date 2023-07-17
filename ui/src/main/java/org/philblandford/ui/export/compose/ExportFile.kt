@@ -184,6 +184,7 @@ private fun Main(model: ExportModel, iface: ExportInterface) {
         launcher.launch("${model.fileName}.${extension}")
       }
       DialogButton(stringResource(R.string.share), enabled = model.fileName.isNotEmpty()) {
+
         iface.export(ExportDestination.SHARE)
       }
     }

@@ -35,7 +35,7 @@ class Loader {
     }
   }
 
-  fun loadVersion(bytes: LinkedList<Byte>) {
+  private fun loadVersion(bytes: LinkedList<Byte>) {
     val hasVersion = peekInt(bytes) == VERSION_MARKER
     if (hasVersion) {
       repeat(4) { bytes.removeAt(0) }

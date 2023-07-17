@@ -104,10 +104,6 @@ class SelectionManager {
     atsIdx = 0
   }
 
-  fun cycleArea() {
-
-  }
-
   fun cycleArea(getAreasAtAddress: (EventAddress) -> List<AreaToShow>) {
     ksLogv("CycleArea")
 

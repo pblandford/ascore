@@ -7,6 +7,7 @@ import com.philblandford.kscore.engine.types.ExportType
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import org.apache.commons.io.IOUtils
+import org.philblandford.ascore2.external.export.getExtension
 import org.philblandford.ascore2.features.export.ExportScore
 import org.philblandford.ascore2.features.export.GetExportBytes
 import org.philblandford.ascore2.features.instruments.GetInstruments
@@ -70,6 +71,7 @@ class ExportViewModel(
         tryAction({
           launchEffect(ExportEffect.Error)
         }) {
+
           exportScore(state.fileName, state.exportType, state.allParts ?: false, destination)
           launchEffect(ExportEffect.Complete)
         }

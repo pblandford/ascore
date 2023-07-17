@@ -286,13 +286,29 @@ class SaverTest : ScoreTest() {
   }
 
   @Test
+  fun testSaveBeamsDirectionsCorrect() {
+    SCD()
+    SMV(64, duration = quaver())
+    SMV(72, duration = quaver(), eventAddress = eav(1, quaver()))
+    doSave()
+  }
+
+  @Test
+  fun testSaveBeamsDirectionsCorrectTransposeOption() {
+    SCD(instruments = listOf("Trumpet"))
+    listOf(69,71,73,74).withIndex().forEach { (idx, note) ->
+      SMV(note, duration = quaver(), eventAddress = eav(1, quaver() * idx))
+    }
+    doSave()
+  }
+
+  @Test
   fun testSaveOrnament() {
     SCD()
     SMV()
     SAE(EventType.ORNAMENT, eav(1), paramMapOf(EventParam.TYPE to OrnamentType.TRILL))
     doSave()
   }
-
 
   @Test
   fun testSaveArticulation() {
