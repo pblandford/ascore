@@ -296,9 +296,10 @@ class SaverTest : ScoreTest() {
   @Test
   fun testSaveBeamsDirectionsCorrectTransposeOption() {
     SCD(instruments = listOf("Trumpet"))
-    listOf(69,71,73,74).withIndex().forEach { (idx, note) ->
+    listOf(71,72).withIndex().forEach { (idx, note) ->
       SMV(note, duration = quaver(), eventAddress = eav(1, quaver() * idx))
     }
+    SSO(EventParam.OPTION_SHOW_TRANSPOSE_CONCERT, true)
     doSave()
   }
 

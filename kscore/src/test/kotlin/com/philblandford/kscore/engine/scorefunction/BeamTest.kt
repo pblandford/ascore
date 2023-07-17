@@ -389,7 +389,7 @@ class BeamTest : ScoreTest() {
   @Test
   fun testChangeTransposeOptionDirectionCorrect() {
     SCD(instruments = listOf("Trumpet"))
-    SMV(69, duration = quaver())
+    SMV(71, duration = quaver())
     SMV(72, duration = quaver(), eventAddress = eav(1, quaver()))
 
     SSO(EventParam.OPTION_SHOW_TRANSPOSE_CONCERT, true)

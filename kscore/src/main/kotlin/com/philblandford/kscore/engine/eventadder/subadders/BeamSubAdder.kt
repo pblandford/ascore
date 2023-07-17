@@ -103,6 +103,8 @@ object BeamSubAdder : BaseSubAdder {
   ): ScoreResult {
     val addresses = (start.barNum..end.barNum).flatMap { bar ->
       (1..MAX_VOICE).map { voice -> start.copy(barNum = bar, voice = voice) }
+    }.flatMap { address ->
+      staves.map { address.copy(staveId = it) }
     }
     val beamDirectory = this.beamDirectory.update(this, addresses)
     val newScore = this.copy(beamDirectory = beamDirectory)
