@@ -8,6 +8,7 @@ import com.philblandford.kscore.engine.eventadder.EventDestination
 import com.philblandford.kscore.engine.eventadder.RangeListener
 import com.philblandford.kscore.engine.eventadder.ScoreResult
 import com.philblandford.kscore.engine.eventadder.ok
+import com.philblandford.kscore.engine.eventadder.then
 import com.philblandford.kscore.engine.types.EventAddress
 import com.philblandford.kscore.engine.types.EventParam
 import com.philblandford.kscore.engine.types.EventType
@@ -24,6 +25,7 @@ object BeamSubAdder : BaseSubAdder {
       EventType.ARTICULATION to ::handleDurationEventChange,
       EventType.BOWING to ::handleDurationEventChange,
       EventType.DURATION to ::handleDurationEventChange,
+      EventType.TUPLET to ::handleDurationEventChange,
       EventType.FINGERING to ::handleDurationEventChange,
       EventType.NOTE to ::handleDurationEventChange,
       EventType.NOTE_SHIFT to ::handleDurationEventChange,
@@ -52,7 +54,7 @@ object BeamSubAdder : BaseSubAdder {
     params: ParamMap,
     eventAddress: EventAddress
   ): ScoreResult {
-    return score.updateBeams(eventAddress.voiceIdless(), eventAddress.voiceIdless())
+    return score.updateBeams(eventAddress.voiceIdless() - 1, eventAddress.voiceIdless() + 1)
   }
 
   private fun handleRangeChange(

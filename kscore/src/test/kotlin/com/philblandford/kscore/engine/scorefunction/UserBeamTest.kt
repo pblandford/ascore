@@ -10,6 +10,7 @@ import com.philblandford.kscore.engine.duration.quaver
 import com.philblandford.kscore.engine.duration.semibreve
 import com.philblandford.kscore.engine.duration.semiquaver
 import com.philblandford.kscore.engine.duration.times
+import com.philblandford.kscore.engine.time.TimeSignature
 import com.philblandford.kscore.engine.types.BeamType
 import com.philblandford.kscore.engine.types.DurationType
 import com.philblandford.kscore.engine.types.EventParam
@@ -435,6 +436,30 @@ class UserBeamTest : ScoreTest() {
     val beams = EG().getBeams().toList()
     assertEqual(1, beams.size)
     verifyBeam(beams.first().second, 6, minim())
+  }
+
+  @Test
+  fun testAddUserBeam12_8() {
+    SCD(timeSignature = TimeSignature(12, 8))
+    repeat(12) { num ->
+      SMV(duration = quaver(), eventAddress = eav(1, quaver() * num))
+    }
+    SAE(EventType.BEAM, eav(1), paramMapOf(EventParam.END to eav(1, quaver()* 11)))
+    val beams = EG().getBeams().toList()
+    assertEqual(1, beams.size)
+  }
+
+  @Test
+  fun testAddUserBeam12_8_Two_Beams() {
+    SCD(timeSignature = TimeSignature(12, 8))
+    repeat(12) { num ->
+      SMV(duration = quaver(), eventAddress = eav(1, quaver() * num))
+    }
+    SAE(EventType.BEAM, eav(1), paramMapOf(EventParam.END to eav(1, quaver()* 5)))
+    SAE(EventType.BEAM, eav(1, quaver() * 6),
+      paramMapOf(EventParam.END to eav(1, quaver()* 11)))
+    val beams = EG().getBeams().toList()
+    assertEqual(2, beams.size)
   }
 
   @Test

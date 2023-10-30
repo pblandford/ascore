@@ -1,5 +1,6 @@
 package com.philblandford.kscore.engine.beam
 
+import com.philblandford.kscore.engine.beam.BeamDirectory.Companion.overlaps
 import com.philblandford.kscore.engine.core.representation.MAX_VOICE
 import com.philblandford.kscore.engine.core.score.Score
 import com.philblandford.kscore.engine.core.score.Tuplet
@@ -207,7 +208,10 @@ class BeamDirectory(val allBeams: BeamMap, val user: BeamMap = mapOf()) {
         offsetLookup.addDuration(userAddress, userBeam.duration)?.let { end ->
           val maybeOverlapping =
             grouped.getBeamsForStave(userAddress.staveId, userAddress.barNum, end.barNum)
-              .filterNot { it.key.isGrace }
+              .filterNot { it.key.isGrace }.filter { beam ->
+                beam.toPair().overlaps(Pair(userAddress, userBeam), offsetLookup) || beam.toPair()
+                  .encloses(Pair(userAddress, userBeam), offsetLookup)
+              }
           maybeOverlapping.forEach { (eventAddress, beam) ->
             mutable.remove(eventAddress)
             adjustBeam(offsetLookup, beam, eventAddress, userBeam, userAddress)?.let {
@@ -217,6 +221,32 @@ class BeamDirectory(val allBeams: BeamMap, val user: BeamMap = mapOf()) {
         }
       }
       return mutable
+    }
+
+    private fun Pair<EventAddress, Beam>.overlaps(
+      other: Pair<EventAddress, Beam>,
+      offsetLookup: OffsetLookup
+    ): Boolean {
+      val thisStart = offsetLookup.addressToOffset(first) ?: first.offset
+      val thisEnd = thisStart + this.second.duration
+      val otherStart = offsetLookup.addressToOffset(other.first) ?: other.first.offset
+      val otherEnd = otherStart + other.second.duration
+
+      return (thisStart >= otherStart && thisStart < thisEnd)
+          || (thisEnd > otherStart && thisEnd < otherEnd)
+    }
+
+    private fun Pair<EventAddress, Beam>.encloses(
+      other: Pair<EventAddress, Beam>,
+      offsetLookup: OffsetLookup
+    ): Boolean {
+      val thisStart = offsetLookup.addressToOffset(first) ?: first.offset
+      val thisEnd = thisStart + this.second.duration
+      val otherStart = offsetLookup.addressToOffset(other.first) ?: other.first.offset
+      val otherEnd = otherStart + other.second.duration
+
+      return (thisStart <= otherStart && thisEnd >=
+          otherEnd)
     }
 
     private fun adjustBeam(

@@ -14,13 +14,13 @@ class ScoreUpdateTest : ScoreTest() {
   @Test
   fun testScoreUpdate() {
     val diff = doChange { SMV() }
-    assertEqual(listOf(ea(1)).toList(), diff.changedBars.toList())
+    assertEqual(listOf(ea(1), ea(2)).toList(), diff.changedBars.toList())
   }
 
   @Test
   fun testScoreUpdateSecondBar() {
     val diff = doChange { SMV(eventAddress = ea(2)) }
-    assertEqual(listOf(ea(2)).toList(), diff.changedBars.toList())
+    assertEqual(listOf(ea(1), ea(2), ea(3)).toList(), diff.changedBars.toList())
   }
 
   @Test
@@ -29,7 +29,7 @@ class ScoreUpdateTest : ScoreTest() {
       SMV()
       SMV(eventAddress = ea(2))
     }
-    assertEqual(listOf(ea(1), ea(2)).toList(), diff.changedBars.toList())
+    assertEqual(listOf(ea(1), ea(2), ea(3)).toList(), diff.changedBars.toList())
   }
 
   @Test

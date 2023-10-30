@@ -140,7 +140,7 @@ private fun SelectRow(
     Gap(10.dp)
     TextSpinner(strings = model.qualities,
       grid = true,
-      gridRows = 4, gridColumns = 5,
+      gridRows = 6, gridColumns = 5,
       buttonBorder = true,
       tag = "Quality",
       textAlign = TextAlign.Center,

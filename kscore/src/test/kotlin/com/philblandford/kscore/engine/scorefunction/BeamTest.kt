@@ -396,4 +396,17 @@ class BeamTest : ScoreTest() {
     SVP(EventType.DURATION, EventParam.IS_UPSTEM_BEAM, true, eav(1).copy(id = 1))
     SVP(EventType.DURATION, EventParam.IS_UPSTEM_BEAM, true, eav(1, quaver()).copy(id = 1))
   }
+
+  @Test
+  fun testBeamsUnaffectedAfterAddingTuplet() {
+    SMV(67, duration = quaver())
+    SMV(69, duration = quaver(), eventAddress = eav(1, quaver()))
+    SMV(71, duration = quaver(), eventAddress = eav(1, crotchet()))
+    SMV(72, duration = quaver(), eventAddress = eav(1, crotchet(1)))
+    SMV(73, duration = quaver(), eventAddress = eav(1, minim()))
+    SAE(EventType.TUPLET, eav(1, minim(1)), paramMapOf(EventParam.NUMBER to 3))
+    repeat(4) {
+      SVP(EventType.DURATION, EventParam.IS_UPSTEM_BEAM, true, eav(1, quaver() * it))
+    }
+  }
 }

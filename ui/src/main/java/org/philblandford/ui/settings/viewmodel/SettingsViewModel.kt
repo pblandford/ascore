@@ -37,17 +37,17 @@ class SettingsViewModel(
         val secondaryVariant = color.copy(saturation = 1f)
         setColors {
             copy(
-                surface = color.toColor(),
-                onPrimary = color.toColor(),
-                secondary = secondary.toColor(),
-                secondaryContainer = secondaryVariant.toColor()
+                surface = color.toColor().copy(alpha = 1f),
+                onPrimary = color.toColor().copy(alpha = 1f),
+                secondary = secondary.toColor().copy(alpha = 1f),
+                secondaryContainer = secondaryVariant.toColor().copy(alpha = 1f)
             )
         }
         update{ updateFromSource() }
     }
 
     override fun setForegroundColor(color: HsvColor) {
-        setColors { copy(onSurface = color.toColor(), primary = color.toColor()) }
+        setColors { copy(onSurface = color.toColor().copy(alpha = 1f), primary = color.toColor().copy(alpha = 1f)) }
         update { updateFromSource() }
     }
 
