@@ -41,7 +41,9 @@ fun midiPlayLookup(
   end: EventAddress? = null
 ): MidiPlayLookup {
   ksLogv("Creating midi builder")
-  val midiBuilder = midiBuilder(scoreQuery, instrumentGetter, start, end)
+  val resolvedStart = start ?: eas(1)
+  val resolvedEnd = end ?: eas(scoreQuery.numBars, staveId = scoreQuery.getAllStaves(false).last())
+  val midiBuilder = midiBuilder(scoreQuery, instrumentGetter, resolvedStart, resolvedEnd)
   ksLogv("Creating play lookup")
 
   return createMidiPlayLookup(midiBuilder, instrumentGetter, scoreQuery)

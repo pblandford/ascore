@@ -51,25 +51,25 @@ fun Part.transformBars(
 }
 
 
-fun Score.transformParts(
-  start: BarNum = 1,
-  end: BarNum = numBars,
-  partIds:List<Int> = subLevels.indices.toList().map { it + 1 },
-  action: Part.(BarNum, BarNum) -> PartResult
-): ScoreResult {
-  val parts = subLevels.withIndex()
-    .mapOrFail { (idx, part) ->
-      if (idx + 1 in partIds) {
-        part.action(start, end)
-      } else {
-        part.ok()
-      }
-    }
-  return parts.then {
-    if (it == this.subLevels) this.ok()
-    else Right(replaceSelf(eventMap, it))
-  }
-}
+//fun Score.transformParts(
+//  start: BarNum = 1,
+//  end: BarNum = numBars,
+//  partIds:List<Int> = subLevels.indices.toList().map { it + 1 },
+//  action: Part.(BarNum, BarNum) -> PartResult
+//): ScoreResult {
+//  val parts = subLevels.withIndex()
+//    .mapOrFail { (idx, part) ->
+//      if (idx + 1 in partIds) {
+//        part.action(start, end)
+//      } else {
+//        part.ok()
+//      }
+//    }
+//  return parts.then {
+//    if (it == this.subLevels) this.ok()
+//    else Right(replaceSelf(eventMap, it))
+//  }
+//}
 
 
 fun Score.transformStaves(
@@ -78,7 +78,7 @@ fun Score.transformStaves(
   staves: List<StaveId> = getAllStaves(true),
   action: Stave.(BarNum, BarNum, StaveId) -> StaveResult
 ): ScoreResult {
-  val parts = subLevels.withIndex()
+  val partResult = subLevels.withIndex()
     .mapOrFail { (idx, part) ->
       if (staves.any { it.main == idx + 1 })
         part.transformStaves(
@@ -88,9 +88,9 @@ fun Score.transformStaves(
       else
         part.ok()
     }
-  return parts.then {
-    if (it == this.subLevels) this.ok()
-    else Right(replaceSelf(eventMap, it))
+  return partResult.then { parts ->
+    if (parts == this.subLevels) this.ok()
+    else Right(Score(parts, eventMap, beamDirectory, oLookup))
   }
 }
 
@@ -98,11 +98,11 @@ fun Part.transformStaves(
   start: BarNum,
   end: BarNum,
   part: PartNum,
-  staveIdxes: List<Int> = (staves.indices).toList(),
+  staveIndices: List<Int> = (staves.indices).toList(),
   action: Stave.(BarNum, BarNum, StaveId) -> StaveResult
 ): PartResult {
   val transformed = staves.withIndex().mapOrFail { (idx, stave) ->
-    if (idx in staveIdxes) stave.action(start, end, StaveId(part, idx + 1))
+    if (idx in staveIndices) stave.action(start, end, StaveId(part, idx + 1))
     else stave.ok()
   }
   return transformed.then { Right(Part(it, eventMap)) }

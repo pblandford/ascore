@@ -33,7 +33,8 @@ object AllParts : EventGetterOption()
 data class Score(
   val parts: List<Part> = listOf(Part()),
   override val eventMap: EventMap = initEvents(),
-  val beamDirectory: BeamDirectory //= BeamDirectory(mapOf())
+  val beamDirectory: BeamDirectory,
+  val providedOLookup:OffsetLookup? = null
 ) : ScoreLevelImpl(), ScoreQuery {
 
   override val subLevels = parts
@@ -111,7 +112,8 @@ data class Score(
   )
 
   override fun replaceSelf(eventMap: EventMap, newSubLevels: List<ScoreLevel>?): Score {
-    return Score(newSubLevels?.map { it as Part }?.toList() ?: parts, eventMap, beamDirectory)
+    return Score(newSubLevels?.map { it as Part }?.toList() ?: parts, eventMap,
+      beamDirectory)
   }
 
   override fun getSpecialEvent(eventType: EventType, eventAddress: EventAddress): Event? {
@@ -317,18 +319,20 @@ data class Score(
 
   private val selectedPart = getParam<Int>(UISTATE, SELECTED_PART, eZero()) ?: 0
 
-  private val oLookup: OffsetLookup by lazy {
-    val timeSignatures = (1..(numBars.coerceAtLeast(1))).mapNotNull { bar ->
-      getEventAt(
-        TIME_SIGNATURE,
-        ez(bar)
-      )?.let { (_, ev) -> bar to TimeSignature.fromParams(ev.params) }
-    }
-    val hidden = (getEvents(HIDDEN_TIME_SIGNATURE)
-      ?: eventHashOf()).map { it.key.eventAddress.barNum to TimeSignature.fromParams(it.value.params) }
-    val map = (timeSignatures + hidden).toMap()
+  val oLookup: OffsetLookup by lazy {
+    providedOLookup ?: run {
+      val timeSignatures = (1..(numBars.coerceAtLeast(1))).mapNotNull { bar ->
+        getEventAt(
+          TIME_SIGNATURE,
+          ez(bar)
+        )?.let { (_, ev) -> bar to TimeSignature.fromParams(ev.params) }
+      }
+      val hidden = (getEvents(HIDDEN_TIME_SIGNATURE)
+        ?: eventHashOf()).map { it.key.eventAddress.barNum to TimeSignature.fromParams(it.value.params) }
+      val map = (timeSignatures + hidden).toMap()
 
-    offsetLookup(map, numBars)
+      offsetLookup(map, numBars)
+    }
   }
 
   override val lastOffset: Duration = oLookup.lastOffset
