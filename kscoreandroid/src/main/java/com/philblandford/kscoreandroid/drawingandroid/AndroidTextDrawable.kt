@@ -39,7 +39,7 @@ private fun getTypeFace(name: String?, textFontManager: TextFontManager): Typefa
 }
 
 private fun isBold(name: String?): Int {
-  return when (name?.toLowerCase()) {
+  return when (name?.lowercase()) {
     "tempo" -> Typeface.BOLD
     else -> Typeface.NORMAL
   }

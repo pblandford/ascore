@@ -37,7 +37,7 @@ class AndroidImporter(private val context: Context) {
 
   private fun getImportType(uri: Uri, context: Context, bytes: ByteArray): ImportType? {
     return getExtension(uri, context)?.let { ext ->
-      when (ext.toLowerCase()) {
+      when (ext.lowercase()) {
         "sf2" -> ImportType.SOUNDFONT
         "ttf", "otf" -> ImportType.TEXT
         "asc" -> ImportType.SAVE

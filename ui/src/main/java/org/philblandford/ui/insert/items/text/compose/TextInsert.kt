@@ -2,6 +2,8 @@ package org.philblandford.ui.insert.items.text.compose
 
 import GridSelection
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
@@ -52,7 +54,7 @@ private fun TextInsertCompact(
   insertItem: InsertItem,
   iface: InsertInterface<InsertModel>
 ) {
-  Column(Modifier.padding(10.dp)) {
+  Column(Modifier.verticalScroll(rememberScrollState()).padding(10.dp).imePadding()) {
     Insert(insertItem, iface)
     Gap(0.5f)
     Row {
@@ -70,7 +72,7 @@ private fun TextInsertExpanded(
   insertItem: InsertItem,
   iface: InsertInterface<InsertModel>
 ) {
-  Row(Modifier.padding(10.dp)) {
+  Row(Modifier.verticalScroll(rememberScrollState()).padding(10.dp).imePadding()) {
     Insert(insertItem, iface)
     Gap(0.5f)
       Select(insertItem, iface)
@@ -96,9 +98,9 @@ private fun Insert(insertItem: InsertItem, iface: InsertInterface<InsertModel>) 
     modifier = Modifier
       .size(block(7), block(2))
       .testTag("MainText"),
-    colors = TextFieldDefaults.textFieldColors(
-      textColor = MaterialTheme.colorScheme.surface,
-      containerColor = MaterialTheme.colorScheme.onSurface,
+    colors = TextFieldDefaults.colors(
+      focusedTextColor = MaterialTheme.colorScheme.surface,
+      focusedContainerColor = MaterialTheme.colorScheme.onSurface,
       cursorColor = MaterialTheme.colorScheme.surface
     )
   )

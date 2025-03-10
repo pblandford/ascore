@@ -71,8 +71,8 @@ private fun MetaInsertInternal(
             .width(block(5))
             .background(MaterialTheme.colorScheme.onSurface),
           value = text.value,
-          colors = TextFieldDefaults.textFieldColors(textColor = MaterialTheme.colorScheme.surface,
-            containerColor = MaterialTheme.colorScheme.onSurface,
+          colors = TextFieldDefaults.colors(focusedTextColor = MaterialTheme.colorScheme.surface,
+            focusedContainerColor = MaterialTheme.colorScheme.onSurface,
             cursorColor = MaterialTheme.colorScheme.surface
             ),
           onValueChange = {

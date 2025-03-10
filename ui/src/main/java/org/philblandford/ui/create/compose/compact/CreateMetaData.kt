@@ -97,7 +97,7 @@ private fun TextLine(
     keyboardActions = KeyboardActions(
       onNext = { next() },
     ),
-    colors = TextFieldDefaults.outlinedTextFieldColors(),
+    colors = TextFieldDefaults.colors(),
     textStyle = MaterialTheme.typography.bodyMedium
   )
 }

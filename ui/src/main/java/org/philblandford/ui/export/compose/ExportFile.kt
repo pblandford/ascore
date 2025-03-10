@@ -154,7 +154,7 @@ private fun Main(model: ExportModel, iface: ExportInterface) {
       onValueChange = { tf ->
         iface.setFileName(tf)
       },
-      colors = TextFieldDefaults.outlinedTextFieldColors(unfocusedLabelColor = MaterialTheme.colorScheme.onSurface),
+      colors = TextFieldDefaults.colors(unfocusedLabelColor = MaterialTheme.colorScheme.onSurface),
       label = { Text(stringResource(R.string.filename)) })
     Spacer(Modifier.height(block()))
     if (model.allParts != null) {

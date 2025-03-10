@@ -30,8 +30,8 @@ internal abstract class KxmlBase {
 
   open fun String.convertName(): String {
     return if (length > 0) {
-      var copy = this[0].toLowerCase().toString().plus(drop(1))
-      copy = copy.replace(Regex("[A-Z]")) { mr -> "-" + mr.value.toLowerCase(Locale.getDefault()) }
+      var copy = this[0].lowercase().toString().plus(drop(1))
+      copy = copy.replace(Regex("[A-Z]")) { mr -> "-" + mr.value.lowercase(Locale.getDefault()) }
       copy = copy.removePrefix(getPrefix())
       copy
     } else {

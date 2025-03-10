@@ -64,6 +64,7 @@ fun TopRow(
   }
 }
 
+@OptIn(ExperimentalAnimationApi::class)
 @Composable
 fun TopRowCompact(
   modifier: Modifier,

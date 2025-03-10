@@ -96,7 +96,7 @@ private fun InstrumentEditInternal(editModel: EditModel, iface: InstrumentEditIn
       },
       Modifier.fillMaxWidth(),
       label = { Text(stringResource(R.string.label)) },
-      colors = TextFieldDefaults.outlinedTextFieldColors(unfocusedLabelColor = MaterialTheme.colorScheme.onSurface)
+      colors = TextFieldDefaults.colors(unfocusedLabelColor = MaterialTheme.colorScheme.onSurface)
     )
     Gap(0.5f)
     OutlinedTextField(
@@ -107,7 +107,7 @@ private fun InstrumentEditInternal(editModel: EditModel, iface: InstrumentEditIn
         }
       }, Modifier.fillMaxWidth(),
       label = { Text(stringResource(R.string.abbreviation)) },
-      colors = TextFieldDefaults.outlinedTextFieldColors(unfocusedLabelColor = MaterialTheme.colorScheme.onSurface)
+      colors = TextFieldDefaults.colors(unfocusedLabelColor = MaterialTheme.colorScheme.onSurface)
     )
     Gap(0.5f)
     Text("${stringResource(R.string.instrument)}: ${instrument?.name}",

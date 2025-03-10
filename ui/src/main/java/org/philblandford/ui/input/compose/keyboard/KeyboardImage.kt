@@ -23,12 +23,15 @@ import org.philblandford.ui.common.block
 import org.philblandford.ui.main.window.LocalWindowSizeClass
 import org.philblandford.ui.main.window.compact
 import org.philblandford.ui.main.window.expanded
+import org.philblandford.ui.main.window.medium
 import java.util.*
 
 @Composable
 fun KeyboardImage(modifier:Modifier = Modifier, insertNote: (Int, Boolean) -> Unit) {
 
-  val imageHeight = if (LocalWindowSizeClass.current.expanded()) block(2) else  block(3)
+  val reduceHeight =  LocalWindowSizeClass.current.medium() && LocalConfiguration.current.orientation == ORIENTATION_LANDSCAPE
+
+  val imageHeight = if (reduceHeight) block(2) else  block(3)
   val imageWidth = imageHeight * 20
 
   val virtualHeight = imageHeight.value * LocalDensity.current.density
@@ -63,11 +66,13 @@ fun KeyboardImage(modifier:Modifier = Modifier, insertNote: (Int, Boolean) -> Un
             )
           }.size(imageWidth, imageHeight).testTag("KeyboardImage")
         )
-        Image(
-          painterResource(id = R.drawable.cheap_diagonal_fabric), "",
-          contentScale = ContentScale.FillWidth,
-          modifier = Modifier.size(imageWidth, block())
-        )
+        if (!reduceHeight) {
+          Image(
+            painterResource(id = R.drawable.cheap_diagonal_fabric), "",
+            contentScale = ContentScale.FillWidth,
+            modifier = Modifier.size(imageWidth, block())
+          )
+        }
       }
     }
 }

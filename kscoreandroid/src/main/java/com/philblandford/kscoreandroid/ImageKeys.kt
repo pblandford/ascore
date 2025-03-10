@@ -1,5 +1,7 @@
 package com.philblandford.kscoreandroid
 
+import com.philblandford.ascore2.R
+
 
 internal val imageKeys = mapOf(
   "accidental_double_flat" to R.drawable.double_flat,

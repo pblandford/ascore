@@ -19,8 +19,6 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.core.text.HtmlCompat
-import com.google.accompanist.web.AccompanistWebViewClient
-import com.google.accompanist.web.WebView
 import com.google.accompanist.web.rememberWebViewState
 import com.philblandford.kscore.log.ksLogt
 import org.apache.commons.io.FileUtils

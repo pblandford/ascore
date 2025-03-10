@@ -59,7 +59,7 @@ fun OutlinedTextField2(
         imeAction = ImeAction.Done
       ),
       textStyle = LocalTextStyle.current.copy(color = Color.Black),
-      colors = TextFieldDefaults.outlinedTextFieldColors(textColor = Color.Black),
+      colors = TextFieldDefaults.colors(focusedTextColor = Color.Black),
       keyboardActions = KeyboardActions { onDone(value) },
       modifier = modifier,
       label = { if (id != -1) Text(stringResource(id = id)) }

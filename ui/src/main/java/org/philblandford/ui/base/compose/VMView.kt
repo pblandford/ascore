@@ -7,7 +7,7 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.testTag
 import kotlinx.coroutines.flow.Flow
-import org.koin.androidx.compose.getViewModel
+import org.koin.androidx.compose.koinViewModel
 import org.philblandford.ui.base.viewmodel.BaseViewModel
 import org.philblandford.ui.base.viewmodel.VMInterface
 import org.philblandford.ui.base.viewmodel.VMModel
@@ -19,7 +19,7 @@ inline fun <M : VMModel, I : VMInterface, S : VMSideEffect, reified VM : BaseVie
   viewModelClass: Class<out VM>,
   modifier: Modifier = Modifier,
   tag: String = "",
-  viewModelFactory: @Composable () -> VM = { getViewModel() },
+  viewModelFactory: @Composable () -> VM = { koinViewModel() },
   contents: @Composable (M, I, Flow<S>) -> Unit
 ) {
 
@@ -40,7 +40,7 @@ inline fun <M : VMModel, I : VMInterface, S : VMSideEffect, reified VM : BaseVie
 inline fun <M : VMModel, I : VMInterface, S : VMSideEffect, reified VM : BaseViewModel<M, out I, S>> VMView(
   modifier: Modifier = Modifier,
   tag: String = "",
-  viewModelFactory: @Composable () -> VM = { getViewModel() },
+  viewModelFactory: @Composable () -> VM = { koinViewModel() },
   contents: @Composable (M, I, Flow<S>) -> Unit
 ) {
 

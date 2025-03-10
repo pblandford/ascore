@@ -59,9 +59,9 @@ private fun TextEditInternal(model: EditModel, iface: TextEditInterface) {
         text = it
         iface.updateParam(EventParam.TEXT, text)
       },
-      colors = TextFieldDefaults.textFieldColors(
-        containerColor = MaterialTheme.colorScheme.onSurface,
-        textColor = MaterialTheme.colorScheme.surface,
+      colors = TextFieldDefaults.colors(
+        focusedContainerColor = MaterialTheme.colorScheme.onSurface,
+        focusedTextColor = MaterialTheme.colorScheme.surface,
         cursorColor = MaterialTheme.colorScheme.surface
       ),
     )

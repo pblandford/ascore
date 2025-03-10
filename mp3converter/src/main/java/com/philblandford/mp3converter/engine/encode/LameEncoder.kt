@@ -9,7 +9,7 @@ interface IEncoder {
 class LameEncoder : IEncoder {
 
   init {
-    System.loadLibrary("ffmpeg-native")
+    System.loadLibrary("lame-native")
   }
 
   override fun encodeSample(sample: List<Short>): List<Byte> {

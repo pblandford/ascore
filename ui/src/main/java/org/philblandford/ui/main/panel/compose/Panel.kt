@@ -57,73 +57,74 @@ import timber.log.Timber
 
 @Composable
 fun Panel() {
-  VMView(PanelViewModel::class.java) { state, _, _ ->
-    PanelInternal(state)
-  }
+    VMView(PanelViewModel::class.java) { state, _, _ ->
+        PanelInternal(state)
+    }
 }
 
+@OptIn(ExperimentalAnimationApi::class)
 @Composable
 private fun PanelInternal(model: PanelModel) {
-  var currentLayout by remember { mutableStateOf(model.layoutID) }
+    var currentLayout by remember { mutableStateOf(model.layoutID) }
 
-  currentLayout = model.layoutID
+    currentLayout = model.layoutID
 
-  Timber.e("Panel currentLayout $currentLayout")
+    Timber.e("Panel currentLayout $currentLayout")
 
-  AnimatedContent(currentLayout,
-  transitionSpec =
-  {
-    (slideInVertically { height -> height } + fadeIn() with
-          slideOutHorizontally { height -> -height } + fadeOut()).using(
-      SizeTransform(clip = false)
-    )
-  }
+    AnimatedContent(currentLayout,
+        transitionSpec =
+        {
+            (slideInVertically { height -> height } + fadeIn() with
+                    slideOutHorizontally { height -> -height } + fadeOut()).using(
+                SizeTransform(clip = false)
+            )
+        }
     ) { id ->
 
-    ThemeBox {
-      when (id) {
-        LayoutID.ARTICULATION -> ArticulationInsert()
-        LayoutID.BAR -> BarInsert()
-        LayoutID.BARLINE -> BarLineInsert()
-        LayoutID.BAR_NUMBERING -> BarNumberingInsert()
-        LayoutID.BEAM -> BeamInsert()
-        LayoutID.BOWING -> BowingInsert()
-        LayoutID.CLEF -> ClefInsert()
-        LayoutID.DYNAMIC -> DynamicInsert()
-        LayoutID.FINGERING -> FingeringInsert()
-        LayoutID.GLISSANDO -> GlissandoInsert()
-        LayoutID.GROUP_STAVES -> GroupStavesInsert()
-        LayoutID.HARMONY -> HarmonyInsert()
-        LayoutID.INSERT_CHOOSE -> InsertChoosePanel()
-        LayoutID.INSTRUMENT -> InstrumentInsert()
-        LayoutID.KEY -> KeySignatureInsert()
-        LayoutID.KEYBOARD -> KeyboardPanel()
-        LayoutID.LYRIC -> LyricInsert()
-        LayoutID.MARGIN -> PageMargins()
-        LayoutID.METADATA -> MetaInsert()
-        LayoutID.NAVIGATION -> NavigationInsert()
-        LayoutID.OCTAVE -> OctaveInsert()
-        LayoutID.ORNAMENT -> OrnamentInsert()
-        LayoutID.PAGE_SIZE -> PageSize()
-        LayoutID.PAUSE -> PauseInsert()
-        LayoutID.PEDAL -> PedalInsert()
-        LayoutID.PERCUSSION -> PercussionInputPanel()
-        LayoutID.REPEAT_BAR -> RepeatBarInsert()
-        LayoutID.SCORE_BREAK -> ScoreBreak()
-        LayoutID.SEGMENT_WIDTH -> SegmentWidth()
-        LayoutID.SLUR -> SlurInsert()
-        LayoutID.TEMPO -> TempoInsert()
-        LayoutID.TEXT -> TextInsert()
-        LayoutID.TIE -> TieInsert()
-        LayoutID.TIME -> TimeSignatureInsert()
-        LayoutID.TRANSPOSE_BY -> TransposeBy()
-        LayoutID.TRANSPOSE_TO -> TransposeTo()
-        LayoutID.TREMOLO -> TremoloInsert()
-        LayoutID.TUPLET -> TupletInsert()
-        LayoutID.VOLTA -> VoltaInsert()
-        LayoutID.WEDGE -> WedgeInsert()
-        else -> {}
-      }
+        ThemeBox {
+            when (id) {
+                LayoutID.ARTICULATION -> ArticulationInsert()
+                LayoutID.BAR -> BarInsert()
+                LayoutID.BARLINE -> BarLineInsert()
+                LayoutID.BAR_NUMBERING -> BarNumberingInsert()
+                LayoutID.BEAM -> BeamInsert()
+                LayoutID.BOWING -> BowingInsert()
+                LayoutID.CLEF -> ClefInsert()
+                LayoutID.DYNAMIC -> DynamicInsert()
+                LayoutID.FINGERING -> FingeringInsert()
+                LayoutID.GLISSANDO -> GlissandoInsert()
+                LayoutID.GROUP_STAVES -> GroupStavesInsert()
+                LayoutID.HARMONY -> HarmonyInsert()
+                LayoutID.INSERT_CHOOSE -> InsertChoosePanel()
+                LayoutID.INSTRUMENT -> InstrumentInsert()
+                LayoutID.KEY -> KeySignatureInsert()
+                LayoutID.KEYBOARD -> KeyboardPanel()
+                LayoutID.LYRIC -> LyricInsert()
+                LayoutID.MARGIN -> PageMargins()
+                LayoutID.METADATA -> MetaInsert()
+                LayoutID.NAVIGATION -> NavigationInsert()
+                LayoutID.OCTAVE -> OctaveInsert()
+                LayoutID.ORNAMENT -> OrnamentInsert()
+                LayoutID.PAGE_SIZE -> PageSize()
+                LayoutID.PAUSE -> PauseInsert()
+                LayoutID.PEDAL -> PedalInsert()
+                LayoutID.PERCUSSION -> PercussionInputPanel()
+                LayoutID.REPEAT_BAR -> RepeatBarInsert()
+                LayoutID.SCORE_BREAK -> ScoreBreak()
+                LayoutID.SEGMENT_WIDTH -> SegmentWidth()
+                LayoutID.SLUR -> SlurInsert()
+                LayoutID.TEMPO -> TempoInsert()
+                LayoutID.TEXT -> TextInsert()
+                LayoutID.TIE -> TieInsert()
+                LayoutID.TIME -> TimeSignatureInsert()
+                LayoutID.TRANSPOSE_BY -> TransposeBy()
+                LayoutID.TRANSPOSE_TO -> TransposeTo()
+                LayoutID.TREMOLO -> TremoloInsert()
+                LayoutID.TUPLET -> TupletInsert()
+                LayoutID.VOLTA -> VoltaInsert()
+                LayoutID.WEDGE -> WedgeInsert()
+                else -> {}
+            }
+        }
     }
-  }
 }

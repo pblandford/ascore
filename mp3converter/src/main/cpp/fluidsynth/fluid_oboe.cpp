@@ -72,7 +72,7 @@ public:
 
     DataCallbackResult onAudioReady(AudioStream *stream, void *audioData, int32_t numFrames)
     {
-        FLUID_LOG(FLUID_ERR, "HERE")
+      //  FLUID_LOG(FLUID_ERR, "HERE")
         fluid_oboe_audio_driver_t *dev = static_cast<fluid_oboe_audio_driver_t *>(this->user_data);
 
         if(!dev->cont)
@@ -132,7 +132,7 @@ new_fluid_oboe_audio_driver(fluid_settings_t *settings, fluid_synth_t *synth)
     int sharing_mode; // 0: Shared, 1: Exclusive
     int performance_mode; // 0: None, 1: PowerSaving, 2: LowLatency
 
-    signal(SIGSEGV, signalHandler);
+    //signal(SIGSEGV, signalHandler);
 
     try
     {

@@ -8,6 +8,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Rect
 import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Color
@@ -25,7 +26,7 @@ import timber.log.Timber
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun OuterPage() {
+fun OuterPage(modifier: Modifier) {
 
   val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
   val scope = rememberCoroutineScope()
@@ -33,6 +34,7 @@ fun OuterPage() {
   val showMixer = remember{ mutableStateOf(false) }
 
   ModalNavigationDrawer(drawerState = drawerState,
+    modifier = modifier,
     drawerContent = {
       DrawerItems(
         drawerItems, { drawerItem ->

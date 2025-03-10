@@ -231,10 +231,12 @@ data class Area(
     }
     childMap.forEach {
       if (matches(it, x, y, fuzz, false)) {
+        ksLogt("match ${it.second.tag}")
         it.second.findFromCoord(
           x - it.first.coord.x, y - it.first.coord.y, matchFunc, fuzz,
           coord.plus(it.first.coord)
         )?.let {
+          ksLogt("return ${it.second.tag}")
           return it
         }
       }
@@ -251,9 +253,11 @@ data class Area(
       candidate.first.coord.x - candidate.second.xMargin + requestedX,
       candidate.first.coord.y - candidate.second.yMargin + requestedY
     )
-    return coord.x < x + fuzz && coord.y < y + fuzz &&
+
+    val ret = coord.x < x + fuzz && coord.y < y + fuzz &&
         coord.x + candidate.second.width - requestedX > x - fuzz &&
         coord.y + candidate.second.height - requestedY > y - fuzz
+    return ret
   }
 
   fun getArea(

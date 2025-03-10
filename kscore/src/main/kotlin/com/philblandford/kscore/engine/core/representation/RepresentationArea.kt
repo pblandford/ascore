@@ -6,6 +6,7 @@ import com.philblandford.kscore.engine.core.*
 import com.philblandford.kscore.engine.core.area.*
 import com.philblandford.kscore.engine.duration.dZero
 import com.philblandford.kscore.engine.types.*
+import com.philblandford.kscore.log.ksLogt
 import com.philblandford.kscore.select.AreaToShow
 
 data class AreaReturn(val page: Int, val areaMapKey: AreaMapKey, val area: Area) {
@@ -90,6 +91,7 @@ internal fun Representation.getAreaToShow(
     cond(area) && area.addressRequirement == AddressRequirement.EVENT
         && (extra?.let { area.extra == it } ?: true)
   }?.let { (k, v) ->
+    ksLogt("COORD getAreaToShow ${k.coord} ${v.width} ${v.height}")
     v.event?.let { event ->
       AreaToShow(
         ScoreArea(page, Rectangle(k.coord.x - v.xMargin, k.coord.y - v.yMargin, v.width, v.height)),

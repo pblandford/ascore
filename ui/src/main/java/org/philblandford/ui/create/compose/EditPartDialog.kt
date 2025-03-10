@@ -115,7 +115,7 @@ private fun Label(instrument: Instrument, onUpdate: (Instrument) -> Unit) {
     },
     label = { Text(stringResource(R.string.label)) },
     modifier = Modifier.testTag("LabelTextField"),
-    colors = TextFieldDefaults.outlinedTextFieldColors(unfocusedLabelColor = MaterialTheme.colorScheme.onSurface)
+    colors = TextFieldDefaults.colors(unfocusedLabelColor = MaterialTheme.colorScheme.onSurface)
   )
 }
 
@@ -129,7 +129,7 @@ private fun Abbreviation(instrument: Instrument, onUpdate: (Instrument) -> Unit)
     },
     label = { Text(stringResource(id = R.string.abbreviation)) },
     modifier = Modifier.testTag("AbbreviationTextField"),
-    colors = TextFieldDefaults.outlinedTextFieldColors(unfocusedLabelColor = MaterialTheme.colorScheme.onSurface)
+    colors = TextFieldDefaults.colors(unfocusedLabelColor = MaterialTheme.colorScheme.onSurface)
   )
 }
 

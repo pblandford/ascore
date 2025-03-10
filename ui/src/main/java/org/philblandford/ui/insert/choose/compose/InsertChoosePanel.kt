@@ -83,6 +83,7 @@ fun InsertChoosePanel(model: InsertChooseModel, iface: InsertChooseInterface) {
   }
 }
 
+@OptIn(ExperimentalAnimationApi::class)
 @Composable
 private fun SelectionGrid(
   model: InsertChooseModel,

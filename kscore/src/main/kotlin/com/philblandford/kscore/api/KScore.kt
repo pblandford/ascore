@@ -592,6 +592,7 @@ class KScoreImpl(
   }
 
   override fun setStartSelectionOrEvent(location: Location) {
+    ksLogt("Getting areaToShow $location")
     val ats = rep()?.getAreaToShow(location.page, location.x, location.y, fuzz = 25) {
       it.event?.eventType != EventType.DURATION && it.event?.eventType != EventType.NOTE
     }

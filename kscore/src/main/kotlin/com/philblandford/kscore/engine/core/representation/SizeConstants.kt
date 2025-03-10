@@ -1,10 +1,12 @@
 package com.philblandford.kscore.engine.core.representation
 
 import com.philblandford.kscore.engine.types.PageSize
+import kotlinx.coroutines.flow.asFlow
 
 val MAX_VOICE = 4
 
 val BLOCK_HEIGHT = 32
+val TADPOLE_HEIGHT = BLOCK_HEIGHT * 2
 val LINE_THICKNESS = BLOCK_HEIGHT / 4
 
 val STEM_HEIGHT = BLOCK_HEIGHT * 7
@@ -40,7 +42,7 @@ val BAR_START_MARGIN = BLOCK_HEIGHT * 2
 val PAGE_RATIO = 1.41f
 val PAGE_BASE_WIDTH = BLOCK_HEIGHT * 275
 
-
+val x = (0..10).asFlow()
 val pageWidths = mapOf(
   PageSize.A2 to (PAGE_BASE_WIDTH * PAGE_RATIO * PAGE_RATIO).toInt(),
   PageSize.A3 to (PAGE_BASE_WIDTH * PAGE_RATIO).toInt(),

@@ -5,9 +5,15 @@ import android.content.Intent
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.activity.enableEdgeToEdge
+import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.safeContent
+import androidx.compose.material3.BottomAppBar
 import androidx.compose.material3.LocalContentColor
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.material3.windowsizeclass.ExperimentalMaterial3WindowSizeClassApi
 import androidx.compose.material3.windowsizeclass.calculateWindowSizeClass
@@ -16,7 +22,6 @@ import androidx.compose.runtime.compositionLocalOf
 import androidx.compose.ui.Modifier
 import com.github.zsoltk.compose.backpress.BackPressHandler
 import com.github.zsoltk.compose.backpress.LocalBackPressHandler
-import com.google.accompanist.systemuicontroller.rememberSystemUiController
 import org.philblandford.ui.base.compose.VMView
 import org.philblandford.ui.main.outer.compose.OuterPage
 import org.philblandford.ui.main.window.LocalWindowSizeClass
@@ -28,43 +33,41 @@ val LocalActivity = compositionLocalOf<Activity?> { null }
 
 
 class MainActivity : ComponentActivity() {
-  private val backPressHandler = BackPressHandler()
+    private val backPressHandler = BackPressHandler()
 
-  @OptIn(ExperimentalMaterial3WindowSizeClassApi::class)
-  override fun onCreate(savedInstanceState: Bundle?) {
+    @OptIn(ExperimentalMaterial3WindowSizeClassApi::class)
+    override fun onCreate(savedInstanceState: Bundle?) {
 
-    super.onCreate(savedInstanceState)
-    setContent {
-      val windowSizeClass = calculateWindowSizeClass(this)
+        super.onCreate(savedInstanceState)
+        setContent {
+            val windowSizeClass = calculateWindowSizeClass(this)
 
-      VMView(ThemeViewModel::class.java) { model, _, _ ->
+            VMView(ThemeViewModel::class.java) { model, _, _ ->
 
-        AscoreTheme(model.colorScheme) {
+                AscoreTheme(model.colorScheme) {
+                    enableEdgeToEdge()
 
-          val uiController = rememberSystemUiController()
-
-          uiController.setStatusBarColor(MaterialTheme.colorScheme.surface)
-          uiController.setNavigationBarColor(MaterialTheme.colorScheme.surface)
-
-          Surface(modifier = Modifier.fillMaxSize(), color = MaterialTheme.colorScheme.background) {
-            CompositionLocalProvider(
-              LocalBackPressHandler provides backPressHandler,
-              LocalActivity provides this,
-              LocalContentColor provides MaterialTheme.colorScheme.onSurface,
-              LocalWindowSizeClass provides windowSizeClass
-            ) {
-              OuterPage()
+                    Scaffold(
+                        modifier = Modifier.fillMaxSize(),
+                        containerColor = MaterialTheme.colorScheme.surface
+                    ) { padding ->
+                        CompositionLocalProvider(
+                            LocalBackPressHandler provides backPressHandler,
+                            LocalActivity provides this,
+                            LocalContentColor provides MaterialTheme.colorScheme.onSurface,
+                            LocalWindowSizeClass provides windowSizeClass
+                        ) {
+                            OuterPage(Modifier.padding(padding))
+                        }
+                    }
+                }
             }
-
-          }
         }
-      }
     }
-  }
 
-  override fun onBackPressed() {
-    if (!backPressHandler.handle()) {
-      super.onBackPressed()
+    override fun onBackPressed() {
+        if (!backPressHandler.handle()) {
+            super.onBackPressed()
+        }
     }
-  }
 }

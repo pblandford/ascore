@@ -196,7 +196,7 @@ private fun findInstrument(
   instrumentGetter: InstrumentGetter,
   firstInstrument:Instrument?
 ): Instrument? {
-  return when (text.toLowerCase(Locale.getDefault()).dropLastWhile { !it.isLetter() }) {
+  return when (text.lowercase(Locale.getDefault()).dropLastWhile { !it.isLetter() }) {
     "pizz" -> instrumentGetter.getInstrument("Pizzicato Strings")
     "arco" -> firstInstrument
     "mute" -> instrumentGetter.getInstrument("Muted Trumpet")

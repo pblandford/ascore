@@ -35,6 +35,7 @@ class DefaultInstrumentGetter(
 
   override fun refresh() {
     super.refresh()
+    commit()
     getUserDescriptions()?.let { groups ->
       this.groups = groups
       this.groups = newInstruments.fold(this.groups) { g, i ->

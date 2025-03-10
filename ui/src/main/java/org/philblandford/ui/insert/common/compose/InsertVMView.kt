@@ -11,7 +11,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
-import org.koin.androidx.compose.getViewModel
+import org.koin.androidx.compose.koinViewModel
 import org.philblandford.ascore2.features.ui.model.InsertItem
 import org.philblandford.ui.R
 import org.philblandford.ui.insert.common.viewmodel.DefaultInsertViewModel
@@ -27,7 +27,7 @@ import timber.log.Timber
 @Composable
 inline fun <M : InsertModel, I : InsertInterface<M>,
         reified VM : InsertViewModel<M, out I>> InsertVMView(
-  viewModelFactory: @Composable () -> VM = { getViewModel() },
+  viewModelFactory: @Composable () -> VM = { koinViewModel() },
   contents: @Composable (M, InsertItem, I) -> Unit
 ) {
 
