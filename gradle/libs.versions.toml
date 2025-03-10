@@ -1,0 +1,94 @@
+[versions]
+accompanistPager = "0.27.0"
+accompanistWebview = "0.31.1-alpha"
+agp = "8.7.3"
+composeRouter = "0.28.0"
+constraintlayoutCompose = "1.1.1"
+kotlin = "2.1.10"
+coreKtx = "1.15.0"
+junit = "4.13.2"
+junitVersion = "1.2.1"
+espressoCore = "3.6.1"
+appcompat = "1.7.0"
+kotlinxCollectionsImmutable = "0.3.5"
+kotlinsCoroutinesCore = "1.10.1"
+material = "1.12.0"
+constraintlayout = "2.2.1"
+oboe = "1.9.3"
+commonsMath3 = "3.6.1"
+commonsIO = "2.18.0"
+androidxCore = "1.15.0"
+androidxMaterial = "1.4.0"
+androidxLifecycle = "2.8.7"
+androidxActivityCompose = "1.10.1"
+moshiKotlin = "1.15.1"
+composeBom = "2025.02.00"
+billing = "7.1.1"
+reviewKtx = "2.0.2"
+timber = "5.0.1"
+gson = "2.11.0"
+googleServices = "4.4.2"
+crashlytics = "3.0.3"
+kotlinParcelize = "1.8.0"
+koin = "4.0.0"
+compose-colorPicker = "0.7.0"
+firebase = "33.10.0"
+
+[libraries]
+accompanist-pager = { module = "com.google.accompanist:accompanist-pager", version.ref = "accompanistPager" }
+accompanist-webview = { module = "com.google.accompanist:accompanist-webview", version.ref = "accompanistWebview" }
+androidx-constraintlayout-compose = { module = "androidx.constraintlayout:constraintlayout-compose", version.ref = "constraintlayoutCompose" }
+androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
+compose-router = { module = "com.github.zsoltk:compose-router", version.ref = "composeRouter" }
+junit = { group = "junit", name = "junit", version.ref = "junit" }
+androidx-junit = { group = "androidx.test.ext", name = "junit", version.ref = "junitVersion" }
+androidx-espresso-core = { group = "androidx.test.espresso", name = "espresso-core", version.ref = "espressoCore" }
+androidx-appcompat = { group = "androidx.appcompat", name = "appcompat", version.ref = "appcompat" }
+
+kotlinx-collections-immutable = { module = "org.jetbrains.kotlinx:kotlinx-collections-immutable", version.ref = "kotlinxCollectionsImmutable" }
+kotlinx-coroutines-core = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-core", version.ref = "kotlinsCoroutinesCore" }
+kotlin-stdlib = { group = "org.jetbrains.kotlin", name = "kotlin-stdlib", version.ref = "kotlin" }
+kotlin-reflect = { group = "org.jetbrains.kotlin", name = "kotlin-reflect", version.ref = "kotlin" }
+
+androidx-core = { group = "androidx.core", name = "core", version.ref = "androidxCore" }
+androidx-lifecycle = { group = "androidx.lifecycle", name = "lifecycle-runtime-ktx", version.ref = "androidxLifecycle" }
+androidx-activity-compose = { group = "androidx.activity", name = "activity-compose", version.ref = "androidxActivityCompose" }
+moshi-kotlin = { group = "com.squareup.moshi", name = "moshi-kotlin", version.ref = "moshiKotlin" }
+
+material = { group = "com.google.android.material", name = "material", version.ref = "material" }
+androidx-constraintlayout = { group = "androidx.constraintlayout", name = "constraintlayout", version.ref = "constraintlayout" }
+oboe = { group = "com.google.oboe", name = "oboe", version.ref = "oboe" }
+commons-math3 = { group = "org.apache.commons", name = "commons-math3", version.ref = "commonsMath3" }
+commons-io = { group = "commons-io", name = "commons-io", version.ref = "commonsIO" }
+
+compose-bom = { group = "androidx.compose", name = "compose-bom", version.ref = "composeBom" }
+compose-material3 = { group = "androidx.compose.material3", name = "material3" }
+compose-material = { group = "androidx.compose.material", name = "material" }
+compose-tooling-preview = { group = "androidx.compose.ui", name = "ui-tooling-preview" }
+compose-tooling-ui = { group = "androidx.compose.ui", name = "ui-tooling" }
+compose-ui = { group = "androidx.compose.ui", name = "ui" }
+compose-material3-windowSizeClass = { group = "androidx.compose.material3", name = "material3-window-size-class" }
+
+billing = { group = "com.android.billingclient", name = "billing-ktx", version.ref = "billing" }
+review-ktx = { module = "com.google.android.play:review-ktx", version.ref = "reviewKtx" }
+timber = { group = "com.jakewharton.timber", name = "timber", version.ref = "timber" }
+gson = { group = "com.google.code.gson", name = "gson", version.ref = "gson" }
+koin-bom = { group = "io.insert-koin", name = "koin-bom", version.ref = "koin" }
+koin-core = { group = "io.insert-koin", name = "koin-core" }
+koin-compose = { group = "io.insert-koin", name="koin-androidx-compose" }
+compose-color-picker = { group = "com.godaddy.android.colorpicker", name = "compose-color-picker-android", version.ref = "compose-colorPicker" }
+firebase-bom = { group = "com.google.firebase", name = "firebase-bom", version.ref = "firebase" }
+firebase-analytics = { group = "com.google.firebase", name = "firebase-analytics-ktx" }
+firebase-crashlytics = { group = "com.google.firebase", name = "firebase-crashlytics-ktx" }
+firebase-storage = { group = "com.google.firebase", name = "firebase-storage-ktx" }
+
+
+[plugins]
+android-application = { id = "com.android.application", version.ref = "agp" }
+android-library = { id = "com.android.library", version.ref = "agp" }
+kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
+kotlin-jvm = { id = "org.jetbrains.kotlin.jvm", version.ref = "kotlin" }
+compose-compiler = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin" }
+google-services = { id = "com.google.gms.google-services", version.ref = "googleServices" }
+google-crashlytics = { id = "com.google.firebase.crashlytics", version.ref = "crashlytics" }
+kotlin-parcelize = { id = "org.jetbrains.kotlin.plugin.parcelize",  version.ref = "kotlinParcelize"  }
