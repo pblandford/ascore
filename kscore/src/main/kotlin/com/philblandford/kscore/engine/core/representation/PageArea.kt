@@ -141,8 +141,9 @@ private fun getSystemPositions(
         return@loop
       }
 
+
       systemPositions.add(sysYGeog.xGeog.startBar to SystemPosition(totalHeight + SYSTEM_GAP + sysYGeog.yMargin, sysYGeog))
-      totalHeight += sysYGeog.height + SYSTEM_GAP
+      totalHeight += sysYGeog.height + SYSTEM_GAP + sysYGeog.yMargin
     }
   }
   val systemList = systemPositions.toList().sortedBy { it.first }

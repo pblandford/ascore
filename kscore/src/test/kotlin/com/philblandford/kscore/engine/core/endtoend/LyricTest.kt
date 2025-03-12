@@ -92,6 +92,8 @@ class LyricTest : RepTest() {
 
   @Test
   fun testAdjustLyricAbove() {
+    val x by lazy { 5 }
+
     SMV()
     SAE(EventType.LYRIC, eventAddress = eav(1), params = paramMapOf(EventParam.TEXT to "wibble",
       EventParam.NUMBER to 1))

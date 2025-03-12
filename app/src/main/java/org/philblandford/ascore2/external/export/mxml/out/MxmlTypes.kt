@@ -1,7 +1,7 @@
 package org.philblandford.ascore2.external.export.mxml.out
 
 
-import com.philblandford.ascore.external.export.mxml.out.creator.createMxmlScore
+import org.philblandford.ascore2.external.export.mxml.out.creator.createMxmlScore
 import com.philblandford.kscore.engine.core.score.Score
 import com.philblandford.kscore.engine.duration.Duration
 import com.philblandford.kscore.engine.duration.breve
@@ -120,7 +120,8 @@ internal data class MxmlScorePart(
   @Child @Order(0) val partName: MxmlPartName,
   @Child @Order(1) val partAbbreviation: MxmlPartAbbreviation?,
   @Child @Order(2) val scoreInstrument: List<MxmlScoreInstrument>,
-  @Child @Order(3) val midiInstrument: List<MxmlMidiInstrument>
+  @Child @Order(3) val midiInstrument: List<MxmlMidiInstrument>,
+  val partNum:Int = 0
 ) : MxmlBase() {
   val isPercussion = midiInstrument.any { it.midiUnpitched != null }
 }

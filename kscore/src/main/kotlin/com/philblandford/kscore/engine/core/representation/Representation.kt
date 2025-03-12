@@ -25,8 +25,8 @@ data class Representation(
       p = drawableFactory.paintSelectedArea(p, geog, selectState)
       p = drawableFactory.paintPlayBackMarker(p, geog, playbackMarker)
       p = paintMarker(p, geog, marker, drawableFactory)
-      p
-    //  p.paintBorders(drawableFactory) { k,a -> a.tag == "BarLine" || a.tag == "KNOB"}
+      p.paintGrid(drawableFactory)
+      p.paintBorders(drawableFactory) { k,a -> a.tag == "BarLine" || a.tag == "KNOB"}
     }
   }
 

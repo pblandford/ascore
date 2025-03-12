@@ -27,7 +27,7 @@ internal fun createScorePart(part: Part, num: Int): MxmlScorePart? {
     }
     return MxmlScorePart(
       id, MxmlPartName(part.label), MxmlPartAbbreviation(main.abbreviation),
-      scoreInstruments, midiInstruments
+      scoreInstruments, midiInstruments, num
     )
   }
 }
