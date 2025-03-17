@@ -38,6 +38,7 @@ class SettingsViewModel(
         setColors {
             copy(
                 surface = color.toColor().copy(alpha = 1f),
+                surfaceContainerHighest = color.toColor().copy(alpha = 1f),
                 onPrimary = color.toColor().copy(alpha = 1f),
                 secondary = secondary.toColor().copy(alpha = 1f),
                 secondaryContainer = secondaryVariant.toColor().copy(alpha = 1f)
@@ -47,7 +48,8 @@ class SettingsViewModel(
     }
 
     override fun setForegroundColor(color: HsvColor) {
-        setColors { copy(onSurface = color.toColor().copy(alpha = 1f), primary = color.toColor().copy(alpha = 1f)) }
+        setColors { copy(onSurface = color.toColor().copy(alpha = 1f),
+            primary = color.toColor().copy(alpha = 1f)) }
         update { updateFromSource() }
     }
 

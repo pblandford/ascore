@@ -53,7 +53,7 @@ private fun compareOption(old: Score, new: Score, option: EventParam): Boolean {
 private fun Score.needPagesOnly(oldScore: Score): Boolean {
   val events = listOf(
     EventType.TITLE, EventType.COMPOSER, EventType.SUBTITLE,
-    EventType.LYRICIST
+    EventType.LYRICIST, EventType.FOOTER_LEFT, EventType.FOOTER_RIGHT
   )
   return events.any { eventMap.eventChanged(oldScore.eventMap, it) }
 }

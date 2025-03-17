@@ -317,8 +317,13 @@ fun eWild() = EWILD
 typealias ParamMap = Map<EventParam, Any?>
 
 @Suppress("UNCHECKED_CAST")
-fun <T> ParamMap.g(eventParam: EventParam): T? {
-  return get(eventParam) as? T
+inline fun <reified T> ParamMap.g(eventParam: EventParam): T? {
+  return try {
+    val ret = get(eventParam)
+    ret as? T
+  } catch (e: ClassCastException) {
+    null
+  }
 }
 
 fun paramMapOf(vararg args: Pair<EventParam, Any?>): ParamMap {
@@ -390,6 +395,8 @@ enum class EventType {
   TRANSPOSE,
   BAR_BREAK,
   NO_TYPE,
+  FOOTER_LEFT,
+  FOOTER_RIGHT,
 
   TEST_SCORE_EVENT,
   TEST_PART_EVENT,
@@ -413,8 +420,7 @@ private val lineTypes = setOf(
 
 internal fun EventType.isLine() = lineTypes.contains(this)
 
-enum class
-EventParam {
+enum class EventParam {
   TYPE,
   DURATION,
   REAL_DURATION,
@@ -537,7 +543,7 @@ EventParam {
 data class Modifiable<T>(val modified: Boolean, val value: T, val ignore: Boolean = false)
 
 enum class DurationType {
-  REST, CHORD, NOTE, EMPTY, TUPLET_MARKER, NONE
+  REST, CHORD, NOTE, EMPTY, TUPLET_MARKER, REPEAT_BEAT, NONE
 }
 
 enum class NoteHeadType {
@@ -553,7 +559,7 @@ enum class TimeSignatureType {
 }
 
 enum class MetaType {
-  TITLE, SUBTITLE, COMPOSER, LYRICIST;
+  TITLE, SUBTITLE, COMPOSER, LYRICIST, FOOTER_LEFT, FOOTER_RIGHT;
 
   fun toEventType(): EventType {
     return EventType.valueOf(toString())
@@ -564,6 +570,8 @@ enum class MetaType {
     SUBTITLE -> SUBTITLE_TEXT_SIZE
     COMPOSER -> COMPOSER_TEXT_SIZE
     LYRICIST -> COMPOSER_TEXT_SIZE
+    FOOTER_LEFT -> COMPOSER_TEXT_SIZE
+    FOOTER_RIGHT -> COMPOSER_TEXT_SIZE
   }
 
 }

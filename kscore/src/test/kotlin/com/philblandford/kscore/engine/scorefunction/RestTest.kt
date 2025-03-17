@@ -3,6 +3,7 @@ package com.philblandford.kscore.engine.scorefunction
 import assertEqual
 
 import com.philblandford.kscore.engine.dsl.rest
+import com.philblandford.kscore.engine.duration.Duration
 import com.philblandford.kscore.engine.duration.crotchet
 import com.philblandford.kscore.engine.duration.dZero
 import com.philblandford.kscore.engine.duration.minim
@@ -86,6 +87,12 @@ class RestTest : ScoreTest() {
     SVVM("E1", eav(1))
   }
 
-
-
+  @Test
+  fun testAddEmptyIrregularLengthIsNoop() {
+    SAE(EventType.DURATION,eav(1), paramMapOf(
+        EventParam.TYPE to DurationType.REST,
+        EventParam.DURATION to Duration(1,12)
+    ))
+    SVVM("", eav(1))
+  }
 }

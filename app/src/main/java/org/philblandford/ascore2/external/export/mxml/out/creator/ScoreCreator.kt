@@ -1,6 +1,5 @@
 package org.philblandford.ascore2.external.export.mxml.out.creator
 
-import com.philblandford.ascore.external.export.mxml.out.creator.createPart
 import com.philblandford.ascore.external.export.mxml.out.creator.createScorePart
 import com.philblandford.ascore.external.export.mxml.out.creator.repeatBarQuery
 import com.philblandford.kscore.engine.core.score.Score

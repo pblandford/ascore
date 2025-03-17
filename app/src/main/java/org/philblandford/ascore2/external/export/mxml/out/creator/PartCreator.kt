@@ -1,5 +1,6 @@
-package com.philblandford.ascore.external.export.mxml.out.creator
+package org.philblandford.ascore2.external.export.mxml.out.creator
 
+import com.philblandford.ascore.external.export.mxml.out.creator.RepeatBarQuery
 import org.philblandford.ascore2.external.export.mxml.out.MxmlPart
 import org.philblandford.ascore2.external.export.mxml.out.MxmlScorePart
 import com.philblandford.ascore.external.export.mxml.out.creator.measure.createMeasure

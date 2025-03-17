@@ -78,6 +78,11 @@ class MetaTest : RepTest() {
     assertEqual(subTitleWidth, getArea("Subtitle", eZero())?.area?.width)
   }
 
+  @Test
+  fun testSetFooterLeft() {
+    setMeta(MetaType.FOOTER_LEFT, "Wibble")
+    RVA("FooterLeft", eZero())
+  }
 
   private fun setMeta(metaType: MetaType, text: String) {
     SAE(

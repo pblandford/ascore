@@ -54,7 +54,7 @@ private fun TextInsertCompact(
   insertItem: InsertItem,
   iface: InsertInterface<InsertModel>
 ) {
-  Column(Modifier.verticalScroll(rememberScrollState()).padding(10.dp).imePadding()) {
+  Column(Modifier.padding(10.dp)) {
     Insert(insertItem, iface)
     Gap(0.5f)
     Row {

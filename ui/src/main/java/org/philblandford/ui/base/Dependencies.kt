@@ -90,7 +90,7 @@ import org.philblandford.ui.insert.items.barnumbering.viewmodel.BarNumberingView
 import org.philblandford.ui.insert.items.harmony.viewmodel.HarmonyInsertViewModel
 import org.philblandford.ui.insert.items.instrument.viewmodel.InstrumentInsertViewModel
 import org.philblandford.ui.insert.items.lyric.viewmodel.LyricInsertViewModel
-import org.philblandford.ui.insert.items.meta.viewmodel.MetaInsertViewModel
+import org.philblandford.ui.insert.items.meta.viewmodel.MetaInsertCommonViewModel
 import org.philblandford.ui.insert.items.ornament.viewmodel.OrnamentInsertViewModel
 import org.philblandford.ui.insert.items.pagemargins.viewmodel.PageMarginsViewModel
 import org.philblandford.ui.insert.items.pagesize.viewmodel.PageSizeViewModel
@@ -99,6 +99,9 @@ import org.philblandford.ui.insert.items.transposeby.viewmodel.TransposeViewMode
 import org.philblandford.ui.insert.items.tuplet.viewmodel.TupletInsertViewModel
 import org.philblandford.ui.insert.row.viewmodel.RowInsertViewModel
 import org.philblandford.ui.input.viewmodel.InputViewModel
+import org.philblandford.ui.insert.items.meta.viewmodel.FooterInsertViewModel
+import org.philblandford.ui.insert.items.meta.viewmodel.MetaInsertViewModel
+import org.philblandford.ui.insert.items.repeatbeat.viewmodel.RepeatBeatViewModel
 import org.philblandford.ui.insert.items.text.viewmodel.TextInsertViewModel
 import org.philblandford.ui.layout.viewmodel.LayoutOptionViewModel
 import org.philblandford.ui.load.viewmodels.LoadViewModel
@@ -290,9 +293,11 @@ object Dependencies {
     viewModel { DefaultInsertViewModel() }
     viewModel { BarNumberingViewModel(get(), get()) }
     viewModel { LyricInsertViewModel(get(), get(), get(), get()) }
+    viewModel { RepeatBeatViewModel() }
     viewModel { HarmonyInsertViewModel(get(), get(), get(), get(), get(), get()) }
     viewModel { InstrumentInsertViewModel(get()) }
     viewModel { MetaInsertViewModel(get(), get(), get(), get(), get(), get()) }
+    viewModel { FooterInsertViewModel(get(), get(), get(), get(), get(), get()) }
     viewModel { OrnamentInsertViewModel() }
     viewModel { PageMarginsViewModel(get(), get()) }
     viewModel { TextInsertViewModel(get(), get()) }
@@ -348,12 +353,11 @@ object Dependencies {
         get(),
         get(),
         get(),
-        get(),
         get()
       )
     }
     viewModel { ScreenZoomViewModel(get(), get(), get(), get(), get()) }
-    viewModel { MainPageViewModel(get(), get(), get(), get(), get(), get(), get()) }
+    viewModel { MainPageViewModel(get(), get(), get(), get(), get(), get(), get(), get()) }
     viewModel { ThemeViewModel(get()) }
   }
 

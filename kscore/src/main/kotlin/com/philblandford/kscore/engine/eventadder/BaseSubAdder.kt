@@ -345,8 +345,6 @@ interface NewEventAdderIf {
       } ?: this.ok()
     }
   }
-
-
 }
 
 object NewEventAdder : NewEventAdderIf

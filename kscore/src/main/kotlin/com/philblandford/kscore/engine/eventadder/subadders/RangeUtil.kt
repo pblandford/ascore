@@ -130,7 +130,6 @@ fun Stave.transformBars(
   return transformed.then { list ->
     val allBars = this.bars.take(startBar - 1).plus(list.map { it.second })
       .plus(this.bars.takeLast(numBars - endBar))
-    ksLoge("Create new stave vea $startBar $endBar $staveId")
     val res = Stave(allBars, eventMap)
     Right(res)
   }

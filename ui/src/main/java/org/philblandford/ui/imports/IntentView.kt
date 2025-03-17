@@ -53,7 +53,7 @@ import timber.log.Timber
 
 
 @Composable
-fun IntentView(intent: Intent, done: () -> Unit) {
+fun IntentView(intent: Intent?, done: () -> Unit) {
 
   Box(
     Modifier
@@ -65,7 +65,7 @@ fun IntentView(intent: Intent, done: () -> Unit) {
 
       val exception: MutableState<Exception?> = remember { mutableStateOf(null) }
       val coroutineScope = rememberCoroutineScope()
-      val intentData by rememberSaveable { mutableStateOf(intent.data) }
+      val intentData by rememberSaveable { mutableStateOf(intent?.data) }
       var completedFileName by remember { mutableStateOf<String?>(null) }
 
       LaunchedEffect(Unit) {

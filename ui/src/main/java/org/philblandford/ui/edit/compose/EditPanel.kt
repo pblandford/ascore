@@ -51,6 +51,8 @@ fun EditPanel(modifier: Modifier, type: EventType, scale: Float) {
         EventType.EXPRESSION_TEXT -> TextEdit(scale)
         EventType.FERMATA -> FermataEdit(scale)
         EventType.FINGERING -> FingeringEdit(scale)
+        EventType.FOOTER_LEFT -> TextEdit(scale)
+        EventType.FOOTER_RIGHT -> TextEdit(scale)
         EventType.GLISSANDO -> GlissandoEdit(scale)
         EventType.HARMONY -> HarmonyEdit(scale)
         EventType.KEY_SIGNATURE -> KeySignatureEdit()

@@ -243,6 +243,8 @@ val metaIds = listOf(
   R.string.subtitle to MetaType.SUBTITLE,
   R.string.composer to MetaType.COMPOSER,
   R.string.lyricist to MetaType.LYRICIST,
+  R.string.left to MetaType.FOOTER_LEFT,
+  R.string.right to MetaType.FOOTER_RIGHT,
 )
 
 fun MetaType.resourceId():Int {

@@ -22,7 +22,6 @@ class HandleLongPressImpl(
           Timber.e("TS got event $address $event")
           kScore.setStartSelectionOrEvent(location)
           kScore.getSelectedArea()?.let { area ->
-            Timber.e("TS got selected $area")
             uiStateRepository.setUiState(
               UIState.Edit(
                 EditItem(

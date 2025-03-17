@@ -22,8 +22,9 @@ fun DrawableFactory.fingeringArea(fingering: ChordDecoration<Int>): Area? {
     addressRequirement = AddressRequirement.EVENT
   )
 
-  fingering.items.sorted().forEach { num ->
-    val gap = if (num == fingering.items.first()) 0 else ARTICULATION_GAP
+  val sorted = fingering.items.sorted()
+  sorted.forEach { num ->
+    val gap = if (num == sorted.first()) 0 else ARTICULATION_GAP
     numberArea(num, FINGERING_HEIGHT)?.let {
       area = area.addBelow(it, gap, x = FINGERING_OFFSET)
     }

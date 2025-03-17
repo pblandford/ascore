@@ -15,6 +15,7 @@ import org.philblandford.ascore2.features.crosscutting.model.ErrorDescr
 import org.philblandford.ascore2.features.crosscutting.usecases.GetError
 import org.philblandford.ascore2.features.error.GetErrorFlow
 import org.philblandford.ascore2.features.instruments.GetInstruments
+import org.philblandford.ascore2.features.score.CheckForScore
 import org.philblandford.ascore2.features.scorelayout.usecases.GetScoreLayout
 import org.philblandford.ascore2.features.ui.model.UIState
 import org.philblandford.ascore2.features.ui.usecases.GetHelpKey
@@ -30,6 +31,7 @@ import timber.log.Timber
 interface MainPageInterface : VMInterface {
   fun dismissHelp()
   fun toggleVertical()
+  fun haveScore(): Boolean
 }
 
 data class MainPageModel(
@@ -54,7 +56,8 @@ class MainPageViewModel(
   private val getHelpKey: GetHelpKey,
   private val setHelpKey: SetHelpKey,
   private val getInstruments: GetInstruments,
-  private val getScoreLayout: GetScoreLayout
+  private val getScoreLayout: GetScoreLayout,
+  private val checkForScore: CheckForScore
 ) :
   BaseViewModel<MainPageModel, MainPageInterface, MainPageSideEffect>(), MainPageInterface {
 
@@ -93,7 +96,6 @@ class MainPageViewModel(
     viewModelScope.launch {
       scoreUpdate().map { getInstruments().size }.distinctUntilChanged()
         .collectLatest { numInstruments ->
-          Timber.e("HEY! $numInstruments ${numInstruments > 1}")
           update {
             copy(
               canShowTabs = numInstruments > 1,
@@ -120,4 +122,8 @@ class MainPageViewModel(
   override fun toggleVertical() {
     update { copy(vertical = !vertical) }
   }
+
+    override fun haveScore(): Boolean {
+        return checkForScore()
+    }
 }

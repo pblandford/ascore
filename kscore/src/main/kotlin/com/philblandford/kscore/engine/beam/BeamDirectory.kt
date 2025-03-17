@@ -80,7 +80,6 @@ class BeamDirectory(val allBeams: BeamMap, val user: BeamMap = mapOf()) {
   ): ScoreResult {
 
     val removed = score.transformVoiceMaps(startBar, endBar, staveIds) { vea ->
-      ksLoge("vea $vea")
       val events = getEvents(EventType.DURATION) ?: eventHashOf()
       val newEvents =
         events.map {

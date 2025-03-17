@@ -2,15 +2,9 @@ package org.philblandford.ui.main.panel.compose
 
 import TransposeBy
 import androidx.compose.animation.*
-import androidx.compose.animation.core.tween
-import androidx.compose.foundation.layout.heightIn
-import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.runtime.*
-import androidx.compose.ui.Modifier
-import androidx.compose.ui.unit.dp
 import org.philblandford.ascore2.features.ui.model.LayoutID
 import org.philblandford.ui.base.compose.VMView
-import org.philblandford.ui.createfromtemplate.compose.CreateFromTemplate
 import org.philblandford.ui.input.compose.percussion.PercussionInputPanel
 import org.philblandford.ui.insert.choose.compose.InsertChoosePanel
 import org.philblandford.ui.insert.items.articulation.compose.ArticulationInsert
@@ -28,6 +22,7 @@ import org.philblandford.ui.insert.items.harmony.compose.HarmonyInsert
 import org.philblandford.ui.insert.items.instrument.compose.InstrumentInsert
 import org.philblandford.ui.insert.items.keysignature.compose.KeySignatureInsert
 import org.philblandford.ui.insert.items.lyric.compose.LyricInsert
+import org.philblandford.ui.insert.items.meta.compose.FooterInsert
 import org.philblandford.ui.insert.items.meta.compose.MetaInsert
 import org.philblandford.ui.insert.items.navigation.compose.NavigationInsert
 import org.philblandford.ui.insert.items.octave.compose.OctaveInsert
@@ -38,6 +33,7 @@ import org.philblandford.ui.insert.items.pagesize.compose.PageSize
 import org.philblandford.ui.insert.items.pause.compose.PauseInsert
 import org.philblandford.ui.insert.items.pedal.compose.PedalInsert
 import org.philblandford.ui.insert.items.repeatbar.compose.RepeatBarInsert
+import org.philblandford.ui.insert.items.repeatbeat.compose.RepeatBeatInsert
 import org.philblandford.ui.insert.items.scorebreak.compose.ScoreBreak
 import org.philblandford.ui.insert.items.segmentwidth.compose.SegmentWidth
 import org.philblandford.ui.insert.items.slur.compose.SlurInsert
@@ -92,6 +88,7 @@ private fun PanelInternal(model: PanelModel) {
                 LayoutID.CLEF -> ClefInsert()
                 LayoutID.DYNAMIC -> DynamicInsert()
                 LayoutID.FINGERING -> FingeringInsert()
+                LayoutID.FOOTER -> FooterInsert()
                 LayoutID.GLISSANDO -> GlissandoInsert()
                 LayoutID.GROUP_STAVES -> GroupStavesInsert()
                 LayoutID.HARMONY -> HarmonyInsert()
@@ -110,6 +107,7 @@ private fun PanelInternal(model: PanelModel) {
                 LayoutID.PEDAL -> PedalInsert()
                 LayoutID.PERCUSSION -> PercussionInputPanel()
                 LayoutID.REPEAT_BAR -> RepeatBarInsert()
+                LayoutID.REPEAT_BEAT -> RepeatBeatInsert()
                 LayoutID.SCORE_BREAK -> ScoreBreak()
                 LayoutID.SEGMENT_WIDTH -> SegmentWidth()
                 LayoutID.SLUR -> SlurInsert()

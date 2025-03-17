@@ -15,8 +15,8 @@ android {
         applicationId = "com.philblandford.ascore"
         minSdk = rootProject.extra["minSdkVersion"] as Int
         targetSdk = rootProject.extra["targetSdkVersion"] as Int
-        versionCode = 141
-        versionName = "1.1.3c Platinum"
+        versionCode = 145
+        versionName = "1.1.5d Platinum"
 
         vectorDrawables {
             useSupportLibrary = true
@@ -36,7 +36,18 @@ android {
 
     buildTypes {
         debug {  }
-        release {  }
+        release {
+            signingConfig = signingConfigs.getByName("debug")
+        }
+    }
+
+    signingConfigs {
+        create("release") {
+            keyAlias = "key0"
+            keyPassword = "akkadian"
+            storeFile = file("./keystore2.jks")
+            storePassword = "akkadian"
+        }
     }
 
 //    packagingOptions {
@@ -87,8 +98,6 @@ dependencies {
 
     testImplementation(libs.junit)
     testImplementation(project(":kscore"))
-
-
 
     implementation(platform(libs.firebase.bom))
     implementation(libs.firebase.crashlytics)

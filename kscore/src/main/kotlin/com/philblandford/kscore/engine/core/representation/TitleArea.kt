@@ -16,6 +16,7 @@ private fun yPosition(metaType: MetaType): Int = when (metaType) {
   MetaType.COMPOSER -> BLOCK_HEIGHT * 14
   MetaType.SUBTITLE -> BLOCK_HEIGHT * 16
   MetaType.LYRICIST -> BLOCK_HEIGHT * 20
+  else -> 0
 }
 
 fun DrawableFactory.titleArea(

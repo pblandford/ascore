@@ -2,6 +2,7 @@ package org.philblandford.ui.edit.viewmodel
 
 import androidx.lifecycle.viewModelScope
 import com.philblandford.kscore.engine.core.area.Coord
+import com.philblandford.kscore.engine.types.Event
 import com.philblandford.kscore.engine.types.EventParam
 import com.philblandford.kscore.engine.types.ParamMap
 import com.philblandford.kscore.engine.types.paramMapOf
@@ -25,6 +26,7 @@ interface EditInterface : VMInterface {
   fun setTypeParam(param:EventParam)
   fun <T> updateParam(eventParam: EventParam, value: T)
   fun updateParams(params:ParamMap)
+  fun updateEvent(event:Event)
   fun move(x: Int, y: Int, param: EventParam = EventParam.HARD_START)
   fun delete()
   fun clear()
@@ -72,6 +74,13 @@ open class EditViewModel(
         updateEvent(it.editItem.event.eventType, param.first, param.second, it.editItem.address)
         it.ok()
       } ?: it.ok()
+    }
+  }
+
+  override fun updateEvent(event: Event) {
+    receiveAction {
+      insertEvent(event.eventType, it.editItem.address, event.params)
+      it.ok()
     }
   }
 

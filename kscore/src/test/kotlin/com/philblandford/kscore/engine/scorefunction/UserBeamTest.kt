@@ -15,6 +15,7 @@ import com.philblandford.kscore.engine.types.BeamType
 import com.philblandford.kscore.engine.types.DurationType
 import com.philblandford.kscore.engine.types.EventParam
 import com.philblandford.kscore.engine.types.EventType
+import com.philblandford.kscore.engine.types.ea
 import com.philblandford.kscore.engine.types.eagv
 import com.philblandford.kscore.engine.types.eav
 import com.philblandford.kscore.engine.types.paramMapOf
@@ -495,6 +496,20 @@ class UserBeamTest : ScoreTest() {
     }
     SAE(EventType.BEAM, eav(1), paramMapOf(EventParam.TYPE to BeamType.JOIN), eav(1, minim(1)))
     assertEqual(0, EG().getBeams().size)
+  }
+
+  @Test
+  fun testAddUserBeamChangeTimeSignature() {
+    SAE(TimeSignature(9, 8).toEvent(), ea(1))
+
+    repeat(5) { n ->
+      SMV(duration = quaver(), eventAddress = eav(1, quaver().multiply(n)))
+    }
+    SAE(EventType.BEAM, eav(1), paramMapOf(EventParam.END to eav(1, quaver())))
+    SAE(EventType.BEAM, eav(1, crotchet()), paramMapOf(EventParam.END to eav(1, crotchet(1))))
+    SAE(EventType.BEAM, eav(1, minim()), paramMapOf(EventParam.END to eav(1, minim() + quaver())))
+    SAE(TimeSignature(4, 8).toEvent(), ea(1))
+    SVP(EventType.BEAM, EventParam.DURATION, crotchet(), eav(1))
   }
 
   private fun verifyBeam(beam: Beam, members: Int, duration: Duration) {

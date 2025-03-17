@@ -1,36 +1,28 @@
 package org.philblandford.ui.edit.items.text.compose
 
-import android.view.WindowManager
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.widthIn
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.DisposableEffect
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import com.philblandford.kscore.engine.types.EventParam
-import com.philblandford.kscore.log.ksLogt
-import org.philblandford.ui.LocalActivity
 import org.philblandford.ui.base.compose.VMView
 import org.philblandford.ui.edit.compose.EditFrame
 import org.philblandford.ui.edit.items.text.viewmodel.TextEditInterface
 import org.philblandford.ui.edit.items.text.viewmodel.TextEditViewModel
 import org.philblandford.ui.edit.model.EditModel
-import org.philblandford.ui.edit.viewmodel.EditInterface
-import org.philblandford.ui.util.*
-import timber.log.Timber
+import org.philblandford.ui.util.NumberSelector
+import org.philblandford.ui.util.TextSpinner
+import org.philblandford.ui.util.nullIfEmpty
 
 @Composable
 fun TextEdit(scale: Float) {
@@ -41,7 +33,6 @@ fun TextEdit(scale: Float) {
   }
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun TextEditInternal(model: EditModel, iface: TextEditInterface) {
 
@@ -91,7 +82,7 @@ private fun TextEditInternal(model: EditModel, iface: TextEditInterface) {
 }
 
 @Composable
-private fun Item(content: @Composable() () -> Unit) {
+private fun Item(content: @Composable () -> Unit) {
   Box(Modifier.padding(10.dp)) {
     content()
   }

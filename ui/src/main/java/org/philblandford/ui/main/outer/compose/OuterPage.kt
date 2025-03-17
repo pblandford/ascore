@@ -24,7 +24,6 @@ import org.philblandford.ui.main.popup.compose.SettingsDialog
 import timber.log.Timber
 
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun OuterPage(modifier: Modifier) {
 
@@ -44,7 +43,7 @@ fun OuterPage(modifier: Modifier) {
           }
         }) { scope.launch { drawerState.close() } }
     }) {
-    MainPageView( { scope.launch { drawerState.open() } }, { popupLayout.value = it }, {
+    MainPageView({ scope.launch { drawerState.open() } }, { popupLayout.value = it }, {
       showMixer.value = !showMixer.value
     }, {})
     popupLayout.value?.let { popup ->

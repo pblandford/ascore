@@ -234,7 +234,7 @@ data class SystemYGeography(
 ) : Geography() {
   private val positionsAsList = partPositions.toList()
   val yMargin = positionsAsList.first().second?.partGeography?.yMargin ?: 0
-  val height = positionsAsList.last().let { it.second.pos + it.second.partGeography.height }
+  val height = positionsAsList.sumOf { it.second?.partGeography?.height ?: 0 }
 }
 
 data class SystemPosition(val pos: Int, val systemYGeography: SystemYGeography)

@@ -59,7 +59,7 @@ class InsertChooseViewModel(private val selectInsertItem: SelectInsertItem) :
   override fun setGroupSize(groupSize: GroupSize) {
     grouped = groupItems(groupSize)
     val rows = if (groupSize == GroupSize.EXPANDED) 1 else 2
-    update { copy(items = grouped[0], showNext = grouped.size > 1, rows = rows) }
+    update { copy(items = grouped[page], showNext = grouped.size > 1, rows = rows) }
   }
 
   private fun groupItems(groupSize: GroupSize): List<List<InsertItem>> {

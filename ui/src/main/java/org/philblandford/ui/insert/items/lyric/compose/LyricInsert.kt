@@ -39,10 +39,7 @@ fun LyricInsertInternal(
 ) {
   var text by remember { mutableStateOf(insertItem.getParam(EventParam.TEXT) ?: "") }
   val updateCount = remember { mutableStateOf(0) }
-
-  Timber.e("text $text ")
-  Timber.e("LYR recompose ${insertItem.params}")
-
+  
   val coroutineScope = rememberCoroutineScope()
   LaunchedEffect(Unit) {
     coroutineScope.launch {

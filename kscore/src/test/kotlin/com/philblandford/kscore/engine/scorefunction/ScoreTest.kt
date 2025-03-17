@@ -15,6 +15,9 @@ import com.philblandford.kscore.implementations.BaseInstrumentGetter
 import com.philblandford.kscore.saveload.readdMeta
 import com.philblandford.kscore.option.getOption
 import com.philblandford.kscore.engine.core.representation.RepTest
+import com.philblandford.kscore.log.KSLogger
+import com.philblandford.kscore.log.LogLevel
+import com.philblandford.kscore.log.registerLogger
 import org.junit.Before
 
 open class ScoreTest {
@@ -30,6 +33,15 @@ open class ScoreTest {
 
     @Before
     open fun setup() {
+        registerLogger(object : KSLogger {
+            override fun log(logLevel: LogLevel, msg: String, exception: Throwable?) {
+                println(msg)
+                exception?.let {
+                    println(it)
+                    it.printStackTrace()
+                }
+            }
+        })
         sc.setNewScoreNoRepresentation(Score.create(instrumentGetter, 32))
     }
 

@@ -21,6 +21,8 @@ fun StandardAlert(text:String, dismiss:()->Unit) {
       }
     },
     shape = RoundedCornerShape(10),
+    containerColor = MaterialTheme.colorScheme.surface,
+    textContentColor = MaterialTheme.colorScheme.onSurface,
     modifier = Modifier.
     clip(RoundedCornerShape(10)).
     background(MaterialTheme.colorScheme.surface),

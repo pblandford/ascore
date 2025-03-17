@@ -35,6 +35,8 @@ enum class TextType {
         EventType.SUBTITLE -> SUBTITLE
         EventType.COMPOSER -> COMPOSER
         EventType.LYRICIST -> LYRICIST
+        EventType.FOOTER_LEFT -> COMPOSER
+        EventType.FOOTER_RIGHT -> COMPOSER
         EventType.LYRIC -> LYRIC
         EventType.HARMONY -> HARMONY
         else -> SYSTEM

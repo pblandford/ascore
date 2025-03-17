@@ -31,6 +31,7 @@ internal fun ScreenViewHorizontal(
   scale: MutableState<Float>,
   defaultScale: Float,
   viewPortWidth: Dp,
+  viewPortHeight: Dp,
   page:MutableState<Int>,
   onScoreEmpty: () -> Unit,
   changeMethod: () -> Unit
@@ -87,7 +88,7 @@ internal fun ScreenViewHorizontal(
             {
               scale.value
             },
-            defaultScale, 1.5f, width, height, viewPortWidth,
+            defaultScale, 1.5f, width, height, viewPortWidth, viewPortHeight,
             { scale.value = it },
             { offset -> iface.handleTap(page.value, offset.x.toInt(), offset.y.toInt()) },
             { offset -> iface.handleLongPress(page.value, offset.x.toInt(), offset.y.toInt()) },

@@ -19,107 +19,114 @@ import timber.log.Timber
 
 @Composable
 internal fun ScreenViewVertical(
-  model: ScreenModel,
-  iface: ScreenInterface,
-  effects: Flow<ScreenEffect>,
-  scale: MutableState<Float>,
-  defaultScale: Float,
-  viewPortWidth: Dp,
-  currentPage:MutableState<Int>,
-  onScoreEmpty: () -> Unit,
-  changeMethod:()->Unit
+    model: ScreenModel,
+    iface: ScreenInterface,
+    effects: Flow<ScreenEffect>,
+    scale: MutableState<Float>,
+    defaultScale: Float,
+    viewPortWidth: Dp,
+    viewPortHeight: Dp,
+    currentPage: MutableState<Int>,
+    onScoreEmpty: () -> Unit,
+    changeMethod: () -> Unit
 ) {
-  BoxWithConstraints(Modifier.fillMaxSize()) {
-    val pageRatio = model.scoreLayout.height.toFloat() / model.scoreLayout.width
+    BoxWithConstraints(Modifier.fillMaxSize()) {
+        val pageRatio = model.scoreLayout.height.toFloat() / model.scoreLayout.width
 
-    val lazyListState = rememberLazyListState()
-    val coroutineScope = rememberCoroutineScope()
-    val scrollX = rememberScrollState()
-    val initPage = remember{ mutableStateOf(currentPage.value) }
+        val lazyListState = rememberLazyListState()
+        val coroutineScope = rememberCoroutineScope()
+        val scrollX = rememberScrollState()
+        val initPage = remember { mutableStateOf(currentPage.value) }
 
-    LaunchedEffect(initPage.value) {
-      lazyListState.scrollToItem(initPage.value - 1)
-    }
-
-    val latestIndex = remember {
-      derivedStateOf { lazyListState.firstVisibleItemIndex }
-    }
-    currentPage.value = latestIndex.value + 1
-
-    LaunchedEffect(Unit) {
-      coroutineScope.launch {
-        effects.collectLatest { effect ->
-          when (effect) {
-            is ScreenEffect.ScrollToPage -> lazyListState.scrollToItem(effect.page - 1)
-            ScreenEffect.NoScore -> {
-              Timber.e("NS effect received")
-              onScoreEmpty()
-            }
-
-            else -> {}
-          }
+        LaunchedEffect(initPage.value) {
+            lazyListState.scrollToItem(initPage.value - 1)
         }
-      }
-    }
 
-    LaunchedEffect(Unit) {
-      coroutineScope.launch {
-        effects.collectLatest { effect ->
-          when (effect) {
-            is ScreenEffect.ScrollToPage -> lazyListState.scrollToItem(effect.page - 1)
-            ScreenEffect.NoScore -> {
-              Timber.e("NS effect received")
-              onScoreEmpty()
-            }
-
-            else -> {}
-          }
+        val latestIndex = remember {
+            derivedStateOf { lazyListState.firstVisibleItemIndex }
         }
-      }
-    }
+        currentPage.value = latestIndex.value + 1
 
-    key(defaultScale) {
-      LazyColumn(Modifier.background(veryLightGray), state = lazyListState) {
+        LaunchedEffect(Unit) {
+            coroutineScope.launch {
+                effects.collectLatest { effect ->
+                    when (effect) {
+                        is ScreenEffect.ScrollToPage -> lazyListState.scrollToItem(effect.page - 1)
+                        ScreenEffect.NoScore -> {
+                            Timber.e("NS effect received")
+                            onScoreEmpty()
+                        }
 
-        items(model.scoreLayout.numPages + 1) { idx ->
-
-          val width = maxWidth * (scale.value / defaultScale)
-          val height = width * pageRatio
-          val page = idx + 1
-
-          if (idx < model.scoreLayout.numPages) {
-            ScreenPage(
-              page, model.updateCounter, model.editItem, iface,
-              {
-                scale.value
-              },
-              defaultScale, 1.5f, width, height, viewPortWidth,
-              { scale.value = it },
-              { offset -> iface.handleTap(page, offset.x.toInt(), offset.y.toInt()) },
-              { offset -> iface.handleLongPress(page, offset.x.toInt(), offset.y.toInt()) },
-              {
-                scale.value = defaultScale;
-                coroutineScope.launch { lazyListState.scrollToItem(idx) }
-              },
-              { offset -> iface.handleDrag(offset.x, offset.y) },
-              iface::handleLongPressRelease,
-              onVerticalScroll = {
-                coroutineScope.launch {
-                  lazyListState.scrollBy(it)
+                        else -> {}
+                    }
                 }
-              },
-              lazyListState = lazyListState,
-              changeMethod = changeMethod,
-              scrollX = scrollX
-            )
-          } else {
-            Box(Modifier.size(width, height))
-          }
+            }
         }
-      }
 
+        LaunchedEffect(Unit) {
+            coroutineScope.launch {
+                effects.collectLatest { effect ->
+                    when (effect) {
+                        is ScreenEffect.ScrollToPage -> lazyListState.scrollToItem(effect.page - 1)
+                        ScreenEffect.NoScore -> {
+                            Timber.e("NS effect received")
+                            onScoreEmpty()
+                        }
+
+                        else -> {}
+                    }
+                }
+            }
+        }
+
+        key(defaultScale) {
+            LazyColumn(Modifier.background(veryLightGray), state = lazyListState) {
+
+                items(model.scoreLayout.numPages + 1) { idx ->
+
+                    val width = maxWidth * (scale.value / defaultScale)
+                    val height = width * pageRatio
+                    val page = idx + 1
+
+                    if (idx < model.scoreLayout.numPages) {
+                        ScreenPage(
+                            page, model.updateCounter, model.editItem, iface,
+                            {
+                                scale.value
+                            },
+                            defaultScale, 1.5f, width, height, viewPortWidth, viewPortHeight,
+                            { scale.value = it },
+                            { offset -> iface.handleTap(page, offset.x.toInt(), offset.y.toInt()) },
+                            { offset ->
+                                iface.handleLongPress(
+                                    page,
+                                    offset.x.toInt(),
+                                    offset.y.toInt()
+                                )
+                            },
+                            {
+                                scale.value = defaultScale;
+                                coroutineScope.launch { lazyListState.scrollToItem(idx) }
+                            },
+                            { offset -> iface.handleDrag(offset.x, offset.y) },
+                            iface::handleLongPressRelease,
+                            onVerticalScroll = {
+                                coroutineScope.launch {
+                                    lazyListState.scrollBy(it)
+                                }
+                            },
+                            lazyListState = lazyListState,
+                            changeMethod = changeMethod,
+                            scrollX = scrollX
+                        )
+                    } else {
+                        Box(Modifier.size(width, height))
+                    }
+                }
+            }
+
+        }
     }
-  }
 }
 
 

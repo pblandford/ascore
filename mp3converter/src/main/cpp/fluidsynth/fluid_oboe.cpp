@@ -58,7 +58,7 @@ typedef struct
 } fluid_oboe_audio_driver_t;
 
 void signalHandler( int signum ) {
-    FLUID_LOG(FLUID_ERR, "Caught signal %d", signum);
+   // FLUID_LOG(FLUID_ERR, "Caught signal %d", signum);
 }
 
 class OboeAudioStreamCallback : public AudioStreamCallback
@@ -132,11 +132,10 @@ new_fluid_oboe_audio_driver(fluid_settings_t *settings, fluid_synth_t *synth)
     int sharing_mode; // 0: Shared, 1: Exclusive
     int performance_mode; // 0: None, 1: PowerSaving, 2: LowLatency
 
-    //signal(SIGSEGV, signalHandler);
+    signal(SIGSEGV, signalHandler);
 
     try
     {
-
         dev = FLUID_NEW(fluid_oboe_audio_driver_t);
 
         if(dev == NULL)

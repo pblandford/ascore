@@ -2,6 +2,7 @@ package org.philblandford.ui.stubs
 
 import com.philblandford.kscore.api.Instrument
 import com.philblandford.kscore.api.InstrumentGroup
+import com.philblandford.kscore.engine.types.Event
 import com.philblandford.kscore.engine.types.EventParam
 import com.philblandford.kscore.engine.types.ParamMap
 import kotlinx.coroutines.flow.Flow
@@ -39,6 +40,10 @@ class StubInstrumentEditInterface : InstrumentEditInterface {
   }
 
   override fun move(x: Int, y: Int, param: EventParam) {
+    TODO("Not yet implemented")
+  }
+
+  override fun updateEvent(event: Event) {
     TODO("Not yet implemented")
   }
 

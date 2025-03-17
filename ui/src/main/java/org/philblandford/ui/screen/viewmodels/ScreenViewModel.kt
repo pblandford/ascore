@@ -13,7 +13,6 @@ import org.philblandford.ascore2.features.gesture.HandleLongPress
 import org.philblandford.ascore2.features.gesture.HandleLongPressRelease
 import org.philblandford.ascore2.features.gesture.HandleTap
 import org.philblandford.ascore2.features.instruments.GetSelectedPart
-import org.philblandford.ascore2.features.score.CheckForScore
 import org.philblandford.ascore2.features.score.ScoreLoadUpdate
 import org.philblandford.ascore2.features.scorelayout.usecases.GetScoreLayout
 import org.philblandford.ascore2.features.scorelayout.usecases.ScoreLayout
@@ -47,11 +46,10 @@ interface ScreenInterface : VMInterface {
 }
 
 sealed class ScreenEffect : VMSideEffect() {
-  object Redraw : ScreenEffect()
+  data object Redraw : ScreenEffect()
   data class ScrollToPage(val page:Int) : ScreenEffect()
-  object NoScore : ScreenEffect()
+  data object NoScore : ScreenEffect()
 }
-
 
 class ScreenViewModel(
   private val getScoreLayout: GetScoreLayout,
@@ -64,8 +62,7 @@ class ScreenViewModel(
   private val handleLongPressUC: HandleLongPress,
   private val handleLongPressReleaseUC: HandleLongPressRelease,
   private val handleDragUC: HandleDrag,
-  getUIState: GetUIState,
-  private val checkForScore: CheckForScore
+  getUIState: GetUIState
 ) : BaseViewModel<ScreenModel, ScreenInterface, ScreenEffect>(),
   ScreenInterface {
 
@@ -92,10 +89,8 @@ class ScreenViewModel(
     }
     viewModelScope.launch {
       scoreChanged().map {
-        Timber.e("changed ${getSelectedPart().value}")
         getSelectedPart().value
       }.distinctUntilChanged().collectLatest {
-        Timber.e("part changed")
         launchEffect(ScreenEffect.ScrollToPage(1))
       }
     }
@@ -105,7 +100,7 @@ class ScreenViewModel(
       }
     }
     viewModelScope.launch {
-      getPlaybackMarker().collectLatest { marker ->
+      getPlaybackMarker().collectLatest {
         update { copy(updateCounter = updateCounter + 1) }
       }
     }
@@ -128,8 +123,8 @@ class ScreenViewModel(
 
   override fun getInterface() = this
 
-  override fun drawPage(num: Int, drawScope: DrawScope) {
-    drawPageUC(num, getPlaybackMarker().value?.eventAddress, drawScope)
+  override fun drawPage(page: Int, drawScope: DrawScope) {
+    drawPageUC(page, getPlaybackMarker().value?.eventAddress, drawScope)
   }
 
   override fun handleTap(page: Int, x: Int, y: Int) {

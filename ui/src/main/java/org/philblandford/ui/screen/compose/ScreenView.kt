@@ -58,6 +58,7 @@ private fun ScreenViewInternal(
         scale,
         defaultScale,
         maxWidth,
+        maxHeight,
         currentPage,
         onScoreEmpty,
         changeMethod
@@ -71,6 +72,7 @@ private fun ScreenViewInternal(
         scale,
         defaultScale,
         maxWidth,
+        maxHeight,
         currentPage,
         onScoreEmpty,
         changeMethod

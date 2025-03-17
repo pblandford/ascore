@@ -22,5 +22,7 @@ fun TimeSignatureEdit() {
 @Composable
 private fun TimeSignatureEditInternal(model: EditModel, iface: EditInterface) {
     val ts = TimeSignature.fromParams(model.editItem.event.params)
-    TimeSignatureSelector(ts, { iface.updateParams(it.toEvent().params) })
+    TimeSignatureSelector(ts, {
+        iface.updateEvent(it.toEvent())
+    })
 }

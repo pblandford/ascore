@@ -202,6 +202,7 @@ fun Event.getLetter(): String {
     DurationType.REST -> "R"
     DurationType.EMPTY -> "E"
     DurationType.TUPLET_MARKER -> "T"
+    DurationType.REPEAT_BEAT -> "B"
     else -> ""
   }
 }
