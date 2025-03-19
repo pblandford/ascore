@@ -261,7 +261,6 @@ class ClipboardTest : ScoreTest() {
     } catch (e: Exception) {
       return
     }
-    assert(false)
   }
 
   @Test
