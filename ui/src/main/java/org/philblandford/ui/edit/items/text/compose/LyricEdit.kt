@@ -18,6 +18,7 @@ import androidx.compose.ui.unit.dp
 import com.philblandford.kscore.engine.types.EventParam
 import org.philblandford.ui.base.compose.VMView
 import org.philblandford.ui.edit.compose.EditFrame
+import org.philblandford.ui.edit.entities.ButtonActions
 import org.philblandford.ui.edit.items.text.viewmodel.LyricEditInterface
 import org.philblandford.ui.edit.items.text.viewmodel.LyricEditViewModel
 import org.philblandford.ui.edit.model.EditModel
@@ -29,7 +30,7 @@ import timber.log.Timber
 fun LyricEdit(scale: Float) {
     Timber.e("RECO TextEdit $scale")
     VMView(LyricEditViewModel::class.java) { model, iface, _ ->
-        EditFrame(iface, scale = scale) {
+        EditFrame(iface, scale = scale, actions = listOf(ButtonActions.DELETE)) {
             LyricEditInternal(model, iface as LyricEditInterface)
         }
     }
