@@ -189,7 +189,7 @@ internal val insertItems = listOf(
         rangeCapable = true
     ),
     InsertItem(
-        R.drawable.one,
+        R.drawable.repeat_beat,
         R.string.repeat_beat,
         "insert_repeat_beat",
         LayoutID.REPEAT_BEAT,

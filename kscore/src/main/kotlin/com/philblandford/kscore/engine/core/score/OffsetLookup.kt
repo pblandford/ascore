@@ -15,7 +15,7 @@ class OffsetLookupImpl(
 ) : OffsetLookup {
 
   private val lastBar = addressMap.lastEntry().key
-  private val lastTs = tsMap.toList().sortedBy { it.first }.last().second
+  private val lastTs = tsMap.toList().maxByOrNull { it.first }!!.second
 
   private var addCache = mutableMapOf<Pair<EventAddress, Duration>, EventAddress>()
   private var subtractCache = mutableMapOf<Pair<EventAddress, Duration>, EventAddress>()

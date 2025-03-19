@@ -397,6 +397,7 @@ enum class EventType {
   NO_TYPE,
   FOOTER_LEFT,
   FOOTER_RIGHT,
+  FOOTER_CENTER,
 
   TEST_SCORE_EVENT,
   TEST_PART_EVENT,
@@ -559,7 +560,7 @@ enum class TimeSignatureType {
 }
 
 enum class MetaType {
-  TITLE, SUBTITLE, COMPOSER, LYRICIST, FOOTER_LEFT, FOOTER_RIGHT;
+  TITLE, SUBTITLE, COMPOSER, LYRICIST, FOOTER_LEFT, FOOTER_RIGHT, FOOTER_CENTER;
 
   fun toEventType(): EventType {
     return EventType.valueOf(toString())
@@ -572,6 +573,7 @@ enum class MetaType {
     LYRICIST -> COMPOSER_TEXT_SIZE
     FOOTER_LEFT -> COMPOSER_TEXT_SIZE
     FOOTER_RIGHT -> COMPOSER_TEXT_SIZE
+    FOOTER_CENTER -> COMPOSER_TEXT_SIZE
   }
 
 }

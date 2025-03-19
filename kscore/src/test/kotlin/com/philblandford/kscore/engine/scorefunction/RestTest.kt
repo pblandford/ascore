@@ -73,7 +73,6 @@ class RestTest : ScoreTest() {
     SVP(EventType.DURATION, EventParam.TYPE, DurationType.EMPTY, eav(1, dZero(), 2))
   }
 
-
   @Test
   fun testReplaceRestWithEmpty() {
     SAE(rest(crotchet()), eav(1))

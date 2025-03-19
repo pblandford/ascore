@@ -12,6 +12,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.philblandford.kscore.engine.types.EventType
 import org.philblandford.ui.edit.entities.ButtonActions
+import org.philblandford.ui.edit.items.articulation.compose.ArticulationEdit
+import org.philblandford.ui.edit.items.bowing.compose.BowingEdit
 import org.philblandford.ui.edit.items.clef.compose.ClefEdit
 import org.philblandford.ui.edit.items.dynamics.compose.DynamicsEdit
 import org.philblandford.ui.edit.items.fermata.compose.FermataEdit
@@ -40,8 +42,8 @@ fun EditPanel(modifier: Modifier, type: EventType, scale: Float) {
       CompositionLocalProvider(LocalContentColor provides MaterialTheme.colorScheme.onSurface) {
 
       when (type) {
-        EventType.ARTICULATION -> DeleteOnlyEdit()
-        EventType.BOWING -> DeleteOnlyEdit()
+        EventType.ARTICULATION -> ArticulationEdit()
+        EventType.BOWING -> BowingEdit()
         EventType.BREAK -> DeleteOnlyEdit()
         EventType.CLEF -> ClefEdit()
         EventType.COMPOSER -> TextEdit(scale)

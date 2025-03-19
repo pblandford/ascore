@@ -66,7 +66,7 @@ class SettingsRepository(private val settingsDataSource: SettingsDataSource) {
 
   fun getFonts(): Map<TextType, String> {
     return settingsDataSource.getObject(fontKey, FontStore::class.java)?.map
-      ?: TextType.values().associateWith { it.getFont() }
+      ?: TextType.entries.associateWith { it.getFont() }
   }
 
   private fun TextType.getFont(): String {

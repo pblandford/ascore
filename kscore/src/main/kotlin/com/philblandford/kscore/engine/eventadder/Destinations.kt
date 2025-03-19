@@ -30,6 +30,7 @@ internal val destinations = mapOf(
   EventType.FINGERING to EventDestination(listOf(ScoreLevelType.VOICEMAP), FingeringSubAdder),
   EventType.FOOTER_LEFT to EventDestination(listOf(ScoreLevelType.SCORE), MoveableSubAdder),
   EventType.FOOTER_RIGHT to EventDestination(listOf(ScoreLevelType.SCORE), MoveableSubAdder),
+  EventType.FOOTER_CENTER to EventDestination(listOf(ScoreLevelType.SCORE), MoveableSubAdder),
   EventType.FREE_TEXT to EventDestination(listOf(ScoreLevelType.SCORE), GenericSubAdder),
   EventType.GLISSANDO to EventDestination(listOf(ScoreLevelType.STAVE), GlissandoSubAdder),
   EventType.HIDDEN_TIME_SIGNATURE to EventDestination(

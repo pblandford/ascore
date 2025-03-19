@@ -44,6 +44,48 @@ class LyricTest : ScoreTest() {
   }
 
   @Test
+  fun testDeleteLyricSecondLine() {
+    SMV()
+    SAE(
+      EventType.LYRIC,
+      eav(1),
+      params = paramMapOf(EventParam.TEXT to "Flob", EventParam.NUMBER to 2)
+    )
+    SDE(EventType.LYRIC, eav(1).copy(id = 2))
+    SVNE(EventType.LYRIC, eav(1).copy(id = 2))
+  }
+
+  @Test
+  fun testDeleteLyricSecondLineFirstLineUntouched() {
+    SMV()
+    SAE(
+      EventType.LYRIC,
+      eav(1),
+      params = paramMapOf(EventParam.TEXT to "One", EventParam.NUMBER to 1)
+    )
+    SAE(
+      EventType.LYRIC,
+      eav(1),
+      params = paramMapOf(EventParam.TEXT to "Two", EventParam.NUMBER to 2)
+    )
+    SDE(EventType.LYRIC, ea(1).copy(id = 2))
+    SVP(EventType.LYRIC, EventParam.TEXT, "One", eav(1).copy(id = 1))
+    SVNE(EventType.LYRIC, ea(1).copy(id = 2))
+  }
+
+  @Test
+  fun testDeleteLyricVoiceIgnored() {
+    SMV()
+    SAE(
+      EventType.LYRIC,
+      eav(1),
+      params = paramMapOf(EventParam.TEXT to "Flob", EventParam.NUMBER to 1)
+    )
+    SDE(EventType.LYRIC, eav(1, voice = 2).copy(id = 1))
+    SVNE(EventType.LYRIC, eav(1).copy(id = 1))
+  }
+
+  @Test
   fun testDeleteLyricRange() {
     SMV()
     SAE(EventType.LYRIC, eav(1), params = paramMapOf(EventParam.TEXT to "Flob", EventParam.NUMBER to 1))

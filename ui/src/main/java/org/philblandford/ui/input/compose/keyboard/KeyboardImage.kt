@@ -29,7 +29,7 @@ import java.util.*
 @Composable
 fun KeyboardImage(modifier:Modifier = Modifier, insertNote: (Int, Boolean) -> Unit) {
 
-  val reduceHeight =  LocalWindowSizeClass.current.medium() && LocalConfiguration.current.orientation == ORIENTATION_LANDSCAPE
+  val reduceHeight =  LocalConfiguration.current.orientation == ORIENTATION_LANDSCAPE
 
   val imageHeight = if (reduceHeight) block(2) else  block(3)
   val imageWidth = imageHeight * 20

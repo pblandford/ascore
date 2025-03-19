@@ -16,7 +16,7 @@ interface TextEditInterface : EditInterface {
   fun defaultTextSize():Int
 }
 
-class TextEditViewModel(
+open class TextEditViewModel(
   getUIState: GetUIState,
   updateEvent: UpdateEventParam,
   insertEvent: InsertEvent,

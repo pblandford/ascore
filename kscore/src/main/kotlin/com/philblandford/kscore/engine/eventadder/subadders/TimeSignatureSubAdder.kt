@@ -7,6 +7,7 @@ import com.philblandford.kscore.engine.eventadder.*
 import com.philblandford.kscore.engine.time.TimeSignature
 import com.philblandford.kscore.engine.time.timeSignature
 import com.philblandford.kscore.engine.types.*
+import com.philblandford.kscore.log.ksLoge
 import com.philblandford.kscore.log.ksLogv
 
 object TimeSignatureSubAdder : RangeSubAdder {
@@ -178,8 +179,13 @@ object TimeSignatureSubAdder : RangeSubAdder {
   private fun Score.removeOldEvents(offsetEvents: List<Pair<Offset, Pair<EventAddress, Event>>>): ScoreResult {
     val sorted = offsetEvents.sortedBy { it.first }
     ksLogv(sorted.toString())
-    return fold(offsetEvents.toList()) { (_, pair) ->
-      NewEventAdder.deleteEvent(this, pair.second.eventType, pair.second.params, pair.first)
+    return fold(offsetEvents.toList()) { (offset, pair) ->
+      offsetToAddress(offset)?.let { address ->
+        val adjusted = address.copy(voice = pair.first.voice, id = pair.first.id,
+          staveId = pair.first.staveId)
+        ksLoge("Deleting lyric $adjusted")
+        NewEventAdder.deleteEvent(this, pair.second.eventType, pair.second.params, adjusted)
+      } ?: this.ok()
     }
   }
 

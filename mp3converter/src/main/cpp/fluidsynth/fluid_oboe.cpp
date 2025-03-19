@@ -58,7 +58,7 @@ typedef struct
 } fluid_oboe_audio_driver_t;
 
 void signalHandler( int signum ) {
-   // FLUID_LOG(FLUID_ERR, "Caught signal %d", signum);
+    FLUID_LOG(FLUID_ERR, "Caught signal %d", signum);
 }
 
 class OboeAudioStreamCallback : public AudioStreamCallback

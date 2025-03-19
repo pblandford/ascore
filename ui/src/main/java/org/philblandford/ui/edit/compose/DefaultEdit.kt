@@ -6,8 +6,8 @@ import org.philblandford.ui.edit.entities.ButtonActions
 import org.philblandford.ui.edit.viewmodel.EditViewModel
 
 @Composable
-fun DefaultEdit(scale:Float, actions:List<ButtonActions> = ButtonActions.values().toList()) {
-  VMView(EditViewModel::class.java) { model, iface, _ ->
+fun DefaultEdit(scale:Float, actions:List<ButtonActions> = ButtonActions.entries) {
+  VMView(EditViewModel::class.java) { _, iface, _ ->
     EditFrame(iface, scale = scale, actions = actions) {
 
     }

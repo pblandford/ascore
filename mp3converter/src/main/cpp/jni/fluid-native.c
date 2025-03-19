@@ -53,12 +53,13 @@ Java_com_philblandford_mp3converter_engine_sample_FluidSamplerKt_openFluid(JNIEn
     fluid_synth_t *synth = new_fluid_synth(settings);
     fluid_audio_driver_t *driver = NULL;
     if (create_driver) {
-      driver = new_fluid_audio_driver(settings, synth);
+        driver = new_fluid_audio_driver(settings, synth);
     }
     int sfont_id = fluid_synth_sfload(synth, nativeString,
                                       1);
     if (sfont_id == -1) {
-        __android_log_print(ANDROID_LOG_ERROR, "FLD", "Failed initialising soundfont %s", nativeString);
+        __android_log_print(ANDROID_LOG_ERROR, "FLD", "Failed initialising soundfont %s",
+                            nativeString);
         return -1L;
     }
     (*env)->
@@ -107,17 +108,16 @@ Java_com_philblandford_mp3converter_engine_sample_FluidSamplerKt_getSampleData(J
     return retArray;
 }
 
-JNIEXPORT void
-
-JNICALL Java_com_philblandford_mp3converter_engine_sample_FluidSamplerKt_programChange(JNIEnv *env,
-                                                                                       jclass thiz,
-                                                                                       jlong handle,
-                                                                                       jint channel,
-                                                                                       jint midiId) {
+JNIEXPORT void JNICALL
+Java_com_philblandford_mp3converter_engine_sample_FluidSamplerKt_programChange(JNIEnv *env,
+                                                                               jclass thiz,
+                                                                               jlong handle,
+                                                                               jint channel,
+                                                                               jint midiId) {
     fluid_synth_t *synth = ((handle_t *) handle)->synth;
 
 
-    __android_log_print(ANDROID_LOG_ERROR, "FLD","programChange %d %d", channel, midiId);
+    __android_log_print(ANDROID_LOG_ERROR, "FLD", "programChange %d %d", channel, midiId);
 
     int ret = fluid_synth_program_change(synth, channel, midiId - 1);
     if (ret != FLUID_OK) {
@@ -127,29 +127,28 @@ JNICALL Java_com_philblandford_mp3converter_engine_sample_FluidSamplerKt_program
 }
 
 
-JNIEXPORT void
-
-JNICALL Java_com_philblandford_mp3converter_engine_sample_FluidSamplerKt_noteOn(JNIEnv *env,
-                                                                                jclass thiz,
-                                                                                jlong handle,
-                                                                                jint channel,
-                                                                                jint midiVal,
-                                                                                jint velocity) {
+JNIEXPORT void JNICALL
+Java_com_philblandford_mp3converter_engine_sample_FluidSamplerKt_noteOn(JNIEnv *env,
+                                                                        jclass thiz,
+                                                                        jlong handle,
+                                                                        jint channel,
+                                                                        jint midiVal,
+                                                                        jint velocity) {
     fluid_synth_t *synth = ((handle_t *) handle)->synth;
 
     int ret = fluid_synth_noteon(synth, channel, midiVal, velocity);
     if (ret != FLUID_OK) {
-        __android_log_print(ANDROID_LOG_ERROR, "FLD", "Failed note on %d %d %d", midiVal, velocity, channel);
+        __android_log_print(ANDROID_LOG_ERROR, "FLD", "Failed note on %d %d %d", midiVal, velocity,
+                            channel);
     }
 }
 
-JNIEXPORT void
-
-JNICALL Java_com_philblandford_mp3converter_engine_sample_FluidSamplerKt_noteOff(JNIEnv *env,
-                                                                                 jclass thiz,
-                                                                                 jlong handle,
-                                                                                 jint channel,
-                                                                                 jint midiVal) {
+JNIEXPORT void JNICALL
+Java_com_philblandford_mp3converter_engine_sample_FluidSamplerKt_noteOff(JNIEnv *env,
+                                                                         jclass thiz,
+                                                                         jlong handle,
+                                                                         jint channel,
+                                                                         jint midiVal) {
     fluid_synth_t *synth = ((handle_t *) handle)->synth;
 
     int ret = fluid_synth_noteoff(synth, channel, midiVal);
@@ -158,13 +157,12 @@ JNICALL Java_com_philblandford_mp3converter_engine_sample_FluidSamplerKt_noteOff
     }
 }
 
-JNIEXPORT void
-
-JNICALL Java_com_philblandford_mp3converter_engine_sample_FluidSamplerKt_pedal(JNIEnv *env,
-                                                                                jclass thiz,
-                                                                                jlong handle,
-                                                                                jint channel,
-                                                                                jboolean on) {
+JNIEXPORT void JNICALL
+Java_com_philblandford_mp3converter_engine_sample_FluidSamplerKt_pedal(JNIEnv *env,
+                                                                       jclass thiz,
+                                                                       jlong handle,
+                                                                       jint channel,
+                                                                       jboolean on) {
     fluid_synth_t *synth = ((handle_t *) handle)->synth;
 
     int value;
@@ -175,15 +173,15 @@ JNICALL Java_com_philblandford_mp3converter_engine_sample_FluidSamplerKt_pedal(J
     }
     int ret = fluid_synth_cc(synth, channel, 0x40, value);
     if (ret != FLUID_OK) {
-        __android_log_print(ANDROID_LOG_ERROR, "FLD", "Failed pedal on %d %x %d %x", value, value, 0x50, 0x50);
+        __android_log_print(ANDROID_LOG_ERROR, "FLD", "Failed pedal on %d %x %d %x", value, value,
+                            0x50, 0x50);
     }
 }
 
-JNIEXPORT jstring
-
-JNICALL Java_com_philblandford_mp3converter_engine_sample_FluidSamplerKt_getPresets(JNIEnv *env,
-                                                                                    jclass thiz,
-                                                                                    jlong handle) {
+JNIEXPORT jstring JNICALL
+Java_com_philblandford_mp3converter_engine_sample_FluidSamplerKt_getPresets(JNIEnv *env,
+                                                                            jclass thiz,
+                                                                            jlong handle) {
     fluid_synth_t *synth = ((handle_t *) handle)->synth;
     fluid_sfont_t *soundfont = fluid_synth_get_sfont(synth, 0);
 
@@ -206,7 +204,8 @@ JNICALL Java_com_philblandford_mp3converter_engine_sample_FluidSamplerKt_getPres
             fullString = realloc(fullString, buff_size);
         }
         fullString = strcat(fullString, tmpBuf);
-        __android_log_print(ANDROID_LOG_ERROR, "FLD", "preset %s %s %d %d", name, sfname, program, bank);
+        __android_log_print(ANDROID_LOG_ERROR, "FLD", "preset %s %s %d %d", name, sfname, program,
+                            bank);
     }
     jstring result = (*env)->NewStringUTF(env, fullString);
     free(fullString);

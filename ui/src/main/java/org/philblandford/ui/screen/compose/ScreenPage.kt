@@ -225,10 +225,9 @@ internal fun ScreenPage(
         EditOverlay(
             editItem,
             scrollX.value,
-            topOffset.value,
             num,
             viewPortWidth,
-            viewPortHeight,
+            height,
             getScale
         )
     }
@@ -238,8 +237,8 @@ internal fun ScreenPage(
 
 @Composable
 private fun BoxScope.EditOverlay(
-    editItem: EditItem?, scrollXpx: Int, scrollY: Int, page: Int, viewPortWidth: Dp,
-    viewPortHeight: Dp,
+    editItem: EditItem?, scrollXpx: Int, page: Int, viewPortWidth: Dp,
+    pageHeight: Dp,
     getScale: () -> Float
 ) {
     val density = LocalDensity.current.density
@@ -256,9 +255,7 @@ private fun BoxScope.EditOverlay(
 
                 val rightEdgeDp = (scrollXpx / density) + viewPortWidth.value - 10
 
-                val topEdgeDp = (scrollY / density)
-                val topHalfBottomDp = topEdgeDp + viewPortHeight.value / 2
-                val isTopHalf = editItem.rectangle.y.toDp() < topHalfBottomDp
+                val isTopHalf = editItem.rectangle.y.toDp() < pageHeight.value / 2
                 val x = editItem.rectangle.x.toDp()
                     .coerceIn(0f, maxOf(rightEdgeDp - editSizeDp.value.width, 0f))
                 val y = if (isTopHalf) {
@@ -266,7 +263,6 @@ private fun BoxScope.EditOverlay(
                 } else {
                     editItem.rectangle.y.toDp() - editSizeDp.value.height - 20
                 }
-                Timber.e("TSX $scrollY $x $y $isTopHalf $topHalfBottomDp $topEdgeDp $viewPortHeight")
 
                 EditPanel(
                     Modifier

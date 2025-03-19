@@ -13,6 +13,7 @@ import com.philblandford.kscore.engine.types.Event
 import com.philblandford.kscore.engine.types.EventParam
 import com.philblandford.kscore.engine.types.EventType
 import com.philblandford.kscore.engine.types.MetaType
+import com.philblandford.kscore.engine.types.PageSize
 import com.philblandford.kscore.engine.types.ScoreQuery
 import com.philblandford.kscore.engine.types.ez
 import com.philblandford.kscore.engine.types.g
@@ -26,14 +27,17 @@ internal fun DrawableFactory.pageFooterArea(
     val (width, height) = layoutDescriptor.pageWidth to BLOCK_HEIGHT * 4
     var area = Area(width, height, tag = "PageFooter")
 
-    numberArea(num, PAGE_NUMBER_HEIGHT)?.let {
-        area = area.addArea(
+
+    area = addFooterText(scoreQuery.getEvent(EventType.FOOTER_LEFT), area, layoutDescriptor)
+    area = addFooterText(scoreQuery.getEvent(EventType.FOOTER_CENTER), area, layoutDescriptor)
+    area = addFooterText(scoreQuery.getEvent(EventType.FOOTER_RIGHT), area, layoutDescriptor)
+    val numberHeight = (PAGE_NUMBER_HEIGHT * (layoutDescriptor.pageWidth.toFloat() / pageWidths[PageSize.A4]!!)).toInt()
+    numberArea(num, numberHeight)?.let {
+        area = area.addBelow(
             it.copy(tag = "PageNumber-$num"),
-            Coord(width / 2 - it.width / 2, height / 2 - it.height / 2), ez(num)
+            x = width / 2 - it.width / 2
         )
     }
-    area = addFooterText(scoreQuery.getEvent(EventType.FOOTER_LEFT), area, layoutDescriptor)
-    area = addFooterText(scoreQuery.getEvent(EventType.FOOTER_RIGHT), area, layoutDescriptor)
     return area
 }
 
@@ -46,6 +50,8 @@ private fun DrawableFactory.addFooterText(
 
         val (xPos, label) = if (event?.eventType == EventType.FOOTER_LEFT) {
             BLOCK_HEIGHT * 6 to "FooterLeft"
+        } else if (event?.eventType == EventType.FOOTER_CENTER) {
+            layoutDescriptor.pageWidth / 2 - textArea.width / 2 to "FooterCenter"
         } else {
             layoutDescriptor.titleWidth - BLOCK_HEIGHT * 2 - textArea.width to "FooterRight"
         }

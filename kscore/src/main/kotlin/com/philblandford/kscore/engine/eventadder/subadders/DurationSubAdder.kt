@@ -380,7 +380,7 @@ object DurationSubAdder : BaseSubAdder {
                                 NoteSubAdder.setParam(
                                     it, destination, EventType.NOTE, EventParam.IS_END_TIE, false,
                                     next.copy(voice = eventAddress.voice, id = iv.index + 1)
-                                )
+                                ).ignoreFailure(it)
                             }
                         }
                 }

@@ -54,6 +54,7 @@ import timber.log.Timber
 
 @Composable
 fun MainPageView(
+    isReconfiguration: Boolean,
     openDrawer: () -> Unit, setPopupLayout: (LayoutID) -> Unit, toggleMixer: () -> Unit,
     onScoreEmpty: () -> Unit,
 ) {
@@ -106,10 +107,17 @@ fun MainPageView(
         }
 
         ksLoge("Have Score ${iface.haveScore()}")
-        var showIntentView by remember { mutableStateOf(!iface.haveScore()
-                || intent?.action == "android.intent.action.VIEW") }
+        var showIntentView by remember {
+            mutableStateOf(
+                !iface.haveScore()
+                        || (intent?.action == "android.intent.action.VIEW" && !isReconfiguration)
+            )
+        }
         if (showIntentView) {
-            Dialog({}) {
+            Dialog({
+                showIntentView = false
+                intent = null
+            }) {
                 IntentView(intent) { showIntentView = false }
             }
         }

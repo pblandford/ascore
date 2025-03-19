@@ -58,14 +58,14 @@ class InsertChooseViewModel(private val selectInsertItem: SelectInsertItem) :
 
   override fun setGroupSize(groupSize: GroupSize) {
     grouped = groupItems(groupSize)
-    val rows = if (groupSize == GroupSize.EXPANDED) 1 else 2
+    val rows = if (groupSize == GroupSize.COMPACT) 2 else 1
     update { copy(items = grouped[page], showNext = grouped.size > 1, rows = rows) }
   }
 
   private fun groupItems(groupSize: GroupSize): List<List<InsertItem>> {
     val perPage = when (groupSize) {
-      GroupSize.COMPACT -> 12
-      GroupSize.MEDIUM -> 18
+      GroupSize.COMPACT -> 14
+      GroupSize.MEDIUM -> 14
       GroupSize.EXPANDED -> 14
     }
     return insertItems.chunked(perPage)

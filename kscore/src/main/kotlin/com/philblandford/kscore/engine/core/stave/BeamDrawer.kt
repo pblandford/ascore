@@ -96,7 +96,7 @@ private fun DrawableFactory.addBeamArea(
   eventAddress: EventAddress,
   main: Area, offsetLookup: OffsetLookup
 ): Pair<Area, Lookup<StemGeography>> {
-  if (members.isEmpty()) {
+  if (members.size < 2) {
     return Pair(main, lookupOf())
   }
   return run {//getOrCreate("BEAM_AREA", Triple(beam, members, eventAddress)) {
@@ -107,7 +107,12 @@ private fun DrawableFactory.addBeamArea(
     var newArea = main
 
     val beamDescriptors = getBeamDescriptors(beam)
-    val beamDepth = beamDescriptors.groupBy { it.start }.maxBy { it.value.size }.value.size
+    val beamDepth = try {
+      beamDescriptors.groupBy { it.start }.maxBy { it.value.size }.value.size
+    } catch (e:NoSuchElementException) {
+        ksLoge("No beam descriptors found for beam $beam")
+        0
+    }
     val beamDimensions = getBeamDimensions(first, last, beamDepth)
 
     val extra =

@@ -47,6 +47,7 @@ open class FluidSampler(protected val soundFontPath: String) : ISampler {
   override fun close() {
     tryOp {
       closeFluid(handle)
+      handle = -1;
     }
   }
 

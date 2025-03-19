@@ -28,7 +28,7 @@ internal object TremoloSubAdder : ChordDecorationSubAdder<Duration> {
   }
 
   override fun getParamVal(params:ParamMap): Any? {
-    return params.g<Int>(EventParam.TREMOLO_BEATS)
+    return params.g<Duration>(EventParam.TREMOLO_BEATS)
   }
 
   override fun <U> setParam(

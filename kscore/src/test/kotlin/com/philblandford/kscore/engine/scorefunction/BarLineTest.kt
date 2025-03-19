@@ -62,4 +62,11 @@ class BarLineTest : ScoreTest() {
     SAE(EventType.REPEAT_END, ez(2))
     SVP(EventType.BARLINE, EventParam.TYPE, BarLineType.END_REPEAT, ez(2))
   }
+
+  @Test
+  fun testDeleteRepeatStart() {
+    SAE(EventType.REPEAT_START, ez(1))
+    SDE(EventType.REPEAT_START, ez(1))
+    SVNE(EventType.REPEAT_START, ez(1))
+  }
 }

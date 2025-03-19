@@ -41,13 +41,12 @@ class MainActivity : ComponentActivity() {
 
     @OptIn(ExperimentalMaterial3WindowSizeClassApi::class)
     override fun onCreate(savedInstanceState: Bundle?) {
-        ksLoge("MainActivity.onCreate $savedInstanceState")
+        ksLoge("MainActivity.onCreate $savedInstanceState $intent")
 
         super.onCreate(savedInstanceState)
         setContent {
 
             val windowSizeClass = calculateWindowSizeClass(this)
-
 
             VMView(ThemeViewModel::class.java) { model, _, _ ->
                 val colorScheme = model.colorScheme
@@ -86,7 +85,10 @@ class MainActivity : ComponentActivity() {
                             LocalContentColor provides MaterialTheme.colorScheme.onSurface,
                             LocalWindowSizeClass provides windowSizeClass
                         ) {
-                            OuterPage(Modifier.padding(padding))
+                            OuterPage(
+                                Modifier.padding(padding),
+                                savedInstanceState != null
+                            )
                         }
                     }
                 }

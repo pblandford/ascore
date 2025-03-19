@@ -77,6 +77,7 @@ data class Meta(
             MetaType.LYRICIST -> COMPOSER_TEXT_SIZE
             MetaType.FOOTER_LEFT -> COMPOSER_TEXT_SIZE
             MetaType.FOOTER_RIGHT -> COMPOSER_TEXT_SIZE
+            MetaType.FOOTER_CENTER -> COMPOSER_TEXT_SIZE
         }
     }
 }

@@ -77,6 +77,7 @@ class NotePositionerTest {
     assertEqual(Coord(0, 8), xPos.last())
   }
 
+
   @Test
   fun testGetStemDirection() {
     val input = listOf(Coord(0, 2))

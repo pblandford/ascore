@@ -37,4 +37,12 @@ class BowingTest : ScoreTest() {
     SVP(EventType.BOWING, EventParam.TYPE, BowingType.DOWN_BOW, eav(1))
   }
 
+  @Test
+  fun testSetBowingType() {
+    SMV()
+    SAE(EventType.BOWING, eav(1), paramMapOf(EventParam.TYPE to BowingType.DOWN_BOW))
+    SSP(EventType.BOWING, EventParam.TYPE, BowingType.UP_BOW, eav(1))
+    SVP(EventType.DURATION, EventParam.BOWING, ChordDecoration(items = arrayListOf(BowingType.UP_BOW)), eav(1))
+  }
+
 }

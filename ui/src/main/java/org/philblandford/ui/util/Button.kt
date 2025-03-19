@@ -72,21 +72,19 @@ fun SquareImage(
 
   var sizeMod = modifier.background(background).size(size)
   if (border) sizeMod = sizeMod.border(1.dp, MaterialTheme.colorScheme.onSurface)
+  sizeMod = sizeMod.padding(4.dp)
 
   val colorFilter = when (state) {
     ButtonState.DIMMED -> ColorFilter.tint(foreground.copy(alpha = 0.25f))
     else -> ColorFilter.tint(foreground)
   }
 
-  Box(
-    sizeMod,
-  ) {
+  Box(sizeMod) {
     Image(
       painterResource(resource), "",
       Modifier
         .size(size),
       colorFilter = colorFilter
     )
-
   }
 }

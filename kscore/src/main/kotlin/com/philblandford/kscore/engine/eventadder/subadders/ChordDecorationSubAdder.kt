@@ -41,7 +41,11 @@ internal interface ChordDecorationSubAdder<T> : BaseSubAdder {
           }
         }
       }
-      else -> score.ok()
+      else -> {
+        return score.getEvent(EventType.DURATION, eventAddress).ifNullRestore(score) { ev ->
+          score.doAdd<T>(eventAddress, destination, ev, paramMapOf(param to value))
+        }
+      }
     }
   }
 
@@ -92,7 +96,8 @@ internal interface ChordDecorationSubAdder<T> : BaseSubAdder {
     return getParamVal(params)?.let { subtype ->
       val up = params.isTrue(EventParam.IS_UP)
       Right(ChordDecoration(up, listOf(subtype as T)))
-    } ?: Left(Error("Could not get decoration value"))
+    } ?:
+    Left(Error("Could not get decoration value"))
   }
 
   private fun <T> addNonUnique(

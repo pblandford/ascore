@@ -56,7 +56,6 @@ fun InstrumentEdit() {
   }
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun InstrumentEditInternal(editModel: EditModel, iface: InstrumentEditInterface) {
 

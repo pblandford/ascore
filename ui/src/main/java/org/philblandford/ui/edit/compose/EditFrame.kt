@@ -28,7 +28,7 @@ import org.philblandford.ui.util.SquareButton
 @Composable
 fun EditFrame(
   editInterface: EditInterface,
-  actions: List<ButtonActions> = ButtonActions.values().toList(),
+  actions: List<ButtonActions> = ButtonActions.entries,
   scale: Float,
   content: @Composable () -> Unit,
 ) {

@@ -147,7 +147,7 @@ private fun DrawableFactory.getArea(
     BOWING -> {
       chord.getParam<ChordDecoration<BowingType>>(eventParam)?.let { dec ->
         getDesc(eventParam, chord, numVoices, dec)?.let { desc ->
-          bowingArea(dec, !desc.above)?.let { it to desc }
+          bowingArea(dec, chord, !desc.above)?.let { it to desc }
         }
       }
     }

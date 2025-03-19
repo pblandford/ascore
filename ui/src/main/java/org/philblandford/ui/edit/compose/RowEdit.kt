@@ -23,7 +23,7 @@ fun <T> RowEdit(
   scale: Float,
   rows: Int = 2,
   typeParam:EventParam = EventParam.TYPE,
-  actions: List<ButtonActions> = ButtonActions.values().toList(),
+  actions: List<ButtonActions> = ButtonActions.entries,
   extraContent: @Composable (EditModel, EditInterface) -> Unit = { _, _ ->}
 ) {
 
