@@ -154,7 +154,12 @@ private fun Main(model: ExportModel, iface: ExportInterface) {
       onValueChange = { tf ->
         iface.setFileName(tf)
       },
-      colors = TextFieldDefaults.colors(unfocusedLabelColor = MaterialTheme.colorScheme.onSurface),
+      colors = TextFieldDefaults.colors(unfocusedLabelColor = MaterialTheme.colorScheme.onSurface,
+        focusedContainerColor = MaterialTheme.colorScheme.onSurface,
+        focusedTextColor = MaterialTheme.colorScheme.surface,
+        unfocusedTextColor = MaterialTheme.colorScheme.surface,
+        cursorColor = MaterialTheme.colorScheme.surface
+        ),
       label = { Text(stringResource(R.string.filename)) })
     Spacer(Modifier.height(block()))
     if (model.allParts != null) {

@@ -30,7 +30,7 @@ class Loader {
         var score = Score(parts.toList(), eventMapOf(events), BeamDirectory(mapOf(), mapOf()))
         val beamDirectory = BeamDirectory.create(score)
         score = score.copy(beamDirectory = beamDirectory)
-        score.readdMeta().setLyricOffset()
+        score.readdMeta().setLyricOffset().ensureDMTimeSignaturesCorrect()
       }
     }
   }
@@ -83,10 +83,14 @@ class Loader {
   }
 
   fun loadVoiceMap(bytes: LinkedList<Byte>): VoiceMap? {
-    return loadEventHash(bytes)?.let { hash ->
-      loadIterable<Tuplet>(bytes)?.let { tuplets ->
-        voiceMap(eventMapOf(hash), tuplets.toList())
+    return try {
+      loadEventHash(bytes)?.let { hash ->
+        loadIterable<Tuplet>(bytes)?.let { tuplets ->
+          voiceMap(eventMapOf(hash), tuplets.toList())
+        }
       }
+    } catch (e:Exception) {
+      null
     }
   }
 

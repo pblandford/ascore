@@ -6,6 +6,7 @@ import com.philblandford.kscore.api.InstrumentGetter
 import com.philblandford.kscore.api.InstrumentGroup
 import com.philblandford.kscore.api.SoundManager
 import com.philblandford.kscore.log.ksLogd
+import com.philblandford.kscore.log.ksLoge
 import com.philblandford.kscore.log.ksLogt
 import com.philblandford.mp3converter.ISampler
 import com.philblandford.mp3converter.engine.file.input.NoteOffEvent
@@ -41,6 +42,8 @@ class AndroidSoundManagerFluid(
       Timer().schedule(length.toLong()) {
         sampler.passEvent(NoteOffEvent(midiVal, 0, actualChannel))
       }
+    } ?: run {
+        ksLoge("Could not find sampler for $soundFont")
     }
   }
 

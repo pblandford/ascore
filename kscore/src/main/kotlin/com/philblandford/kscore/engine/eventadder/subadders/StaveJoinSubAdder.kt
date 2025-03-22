@@ -36,6 +36,17 @@ object StaveJoinSubAdder : LineSubAdderIf {
     return Right(score.replaceSelf(eventMap))
   }
 
+  override fun <T> setParam(
+    score: Score,
+    destination: EventDestination,
+    eventType: EventType,
+    param: EventParam,
+    value: T,
+    eventAddress: EventAddress
+  ): ScoreResult {
+    return Right(score)
+  }
+
   private fun sortStaves(start:EventAddress, end:EventAddress):Pair<EventAddress, EventAddress>{
     return if (start.staveId > end.staveId) {
       end to start

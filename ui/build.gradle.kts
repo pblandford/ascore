@@ -15,8 +15,8 @@ android {
         applicationId = "com.philblandford.ascore"
         minSdk = rootProject.extra["minSdkVersion"] as Int
         targetSdk = rootProject.extra["targetSdkVersion"] as Int
-        versionCode = 146
-        versionName = "1.1.6 Platinum"
+        versionCode = 148
+        versionName = "1.1.6b Platinum"
 
         vectorDrawables {
             useSupportLibrary = true

@@ -144,10 +144,14 @@ fun max(one: Duration, two: Duration): Duration {
 private val addCache = mutableMapOf<Pair<Duration, Duration>, Duration>()
 
 fun Duration.addC(other: Duration): Duration {
-  return addCache[Pair(this, other)] ?: run {
-    val res = add(other)
-    addCache[(Pair(this, other))] = res
-    res
+  return try {
+    addCache[Pair(this, other)] ?: run {
+      val res = add(other)
+      addCache[(Pair(this, other))] = res
+      res
+    }
+  } catch (e:Exception) {
+    this
   }
 }
 

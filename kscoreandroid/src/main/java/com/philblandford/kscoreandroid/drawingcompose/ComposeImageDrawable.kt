@@ -15,6 +15,7 @@ import com.philblandford.kscore.engine.core.area.Coord
 import com.philblandford.kscore.engine.core.area.KDrawable
 import com.philblandford.kscore.engine.core.area.factory.ImageArgs
 import com.philblandford.kscore.engine.types.isWild
+import com.philblandford.kscore.log.ksLoge
 
 private const val BlackColor = android.graphics.Color.BLACK 
 
@@ -46,6 +47,9 @@ fun composeImageDrawable(
 
     val width =
       if (imageArgs.width.isWild()) calculateWidth(bm, imageArgs.height) else imageArgs.width
+    if (width <= 0 || imageArgs.height <= 0) {
+      return@let null
+    }
     bm = Bitmap.createScaledBitmap(bm, width, imageArgs.height, false)
     var visibleWidth = width
     var visibleHeight = imageArgs.height
@@ -67,7 +71,8 @@ fun composeImageDrawable(
       getDrawScope
     )
   } ?: run {
-    throw Exception("Could not decode ${imageArgs.name}")
+    ksLoge("Image not found: ${imageArgs.name}")
+    return null
   }
 }
 
