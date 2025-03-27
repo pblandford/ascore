@@ -49,7 +49,7 @@ class Loader {
 
   private fun loadPart(bytes: LinkedList<Byte>): Part? {
     return loadIterable<Stave>(bytes)?.let { staves ->
-      loadEventHash(bytes)?.let { events ->
+      loadEventHash(bytes)?.let {  events ->
         Part(
           staves.toList().toList(),
           eventMapOf(events)
@@ -188,11 +188,15 @@ class Loader {
   }
 
   fun peekInt(byteArray: LinkedList<Byte>): Int? {
-    val b1 = byteArray[0].toInt().shl(24) and 0xff000000.toInt()
-    val b2 = byteArray[1].toInt().shl(16) and 0xff0000
-    val b3 = byteArray[2].toInt().shl(8) and 0xff00
-    val b4 = byteArray[3].toInt() and 0xff
-    return (b1 or b2 or b3 or b4)
+    return try {
+      val b1 = byteArray[0].toInt().shl(24) and 0xff000000.toInt()
+      val b2 = byteArray[1].toInt().shl(16) and 0xff0000
+      val b3 = byteArray[2].toInt().shl(8) and 0xff00
+      val b4 = byteArray[3].toInt() and 0xff
+      (b1 or b2 or b3 or b4)
+    } catch (_:Exception) {
+      null
+    }
   }
 
   fun loadInt(byteArray: LinkedList<Byte>): Int? {

@@ -84,6 +84,12 @@ class MetaTest : RepTest() {
     RVA("FooterLeft", eZero())
   }
 
+  @Test
+  fun testSetFooterCentre() {
+    setMeta(MetaType.FOOTER_CENTER, "Wibble")
+    RVA("FooterCenter", eZero())
+  }
+
   private fun setMeta(metaType: MetaType, text: String) {
     SAE(
       Event(metaType.toEventType(), paramMapOf(EventParam.TEXT to text)),

@@ -44,7 +44,19 @@ object StaveJoinSubAdder : LineSubAdderIf {
     value: T,
     eventAddress: EventAddress
   ): ScoreResult {
-    return Right(score)
+    return super.setParam(score, destination, eventType, param, value, eventAddress)
+  }
+
+  override fun <T> setParamRange(
+    score: Score,
+    destination: EventDestination,
+    eventType: EventType,
+    param: EventParam,
+    value: T,
+    start: EventAddress,
+    end: EventAddress
+  ): ScoreResult {
+    return super.setParamRange(score, destination, eventType, param, value, start, end)
   }
 
   private fun sortStaves(start:EventAddress, end:EventAddress):Pair<EventAddress, EventAddress>{

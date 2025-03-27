@@ -83,4 +83,10 @@ class MetaTest : ScoreTest() {
     SVP(EventType.FOOTER_RIGHT, EventParam.TEXT, "Hello", eZero())
   }
 
+  @Test
+  fun testAddFooterCentre() {
+    SAE(EventType.FOOTER_CENTER, eZero(), paramMapOf(EventParam.TEXT to "Hello"))
+    SVP(EventType.FOOTER_CENTER, EventParam.TEXT, "Hello", eZero())
+  }
+
 }
